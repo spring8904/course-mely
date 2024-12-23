@@ -1,4 +1,10 @@
+import { Metadata } from "next";
 import Image from "next/image";
+
+export const metadata: Metadata = {
+  title: "Elearning Platform",
+  description: "Chào mừng bạn đã đến với nền tảng học tập của chúng tôi",
+};
 
 export default function Home() {
   return (
