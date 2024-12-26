@@ -1,9 +1,7 @@
-import React from 'react'
+import { SignupView } from '@/sections/signup/view'
 
-const page = () => {
-  return (
-    <div>SignUp</div>
-  )
+const Signup = () => {
+  return <SignupView />
 }
 
-export default page
+export default Signup

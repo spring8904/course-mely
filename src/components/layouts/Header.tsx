@@ -3,8 +3,8 @@
 import { Search } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Button } from '../ui/button'
 import { useRouter } from 'next/navigation'
+import { Button } from '../ui/button'
 
 const Logo = () => (
   <Link href="/" className="flex items-center space-x-3">
@@ -54,13 +54,13 @@ const ActionButtons = () => {
       <Button
         variant="secondary"
         className="text-base font-semibold"
-        onClick={() => router.push('/signup')}
+        onClick={() => router.push('/sign-up')}
       >
         Đăng ký
       </Button>
       <Button
         className="text-base font-semibold"
-        onClick={() => router.push('/signin')}
+        onClick={() => router.push('/sign-in')}
       >
         Đăng nhập
       </Button>

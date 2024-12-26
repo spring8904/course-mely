@@ -8,7 +8,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-<
       <body className={`${manropeFont.className} antialiased`}>{children}</body>
     </html>
   )
