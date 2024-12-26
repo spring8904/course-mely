@@ -1,6 +1,9 @@
+'use client'
+
 import { Search } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { Button } from '../ui/button'
 
 const Logo = () => (
@@ -43,14 +46,27 @@ const NavLinks = () => {
   )
 }
 
-const ActionButtons = () => (
-  <div className="flex items-center space-x-2">
-    <Button variant="secondary" className="text-base font-semibold">
-      Đăng ký
-    </Button>
-    <Button className="text-base font-semibold">Đăng nhập</Button>
-  </div>
-)
+const ActionButtons = () => {
+  const router = useRouter()
+
+  return (
+    <div className="flex items-center space-x-2">
+      <Button
+        variant="secondary"
+        className="text-base font-semibold"
+        onClick={() => router.push('/sign-up')}
+      >
+        Đăng ký
+      </Button>
+      <Button
+        className="text-base font-semibold"
+        onClick={() => router.push('/sign-in')}
+      >
+        Đăng nhập
+      </Button>
+    </div>
+  )
+}
 
 const Header = () => {
   return (

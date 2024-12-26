@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 export interface ISetting {
   id?: number
   key: string
@@ -43,4 +45,14 @@ export interface IUserLessonProgress {
   lastTimeVideo?: number
   createdAt?: Date | null
   updatedAt?: Date | null
+}
+
+export interface IFormControl {
+  name: string
+  label: string
+  placeholder: string
+  componentType: string
+  type: string
+  icon?: ReactNode
+  isCheck?: boolean
 }
