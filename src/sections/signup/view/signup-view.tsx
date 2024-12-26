@@ -1,24 +1,9 @@
+import AuthWithGoogle from '@/components/common/AuthWithGoogle'
 import CommonForm from '@/components/common/Form'
 import { registerFormControls } from '@/configs/formControls'
 import Image from 'next/image'
 
-const AuthWithGoogle = ({ content }: { content: string }) => (
-  <div className="flex w-full cursor-pointer items-center space-x-4 rounded-lg border p-1 hover:bg-[#F5F5F5]">
-    <div className="rounded-lg bg-[#E93E30] p-2">
-      <Image
-        src="/images/google-icon.png"
-        alt="google-icon"
-        width={24}
-        height={24}
-      />
-    </div>
-    <div>
-      <p className="text-[#5D5A6F]">{content}</p>
-    </div>
-  </div>
-)
-
-const SignUp = () => {
+const SignupView = () => {
   return (
     <div className="bg-[url('/images/auth-background.png')] bg-cover bg-center py-16">
       <div className="mx-auto flex w-2/3 space-x-20 rounded-2xl bg-white px-10 py-16">
@@ -30,7 +15,7 @@ const SignUp = () => {
               width={40}
               height={40}
             />
-            <h2 className="line text-2xl font-bold">CourseHUB</h2>
+            <h2 className="text-2xl font-bold">CourseHUB</h2>
           </div>
 
           <h1 className="mt-7 max-w-[432px] text-5xl font-bold leading-[56px]">
@@ -64,4 +49,4 @@ const SignUp = () => {
   )
 }
 
-export default SignUp
+export default SignupView
