@@ -1,3 +1,4 @@
+import CommonLayout from '@/components/layouts/CommonLayout'
 import { Metadata } from 'next'
 
 interface LayoutProps {
@@ -10,10 +11,6 @@ export const metadata: Metadata = {
 }
 
 const Layout = ({ children }: LayoutProps) => {
-  return (
-    <div className="min-h-screen">
-      <main>{children}</main>
-    </div>
-  )
+  return <CommonLayout>{children}</CommonLayout>
 }
 export default Layout
