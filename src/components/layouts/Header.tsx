@@ -5,7 +5,7 @@ import { Button } from '../ui/button'
 
 const Header = () => {
   return (
-    <header className="flex items-center justify-between px-32 py-6 shadow-sm">
+    <header className="sticky inset-x-0 top-0 z-10 flex items-center justify-between bg-white px-32 py-6 shadow-sm">
       <div className="flex items-center gap-3">
         <Link href="#">
           <Image src="/images/Logo.png" alt="logo" width={54} height={54} />
