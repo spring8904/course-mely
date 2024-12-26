@@ -6,11 +6,11 @@ import { Button } from '../ui/button'
 const Header = () => {
   return (
     <header className="sticky inset-x-0 top-0 z-10 flex items-center justify-between bg-white px-32 py-6 shadow-sm">
-      <div className="flex items-center gap-3">
-        <Link href="#">
+      <div>
+        <Link href="#" className="flex items-center gap-3">
           <Image src="/images/Logo.png" alt="logo" width={54} height={54} />
+          <h2 className="text-3xl font-extrabold">CourseHUB</h2>
         </Link>
-        <h2 className="text-3xl font-extrabold">CourseHUB</h2>
       </div>
 
       <div className="w-96 rounded-[8px] border px-4 py-3">
