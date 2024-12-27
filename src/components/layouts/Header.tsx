@@ -1,12 +1,18 @@
 'use client'
 
+import { IUser, UserStatus } from '@/types'
 import { Bell, Search } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { Button } from '../ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
-import { IUser, UserStatus } from '@/types'
+import { Button } from '../ui/button'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '../ui/tooltip'
 
 const Logo = () => (
   <Link href="/" className="flex items-center space-x-3">
@@ -91,9 +97,18 @@ const UserMenu = ({ userData }: { userData: IUser }) => {
         </Link>
       </div>
 
-      <button>
-        <Bell size={20} />
-      </button>
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button>
+              <Bell size={20} />
+            </button>
+          </TooltipTrigger>
+          <TooltipContent side="bottom">
+            <p>Notifications</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
 
       <div>
         <Avatar className="cursor-pointer overflow-hidden rounded-full border-2 border-[#FC6441]">
