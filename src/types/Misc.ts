@@ -54,5 +54,4 @@ export interface IFormControl {
   componentType: string
   type: string
   icon?: ReactNode
-  isCheck?: boolean
 }
