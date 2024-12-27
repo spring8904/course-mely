@@ -1,0 +1,7 @@
+import CourseDetailView from "@/sections/courses/view/course-detail-view"
+
+const CourseDetaiPage = () => {
+  return <CourseDetailView/>
+}
+
+export default CourseDetaiPage
