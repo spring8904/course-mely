@@ -22,7 +22,7 @@ export interface ICourse {
   totalStudent?: number
   requirements?: string[]
   benefits?: string[]
-  qa?: string[]
+  qa?: { question: string; answer: string }[]
   isPopular?: 0 | 1
   status: CourseStatus
   accepted?: Date | null
