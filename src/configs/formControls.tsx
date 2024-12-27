@@ -25,7 +25,6 @@ export const registerFormControls: IFormControl[] = [
     componentType: 'input',
     type: 'password',
     icon: <Lock size={18} />,
-    isCheck: true,
   },
   {
     name: 'confirmPassword',
@@ -34,7 +33,6 @@ export const registerFormControls: IFormControl[] = [
     componentType: 'input',
     type: 'password',
     icon: <Lock size={18} />,
-    isCheck: true,
   },
 ]
 
@@ -54,6 +52,5 @@ export const loginFormControls: IFormControl[] = [
     componentType: 'input',
     type: 'password',
     icon: <Lock size={18} />,
-    isCheck: true,
   },
 ]
