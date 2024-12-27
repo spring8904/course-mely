@@ -22,7 +22,7 @@ const CommonForm = ({ formControls, isLogin, btnText }: CommonFormProps) => {
 
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-2">
-          {!isLogin && (
+          {isLogin && (
             <>
               <Checkbox className="size-5" />
               <span>Ghi nhớ đăng nhập</span>
@@ -44,14 +44,14 @@ const CommonForm = ({ formControls, isLogin, btnText }: CommonFormProps) => {
         {isLogin ? (
           <p className="text-[#5D5A6F]">
             Bạn chưa có tài khoản?{' '}
-            <Link href="/signup" className="text-primary hover:underline">
+            <Link href="/sign-up" className="text-primary hover:underline">
               Đăng ký
             </Link>
           </p>
         ) : (
           <p className="text-[#5D5A6F]">
             Bạn đã có tài khoản?{' '}
-            <Link href="/signin" className="text-primary hover:underline">
+            <Link href="/sign-in" className="text-primary hover:underline">
               Đăng nhập
             </Link>
           </p>

@@ -37,3 +37,23 @@ export const registerFormControls: IFormControl[] = [
     isCheck: true,
   },
 ]
+
+export const loginFormControls: IFormControl[] = [
+  {
+    name: 'email',
+    label: 'Email',
+    placeholder: 'Nhập email',
+    componentType: 'input',
+    type: 'email',
+    icon: <Mail size={18} />,
+  },
+  {
+    name: 'password',
+    label: 'Mật khẩu',
+    placeholder: 'Nhập mât khẩu',
+    componentType: 'input',
+    type: 'password',
+    icon: <Lock size={18} />,
+    isCheck: true,
+  },
+]

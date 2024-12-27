@@ -1,9 +1,7 @@
-import React from 'react'
+import SigninView from '@/sections/signin/view/signin-view'
 
 const page = () => {
-  return (
-    <div>SignIn</div>
-  )
+  return <SigninView />
 }
 
 export default page
