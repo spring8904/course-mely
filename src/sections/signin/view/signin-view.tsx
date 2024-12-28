@@ -2,7 +2,7 @@ import AuthWithGoogle from '@/components/common/AuthWithGoogle'
 import DividerWithText from '@/components/common/DividerWithText'
 import CommonForm from '@/components/common/Form'
 import WelcomeSection from '@/components/common/WelcomeSection'
-import { loginFormControls } from '@/configs/formControls'
+import { loginFormControls } from '@/configs'
 
 const SigninView = () => {
   return (

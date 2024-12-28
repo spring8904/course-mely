@@ -1,5 +1,15 @@
-import { IFormControl } from '@/types'
-import { UserRound, Mail, Lock } from 'lucide-react'
+import { IFormControl, ILeftSidebarData } from '@/types'
+import {
+  BookText,
+  Compass,
+  GraduationCap,
+  History,
+  Lock,
+  Mail,
+  PencilLine,
+  UserRound,
+  Wallet,
+} from 'lucide-react'
 
 export const registerFormControls: IFormControl[] = [
   {
@@ -52,5 +62,32 @@ export const loginFormControls: IFormControl[] = [
     componentType: 'input',
     type: 'password',
     icon: <Lock size={18} />,
+  },
+]
+
+export const leftSidebarData: ILeftSidebarData[] = [
+  {
+    name: 'Khám phá',
+    icon: <Compass size={18} />,
+  },
+  {
+    name: 'Khu vực học tập',
+    icon: <BookText size={18} />,
+  },
+  {
+    name: 'Người hướng dẫn',
+    icon: <GraduationCap size={18} />,
+  },
+  {
+    name: 'Bài viết',
+    icon: <PencilLine size={18} />,
+  },
+  {
+    name: 'Ví của bạn',
+    icon: <Wallet size={18} />,
+  },
+  {
+    name: 'Giao dịch gần đây',
+    icon: <History size={18} />,
   },
 ]
