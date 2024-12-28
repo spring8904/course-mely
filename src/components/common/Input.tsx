@@ -14,7 +14,9 @@ const CommonInput = ({ inputProps }: { inputProps: IFormControl }) => {
   return (
     <div className="flex items-center justify-between rounded-lg border px-5 py-4">
       <div className="flex flex-1 items-center space-x-4">
-        <div className="text-[#5D5A6F]">{inputProps.icon}</div>
+        {inputProps.icon && (
+          <div className="text-[#5D5A6F]">{inputProps.icon}</div>
+        )}
         <div className="flex-1">
           <input
             type={showPassword ? 'text' : inputProps.type}
