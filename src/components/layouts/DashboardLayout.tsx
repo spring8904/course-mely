@@ -4,6 +4,7 @@ import LeftSidebar from './LeftSidebar'
 import QueryProvider from './QueryProvider'
 import TopSidebar from './TopSidebar'
 import { IUser, UserStatus } from '@/types'
+import { leftSidebarStudentData } from '@/configs'
 
 interface LayoutProps {
   children?: React.ReactNode
@@ -33,7 +34,7 @@ const DashboardLayout = ({ children }: LayoutProps) => {
           <div className="grid min-h-screen grid-cols-12">
             {/* Sidebar */}
             <div className="col-span-3">
-              <LeftSidebar />
+              <LeftSidebar leftSidebarData={leftSidebarStudentData} />
             </div>
 
             {/* Main Content */}

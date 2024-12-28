@@ -1,4 +1,3 @@
-import { leftSidebarData } from '@/configs'
 import { ILeftSidebarData } from '@/types'
 import Image from 'next/image'
 
@@ -13,7 +12,11 @@ const LeftSidebarItem = ({
   </div>
 )
 
-const LeftSidebar = () => (
+const LeftSidebar = ({
+  leftSidebarData,
+}: {
+  leftSidebarData: ILeftSidebarData[]
+}) => (
   <div className="px-5 pt-4">
     <div className="mx-auto flex w-fit items-center space-x-3">
       <Image

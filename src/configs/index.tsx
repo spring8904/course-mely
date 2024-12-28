@@ -65,7 +65,7 @@ export const loginFormControls: IFormControl[] = [
   },
 ]
 
-export const leftSidebarData: ILeftSidebarData[] = [
+export const leftSidebarStudentData: ILeftSidebarData[] = [
   {
     name: 'Khám phá',
     icon: <Compass size={18} />,
