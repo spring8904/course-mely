@@ -18,7 +18,7 @@ export const courseData: ICourse = {
   benefits: [
     'Hiểu về khái niệm SPA/MPA',
     'Hiểu về khái niệm component, props, state',
-    'Biết cách sử dụng ReactJS để tạo ra các ứng dụng web',
+    'Biết cách sử dụng ReactJS để tạo ra các ứng dụng ',
     'Hiểu về cách React hoạt động',
     'Biết cách tối ưu ứng dụng',
     'Hiểu rõ ràng Redux workflow',
@@ -93,7 +93,40 @@ export const chapterData: IChapter[] = [
   {
     id: 5,
     courseId: 1,
-    title: 'Redux',
+    title: 'CSS in JS',
+    order: 5,
+  },
+  {
+    id: 6,
+    courseId: 1,
+    title: 'React Router',
+    order: 5,
+  },
+  {
+    id: 7,
+    courseId: 1,
+    title: 'Xây dựng base dự án',
+    order: 5,
+  },
+  {
+    id: 8,
+    courseId: 1,
+    title: 'Khởi tạo hàm',
+    order: 5,
+  },{
+    id: 8,
+    courseId: 1,
+    title: 'Deploy lên dự án',
+    order: 5,
+  },,{
+    id: 8,
+    courseId: 1,
+    title: 'Deploy lên dự án',
+    order: 5,
+  },,{
+    id: 8,
+    courseId: 1,
+    title: 'Deploy lên dự án',
     order: 5,
   },
 ]

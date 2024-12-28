@@ -93,7 +93,30 @@ export const chapterData: IChapter[] = [
   {
     id: 5,
     courseId: 1,
-    title: 'Redux',
+    title: 'CSS in JS',
+    order: 5,
+  },
+  {
+    id: 6,
+    courseId: 1,
+    title: 'React Router',
+    order: 5,
+  },
+  {
+    id: 7,
+    courseId: 1,
+    title: 'Xây dựng base dự án',
+    order: 5,
+  },
+  {
+    id: 8,
+    courseId: 1,
+    title: 'Khởi tạo hàm',
+    order: 5,
+  },{
+    id: 8,
+    courseId: 1,
+    title: 'Deploy lên dự án',
     order: 5,
   },
 ]
