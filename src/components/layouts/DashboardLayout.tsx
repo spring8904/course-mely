@@ -40,7 +40,7 @@ const DashboardLayout = ({ children, leftSidebarData }: LayoutProps) => {
             {/* Main Content */}
             <main className="col-span-9 bg-gray-100">
               <TopSidebar userData={user} />
-              <div className="px-10 py-5">{children}</div>
+              {children}
             </main>
           </div>
         </QueryProvider>
