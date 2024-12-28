@@ -56,7 +56,7 @@ export interface IFormControl {
   icon?: ReactNode
 }
 
-export interface ILeftSidebarData {
+export interface ISidebarData {
   name: string
   icon?: ReactNode
 }

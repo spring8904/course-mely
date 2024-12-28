@@ -1,4 +1,4 @@
-import { IFormControl, ILeftSidebarData } from '@/types'
+import { IFormControl, ISidebarData } from '@/types'
 import {
   BookText,
   Compass,
@@ -7,7 +7,9 @@ import {
   Lock,
   Mail,
   PencilLine,
+  ShieldCheck,
   UserRound,
+  UserRoundCog,
   Wallet,
 } from 'lucide-react'
 
@@ -65,7 +67,7 @@ export const loginFormControls: IFormControl[] = [
   },
 ]
 
-export const leftSidebarStudentData: ILeftSidebarData[] = [
+export const leftSidebarStudentData: ISidebarData[] = [
   {
     name: 'Khám phá',
     icon: <Compass size={18} />,
@@ -89,5 +91,47 @@ export const leftSidebarStudentData: ILeftSidebarData[] = [
   {
     name: 'Giao dịch gần đây',
     icon: <History size={18} />,
+  },
+]
+
+export const sidebarUserOptions: ISidebarData[] = [
+  {
+    name: 'Thông tin cá nhân',
+    icon: <UserRoundCog size={18} />,
+  },
+  {
+    name: 'Mật khẩu và bảo mật',
+    icon: <ShieldCheck size={18} />,
+  },
+]
+
+export const userInfoFormControls: IFormControl[] = [
+  {
+    name: 'name',
+    label: 'Họ và tên',
+    placeholder: 'Ex: Nguyễn Văn A',
+    componentType: 'input',
+    type: 'text',
+  },
+  {
+    name: 'email',
+    label: 'Email',
+    placeholder: 'Ex: nguyenvana@gmail.com',
+    componentType: 'input',
+    type: 'email',
+  },
+  {
+    name: 'phone',
+    label: 'Số điện thoại',
+    placeholder: 'Ex: 0987654321',
+    componentType: 'input',
+    type: 'text',
+  },
+  {
+    name: 'bio',
+    label: 'Bio',
+    placeholder: '...',
+    componentType: 'input',
+    type: 'text',
   },
 ]

@@ -1,5 +1,5 @@
 import { manropeFont } from '@/components/common/fonts'
-import { ILeftSidebarData, IUser, UserStatus } from '@/types'
+import { ISidebarData, IUser, UserStatus } from '@/types'
 import React from 'react'
 import LeftSidebar from './LeftSidebar'
 import QueryProvider from './QueryProvider'
@@ -7,7 +7,7 @@ import TopSidebar from './TopSidebar'
 
 interface LayoutProps {
   children?: React.ReactNode
-  leftSidebarData: ILeftSidebarData[]
+  leftSidebarData: ISidebarData[]
 }
 
 const DashboardLayout = ({ children, leftSidebarData }: LayoutProps) => {
