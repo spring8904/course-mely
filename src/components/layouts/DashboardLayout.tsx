@@ -1,16 +1,16 @@
 import { manropeFont } from '@/components/common/fonts'
+import { ILeftSidebarData, IUser, UserStatus } from '@/types'
 import React from 'react'
 import LeftSidebar from './LeftSidebar'
 import QueryProvider from './QueryProvider'
 import TopSidebar from './TopSidebar'
-import { IUser, UserStatus } from '@/types'
-import { leftSidebarStudentData } from '@/configs'
 
 interface LayoutProps {
   children?: React.ReactNode
+  leftSidebarData: ILeftSidebarData[]
 }
 
-const DashboardLayout = ({ children }: LayoutProps) => {
+const DashboardLayout = ({ children, leftSidebarData }: LayoutProps) => {
   const user: IUser = {
     id: 1,
     code: 'USR001',
@@ -34,7 +34,7 @@ const DashboardLayout = ({ children }: LayoutProps) => {
           <div className="grid min-h-screen grid-cols-12">
             {/* Sidebar */}
             <div className="col-span-3">
-              <LeftSidebar leftSidebarData={leftSidebarStudentData} />
+              <LeftSidebar leftSidebarData={leftSidebarData} />
             </div>
 
             {/* Main Content */}
