@@ -1,7 +1,16 @@
-import { CourseDetailView } from '@/sections/courses/view'
+'use client'
 
-const CourseDetaiPage = () => {
-  return <CourseDetailView/>
+import CourseDetailView from '@/sections/courses/view/course-detail-view'
+
+interface Props {
+  params: {
+    slug: string;
+  }
 }
 
-export default CourseDetaiPage
+const CourseDetailPage = ({ params }: Props) => {
+  const { slug } = params;
+  return <CourseDetailView slug={slug} />
+}
+
+export default CourseDetailPage;

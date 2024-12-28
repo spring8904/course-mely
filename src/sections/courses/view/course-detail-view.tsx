@@ -20,17 +20,15 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion'
-import {
-  Book,
-  CirclePlay,
-  Clock5, Heart,
-} from 'lucide-react'
+import { Book, CirclePlay, Clock5, Heart } from 'lucide-react'
 import { CardContent } from '@/components/ui/card'
 import Image from 'next/image'
 import Link from 'next/link'
 import { buttonVariants } from '@/components/ui/button'
 
-const CourseDetailView = () => {
+const CourseDetailView = ({ slug }: { slug: string }) => {
+  console.log(slug)
+
   const benefitsCoulumn1 = courseData.benefits?.slice(
     0,
     Math.ceil(courseData.benefits.length / 2)
@@ -126,11 +124,11 @@ const CourseDetailView = () => {
                   type="single"
                   collapsible
                   key={chapterIndex}
-                  className="mb-6"
+                  className="mb-6 "
                 >
                   <AccordionItem value={`item-${chapter.id}`}>
-                    <AccordionTrigger>{chapter.title}</AccordionTrigger>
-                    <AccordionContent>
+                    <AccordionTrigger className="rounded-lg">{chapter.title}</AccordionTrigger>
+                    <AccordionContent className="rounded-lg">
                       {lessonData
                         ?.filter((lesson) => lesson.chapterId === chapter.id)
                         .map((lesson, lessonIndex) => (
@@ -180,10 +178,10 @@ const CourseDetailView = () => {
                   <AccordionItem
                     value={`item-${faqIndex}`}
                     key={faqIndex}
-                    className="mb-6"
+                    className="mb-6 rounded"
                   >
-                    <AccordionTrigger>{faq.question}</AccordionTrigger>
-                    <AccordionContent>{faq.answer}</AccordionContent>
+                    <AccordionTrigger className="rounded-lg">{faq.question}</AccordionTrigger>
+                    <AccordionContent className="rounded-lg">{faq.answer}</AccordionContent>
                   </AccordionItem>
                 ))}
               </Accordion>
@@ -192,7 +190,7 @@ const CourseDetailView = () => {
         </div>
         <div className="col-span-4">
           <div>
-            <CardContent className="shadow-custom flex flex-col rounded-md p-6">
+            <CardContent className="flex flex-col rounded-md p-6 shadow-custom">
               <div className="relative h-60">
                 <Image
                   src={courseData.thumbnail!}
@@ -219,24 +217,24 @@ const CourseDetailView = () => {
 
               <div className="mt-2">
                 <h3 className="text-base font-semibold">Khoá học bao gồm:</h3>
-                <div className="flex flex-col gap-2 mt-3">
+                <div className="mt-3 flex flex-col gap-2">
                   <div className="flex items-center gap-1 text-[#101828]">
                     <Clock5 size="24" />
                     <span className="text-sm font-semibold">
-                    Thời lượng {formatMinutesToHour(courseData.duration)}
-                  </span>
+                      Thời lượng {formatMinutesToHour(courseData.duration)}
+                    </span>
                   </div>
                   <div className="flex items-center gap-1 text-[#101828]">
                     <CirclePlay size="24" />
                     <span className="text-sm font-semibold">
-                    Tổng số bài học 50
-                  </span>
+                      Tổng số bài học 50
+                    </span>
                   </div>
                   <div className="flex items-center gap-1 text-[#101828]">
                     <Book size="24" />
                     <span className="text-sm font-semibold">
-                    Có tài liệu đính kèm
-                  </span>
+                      Có tài liệu đính kèm
+                    </span>
                   </div>
                 </div>
               </div>
@@ -245,16 +243,18 @@ const CourseDetailView = () => {
                   href={`/course/${courseData.slug}`}
                   className={cn(
                     buttonVariants({ variant: 'default' }),
-                    'w-[306px] h-[42px]'
+                    'h-[42px] w-[306px]'
                   )}
                 >
                   Mua khoá học
                 </Link>
-                <div  className={cn(
-                  buttonVariants({ variant: 'outline' }),
-                 'w-[42px] h-[42px] flex items-center justify-center rounded-md cursor-pointer ' +
-                  'hover:bg-primary hover:text-white'
-                )}>
+                <div
+                  className={cn(
+                    buttonVariants({ variant: 'outline' }),
+                    'flex h-[42px] w-[42px] cursor-pointer items-center justify-center rounded-md ' +
+                      'hover:bg-primary hover:text-white'
+                  )}
+                >
                   <Heart />
                 </div>
               </div>
