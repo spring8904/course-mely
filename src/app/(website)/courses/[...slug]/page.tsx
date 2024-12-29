@@ -4,13 +4,13 @@ import CourseDetailView from '@/sections/courses/view/course-detail-view'
 
 interface Props {
   params: {
-    slug: string;
+    slug: string
   }
 }
 
 const CourseDetailPage = ({ params }: Props) => {
-  const { slug } = params;
+  const { slug } = params
   return <CourseDetailView slug={slug} />
 }
 
-export default CourseDetailPage;
+export default CourseDetailPage

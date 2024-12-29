@@ -1,6 +1,6 @@
 import React from 'react'
 
-const LearningProcess = ({ value } : {value: number}) => {
+const LearningProcess = ({ value }: { value: number }) => {
   const radius = 18
   const strokeWidth = 4
   const circumference = 2 * Math.PI * radius
