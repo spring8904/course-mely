@@ -2,32 +2,9 @@ import { manropeFont } from '@/components/common/fonts'
 import { ISidebarData, IUser, UserStatus } from '@/types'
 import React from 'react'
 import QueryProvider from './QueryProvider'
-
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb'
-import { Separator } from '@/components/ui/separator'
-import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from '@/components/ui/sidebar'
+import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
 import { AppSidebar } from '@/components/ui/app-sidebar'
-import InputSeach from '@/components/common/InputSeach'
-import Link from 'next/link'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
-import { Bell } from 'lucide-react'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+
 import TopBar from '@/components/layouts/TopBar'
 
 interface LayoutProps {
@@ -51,15 +28,6 @@ const DashboardLayout = ({ children }: LayoutProps) => {
     createdAt: new Date('2024-01-01T09:00:00Z'),
     updatedAt: new Date('2024-12-27T15:30:00Z'),
   }
-
-  const lastWordInitial =
-    user?.name
-      ?.trim()
-      .split(' ')
-      .slice(-1)
-      .toString()
-      .charAt(0)
-      .toUpperCase() ?? 'A'
 
   return (
     <html lang="en">
