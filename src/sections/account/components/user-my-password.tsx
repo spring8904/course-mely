@@ -1,14 +1,15 @@
-import { Button } from '@/components/ui/button'
-import { IFormControl } from '@/types'
+import SidebarItem from '@/components/common/SidebarItem'
+import { IFormControl, ISidebarData } from '@/types'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
 
-const UserInfoForm = ({ controls }: { controls: IFormControl[] }) => (
+const UserMyPassword = ({ controls }: { controls: IFormControl[] }) => (
   <Card className="">
     <CardHeader>
       <CardTitle>
         <h3 className="font-bold">Thông tin cá nhân</h3>
-        <p className="mt-4 text-sm font-normal">Quản lý thông tin của bạn</p>
+        <p className="mt-4 text-sm font-normal">Thay đổi mật khẩu</p>
       </CardTitle>
     </CardHeader>
     <CardContent>
@@ -32,4 +33,4 @@ const UserInfoForm = ({ controls }: { controls: IFormControl[] }) => (
   </Card>
 )
 
-export default UserInfoForm
+export default UserMyPassword
