@@ -1,12 +1,13 @@
 'use client'
-import React, { useState } from 'react'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { CirclePlay, CirclePlus, SquarePen, TableOfContents, Target } from 'lucide-react'
-import ReactQuill from 'react-quill'
-import 'react-quill/dist/quill.snow.css'
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion'
+import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import {
   Select,
@@ -15,19 +16,24 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { chapterData, lessonData } from '@/sections/courses/data/data'
 import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@/components/ui/accordion'
+  CirclePlay,
+  CirclePlus,
+  SquarePen,
+  TableOfContents,
+  Target,
+} from 'lucide-react'
+import React, { useState } from 'react'
+import ReactQuill from 'react-quill'
+import 'react-quill/dist/quill.snow.css'
 
 const CourseUpdateView = ({ slug }: { slug: string }) => {
   console.log(slug)
   const [value, setValue] = useState('')
-  const [image, setImage] = useState(null)
-  const [video, setVideo] = useState(null)
+  const [image, setImage] = useState<string | ArrayBuffer | null>(null)
+  const [video, setVideo] = useState<string | ArrayBuffer | null>(null)
 
   const handleImageChange = (e: any) => {
     const file = e.target.files[0]
@@ -40,7 +46,7 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
     }
   }
 
-  const handleVideoChange = (e) => {
+  const handleVideoChange = (e: any) => {
     const file = e.target.files[0]
     if (file) {
       const reader = new FileReader()
@@ -358,9 +364,11 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
                         <div className="h-[200px] w-full rounded-lg bg-primary">
                           {video ? (
                             <video
-                              className="h-full w-full rounded-lg object-cover"
+                              className="size-full rounded-lg object-cover"
                               controls
-                              src={video}
+                              src={
+                                typeof video === 'string' ? video : undefined
+                              }
                             />
                           ) : (
                             <p>Chưa có video</p>
@@ -426,7 +434,7 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
                                   >
                                     <CirclePlay />
                                     {lesson.content}
-                                    <span className="ml-auto flex-shrink-0 text-xs font-semibold">
+                                    <span className="ml-auto shrink-0 text-xs font-semibold">
                                       0 phút
                                     </span>
                                   </div>

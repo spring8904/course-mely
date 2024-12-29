@@ -113,7 +113,8 @@ export const chapterData: IChapter[] = [
     courseId: 1,
     title: 'Khởi tạo hàm',
     order: 5,
-  },{
+  },
+  {
     id: 8,
     courseId: 1,
     title: 'Deploy lên dự án',

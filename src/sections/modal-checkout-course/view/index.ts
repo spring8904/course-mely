@@ -1,1 +1,1 @@
-export { default as ModalCheckoutCourseView } from './modal-checkout-course-view';
+export { default as ModalCheckoutCourseView } from './modal-checkout-course-view'

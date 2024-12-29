@@ -1,7 +1,7 @@
-import { WalletView } from "@/sections/wallet/view"
+import { WalletView } from '@/sections/wallet/view'
 
 const page = () => {
-    return <WalletView />
-  }
-  
-  export default page
+  return <WalletView />
+}
+
+export default page

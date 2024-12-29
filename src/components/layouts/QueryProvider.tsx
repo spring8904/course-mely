@@ -9,7 +9,6 @@ interface QueryProviderProps {
   children: React.ReactNode
 }
 
-
 const QueryProvider = ({ children }: QueryProviderProps) => {
   return (
     <QueryClientProvider client={queryClient}>
