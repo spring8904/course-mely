@@ -5,7 +5,7 @@ import CourseCard from '@/sections/student/_components/course-card'
 const StudentView = () => {
   return (
     <div className="px-5 py-2">
-      <div className="mt-6">
+      <div className="mt-2">
         <h3 className="text-xl font-bold">Khoá học nổi bật theo tháng</h3>
         <div
           className={cn(
