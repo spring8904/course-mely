@@ -17,6 +17,7 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from '@/components/ui/sidebar'
+import Link from 'next/link'
 
 export function NavMain({
   items,
@@ -44,10 +45,14 @@ export function NavMain({
           >
             <SidebarMenuItem>
               <CollapsibleTrigger asChild>
-                <SidebarMenuButton className="mb-4 flex cursor-pointer items-center space-x-2
-                 rounded-lg p-3 text-base font-medium hover:bg-[#F69983] hover:text-white" tooltip={item.title}>
+                <SidebarMenuButton
+                  className="mb-4 flex cursor-pointer items-center space-x-2 rounded-lg p-3 text-base font-medium hover:bg-[#F69983] hover:text-white"
+                  tooltip={item.title}
+                >
                   {item.icon && <item.icon />}
-                  <span>{item.title}</span>
+                  <Link href={item.url}>
+                    <span>{item.title}</span>
+                  </Link>
                   {item.items && item.items.length > 0 && (
                     <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
                   )}
@@ -58,11 +63,13 @@ export function NavMain({
                   <SidebarMenuSub>
                     {item.items.map((subItem) => (
                       <SidebarMenuSubItem key={subItem.title}>
-                        <SidebarMenuSubButton className="mb-4 flex cursor-pointer items-center space-x-2
-                 rounded-lg p-4 text-base font-medium hover:bg-[#F69983] hover:text-white " asChild>
-                          <a href={subItem.url}>
+                        <SidebarMenuSubButton
+                          className="mb-4 flex cursor-pointer items-center space-x-2 rounded-lg p-4 text-base font-medium hover:bg-[#F69983] hover:text-white"
+                          asChild
+                        >
+                          <Link href={subItem.url}>
                             <span>{subItem.title}</span>
-                          </a>
+                          </Link>
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>
                     ))}

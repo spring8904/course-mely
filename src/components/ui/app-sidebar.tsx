@@ -48,7 +48,7 @@ const data = {
   navMain: [
     {
       title: 'Khám phá',
-      url: 'student',
+      url: '/student',
       icon: CirclePlay,
       isActive: true,
     },
