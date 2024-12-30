@@ -60,15 +60,15 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
     <>
       <div className="px-5 py-6">
         <div className="mt-2">
-          <h3 className="text-xl font-bold">
-            Cập nhật nội dung khoá học: {slug}
-          </h3>
-          <Tabs
-            defaultValue="courseBenefits"
-            className="mt-5 grid grid-cols-12 gap-4"
-          >
-            <Card className="col-span-3 h-[300px] rounded-lg bg-white p-6 shadow-custom">
-              <TabsList className="mt-2 flex flex-col items-center justify-start gap-2">
+          <div className="flex justify-between">
+            <h3 className="text-xl font-bold">
+              Cập nhật nội dung khoá học: {slug}
+            </h3>
+            <Button className="bg-primary">Gửi yêu cầu duyệt khoá học</Button>
+          </div>
+          <Tabs defaultValue="courseBenefits">
+            <Card className="mt-6 py-3">
+              <TabsList className="flex gap-4">
                 <TabsTrigger
                   value="courseBenefits"
                   className="w-full py-3 text-black hover:bg-[#FF6652] data-[state=active]:bg-primary data-[state=active]:text-white"
@@ -99,7 +99,7 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
               </TabsList>
             </Card>
 
-            <div className="col-span-9">
+            <div className="mt-6">
               <TabsContent value="courseBenefits" className="m-0">
                 <Card className="">
                   <CardHeader>

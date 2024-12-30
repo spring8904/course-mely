@@ -4,12 +4,12 @@ import { AiFillDollarCircle, AiFillWarning } from 'react-icons/ai'
 
 const WalletView = () => {
   return (
-    <div className="bg-gray-50 p-6">
+    <div className="px-5 py-6">
       <h2 className="mb-4 text-xl font-bold">Nạp tiền vào tài khoản</h2>
-      <div className="rounded-lg bg-white p-6 shadow-lg">
-        <div className="flex">
+      <div className="grid grid-cols-12 gap-4 rounded-lg bg-white p-6 shadow-lg">
+        <div className="col-span-4 flex flex-col gap-4">
           {/* <!-- User Info --> */}
-          <div className="mr-4 w-1/4">
+          <div className="mr-4 flex w-full rounded-lg border p-4">
             <Image
               alt="User avatar"
               className="mr-4 rounded-full border-2 border-orange-500"
@@ -29,20 +29,20 @@ const WalletView = () => {
             <h3 className="mb-2 font-bold">Tỷ lệ quy đổi</h3>
             <ul>
               <li className="mb-2 flex">
-                <AiFillDollarCircle className="ml-1 mt-1 text-yellow-500" /> 10
-                = 10.000 VNĐ
+                <AiFillDollarCircle className="ml-1 mr-2 mt-1 text-yellow-500" />
+                <span>10 = 10.000 VNĐ</span>
               </li>
               <li className="mb-2 flex">
-                <AiFillDollarCircle className="ml-1 mt-1 text-yellow-500" /> 50
-                = 50.000 VNĐ
+                <AiFillDollarCircle className="ml-1 mr-2 mt-1 text-yellow-500" />
+                <span>50 = 50.000 VNĐ</span>
               </li>
               <li className="mb-2 flex">
-                <AiFillDollarCircle className="ml-1 mt-1 text-yellow-500" /> 100
-                = 100.000 VNĐ
+                <AiFillDollarCircle className="ml-1 mr-2 mt-1 text-yellow-500" />
+                <span>100 = 100.000 VNĐ</span>
               </li>
               <li className="mb-2 flex">
-                <AiFillDollarCircle className="ml-1 mt-1 text-yellow-500" /> 500
-                = 500.000 VNĐ
+                <AiFillDollarCircle className="ml-1 mr-2 mt-1 text-yellow-500" />
+                <span>500 = 500.000 VNĐ</span>
               </li>
             </ul>
           </div>
@@ -58,7 +58,7 @@ const WalletView = () => {
           </div>
         </div>
         {/* <!-- Deposit Form --> */}
-        <div className="w-3/4 rounded-lg border p-4">
+        <div className="col-span-8 rounded-lg border p-4">
           <h3 className="mb-4 font-bold">
             Nạp tiền vào tài khoản của bạn để có thể thanh toán các dịch vụ của
             do chúng tôi cung cấp
