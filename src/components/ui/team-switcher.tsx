@@ -1,15 +1,9 @@
 'use client'
 
 import * as React from 'react'
-import { ChevronsUpDown, Plus } from 'lucide-react'
 
 import {
   DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import {
@@ -29,7 +23,9 @@ export function TeamSwitcher({
     plan: string
   }[]
 }) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { isMobile } = useSidebar()
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [activeTeam, setActiveTeam] = React.useState(teams[0])
 
   return (

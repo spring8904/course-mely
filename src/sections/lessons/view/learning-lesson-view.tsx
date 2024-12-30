@@ -31,7 +31,7 @@ import {
 const LearningLessonView = () => {
   return (
     <div className="relative min-h-screen">
-      <div className="fixed left-0 right-0 top-0 z-10 h-[70px] bg-[#292f3b]">
+      <div className="fixed inset-x-0 top-0 z-10 h-[70px] bg-[#292f3b]">
         <div className="container mx-auto flex h-full items-center justify-between p-6">
           <div className="flex items-center gap-4">
             <Link href={'/'}>
@@ -56,7 +56,7 @@ const LearningLessonView = () => {
           </div>
         </div>
       </div>
-      <div className="grid grid-cols-12 pb-[70px] pt-[70px]">
+      <div className="grid grid-cols-12 py-[70px]">
         <div className="col-span-9">
           <MuxPlayer
             loading="viewport"
@@ -104,7 +104,7 @@ const LearningLessonView = () => {
                       >
                         <CirclePlay />
                         {lesson.content}
-                        <span className="ml-auto flex-shrink-0 text-xs font-semibold">
+                        <span className="ml-auto shrink-0 text-xs font-semibold">
                           0 phút
                         </span>
                       </div>
@@ -115,7 +115,7 @@ const LearningLessonView = () => {
           ))}
         </div>
       </div>
-      <div className="fixed bottom-0 left-0 right-0 bg-[#292f3b] py-4">
+      <div className="fixed inset-x-0 bottom-0 bg-[#292f3b] py-4">
         <div className="container mx-auto flex h-full items-center justify-center gap-4">
           <Link href={''} className="rounded-md bg-[#F69983] p-2 text-white">
             Bài trước

@@ -77,7 +77,7 @@ const CourseDetailView = ({ slug }: { slug: string }) => {
                 <AvatarImage src="https://github.com/shadcn.png" />
                 <AvatarFallback>CN</AvatarFallback>
               </Avatar>
-              <span className="absolute bottom-0 left-1/2 flex h-5 w-5 -translate-x-1/2 translate-y-1/2 items-center justify-center rounded-full bg-[#FF6652] text-xs font-bold text-white">
+              <span className="absolute bottom-0 left-1/2 flex size-5 -translate-x-1/2 translate-y-1/2 items-center justify-center rounded-full bg-[#FF6652] text-xs font-bold text-white">
                 +
               </span>
             </div>
@@ -116,7 +116,7 @@ const CourseDetailView = ({ slug }: { slug: string }) => {
               </div>
             </div>
           </div>
-          <div className="mb-8 mt-8">
+          <div className="my-8">
             <h2 className="text-2xl font-bold">Nội dung khoá học</h2>
             <div className="mt-5">
               {chapterData?.map((chapter, chapterIndex) => (
@@ -124,10 +124,12 @@ const CourseDetailView = ({ slug }: { slug: string }) => {
                   type="single"
                   collapsible
                   key={chapterIndex}
-                  className="mb-6 "
+                  className="mb-6"
                 >
                   <AccordionItem value={`item-${chapter.id}`}>
-                    <AccordionTrigger className="rounded-lg">{chapter.title}</AccordionTrigger>
+                    <AccordionTrigger className="rounded-lg">
+                      {chapter.title}
+                    </AccordionTrigger>
                     <AccordionContent className="rounded-lg">
                       {lessonData
                         ?.filter((lesson) => lesson.chapterId === chapter.id)
@@ -138,7 +140,7 @@ const CourseDetailView = ({ slug }: { slug: string }) => {
                           >
                             <CirclePlay />
                             {lesson.content}
-                            <span className="ml-auto flex-shrink-0 text-xs font-semibold">
+                            <span className="ml-auto shrink-0 text-xs font-semibold">
                               0 phút
                             </span>
                           </div>
@@ -180,8 +182,12 @@ const CourseDetailView = ({ slug }: { slug: string }) => {
                     key={faqIndex}
                     className="mb-6 rounded"
                   >
-                    <AccordionTrigger className="rounded-lg">{faq.question}</AccordionTrigger>
-                    <AccordionContent className="rounded-lg">{faq.answer}</AccordionContent>
+                    <AccordionTrigger className="rounded-lg">
+                      {faq.question}
+                    </AccordionTrigger>
+                    <AccordionContent className="rounded-lg">
+                      {faq.answer}
+                    </AccordionContent>
                   </AccordionItem>
                 ))}
               </Accordion>

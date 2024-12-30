@@ -29,7 +29,7 @@ const CourseList = ({ title, description, className }: CourseListProps) => {
         className={cn(
           'container mx-auto flex flex-col gap-8 p-3',
           'lg:p-5',
-          'xl:p-10',
+          'xl:p-10'
         )}
       >
         <div>
@@ -62,7 +62,7 @@ const CourseList = ({ title, description, className }: CourseListProps) => {
           className={cn(
             'grid grid-cols-1 gap-2',
             'md:grid-cols-2 md:gap-4',
-            'lg:grid-cols-3 lg:gap-6',
+            'lg:grid-cols-3 lg:gap-6'
           )}
         >
           {courseData?.map((course) => (
@@ -109,7 +109,7 @@ const CourseList = ({ title, description, className }: CourseListProps) => {
                 <div className="mt-1 flex gap-4 text-base font-semibold text-primary">
                   <span
                     className={cn(
-                      course.priceSale && 'text-[#4D5756] line-through',
+                      course.priceSale && 'text-[#4D5756] line-through'
                     )}
                   >
                     {course.price} đ

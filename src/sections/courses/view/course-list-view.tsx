@@ -1,6 +1,7 @@
+import Image from 'next/image'
 import React from 'react'
+import { FaRegCirclePlay, FaRegClock } from 'react-icons/fa6'
 import { RxChevronDown, RxStar, RxStarFilled } from 'react-icons/rx'
-import {  FaRegCirclePlay, FaRegClock } from "react-icons/fa6";
 
 const CourseListView = () => {
   return (
@@ -16,7 +17,7 @@ const CourseListView = () => {
               {/* <!-- Toggle Section --> */}
               <label
                 htmlFor="toggle-rating"
-                className="mb-2 mt-2 flex cursor-pointer items-center justify-between pb-2"
+                className="my-2 flex cursor-pointer items-center justify-between pb-2"
               >
                 <span className="font-semibold">Đánh giá</span>
                 <RxChevronDown />
@@ -68,11 +69,10 @@ const CourseListView = () => {
               {/* <!-- Toggle Section --> */}
               <label
                 htmlFor="toggle-levels-checkbox"
-                className="mb-2 mt-2 flex cursor-pointer items-center justify-between pb-2"
+                className="my-2 flex cursor-pointer items-center justify-between pb-2"
               >
                 <span className="font-semibold">Cấp độ</span>
                 <RxChevronDown />
-
               </label>
               <input
                 type="checkbox"
@@ -106,11 +106,10 @@ const CourseListView = () => {
             <div className="mb-4 border-t">
               <label
                 htmlFor="toggle-learning-time"
-                className="mb-2 mt-2 flex cursor-pointer items-center justify-between pb-2"
+                className="my-2 flex cursor-pointer items-center justify-between pb-2"
               >
                 <span className="font-semibold">Thời gian học</span>
                 <RxChevronDown />
-
               </label>
               <input
                 type="checkbox"
@@ -138,11 +137,10 @@ const CourseListView = () => {
             <div className="mb-4 border-t">
               <label
                 htmlFor="toggle-practice-exercises"
-                className="mb-2 mt-2 flex cursor-pointer items-center justify-between pb-2"
+                className="my-2 flex cursor-pointer items-center justify-between pb-2"
               >
                 <span className="font-semibold">Bài tập thực hành</span>
                 <RxChevronDown />
-
               </label>
               <input
                 type="checkbox"
@@ -180,7 +178,7 @@ const CourseListView = () => {
         <section className="w-3/4">
           {/* <!-- selected --> */}
           <div className="mb-4 flex justify-end">
-            <select className="rounded-md border border-orange-500 px-3 py-3">
+            <select className="rounded-md border border-orange-500 p-3">
               <option value="default">Mặc định</option>
               <option value="default">Mặc định</option>
               <option value="default">Mặc định</option>
@@ -190,203 +188,200 @@ const CourseListView = () => {
           {/* <!-- end selected --> */}
           {/* <!-- Course Item --> */}
           <div className="mt-6 space-y-4">
-            <div className="flex flex-col rounded-lg bg-white p-4 shadow-md md:flex-row">
-              <img
-                alt="Course image showing code on a screen"
-                className="mb-4 rounded-lg md:mb-0"
-                height="400"
-                src="https://storage.googleapis.com/a1aa/image/Phr2fkABHoyzPaFjDhtj2YTniT01wpMIXb5rQxSjKufzwsenA.jpg"
-                width="150"
-              />
-              <div className="flex-1 md:ml-4">
-                <h3 className="text-lg font-bold">
-                  Khoá học ReactJS, NextJS Pro
-                </h3>
-                <p className="text-gray-600">Văn Tùng | 200 học viên</p>
-                <div className="my-2 flex items-center">
-                  <div className="flex text-orange-500">
+            <Image
+              alt="Course image showing code on a screen"
+              className="mb-4 rounded-lg md:mb-0"
+              height={400}
+              src="https://storage.googleapis.com/a1aa/image/Phr2fkABHoyzPaFjDhtj2YTniT01wpMIXb5rQxSjKufzwsenA.jpg"
+              width={150}
+            />
+            <div className="flex-1 md:ml-4">
+              <h3 className="text-lg font-bold">
+                Khoá học ReactJS, NextJS Pro
+              </h3>
+              <p className="text-gray-600">Văn Tùng | 200 học viên</p>
+              <div className="my-2 flex items-center">
+                <div className="flex text-orange-500">
                   <RxStarFilled />
                   <RxStarFilled />
                   <RxStarFilled />
                   <RxStarFilled />
                   <RxStarFilled />
-                  </div>
-                  <span className="ml-2  text-gray-600"> 4.3k </span>
                 </div>
-                <div className="flex space-x-2 items-center text-gray-600">
-                <FaRegClock />
-                  <span>19h 30m</span>
-                  <FaRegCirclePlay />
-                  <span>20</span>
-                </div>
-                <div className="mt-2">
-                  <span className="rounded-lg border border-dashed border-gray-300 px-4 py-1 text-gray-600">
-                    Sơ cấp
-                  </span>
-                </div>
+                <span className="ml-2 text-gray-600"> 4.3k </span>
               </div>
-              <div className="flex flex-col items-end justify-between">
-                <div className="text-right">
-                  <span className="block text-lg font-bold text-orange-600">
-                    300.000 đ
-                  </span>
-                  <span className="block text-gray-500 line-through">
-                    590.000 đ
-                  </span>
-                </div>
-                <button className="mt-4 rounded-lg bg-orange-600 px-4 py-2 text-white md:mt-0">
-                  Đăng ký ngay
-                </button>
+              <div className="flex items-center space-x-2 text-gray-600">
+                <FaRegClock />
+                <span>19h 30m</span>
+                <FaRegCirclePlay />
+                <span>20</span>
+              </div>
+              <div className="mt-2">
+                <span className="rounded-lg border border-dashed border-gray-300 px-4 py-1 text-gray-600">
+                  Sơ cấp
+                </span>
               </div>
             </div>
-            <div className="flex flex-col rounded-lg bg-white p-4 shadow-md md:flex-row">
-              <img
-                alt="Course image showing code on a screen"
-                className="mb-4 rounded-lg md:mb-0"
-                height="400"
-                src="https://storage.googleapis.com/a1aa/image/Phr2fkABHoyzPaFjDhtj2YTniT01wpMIXb5rQxSjKufzwsenA.jpg"
-                width="150"
-              />
-              <div className="flex-1 md:ml-4">
-                <h3 className="text-lg font-bold">
-                  Khoá học ReactJS, NextJS Pro
-                </h3>
-                <p className="text-gray-600">Văn Tùng | 200 học viên</p>
-                <div className="my-2 flex items-center">
-                  <div className="flex text-orange-500">
-                  <RxStarFilled />
-                  <RxStarFilled />
-                  <RxStarFilled />
-                  <RxStarFilled />
-                  <RxStarFilled />
-                  </div>
-                  <span className="ml-2  text-gray-600"> 4.3k </span>
-                </div>
-                <div className="flex space-x-2 items-center text-gray-600">
-                <FaRegClock />
-                  <span>19h 30m</span>
-                  <FaRegCirclePlay />
-                  <span>20</span>
-                </div>
-                <div className="mt-2">
-                  <span className="rounded-lg border border-dashed border-gray-300 px-4 py-1 text-gray-600">
-                    Sơ cấp
-                  </span>
-                </div>
+            <div className="flex flex-col items-end justify-between">
+              <div className="text-right">
+                <span className="block text-lg font-bold text-orange-600">
+                  300.000 đ
+                </span>
+                <span className="block text-gray-500 line-through">
+                  590.000 đ
+                </span>
               </div>
-              <div className="flex flex-col items-end justify-between">
-                <div className="text-right">
-                  <span className="block text-lg font-bold text-orange-600">
-                    300.000 đ
-                  </span>
-                  <span className="block text-gray-500 line-through">
-                    590.000 đ
-                  </span>
+              <button className="mt-4 rounded-lg bg-orange-600 px-4 py-2 text-white md:mt-0">
+                Đăng ký ngay
+              </button>
+            </div>
+          </div>
+          <div className="flex flex-col rounded-lg bg-white p-4 shadow-md md:flex-row">
+            <Image
+              alt="Course image showing code on a screen"
+              className="mb-4 rounded-lg md:mb-0"
+              height={400}
+              src="https://storage.googleapis.com/a1aa/image/Phr2fkABHoyzPaFjDhtj2YTniT01wpMIXb5rQxSjKufzwsenA.jpg"
+              width={150}
+            />
+            <div className="flex-1 md:ml-4">
+              <h3 className="text-lg font-bold">
+                Khoá học ReactJS, NextJS Pro
+              </h3>
+              <p className="text-gray-600">Văn Tùng | 200 học viên</p>
+              <div className="my-2 flex items-center">
+                <div className="flex text-orange-500">
+                  <RxStarFilled />
+                  <RxStarFilled />
+                  <RxStarFilled />
+                  <RxStarFilled />
+                  <RxStarFilled />
                 </div>
-                <button className="mt-4 rounded-lg bg-orange-600 px-4 py-2 text-white md:mt-0">
-                  Đăng ký ngay
-                </button>
+                <span className="ml-2 text-gray-600"> 4.3k </span>
+              </div>
+              <div className="flex items-center space-x-2 text-gray-600">
+                <FaRegClock />
+                <span>19h 30m</span>
+                <FaRegCirclePlay />
+                <span>20</span>
+              </div>
+              <div className="mt-2">
+                <span className="rounded-lg border border-dashed border-gray-300 px-4 py-1 text-gray-600">
+                  Sơ cấp
+                </span>
               </div>
             </div>
-            <div className="flex flex-col rounded-lg bg-white p-4 shadow-md md:flex-row">
-              <img
-                alt="Course image showing code on a screen"
-                className="mb-4 rounded-lg md:mb-0"
-                height="400"
-                src="https://storage.googleapis.com/a1aa/image/Phr2fkABHoyzPaFjDhtj2YTniT01wpMIXb5rQxSjKufzwsenA.jpg"
-                width="150"
-              />
-              <div className="flex-1 md:ml-4">
-                <h3 className="text-lg font-bold">
-                  Khoá học ReactJS, NextJS Pro
-                </h3>
-                <p className="text-gray-600">Văn Tùng | 200 học viên</p>
-                <div className="my-2 flex items-center">
-                  <div className="flex text-orange-500">
-                  <RxStarFilled />
-                  <RxStarFilled />
-                  <RxStarFilled />
-                  <RxStarFilled />
-                  <RxStarFilled />
-                  </div>
-                  <span className="ml-2  text-gray-600"> 4.3k </span>
-                </div>
-                <div className="flex space-x-2 items-center text-gray-600">
-                <FaRegClock />
-                  <span>19h 30m</span>
-                  <FaRegCirclePlay />
-                  <span>20</span>
-                </div>
-                <div className="mt-2">
-                  <span className="rounded-lg border border-dashed border-gray-300 px-4 py-1 text-gray-600">
-                    Sơ cấp
-                  </span>
-                </div>
+            <div className="flex flex-col items-end justify-between">
+              <div className="text-right">
+                <span className="block text-lg font-bold text-orange-600">
+                  300.000 đ
+                </span>
+                <span className="block text-gray-500 line-through">
+                  590.000 đ
+                </span>
               </div>
-              <div className="flex flex-col items-end justify-between">
-                <div className="text-right">
-                  <span className="block text-lg font-bold text-orange-600">
-                    300.000 đ
-                  </span>
-                  <span className="block text-gray-500 line-through">
-                    590.000 đ
-                  </span>
+              <button className="mt-4 rounded-lg bg-orange-600 px-4 py-2 text-white md:mt-0">
+                Đăng ký ngay
+              </button>
+            </div>
+          </div>
+          <div className="flex flex-col rounded-lg bg-white p-4 shadow-md md:flex-row">
+            <Image
+              alt="Course image showing code on a screen"
+              className="mb-4 rounded-lg md:mb-0"
+              height={400}
+              src="https://storage.googleapis.com/a1aa/image/Phr2fkABHoyzPaFjDhtj2YTniT01wpMIXb5rQxSjKufzwsenA.jpg"
+              width={150}
+            />
+            <div className="flex-1 md:ml-4">
+              <h3 className="text-lg font-bold">
+                Khoá học ReactJS, NextJS Pro
+              </h3>
+              <p className="text-gray-600">Văn Tùng | 200 học viên</p>
+              <div className="my-2 flex items-center">
+                <div className="flex text-orange-500">
+                  <RxStarFilled />
+                  <RxStarFilled />
+                  <RxStarFilled />
+                  <RxStarFilled />
+                  <RxStarFilled />
                 </div>
-                <button className="mt-4 rounded-lg bg-orange-600 px-4 py-2 text-white md:mt-0">
-                  Đăng ký ngay
-                </button>
+                <span className="ml-2 text-gray-600"> 4.3k </span>
+              </div>
+              <div className="flex items-center space-x-2 text-gray-600">
+                <FaRegClock />
+                <span>19h 30m</span>
+                <FaRegCirclePlay />
+                <span>20</span>
+              </div>
+              <div className="mt-2">
+                <span className="rounded-lg border border-dashed border-gray-300 px-4 py-1 text-gray-600">
+                  Sơ cấp
+                </span>
               </div>
             </div>
-            <div className="flex flex-col rounded-lg bg-white p-4 shadow-md md:flex-row">
-              <img
-                alt="Course image showing code on a screen"
-                className="mb-4 rounded-lg md:mb-0"
-                height="400"
-                src="https://storage.googleapis.com/a1aa/image/Phr2fkABHoyzPaFjDhtj2YTniT01wpMIXb5rQxSjKufzwsenA.jpg"
-                width="150"
-              />
-              <div className="flex-1 md:ml-4">
-                <h3 className="text-lg font-bold">
-                  Khoá học ReactJS, NextJS Pro
-                </h3>
-                <p className="text-gray-600">Văn Tùng | 200 học viên</p>
-                <div className="my-2 flex items-center">
-                  <div className="flex text-orange-500">
-                  <RxStarFilled />
-                  <RxStarFilled />
-                  <RxStarFilled />
-                  <RxStarFilled />
-                  <RxStarFilled />
-                  </div>
-                  <span className="ml-2  text-gray-600"> 4.3k </span>
-                </div>
-                <div className="flex space-x-2 items-center text-gray-600">
-                <FaRegClock />
-                  <span>19h 30m</span>
-                  <FaRegCirclePlay />
-                  <span>20</span>
-                </div>
-                <div className="mt-2">
-                  <span className="rounded-lg border border-dashed border-gray-300 px-4 py-1 text-gray-600">
-                    Sơ cấp
-                  </span>
-                </div>
+            <div className="flex flex-col items-end justify-between">
+              <div className="text-right">
+                <span className="block text-lg font-bold text-orange-600">
+                  300.000 đ
+                </span>
+                <span className="block text-gray-500 line-through">
+                  590.000 đ
+                </span>
               </div>
-              <div className="flex flex-col items-end justify-between">
-                <div className="text-right">
-                  <span className="block text-lg font-bold text-orange-600">
-                    300.000 đ
-                  </span>
-                  <span className="block text-gray-500 line-through">
-                    590.000 đ
-                  </span>
+              <button className="mt-4 rounded-lg bg-orange-600 px-4 py-2 text-white md:mt-0">
+                Đăng ký ngay
+              </button>
+            </div>
+          </div>
+          <div className="flex flex-col rounded-lg bg-white p-4 shadow-md md:flex-row">
+            <Image
+              alt="Course image showing code on a screen"
+              className="mb-4 rounded-lg md:mb-0"
+              height={400}
+              src="https://storage.googleapis.com/a1aa/image/Phr2fkABHoyzPaFjDhtj2YTniT01wpMIXb5rQxSjKufzwsenA.jpg"
+              width={150}
+            />
+            <div className="flex-1 md:ml-4">
+              <h3 className="text-lg font-bold">
+                Khoá học ReactJS, NextJS Pro
+              </h3>
+              <p className="text-gray-600">Văn Tùng | 200 học viên</p>
+              <div className="my-2 flex items-center">
+                <div className="flex text-orange-500">
+                  <RxStarFilled />
+                  <RxStarFilled />
+                  <RxStarFilled />
+                  <RxStarFilled />
+                  <RxStarFilled />
                 </div>
-                <button className="mt-4 rounded-lg bg-orange-600 px-4 py-2 text-white md:mt-0">
-                  Đăng ký ngay
-                </button>
+                <span className="ml-2 text-gray-600"> 4.3k </span>
+              </div>
+              <div className="flex items-center space-x-2 text-gray-600">
+                <FaRegClock />
+                <span>19h 30m</span>
+                <FaRegCirclePlay />
+                <span>20</span>
+              </div>
+              <div className="mt-2">
+                <span className="rounded-lg border border-dashed border-gray-300 px-4 py-1 text-gray-600">
+                  Sơ cấp
+                </span>
               </div>
             </div>
-            
+            <div className="flex flex-col items-end justify-between">
+              <div className="text-right">
+                <span className="block text-lg font-bold text-orange-600">
+                  300.000 đ
+                </span>
+                <span className="block text-gray-500 line-through">
+                  590.000 đ
+                </span>
+              </div>
+              <button className="mt-4 rounded-lg bg-orange-600 px-4 py-2 text-white md:mt-0">
+                Đăng ký ngay
+              </button>
+            </div>
           </div>
           {/* <!-- Course Item --> */}
         </section>

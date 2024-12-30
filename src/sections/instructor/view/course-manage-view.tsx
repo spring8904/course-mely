@@ -76,7 +76,9 @@ const CourseManageView = () => {
                     </Select>
                   </div>
                   <div className="flex justify-end">
-                    <Button className="bg-primary">Tiếp tục tạo khoá học</Button>
+                    <Button className="bg-primary">
+                      Tiếp tục tạo khoá học
+                    </Button>
                   </div>
                 </form>
               </DialogContent>
