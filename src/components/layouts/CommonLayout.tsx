@@ -1,4 +1,3 @@
-
 import { manropeFont } from '@/components/common/fonts'
 import Footer from './Footer'
 import Header from './Header'

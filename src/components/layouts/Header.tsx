@@ -4,9 +4,9 @@ import { IUser, UserStatus } from '@/types'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import SearchBarHeader from '../common/SearchBarHeader'
 import UserMenu from '../common/UserMenu'
 import { Button } from '../ui/button'
+import InputSeach from '@/components/common/InputSeach'
 
 const Logo = () => (
   <Link href="/" className="flex items-center space-x-3">
@@ -77,7 +77,7 @@ const Header = () => {
   return (
     <header className="sticky inset-x-0 top-0 z-10 flex items-center justify-between bg-white px-32 py-6 shadow-sm">
       <Logo />
-      <SearchBarHeader />
+      <InputSeach className="w-[340px]" />
       <NavLinks />
       {user ? <UserMenu userData={user} /> : <AuthButtons />}
     </header>

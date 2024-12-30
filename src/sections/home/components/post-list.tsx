@@ -20,7 +20,7 @@ const PostList = ({ title, description, className }: PostListProps) => {
         className={cn(
           'container mx-auto flex flex-col gap-8 p-3',
           'lg:p-5',
-          'xl:p-10',
+          'xl:p-10'
         )}
       >
         <div>
@@ -42,7 +42,7 @@ const PostList = ({ title, description, className }: PostListProps) => {
           className={cn(
             'grid grid-cols-1 gap-2',
             'md:grid-cols-2 md:gap-4',
-            'lg:grid-cols-3 lg:gap-6',
+            'lg:grid-cols-3 lg:gap-6'
           )}
         >
           {fakePosts?.map((post) => (

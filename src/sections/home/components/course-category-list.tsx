@@ -17,7 +17,7 @@ const CourseCategoryList = ({ courseCategories }: CourseCategoryListProps) => {
         className={cn(
           'container mx-auto flex flex-col gap-6 p-3',
           'lg:p-5',
-          'xl:p-10',
+          'xl:p-10'
         )}
       >
         <div className="flex items-center justify-between">
@@ -34,7 +34,7 @@ const CourseCategoryList = ({ courseCategories }: CourseCategoryListProps) => {
           className={cn(
             'grid grid-cols-2 gap-2',
             'md:grid-cols-2 md:gap-4',
-            'lg:grid-cols-4 lg:gap-6',
+            'lg:grid-cols-4 lg:gap-6'
           )}
         >
           {courseCategories?.map((category, i) => (
@@ -47,7 +47,7 @@ const CourseCategoryList = ({ courseCategories }: CourseCategoryListProps) => {
                 className={cn(
                   'm-4 flex flex-col items-center gap-6',
                   'md:flex-row md:gap-3',
-                  'lg:mt-8 lg:flex-col',
+                  'lg:mt-8 lg:flex-col'
                 )}
               >
                 <div className="flex size-[104px] items-center justify-center rounded-full bg-[#F6C6C0]">

@@ -2,13 +2,16 @@
 
 import * as React from 'react'
 import {
-  AudioWaveform, BadgeEuro, Book,
-   CirclePlay,
+  AudioWaveform,
+  BadgeEuro,
+  Book,
+  CirclePlay,
   Command,
-  GalleryVerticalEnd, MessageSquareText,
-  UsersRound, Wallet,
+  GalleryVerticalEnd,
+  MessageSquareText,
+  UsersRound,
+  Wallet,
 } from 'lucide-react'
-
 
 import {
   Sidebar,
@@ -20,7 +23,6 @@ import {
 import { TeamSwitcher } from '@/components/ui/team-switcher'
 import { NavMain } from '@/components/ui/nav-main'
 import { NavUser } from '@/components/ui/nav-user'
-
 
 const data = {
   user: {
@@ -64,7 +66,7 @@ const data = {
         {
           title: 'Tiến độ học tập',
           url: '#',
-        }
+        },
       ],
     },
     {

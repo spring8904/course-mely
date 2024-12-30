@@ -1,7 +1,0 @@
-import { CourseListView } from "@/sections/courses/view"
-import { useRouter } from 'next/navigation'
-const page = () => {
-    return <CourseListView/>
-  }
-  
-  export default page

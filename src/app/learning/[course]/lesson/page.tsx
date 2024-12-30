@@ -2,7 +2,7 @@ import React from 'react'
 import LearningLessonView from '@/sections/lessons/view/learning-lesson-view'
 
 const LearningPage = () => {
-  return <LearningLessonView/>
+  return <LearningLessonView />
 }
 
 export default LearningPage
