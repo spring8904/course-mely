@@ -1,8 +1,5 @@
-import Image from 'next/image'
 import React from 'react'
-import { FaRegCirclePlay, FaRegClock } from 'react-icons/fa6'
-import { RxChevronDown, RxStar, RxStarFilled } from 'react-icons/rx'
-import { FaRegCirclePlay, FaRegClock } from 'react-icons/fa6'
+
 import { courseData } from '@/sections/home/data/data'
 import CourseListItem from '../_components/course-list-item'
 import CourseListSidebar from '../_components/course-list-sidebar'
