@@ -2,7 +2,8 @@ import axios from 'axios'
 import { getAccessTokenFromLocalStorage } from '@/lib/common'
 
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_BACKEND_URL,
+  baseURL:
+    process.env.NEXT_PUBLIC_API_BACKEND_URL || 'http://localhost:8080/api/v2',
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
