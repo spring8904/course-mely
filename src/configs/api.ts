@@ -3,7 +3,7 @@ import { getAccessTokenFromLocalStorage } from '@/lib/common'
 
 const api = axios.create({
   baseURL:
-    process.env.NEXT_PUBLIC_API_BACKEND_URL || 'http://localhost:8080/api/v2',
+    process.env.NEXT_PUBLIC_API_BACKEND_URL || 'http://localhost:8080/api/',
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
