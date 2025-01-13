@@ -37,7 +37,7 @@ const Footer = () => {
 
   return (
     <footer>
-      <div className="grid grid-cols-1 gap-10 bg-[url('https://s3-alpha-sig.figma.com/img/c360/ddfd/15500ef1ca064df654f2aeac33b31ce8?Expires=1736121600&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=dAJ4YhhMLyrcHf33ffoDo92XIMxckO7dYj7pLWCgN7pnNuaAnmpn32U~4WYrZUd0QzmXa0NNuHj5twt1Qc4JTLf0bA47CXwNiDYc1FqM0e6eD48~v4eMz5sgviVcOceoo7ECX2pK47IT-W70iNKS1k3MpoE0cFIaTRgPfYtQws9IqPWGgu2EgaYK4CyG1V2taY1QZygfNriJrg3qq938aQJpho9dTrVSpHDM8C29mnN4R2vYIzgiXmBESGzRp8vwARUyqwzQ0MsZ-9VyYp2emuWPO50F380eAsVLvLpaAQoPG5BeeURqZplEIFmPgsxj6vEM5ZU4oFkPxM8DMo3vmQ__')] bg-cover bg-center px-32 py-14 text-white lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-10 bg-black bg-[url('https://s3-alpha-sig.figma.com/img/c360/ddfd/15500ef1ca064df654f2aeac33b31ce8?Expires=1736121600&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=dAJ4YhhMLyrcHf33ffoDo92XIMxckO7dYj7pLWCgN7pnNuaAnmpn32U~4WYrZUd0QzmXa0NNuHj5twt1Qc4JTLf0bA47CXwNiDYc1FqM0e6eD48~v4eMz5sgviVcOceoo7ECX2pK47IT-W70iNKS1k3MpoE0cFIaTRgPfYtQws9IqPWGgu2EgaYK4CyG1V2taY1QZygfNriJrg3qq938aQJpho9dTrVSpHDM8C29mnN4R2vYIzgiXmBESGzRp8vwARUyqwzQ0MsZ-9VyYp2emuWPO50F380eAsVLvLpaAQoPG5BeeURqZplEIFmPgsxj6vEM5ZU4oFkPxM8DMo3vmQ__')] bg-cover bg-center px-32 py-14 text-white lg:grid-cols-4">
         <div>
           <div className="flex items-center space-x-3">
             <Image
