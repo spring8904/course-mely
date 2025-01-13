@@ -5,6 +5,11 @@ export enum CourseStatus {
   Reject = 'reject',
 }
 
+export interface IStoreCourseData {
+  category_id: number
+  name: string
+}
+
 export interface ICourse {
   id?: number
   userId?: number

@@ -1,3 +1,5 @@
+'use client'
+
 import React from 'react'
 import {
   Table,
@@ -25,10 +27,35 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
+import { storeCourse } from '@/validations/course'
 
 const CourseManageView = () => {
+  const form = useForm<z.infer<typeof storeCourse>>({
+    resolver: zodResolver(storeCourse),
+    defaultValues: {
+      category_id: '',
+      name: '',
+    },
+  })
+
+  function onSubmit(values: z.infer<typeof storeCourse>) {
+    // Do something with the form values.
+    // ✅ This will be type-safe and validated.
+    console.log(values)
+  }
+
   return (
     <>
       <div className="px-5 py-6">
@@ -41,7 +68,7 @@ const CourseManageView = () => {
                   <Button className="bg-primary">Tạo khoá học mới</Button>
                 </div>
               </DialogTrigger>
-              <DialogContent>
+              <DialogContent className="max-w-lg">
                 <DialogHeader>
                   <DialogTitle>
                     Thêm tiêu đề và chọn danh mục cho khoá học
@@ -51,36 +78,62 @@ const CourseManageView = () => {
                     mình.
                   </DialogDescription>
                 </DialogHeader>
-                <form>
-                  <div className="mb-3">
-                    <Label htmlFor="email">Tiêu đề khoá học</Label>
-                    <Input placeholder="Nhập tiêu đề cho khoá học" />
-                  </div>
-                  <div className="mb-3">
-                    <Label htmlFor="email">Danh mục khoá học</Label>
-                    <Select>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Chọn danh mục cho khoá học" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="m@example.com">
-                          Công nghệ thông tin
-                        </SelectItem>
-                        <SelectItem value="m@google.com">
-                          Lập trình web
-                        </SelectItem>
-                        <SelectItem value="m@support.com">
-                          Lập trình di động
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="flex justify-end">
-                    <Button className="bg-primary">
-                      Tiếp tục tạo khoá học
-                    </Button>
-                  </div>
-                </form>
+                <Form {...form}>
+                  <form onSubmit={form.handleSubmit(onSubmit)}>
+                    <FormField
+                      control={form.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Tiêu đề khoá học</FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="Nhập tiêu đề cho khoá học"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="category_id"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Email</FormLabel>
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select a verified email to display" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="m@example.com">
+                                m@example.com
+                              </SelectItem>
+                              <SelectItem value="m@google.com">
+                                m@google.com
+                              </SelectItem>
+                              <SelectItem value="m@support.com">
+                                m@support.com
+                              </SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <div className="mt-3 flex justify-end">
+                      <Button type="submit" className="bg-primary">
+                        Tiếp tục tạo khoá học
+                      </Button>
+                    </div>
+                  </form>
+                </Form>
               </DialogContent>
             </Dialog>
           </div>
