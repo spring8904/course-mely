@@ -1,163 +1,111 @@
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion'
+import { AccordionContent } from '@radix-ui/react-accordion'
 import React from 'react'
-import { RxChevronDown, RxStar, RxStarFilled } from 'react-icons/rx'
+import { RxStar, RxStarFilled } from 'react-icons/rx'
+import { Label } from '@/components/ui/label'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { Checkbox } from '@/components/ui/checkbox'
 
 const CourseListSidebar = () => {
   return (
-    <div className="p-5">
-      <h2 className="mb-4 text-lg font-bold">Danh sách khoá học</h2>
-      {/* <!-- đánh giá --> */}
-      <div className="mb-4 border-t">
-        <label
-          htmlFor="toggle-rating"
-          className="my-2 flex cursor-pointer items-center justify-between pb-2"
-        >
-          <span className="font-semibold">Đánh giá</span>
-          <RxChevronDown />
-        </label>
-        <input type="checkbox" id="toggle-rating" className="peer hidden" />
-
-        {/* <!-- Rating Section --> */}
-        <div className="hidden space-y-2 peer-checked:block">
-          <div className="flex items-center">
-            <input type="radio" name="rating" className="mr-2" />
-            <div className="flex text-orange-500">
-              <RxStarFilled />
-              <RxStarFilled />
-              <RxStarFilled />
-              <RxStarFilled />
-              <RxStarFilled />
+    <div>
+      <h2 className="text-lg font-bold">Danh sách khoá học</h2>
+      <Accordion type="single" collapsible className="mt-3 w-full border-t-2">
+        <AccordionItem value="item-1" className="mt-2 border-b-2">
+          <AccordionTrigger className="mb-4 border-none p-0">
+            Đánh giá
+          </AccordionTrigger>
+          <AccordionContent className="mb-4">
+            <RadioGroup defaultValue="comfortable">
+              <div className="mb-2 flex items-center space-x-2">
+                <RadioGroupItem
+                  value="default"
+                  className="border-black"
+                  id="r1"
+                />
+                <span className="flex space-x-1 text-orange-500">
+                  <RxStarFilled />
+                  <RxStarFilled />
+                  <RxStarFilled />
+                  <RxStarFilled />
+                  <RxStarFilled />
+                </span>
+              </div>
+              <div className="mb-2 flex items-center space-x-2">
+                <RadioGroupItem
+                  value="comfortable"
+                  className="border-black"
+                  id="r2"
+                />
+                <span className="flex space-x-1 text-orange-500">
+                  <RxStarFilled />
+                  <RxStarFilled />
+                  <RxStarFilled />
+                  <RxStarFilled />
+                  <RxStar />
+                </span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem
+                  value="compact"
+                  className="border-black"
+                  id="r3"
+                />
+                <span className="flex space-x-1 text-orange-500">
+                  <RxStarFilled />
+                  <RxStarFilled />
+                  <RxStarFilled />
+                  <RxStar />
+                  <RxStar />
+                </span>
+              </div>
+            </RadioGroup>
+          </AccordionContent>
+        </AccordionItem>
+        <AccordionItem value="item-2" className="mt-2 border-b-2">
+          <AccordionTrigger className="mb-4 border-none p-0">
+            Cấp độ
+          </AccordionTrigger>
+          <AccordionContent className="mb-4">
+            <div className="mb-2 space-x-2">
+              <Checkbox id="terms" className="border-gray-300" />
+              <Label htmlFor="terms">Sơ cấp</Label>
             </div>
-          </div>
-          <div className="flex items-center">
-            <input type="radio" name="rating" className="mr-2" />
-            <div className="flex text-orange-500">
-              <RxStarFilled />
-              <RxStarFilled />
-              <RxStarFilled />
-              <RxStarFilled />
-              <RxStar />
+            <div className="mb-2 space-x-2">
+              <Checkbox id="terms" className="border-gray-300" />
+              <Label htmlFor="terms">Trung cấp</Label>
             </div>
-          </div>
-          <div className="flex items-center">
-            <input type="radio" name="rating" className="mr-2" />
-            <div className="flex text-orange-500">
-              <RxStarFilled />
-              <RxStarFilled />
-              <RxStarFilled />
-              <RxStar />
-              <RxStar />
+            <div className="mb-2 space-x-2">
+              <Checkbox id="terms" className="border-gray-300" />
+              <Label htmlFor="terms">Nâng cao</Label>
             </div>
-          </div>
-        </div>
-      </div>
-      {/* <!-- end đánh giá --> */}
-
-      {/* <!-- cấp độ --> */}
-      <div className="mb-4 border-t">
-        {/* <!-- Toggle Section --> */}
-        <label
-          htmlFor="toggle-levels-checkbox"
-          className="my-2 flex cursor-pointer items-center justify-between pb-2"
-        >
-          <span className="font-semibold">Cấp độ</span>
-          <RxChevronDown />
-        </label>
-        <input
-          type="checkbox"
-          id="toggle-levels-checkbox"
-          className="peer hidden"
-        />
-
-        {/* <!-- Level Section --> */}
-        <div className="hidden space-y-2 peer-checked:block">
-          <div className="flex items-center">
-            <input type="checkbox" className="mr-2" />
-            <span>Sơ cấp</span>
-          </div>
-          <div className="flex items-center">
-            <input type="checkbox" className="mr-2" />
-            <span>Trung cấp</span>
-          </div>
-          <div className="flex items-center">
-            <input type="checkbox" className="mr-2" />
-            <span>Nâng cao</span>
-          </div>
-          <div className="flex items-center">
-            <input type="checkbox" className="mr-2" />
-            <span>Chuyên gia</span>
-          </div>
-        </div>
-      </div>
-      {/* <!-- end cấp độ --> */}
-
-      {/* <!-- Thời gian học --> */}
-      <div className="mb-4 border-t">
-        <label
-          htmlFor="toggle-learning-time"
-          className="my-2 flex cursor-pointer items-center justify-between pb-2"
-        >
-          <span className="font-semibold">Thời gian học</span>
-          <RxChevronDown />
-        </label>
-        <input
-          type="checkbox"
-          id="toggle-learning-time"
-          className="peer hidden"
-        />
-        <div className="hidden space-y-2 peer-checked:block">
-          <div className="flex items-center">
-            <input type="checkbox" className="mr-2" />
-            <span>Học trực tuyến</span>
-          </div>
-          <div className="flex items-center">
-            <input type="checkbox" className="mr-2" />
-            <span>Học tại lớp</span>
-          </div>
-          <div className="flex items-center">
-            <input type="checkbox" className="mr-2" />
-            <span>Học tự học</span>
-          </div>
-        </div>
-      </div>
-      {/* <!-- end thời gian học --> */}
-
-      {/* <!-- Bài tập thực hành --> */}
-      <div className="mb-4 border-t">
-        <label
-          htmlFor="toggle-practice-exercises"
-          className="my-2 flex cursor-pointer items-center justify-between pb-2"
-        >
-          <span className="font-semibold">Bài tập thực hành</span>
-          <RxChevronDown />
-        </label>
-        <input
-          type="checkbox"
-          id="toggle-practice-exercises"
-          className="peer hidden"
-        />
-        <div
-          className="hidden space-y-2 peer-checked:block"
-          id="practice-exercises-section"
-        >
-          <div className="flex items-center">
-            <input type="checkbox" className="mr-2" />
-            <span>Bài tập lý thuyết</span>
-          </div>
-          <div className="flex items-center">
-            <input type="checkbox" className="mr-2" />
-            <span>Bài tập thực hành trên máy</span>
-          </div>
-          <div className="flex items-center">
-            <input type="checkbox" className="mr-2" />
-            <span>Bài tập nhóm</span>
-          </div>
-          <div className="flex items-center">
-            <input type="checkbox" className="mr-2" />
-            <span>Bài tập cá nhân</span>
-          </div>
-        </div>
-      </div>
-      {/* <!-- end Bài tập thực hành --> */}
+            <div className="space-x-2">
+              <Checkbox id="terms" className="border-gray-300" />
+              <Label htmlFor="terms">Chuyên gia</Label>
+            </div>
+          </AccordionContent>
+        </AccordionItem>
+        <AccordionItem value="item-3" className="mt-2 border-b-2">
+          <AccordionTrigger className="mb-4 border-none p-0">
+            Thời gian học
+          </AccordionTrigger>
+          <AccordionContent className="mb-4">
+            nội dung Thời gian học
+          </AccordionContent>
+        </AccordionItem>
+        <AccordionItem value="item-4" className="mt-2 border-b-2">
+          <AccordionTrigger className="mb-4 border-none p-0">
+            Bài tập thực hành
+          </AccordionTrigger>
+          <AccordionContent className="mb-4">
+            nội dung bài tập thực hành
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
     </div>
   )
 }
