@@ -1,27 +1,155 @@
-import AuthWithGoogle from '@/components/common/AuthWithGoogle'
-import DividerWithText from '@/components/common/DividerWithText'
-import CommonForm from '@/components/common/Form'
-import WelcomeSection from '@/components/common/WelcomeSection'
-import { loginFormControls } from '@/configs'
-
 const SigninView = () => {
   return (
-    <div className="bg-[url('https://s3-alpha-sig.figma.com/img/dc1f/d94d/f6062d52cb24787dd4070f8f28665f00?Expires=1736121600&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=msXWjHCzmyRLCRoMTIKW7oM533gYO7PoBUSAyzxWA-rWbiHdWdQ3UQEpWeCEfK-LpPfzoHuC0T2EQxWeRhLynYBABBRzTB2O3d-YgIiBSivaicFtCFu67IGcuBy-PkKehS8N7Ban0N~cpmYaogTCg4kI7ZM4sfn1hoqIoCZ7ocN3d8yQejR8Z8yKOzvRuxCZ5ImeDoPWX8ziaG-eCr1PLnCl1XPU81slZ~jkN8n7Hc2Eqj~lPO~o0NQswf3vXx0-Cr6DNgHMv~TumtAF46eM4mE2hqP1dY7klGy7NxSuwDMT-GPqoS33LJLeKNXKpqwXnbhEIVaC13t2Iz2wzIagiQ__')] bg-cover bg-center py-16">
-      <div className="mx-auto flex w-2/3 items-center space-x-20 rounded-2xl bg-white px-10 py-16">
-        <WelcomeSection />
-
-        <div className="flex flex-1 flex-col items-center space-y-5">
-          <AuthWithGoogle content="Đăng nhập với Google" />
-
-          <DividerWithText text="Hoặc đăng nhập với email" />
-
-          <CommonForm
-            formControls={loginFormControls}
-            btnText="Đăng nhập"
-            isLogin={true}
-          />
+    <div className="main-content page-login">
+      <section className="section-page-login login-wrap tf-spacing-4">
+        <div className="tf-container">
+          <div className="row">
+            <div className="col-lg-6">
+              <div className="img-left wow fadeInLeft" data-wow-delay="0s">
+                <img
+                  className="ls-is-cached lazyloaded"
+                  data-src=""
+                  src="/assets/images/page-title/page-title-home2-1.jpg"
+                  alt=""
+                />
+                <div
+                  className="blockquite wow fadeInLeft"
+                  data-wow-delay="0.1s"
+                >
+                  <p>
+                    Happiness prosperous impression had conviction For every
+                    delay <br /> in they
+                  </p>
+                  <p className="author">Ali Tufan</p>
+                  <p className="sub-author">Founder &amp; CEO</p>
+                </div>
+              </div>
+            </div>
+            <div className="col-lg-6">
+              <div className="content-right">
+                <h2
+                  className="login-title fw-7 wow fadeInUp font-manrope"
+                  data-wow-delay="0s"
+                >
+                  Đăng nhập ngay bây giờ
+                </h2>
+                <div className="register">
+                  <p className="fw-5 fs-15 wow fadeInUp" data-wow-delay="0s">
+                    Bạn chưa có tài khoản?
+                  </p>
+                  <a
+                    href="#"
+                    className="fw-5 fs-15 wow fadeInUp"
+                    data-wow-delay="0s"
+                  >
+                    Đăng ký
+                  </a>
+                </div>
+                <form action="#" className="form-login">
+                  <div className="cols">
+                    <fieldset
+                      className="tf-field field-username wow fadeInUp"
+                      data-wow-delay="0s"
+                    >
+                      <input
+                        className="tf-input style-1"
+                        id="field1"
+                        type="email"
+                        placeholder=""
+                        name="email"
+                        tabIndex={2}
+                        defaultValue=""
+                        aria-required="true"
+                      />
+                      <label className="tf-field-label fs-15" htmlFor="field1">
+                        Email
+                      </label>
+                    </fieldset>
+                  </div>
+                  <div className="cols">
+                    <fieldset
+                      className="tf-field field-pass wow fadeInUp"
+                      data-wow-delay="0s"
+                    >
+                      <input
+                        className="tf-input style-1"
+                        id="field2"
+                        type="password"
+                        placeholder=""
+                        name="number"
+                        tabIndex={2}
+                        defaultValue=""
+                        aria-required="true"
+                      />
+                      <label className="tf-field-label fs-15" htmlFor="field2">
+                        Mật khẩu
+                      </label>
+                    </fieldset>
+                  </div>
+                  <div className="checkbox-item">
+                    <label className="wow fadeInUp" data-wow-delay="0s">
+                      <p className="fs-15">Remember me</p>
+                      <input type="checkbox" />
+                      <span className="btn-checkbox" />
+                    </label>
+                    <a
+                      href="#"
+                      className="fs-15 wow fadeInUp"
+                      data-wow-delay="0.1s"
+                    >
+                      Quên mật khẩu?
+                    </a>
+                  </div>
+                  <button
+                    className="button-submit tf-btn w-100 wow fadeInUp"
+                    data-wow-delay="0s"
+                    type="submit"
+                  >
+                    Đăng nhập
+                    <i className="icon-arrow-top-right" />
+                  </button>
+                </form>
+                <p className="fs-15 wow fadeInUp" data-wow-delay="0s">
+                  OR
+                </p>
+                <ul className="login-social">
+                  <li className="login-social-icon">
+                    <a
+                      href="#"
+                      className="tf-btn wow fadeInUp"
+                      data-wow-delay="0s"
+                    >
+                      <i className="flaticon-facebook-1" />
+                      Facebook
+                    </a>
+                  </li>
+                  <li className="login-social-icon">
+                    <a
+                      href="#"
+                      className="tf-btn wow fadeInUp"
+                      data-wow-delay="0.1s"
+                    >
+                      <i className="icon-google" />
+                      Google
+                    </a>
+                  </li>
+                  <li className="login-social-icon">
+                    <a
+                      href="#"
+                      className="tf-btn wow fadeInUp"
+                      data-wow-delay="0.2s"
+                    >
+                      <i className="icon-apple" />
+                      Apple
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
+        {/* <div class="login-wrap-content"></div> */}
+      </section>
     </div>
   )
 }
