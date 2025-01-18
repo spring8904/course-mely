@@ -48,12 +48,10 @@ export interface IUserLessonProgress {
 }
 
 export interface IFormControl {
+  id: string
+  type: string
   name: string
   label: string
-  placeholder: string
-  componentType: string
-  type: string
-  icon?: ReactNode
 }
 
 export interface ISidebarData {
