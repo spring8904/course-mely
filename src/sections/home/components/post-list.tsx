@@ -1,99 +1,117 @@
-import { buttonVariants } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
-import { cn } from '@/lib/utils'
-import { fakePosts } from '@/sections/home/data/data'
-import { Calendar, MessageSquare } from 'lucide-react'
-import Image from 'next/image'
-import Link from 'next/link'
-
 interface PostListProps {
   className?: string
   title: string
   description?: string
-  // posts: IPost[]
 }
+
+export const fakePosts = [
+  {
+    imageUrl: '/assets/images/blog/blog-01.jpg',
+    category: 'Development',
+    title: 'The Technical Certifications That Matter Most for the Future',
+    link: 'blog-single.html',
+    date: '06 April 2024',
+    commentsCount: 14,
+    author: 'Esther Howard',
+    authorLink: '#',
+  },
+  {
+    imageUrl: '/assets/images/blog/blog-02.jpg',
+    category: 'Development',
+    title: 'How to Become a Web Designer: A Comprehensive Guide',
+    link: 'blog-single.html',
+    date: '06 April 2024',
+    commentsCount: 14,
+    author: 'Floyd Miles',
+    authorLink: '#',
+  },
+  {
+    imageUrl: '/assets/images/blog/blog-02.jpg',
+    category: 'Development',
+    title: 'How to Become a Web Designer: A Comprehensive Guide',
+    link: 'blog-single.html',
+    date: '06 April 2024',
+    commentsCount: 14,
+    author: 'Floyd Miles',
+    authorLink: '#',
+  },
+  // Add more posts here
+]
 
 const PostList = ({ title, description, className }: PostListProps) => {
   return (
-    <div className={cn('w-full bg-[#FFFFFF] pb-10 pt-7', className)}>
-      <div
-        className={cn(
-          'container mx-auto flex flex-col gap-8 p-3',
-          'lg:p-5',
-          'xl:p-10'
-        )}
-      >
-        <div>
-          <div className="flex items-center justify-between">
-            <h3 className="text-xl font-bold leading-6">{title}</h3>
-
-            <Link
-              href={`/post/}`}
-              className={cn(buttonVariants({ variant: 'default' }))}
+    <section className="section-blog tf-spacing-7 pt-0">
+      <div className="tf-container">
+        <div className="row">
+          <div className="col-12">
+            <div className="heading-section">
+              <h2 className="fw-7 wow fadeInUp" data-wow-delay="0s">
+                {title}
+              </h2>
+              <div className="flex flex-wrap items-center justify-between gap-10">
+                <div className="sub fs-15 wow fadeInUp" data-wow-delay="0.2s">
+                  {description}
+                </div>
+                <a
+                  href="blog-grid.html"
+                  className="tf-btn-arrow wow fadeInUp"
+                  data-wow-delay="0.3s"
+                >
+                  Xem thêm <i className="icon-arrow-top-right" />
+                </a>
+              </div>
+            </div>
+            <div
+              className="swiper-container tf-sw-mobile wow fadeInUp"
+              data-wow-delay="0.4s"
+              data-preview={4}
+              data-space={28}
             >
-              Xem tất cả
-            </Link>
+              <div className="swiper-wrapper grid-sw-4">
+                {fakePosts.map((post, index) => (
+                  <div className="swiper-slide" key={index}>
+                    <div className="blog-article-item hover-img">
+                      <div className="article-thumb image-wrap">
+                        <img
+                          className="lazyload"
+                          data-src={post.imageUrl}
+                          src={post.imageUrl}
+                          alt={post.title}
+                        />
+                      </div>
+                      <div className="article-content">
+                        <div className="article-label">
+                          <a href={post.category} className="">
+                            {post.category}
+                          </a>
+                        </div>
+                        <h5 className="fw-5">
+                          <a href={post.link}>{post.title}</a>
+                        </h5>
+                        <div className="meta">
+                          <div className="meta-item">
+                            <i className="flaticon-calendar" />
+                            <p>{post.date}</p>
+                          </div>
+                          <div className="meta-item">
+                            <i className="flaticon-message" />
+                            <p>{post.commentsCount}</p>
+                          </div>
+                          <a href={post.authorLink} className="meta-item">
+                            <i className="flaticon-user-1" />
+                            <p>{post.author}</p>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
-
-          <p>{description}</p>
-        </div>
-
-        <div
-          className={cn(
-            'grid grid-cols-1 gap-2',
-            'md:grid-cols-2 md:gap-4',
-            'lg:grid-cols-3 lg:gap-6'
-          )}
-        >
-          {fakePosts?.map((post) => (
-            <Card
-              key={post.id}
-              className="rounded-lg border-none"
-              style={{
-                boxShadow:
-                  '0px 4px 6px -2px rgba(16, 24, 40, 0.25), 0px 12px 16px -4px rgba(16, 24, 40, 0.25)',
-              }}
-            >
-              <CardContent className="flex flex-col p-6">
-                <div className="relative h-60">
-                  <Image
-                    // src="https://s3-alpha-sig.figma.com/img/52dc/217a/00d7a1cbbce25c955a5fab2180048f24?Expires=1736121600&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=iEUXpb2~h5cck6t8tCRnJPpfRl0AY2hpCZRFEJD1lKxKiAjcHF95AYndWk0krDIu6ULkE19FW0KBK9rD5tioj5bgBOco0IcUcyYx1kTMXI5o~-sh2Du-Zy1UgaSq1IPwEU7rx2R0feImFmGjFsk9UwUGOdcXciS0tl4ZbJqFM9~Jhlfmea51i2vpQSSFO63O-5it8q284-mHKSgjrD21yGi1Vn~A0znwK1MUti9NhQHSINkr85WwWLhP-UI1AwjyYqH0aaii~mebW6Tm1CSZ6ZG6ka~RfT-TzMeOB21SMMi83srDxeP4BnVS9zJbufVallGb~2le8LG4acmJv~5S7A__"
-                    src={post.thumbnail!}
-                    alt={post.title}
-                    fill
-                  />
-                </div>
-
-                <div className="mt-3 flex items-center gap-3">
-                  <div className="flex items-center gap-1">
-                    <Calendar />
-                    {post.publishedAt?.toLocaleDateString()}
-                  </div>
-
-                  <div className="flex items-center gap-1">
-                    <MessageSquare />
-                    {post.view}
-                  </div>
-                </div>
-
-                <h4 className="mt-2 line-clamp-1 text-2xl font-semibold text-[#101828]">
-                  {post.title}
-                </h4>
-
-                <div className="mt-4 flex items-center justify-between">
-                  <Link
-                    href={`/post/${post.slug}`}
-                    className={cn(buttonVariants({ variant: 'default' }))}
-                  >
-                    Đọc thêm
-                  </Link>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
         </div>
       </div>
-    </div>
+    </section>
   )
 }
 export default PostList
