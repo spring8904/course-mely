@@ -22,3 +22,11 @@ export interface IInstructorEducation {
   createdAt?: Date | null
   updatedAt?: Date | null
 }
+
+export interface IQuestionTeacher {
+  id: number
+  title: string
+  description: string
+  question: string
+  options: string[]
+}

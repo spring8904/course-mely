@@ -5,48 +5,98 @@ import Link from 'next/link'
 
 const BecomeInstructorBanner = () => {
   return (
-    <div
-      className={cn(
-        'bg-[url(https://s3-alpha-sig.figma.com/img/dc1f/d94d/f6062d52cb24787dd4070f8f28665f00?Expires=1736121600&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=msXWjHCzmyRLCRoMTIKW7oM533gYO7PoBUSAyzxWA-rWbiHdWdQ3UQEpWeCEfK-LpPfzoHuC0T2EQxWeRhLynYBABBRzTB2O3d-YgIiBSivaicFtCFu67IGcuBy-PkKehS8N7Ban0N~cpmYaogTCg4kI7ZM4sfn1hoqIoCZ7ocN3d8yQejR8Z8yKOzvRuxCZ5ImeDoPWX8ziaG-eCr1PLnCl1XPU81slZ~jkN8n7Hc2Eqj~lPO~o0NQswf3vXx0-Cr6DNgHMv~TumtAF46eM4mE2hqP1dY7klGy7NxSuwDMT-GPqoS33LJLeKNXKpqwXnbhEIVaC13t2Iz2wzIagiQ__)]',
-        'w-full bg-cover bg-bottom'
-      )}
+    <section
+      className="section-become-instructor tf-spacing-3 wow fadeInUp pt-0"
+      data-wow-delay="0.2s"
     >
-      <div
-        className={cn(
-          'container mx-auto grid grid-cols-2',
-          'lg:p-5',
-          'xl:p-10'
-        )}
-      >
-        <div className="relative">
-          <Image
-            src={
-              'https://s3-alpha-sig.figma.com/img/4ade/2e3a/9407f47d6b393763bbb6ee0ec27a4cb2?Expires=1736121600&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=D4pU5LH~yvYLqNEKtCjqBB7026R2TyOWGjqP~OgDULldpIUxbNJbd3vClMhBgA-zendjvYockUEqpqDRR4WqXTkbcIG3TKri0jiVnzNvruGh5JaGkflNAJPr8AIHhz-tO-XEslz~BbyWPrSR4-1wygN8AOwj27YwrzDhw5reMP0HIC6EyUvEzHAe5T51MHDywPFZrg7WFb7PWqeBVXB5Tir51THRTlaHJsNX~DrrJbGPGAYTN78EzVaVY1vgraIwMtKsxabPcYbZisNZYQK1MYTbgCgmz18Hui5lf1yn-6m0YzcdF7tLUo~KNpRZQ1gvkGVPmFZd4CXFiADTOUWuGw__'
-            }
-            alt="banner"
-            fill
-          />
-        </div>
-
-        <div className="py-24 pl-5">
-          <h3 className="text-4xl font-bold leading-[47px]">
-            Bạn muốn chia sẻ kiến thức của mình?
-          </h3>
-
-          <p>
-            Hãy trở thành giảng viên và bắt đầu chia sẻ kiến thức của bạn đến
-            với mọi người. Tham gia ngay để khám phá tiềm năng của bạn!
-          </p>
-
-          <Link
-            href=""
-            className={cn(buttonVariants({ variant: 'default' }), 'mt-4')}
-          >
-            Tham gia ngay
-          </Link>
+      <div className="tf-container">
+        <div className="row">
+          <div className="col-lg-12">
+            <div className="main-section">
+              <div className="content-inner">
+                <h2 className="fw-7">Bắt đầu để trở thành giảng viên</h2>
+                <p className="fs-15">
+                  Hãy trở thành giảng viên và bắt đầu chia sẻ kiến thức của bạn
+                  đến với mọi người. Tham gia ngay để khám phá tiềm năng của
+                  bạn!
+                </p>
+                <ul className="wrap-list-text-check1">
+                  <li>
+                    <i className="icon-check" />
+                    Earn money
+                  </li>
+                  <li>
+                    <i className="icon-check" />
+                    Inspire students
+                  </li>
+                  <li>
+                    <i className="icon-check" />
+                    Join our community
+                  </li>
+                </ul>
+              </div>
+              <div className="content-user">
+                <div className="box-agent style2">
+                  <ul className="agent-img-list">
+                    <li className="agent-img-item">
+                      <img
+                        className="lazyload"
+                        data-src="/assets/images/avatar/user-1.png"
+                        src="/assets/images/avatar/user-1.png"
+                        alt=""
+                      />
+                    </li>
+                    <li className="agent-img-item">
+                      <img
+                        className="lazyload"
+                        data-src="/assets/images/avatar/user-2.png"
+                        src="/assets/images/avatar/user-2.png"
+                        alt=""
+                      />
+                    </li>
+                    <li className="agent-img-item">
+                      <img
+                        className="lazyload"
+                        data-src="/assets/images/avatar/user-3.png"
+                        src="/assets/images/avatar/user-3.png"
+                        alt=""
+                      />
+                    </li>
+                    <li className="agent-img-item">
+                      <p>1M+</p>
+                    </li>
+                  </ul>
+                  <a href="#" className="tf-btn">
+                    Đăng ký ngay
+                    <i className="icon-arrow-top-right" />
+                  </a>
+                </div>
+              </div>
+              <div className="content-img">
+                <img
+                  className="lazyload item-1"
+                  data-src="/assets/images/section/become-instructor-1.png"
+                  src="/assets/images/section/become-instructor-1.png"
+                  alt=""
+                />
+                <img
+                  className="lazyload item-2"
+                  data-src="/assets/images/item/item-4.png"
+                  src="/assets/images/item/item-4.png"
+                  alt=""
+                />
+                <img
+                  className="lazyload item-3"
+                  data-src="/assets/images/item/item-20.png"
+                  src="/assets/images/item/item-20.png"
+                  alt=""
+                />
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+    </section>
   )
 }
 export default BecomeInstructorBanner
