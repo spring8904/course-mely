@@ -4,66 +4,51 @@ import {
   Compass,
   GraduationCap,
   History,
-  Lock,
-  Mail,
   PencilLine,
   ShieldCheck,
-  UserRound,
   UserRoundCog,
   Wallet,
 } from 'lucide-react'
 
-export const registerFormControls: IFormControl[] = [
+export const signupFormFieldList: IFormControl[] = [
   {
+    id: 'name',
+    type: 'text',
     name: 'name',
     label: 'Họ và tên',
-    placeholder: 'Nhập họ và tên',
-    componentType: 'input',
-    type: 'text',
-    icon: <UserRound size={18} />,
   },
   {
+    id: 'email',
+    type: 'email',
     name: 'email',
     label: 'Email',
-    placeholder: 'Nhập email',
-    componentType: 'input',
-    type: 'email',
-    icon: <Mail size={18} />,
   },
   {
+    id: 'password',
+    type: 'password',
     name: 'password',
     label: 'Mật khẩu',
-    placeholder: 'Nhập mât khẩu',
-    componentType: 'input',
-    type: 'password',
-    icon: <Lock size={18} />,
   },
   {
-    name: 'confirmPassword',
-    label: 'Xác nhận mật khẩu',
-    placeholder: 'Xác nhận mật khẩu',
-    componentType: 'input',
+    id: 'rePassword',
     type: 'password',
-    icon: <Lock size={18} />,
+    name: 'rePassword',
+    label: 'Xác nhận mật khẩu',
   },
 ]
 
-export const loginFormControls: IFormControl[] = [
+export const signinFormFieldList: IFormControl[] = [
   {
+    id: 'email',
+    type: 'email',
     name: 'email',
     label: 'Email',
-    placeholder: 'Nhập email',
-    componentType: 'input',
-    type: 'email',
-    icon: <Mail size={18} />,
   },
   {
+    id: 'password',
+    type: 'password',
     name: 'password',
     label: 'Mật khẩu',
-    placeholder: 'Nhập mât khẩu',
-    componentType: 'input',
-    type: 'password',
-    icon: <Lock size={18} />,
   },
 ]
 
@@ -102,36 +87,5 @@ export const sidebarUserOptions: ISidebarData[] = [
   {
     name: 'Mật khẩu và bảo mật',
     icon: <ShieldCheck size={18} />,
-  },
-]
-
-export const userInfoFormControls: IFormControl[] = [
-  {
-    name: 'name',
-    label: 'Họ và tên',
-    placeholder: 'Ex: Nguyễn Văn A',
-    componentType: 'input',
-    type: 'text',
-  },
-  {
-    name: 'email',
-    label: 'Email',
-    placeholder: 'Ex: nguyenvana@gmail.com',
-    componentType: 'input',
-    type: 'email',
-  },
-  {
-    name: 'phone',
-    label: 'Số điện thoại',
-    placeholder: 'Ex: 0987654321',
-    componentType: 'input',
-    type: 'text',
-  },
-  {
-    name: 'bio',
-    label: 'Bio',
-    placeholder: '...',
-    componentType: 'input',
-    type: 'text',
   },
 ]

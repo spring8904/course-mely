@@ -1,7 +1,5 @@
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
-import UserMyPassword from '../components/user-my-password'
-import UserInfoForm from '../components/user-info-form'
-import { userInfoFormControls } from '@/configs'
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+// import { userInfoFormControls } from '@/configs'
 import { ShieldCheck, UserRoundCog } from 'lucide-react'
 
 const AccountView = () => {
@@ -35,14 +33,14 @@ const AccountView = () => {
               </TabsList>
             </div>
 
-            <div className="col-span-9">
+            {/* <div className="col-span-9">
               <TabsContent value="userinfo" className="m-0">
                 <UserInfoForm controls={userInfoFormControls} />
               </TabsContent>
               <TabsContent value="sidebar" className="m-0">
                 <UserMyPassword controls={userInfoFormControls} />
               </TabsContent>
-            </div>
+            </div> */}
           </Tabs>
         </div>
       </div>

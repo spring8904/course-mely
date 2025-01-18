@@ -1,0 +1,23 @@
+import Link from 'next/link'
+
+const SocialLogin = () => (
+  <ul className="login-social">
+    <li className="login-social-icon">
+      <Link href="#" className="tf-btn wow fadeInUp" data-wow-delay="0s">
+        <i className="flaticon-facebook-1" /> Facebook
+      </Link>
+    </li>
+    <li className="login-social-icon">
+      <Link href="#" className="tf-btn wow fadeInUp" data-wow-delay="0.1s">
+        <i className="icon-google" /> Google
+      </Link>
+    </li>
+    <li className="login-social-icon">
+      <Link href="#" className="tf-btn wow fadeInUp" data-wow-delay="0.2s">
+        <i className="icon-apple" /> Apple
+      </Link>
+    </li>
+  </ul>
+)
+
+export default SocialLogin
