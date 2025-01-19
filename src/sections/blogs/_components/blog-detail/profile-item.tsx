@@ -1,0 +1,24 @@
+import React from 'react'
+
+const BlogDetailProfileItem = () => {
+  return (
+    <div className="profile-item">
+      <div className="image">
+        <img src="/assets/images/avatar/profile-1.png" alt="" />
+      </div>
+      <div className="content">
+        <h5>
+          <a className="fw-5">Theresa Edin</a>
+        </h5>
+        <div className="sub fs-15">Professional Web Developer</div>
+        <div className="fs-15">
+          Lorem ipsum dolor sit amet. Qui incidunt dolores non similique ducimus
+          et debitis molestiae. Et autem quia eum reprehenderit voluptates est
+          reprehenderit illo est enim perferendis est neque sunt.{' '}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default BlogDetailProfileItem
