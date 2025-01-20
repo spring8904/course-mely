@@ -8,6 +8,7 @@ import {
   PostList,
 } from '@/sections/home/components'
 import InstructorTop from '@/sections/home/components/Instructor-top'
+import './index.css'
 
 const HomeView = () => {
   return (

@@ -123,6 +123,20 @@ const InstructorTop = ({
               loop={true}
               className="swiper-container slider-courses-5 wow fadeInUp"
               data-wow-delay="0.3s"
+              breakpoints={{
+                0: {
+                  slidesPerView: 2,
+                  spaceBetween: 12,
+                },
+                768: {
+                  slidesPerView: 3,
+                  spaceBetween: 24,
+                },
+                1024: {
+                  slidesPerView: 5,
+                  spaceBetween: 30,
+                },
+              }}
             >
               {instructorsData.map((instructor, index) => (
                 <SwiperSlide key={index} className="swiper-slide">

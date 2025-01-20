@@ -1,0 +1,34 @@
+.swiper-pagination {
+  position: unset !important;
+  padding-top: 32px;
+}
+
+.swiper-pagination .swiper-pagination-bullet {
+  margin: 10px 13px !important;
+  background-color: var(--Primary);
+  position: relative;
+  opacity: 1 !important;
+}
+
+.swiper-pagination .swiper-pagination-bullet::before {
+  position: absolute;
+  content: '';
+  width: 28px;
+  height: 28px;
+  border: 1px solid transparent;
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-80deg);
+  -webkit-transition: all 0.3s ease;
+  -moz-transition: all 0.3s ease;
+  -ms-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+}
+
+.swiper-pagination .swiper-pagination-bullet-active::before {
+  border-color: #122223;
+  border-top-color: #d9d9d9;
+  transform: translate(-50%, -50%) rotate(-45deg);
+}

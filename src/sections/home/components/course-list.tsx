@@ -108,11 +108,24 @@ const CourseList = ({ title, description }: CourseListProps) => {
             <Swiper
               spaceBetween={30}
               slidesPerView={5}
-              navigation
               autoplay={{ delay: 5000 }}
               pagination={{ clickable: true }}
               className="swiper-container slider-courses-5 wow fadeInUp"
               modules={[Navigation, Pagination, Scrollbar, A11y]}
+              breakpoints={{
+                0: {
+                  slidesPerView: 2,
+                  spaceBetween: 12,
+                },
+                768: {
+                  slidesPerView: 3,
+                  spaceBetween: 24,
+                },
+                1024: {
+                  slidesPerView: 4,
+                  spaceBetween: 30,
+                },
+              }}
             >
               {courses.map((course) => (
                 <SwiperSlide key={course.id}>
@@ -138,13 +151,14 @@ const CourseList = ({ title, description }: CourseListProps) => {
                     </div>
 
                     <div className="content">
-                      <div className="meta">
-                        <div className="meta-item">
+                      {/* eslint-disable-next-line tailwindcss/no-unnecessary-arbitrary-value */}
+                      <div className="meta !gap-[0px] md:gap-4">
+                        <div className="meta-item !pr-2 md:pr-[10px]">
                           <i className="flaticon-calendar" />
                           <p>{course.lessons} Lessons</p>
                         </div>
 
-                        <div className="meta-item">
+                        <div className="meta-item pl-2 md:pl-[10px]">
                           <i className="flaticon-clock" />
                           <p>{course.duration}</p>
                         </div>

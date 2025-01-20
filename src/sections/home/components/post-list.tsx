@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
+import { Pagination } from 'swiper/modules'
 import { Swiper, SwiperSlide } from 'swiper/react'
 
 interface PostListProps {
@@ -104,8 +105,23 @@ const PostList = ({ title, description }: PostListProps) => {
               loop={true}
               className="swiper-container tf-sw-mobile wow fadeInUp"
               data-wow-delay="0.4s"
-              data-preview={4}
-              data-space={28}
+              modules={[Pagination]}
+              pagination={{ clickable: true }}
+              autoplay={{ delay: 5000 }}
+              breakpoints={{
+                0: {
+                  slidesPerView: 1,
+                  spaceBetween: 12,
+                },
+                768: {
+                  slidesPerView: 2,
+                  spaceBetween: 24,
+                },
+                1024: {
+                  slidesPerView: 3,
+                  spaceBetween: 30,
+                },
+              }}
             >
               {fakePosts.map((post, index) => (
                 <SwiperSlide className="swiper-slide" key={index}>
