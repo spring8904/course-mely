@@ -1,5 +1,3 @@
-import { buttonVariants } from '@/components/ui/button'
-import { cn } from '@/lib/utils'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -35,26 +33,28 @@ const Banner = () => {
                 companies.
               </h6>
               <div className="bottom-btns">
-                <a
+                <Link
                   href="#"
                   className="tf-btn wow fadeInUp"
                   data-wow-delay="0.3s"
                 >
                   Get Started
                   <i className="icon-arrow-top-right" />
-                </a>
-                <a
+                </Link>
+                <Link
                   href="#"
                   className="tf-btn style-third wow fadeInUp"
                   data-wow-delay="0.4s"
                 >
                   Explore courses
                   <i className="icon-arrow-top-right" />
-                </a>
+                </Link>
                 <div className="box-agent wow fadeInUp" data-wow-delay="0.5s">
                   <ul className="agent-img-list">
                     <li className="agent-img-item">
-                      <img
+                      <Image
+                        width={40}
+                        height={40}
                         className="ls-is-cached lazyloaded"
                         data-src="/assets/images/avatar/user-1.png"
                         src="/assets/images/avatar/user-1.png"
@@ -62,7 +62,9 @@ const Banner = () => {
                       />
                     </li>
                     <li className="agent-img-item">
-                      <img
+                      <Image
+                        width={40}
+                        height={40}
                         className="ls-is-cached lazyloaded"
                         data-src="/assets/images/avatar/user-2.png"
                         src="/assets/images/avatar/user-2.png"
@@ -70,7 +72,9 @@ const Banner = () => {
                       />
                     </li>
                     <li className="agent-img-item">
-                      <img
+                      <Image
+                        width={40}
+                        height={40}
                         className="ls-is-cached lazyloaded"
                         data-src="/assets/images/avatar/user-3.png"
                         src="/assets/images/avatar/user-3.png"
@@ -94,23 +98,34 @@ const Banner = () => {
           </div>
           <div className="col-lg-5">
             <div className="image">
-              <img
+              <Image
+                width={480}
+                height={581}
                 className="lazyload"
                 data-src="/assets/images/page-title/page-title-home1.png"
                 src="/assets/images/page-title/page-title-home1.png"
                 alt=""
               />
-              <img
+              <Image
+                width={121}
+                height={121}
+                quality={100}
                 className="item1 animate-cir45"
                 src="/assets/images/item/item-1.png"
                 alt=""
               />
-              <img
+              <Image
+                width={121}
+                height={121}
+                quality={100}
                 className="item2 animate-dot-anim-2"
                 src="/assets/images/item/item-2.png"
                 alt=""
               />
-              <img
+              <Image
+                width={121}
+                height={121}
+                quality={100}
                 className="item3 animate-dot-anim-3"
                 src="/assets/images/item/item-3.png"
                 alt=""

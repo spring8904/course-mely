@@ -1,17 +1,19 @@
+import Image from 'next/image'
+import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import { Swiper, SwiperSlide } from 'swiper/react'
+import SwiperCore from 'swiper'
 import 'swiper/css'
 import 'swiper/css/navigation'
 import 'swiper/css/pagination'
 import 'swiper/css/scrollbar'
-import SwiperCore from 'swiper'
 import {
+  A11y,
+  Autoplay,
   Navigation,
   Pagination,
   Scrollbar,
-  A11y,
-  Autoplay,
 } from 'swiper/modules'
+import { Swiper, SwiperSlide } from 'swiper/react'
 // Install the necessary Swiper modules
 SwiperCore.use([Navigation, Pagination, Autoplay])
 
@@ -21,7 +23,7 @@ interface CourseListProps {
   description?: string
 }
 
-const CourseList = ({ title, description, className }: CourseListProps) => {
+const CourseList = ({ title, description }: CourseListProps) => {
   const [courses, setCourses] = useState<any[]>([])
 
   useEffect(() => {
@@ -93,57 +95,79 @@ const CourseList = ({ title, description, className }: CourseListProps) => {
                 <div className="sub fs-15 wow fadeInUp" data-wow-delay="0.2s">
                   {description ?? ''}
                 </div>
-                <a
+                <Link
                   href="#"
                   className="tf-btn-arrow wow fadeInUp"
                   data-wow-delay="0.3s"
                 >
                   Xem thêm <i className="icon-arrow-top-right" />
-                </a>
+                </Link>
               </div>
             </div>
 
             <Swiper
               spaceBetween={30}
               slidesPerView={5}
-              navigation
               autoplay={{ delay: 5000 }}
               pagination={{ clickable: true }}
               className="swiper-container slider-courses-5 wow fadeInUp"
               modules={[Navigation, Pagination, Scrollbar, A11y]}
+              breakpoints={{
+                0: {
+                  slidesPerView: 2,
+                  spaceBetween: 12,
+                },
+                768: {
+                  slidesPerView: 3,
+                  spaceBetween: 24,
+                },
+                1024: {
+                  slidesPerView: 4,
+                  spaceBetween: 30,
+                },
+              }}
             >
               {courses.map((course) => (
                 <SwiperSlide key={course.id}>
                   <div className="course-item hover-img title-small">
                     <div className="features image-wrap">
-                      <img
+                      <Image
+                        width={256}
+                        height={187}
                         className="lazyload"
                         src={course.image}
                         alt={course.title}
                       />
+
                       <div className="box-tags">
-                        <a href="#" className="item best-seller">
+                        <Link href="#" className="item best-seller">
                           Best Seller
-                        </a>
+                        </Link>
                       </div>
+
                       <div className="box-wishlist tf-action-btns">
                         <i className="flaticon-heart" />
                       </div>
                     </div>
+
                     <div className="content">
-                      <div className="meta">
-                        <div className="meta-item">
+                      {/* eslint-disable-next-line tailwindcss/no-unnecessary-arbitrary-value */}
+                      <div className="meta !gap-[0px] md:gap-4">
+                        <div className="meta-item !pr-2 md:pr-[10px]">
                           <i className="flaticon-calendar" />
                           <p>{course.lessons} Lessons</p>
                         </div>
-                        <div className="meta-item">
+
+                        <div className="meta-item pl-2 md:pl-[10px]">
                           <i className="flaticon-clock" />
                           <p>{course.duration}</p>
                         </div>
                       </div>
+
                       <h6 className="fw-5 line-clamp-2">
                         <a href="course-single-v1.html">{course.title}</a>
                       </h6>
+
                       <div className="ratings pb-30">
                         <div className="number">{course.rating}</div>
                         {[...Array(5)].map((_, index) => (
@@ -154,6 +178,7 @@ const CourseList = ({ title, description, className }: CourseListProps) => {
                             }`}
                           />
                         ))}
+
                         <div className="total">(230)</div>
                       </div>
                       <div className="author">
@@ -162,8 +187,10 @@ const CourseList = ({ title, description, className }: CourseListProps) => {
                           {course.instructor}
                         </a>
                       </div>
+
                       <div className="bottom">
                         <div className="h6 price fw-5">{course.price}</div>
+
                         <a
                           href="course-single-v1.html"
                           className="tf-btn-arrow"
