@@ -4,34 +4,14 @@ import { cn } from '@/lib/utils'
 import {
   Banner,
   BecomeInstructorBanner,
-  CourseCategoryList,
   CourseList,
   PostList,
 } from '@/sections/home/components'
 import InstructorTop from '@/sections/home/components/Instructor-top'
 
 const HomeView = () => {
-  const courseCategories = [
-    {
-      name: 'Marketing',
-      totalCourses: 11,
-    },
-    {
-      name: 'Marketing',
-      totalCourses: 11,
-    },
-    {
-      name: 'Marketing',
-      totalCourses: 11,
-    },
-    {
-      name: 'Marketing',
-      totalCourses: 11,
-    },
-  ]
-
   return (
-    <div className="">
+    <div>
       <Banner />
       <div className="main-content pb-63">
         <CourseList
