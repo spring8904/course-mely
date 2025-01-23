@@ -17,7 +17,7 @@ const BlogDetailPost = () => {
           <p>Esther Howard</p>
         </a>
       </div>
-      <h2 className="font-cardo fw-7 wow fadeInUp">
+      <h2 className="fw-7 wow fadeInUp">
         The Technical Certifications That Matter Most <br /> For The Future
       </h2>
       <div className="title text-22 fw-5 wow fadeInUp">About This Course</div>

@@ -22,7 +22,7 @@ const BlogListBanner = () => {
                 </li>
                 <li>Shop</li>
               </ul>
-              <h2 className="font-cardo fw-7">Blog Grid</h2>
+              <h2 className="fw-7">Blog Grid</h2>
               <h6>
                 Products that help beginner designers become true unicorns.
               </h6>

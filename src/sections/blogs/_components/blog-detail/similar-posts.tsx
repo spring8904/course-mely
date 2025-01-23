@@ -6,7 +6,7 @@ const BlogDetailSimilarPosts = () => {
       <div className="row">
         <div className="col-12">
           <div className="heading-section">
-            <h2 className="fw-7 font-cardo wow fadeInUp">Similar Post</h2>
+            <h2 className="fw-7 wow fadeInUp">Similar Post</h2>
             <div className="flex flex-wrap items-center justify-between gap-10">
               <div className="sub fs-15 wow fadeInUp">
                 Lorem ipsum dolor sit amet, consectetur.
