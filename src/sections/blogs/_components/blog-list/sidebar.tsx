@@ -78,7 +78,7 @@ const BlogListSideBar = () => {
               />
             </div>
             <div className="content">
-              <div className="font-outfit text-15 fw-5">
+              <div className="text-15 fw-5">
                 <a href="blog-single.html">Why Is Education So Famous?</a>
               </div>
               <p>06 April 2024</p>
@@ -94,7 +94,7 @@ const BlogListSideBar = () => {
               />
             </div>
             <div className="content">
-              <div className="font-outfit text-15 fw-5">
+              <div className="text-15 fw-5">
                 <a href="blog-single.html">Difficult Things About Education.</a>
               </div>
               <p>06 April 2024</p>
@@ -110,7 +110,7 @@ const BlogListSideBar = () => {
               />
             </div>
             <div className="content">
-              <div className="font-outfit text-15 fw-5">
+              <div className="text-15 fw-5">
                 <a href="blog-single.html">Why Is Education So Famous?</a>
               </div>
               <p>06 April 2024</p>

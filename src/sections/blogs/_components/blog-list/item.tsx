@@ -17,7 +17,7 @@ const BlogListItem = () => {
               Development
             </a>
           </div>
-          <h3 className="fw-5 font-outfit">
+          <h3 className="fw-5">
             <a href="blog-single.html">
               The Technical Certifications That Matter Most for the Future
             </a>
@@ -61,7 +61,7 @@ const BlogListItem = () => {
               Development
             </a>
           </div>
-          <h3 className="fw-5 font-outfit">
+          <h3 className="fw-5">
             <a href="blog-single.html">
               The Challenge Of Global Learning In Public Education
             </a>
@@ -105,7 +105,7 @@ const BlogListItem = () => {
               Development
             </a>
           </div>
-          <h3 className="fw-5 font-outfit">
+          <h3 className="fw-5">
             <a href="blog-single.html">
               The Importance Of Intrinsic Motivation for Students
             </a>
@@ -149,7 +149,7 @@ const BlogListItem = () => {
               Development
             </a>
           </div>
-          <h3 className="fw-5 font-outfit">
+          <h3 className="fw-5">
             <a href="blog-single.html">
               Ten Benefits Of Rentals That May Change Your Perspective
             </a>
@@ -193,7 +193,7 @@ const BlogListItem = () => {
               Development
             </a>
           </div>
-          <h3 className="fw-5 font-outfit">
+          <h3 className="fw-5">
             <a href="blog-single.html">
               It’s Time To Think Differently About Writing In The classNameroom
             </a>
