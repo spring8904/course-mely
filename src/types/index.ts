@@ -30,3 +30,6 @@ export * from './Approval'
 
 // Export from Wallet.ts
 export * from './Wallet'
+
+// Export from Auth.ts
+export * from './Auth'

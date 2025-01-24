@@ -1,11 +1,29 @@
+'use client'
+
 import FormField from '@/components/common/FormField'
 import PageImage from '@/components/common/PageImage'
 import SocialLogin from '@/components/common/SocialLogin'
 import SubmitButton from '@/components/common/SubmitButton'
 import { signupFormFieldList } from '@/configs'
+import { useSignUp } from '@/hooks/auth/sign-up/useSignUp'
+import { IAuthData } from '@/types'
 import Link from 'next/link'
+import { useForm } from 'react-hook-form'
 
 const SignupView = () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<IAuthData>()
+  const { mutate, status } = useSignUp()
+
+  const isPending = status === 'pending'
+
+  const onSubmit = handleSubmit((data) => {
+    mutate(data)
+  })
+
   return (
     <div className="main-content page-register">
       <section className="section-page-register login-wrap tf-spacing-4">
@@ -39,17 +57,22 @@ const SignupView = () => {
                     Đăng nhập
                   </Link>
                 </div>
-                <form action="#" className="form-login">
-                  {signupFormFieldList.map(({ id, type, name, label }) => (
-                    <FormField
-                      id={id}
-                      type={type}
-                      name={name}
-                      label={label}
-                      key={name}
-                    />
-                  ))}
-                  <SubmitButton text="Đăng ký" />
+                <form action="#" className="form-login" onSubmit={onSubmit}>
+                  {signupFormFieldList.map(
+                    ({ id, type, name, label, rules }) => (
+                      <FormField
+                        id={id}
+                        type={type}
+                        name={name}
+                        label={label}
+                        key={name}
+                        register={register}
+                        error={errors[name]?.message as string}
+                        rules={rules}
+                      />
+                    )
+                  )}
+                  <SubmitButton text="Đăng ký" disabled={isPending} />
                 </form>
                 <p className="fs-15 wow fadeInUp" data-wow-delay="0s">
                   Hoặc

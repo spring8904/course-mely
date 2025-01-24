@@ -391,9 +391,8 @@ dt {
 
 del,
 .disable {
-  text-decoration: line-through;
-  filter: alpha(opacity=50);
-  opacity: 0.5;
+  filter: alpha(opacity=80);
+  opacity: 0.8;
 }
 
 /* Table */
@@ -13468,6 +13467,7 @@ instructors-item
 .page-login .login-wrap .content-right .form-login .button-submit {
   border-radius: 4px;
 }
+
 .page-login .login-wrap .content-right .login-social {
   padding-top: 11px;
 }
