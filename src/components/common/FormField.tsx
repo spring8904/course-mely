@@ -1,30 +1,41 @@
+import { IAuthData } from '@/types'
+import { RegisterOptions, UseFormRegister } from 'react-hook-form'
+
 type Props = {
   id: string
   type: string
-  name: string
+  name: keyof IAuthData
   label: string
+  register: UseFormRegister<IAuthData>
+  error?: string
+  rules?: RegisterOptions<IAuthData, keyof IAuthData>
 }
 
-const FormField = ({ id, type, name, label }: Props) => (
-  <div className="cols">
-    <fieldset
-      className={`tf-field field-${name} wow fadeInUp`}
-      data-wow-delay="0s"
-    >
+const FormField = ({
+  id,
+  type,
+  name,
+  label,
+  register,
+  error,
+  rules,
+}: Props) => (
+  <div className="cols mb-10 flex flex-col">
+    <fieldset className="tf-field wow fadeInUp" data-wow-delay="0s">
       <input
         className="tf-input style-1"
         id={id}
         type={type}
         placeholder=""
-        name={name}
+        {...register(name, rules)}
         tabIndex={0}
-        defaultValue=""
         aria-required="true"
       />
       <label className="tf-field-label fs-15" htmlFor={id}>
         {label}
       </label>
     </fieldset>
+    {error && <span className="text-danger w-full text-left">{error}</span>}
   </div>
 )
 

@@ -1,11 +1,23 @@
-const SubmitButton = ({ text }: { text: string }) => (
+type Props = {
+  text: string
+  disabled: boolean
+}
+
+const SubmitButton = ({ text, disabled }: Props) => (
   <button
-    className="button-submit tf-btn w-100 wow fadeInUp"
+    className={`button-submit tf-btn w-100 wow fadeInUp ${disabled ? 'disable' : ''}`}
     data-wow-delay="0s"
     type="submit"
+    disabled={disabled}
   >
-    {text}
-    <i className="icon-arrow-top-right" />
+    {disabled ? (
+      `Loading...`
+    ) : (
+      <>
+        {text}
+        <i className="icon-arrow-top-right" />
+      </>
+    )}
   </button>
 )
 

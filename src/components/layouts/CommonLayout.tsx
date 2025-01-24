@@ -5,6 +5,7 @@ import Header from '@/components/themes/Header'
 import HeadLinks from '@/components/themes/HeadLinks'
 import HeadScripts from '@/components/themes/HeadScripts'
 import '@/components/themes/assetsImports'
+import { ToastContainer } from 'react-toastify'
 
 interface LayoutProps {
   children?: React.ReactNode
@@ -24,6 +25,18 @@ const CommonLayout = ({ children }: LayoutProps) => {
         </div>
       </body>
       <HeadScripts />
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </html>
   )
 }

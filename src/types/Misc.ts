@@ -1,4 +1,6 @@
 import { ReactNode } from 'react'
+import { IAuthData } from './Auth'
+import { RegisterOptions } from 'react-hook-form'
 
 export interface ISetting {
   id?: number
@@ -50,8 +52,9 @@ export interface IUserLessonProgress {
 export interface IFormControl {
   id: string
   type: string
-  name: string
+  name: keyof IAuthData
   label: string
+  rules?: RegisterOptions<IAuthData, keyof IAuthData>
 }
 
 export interface ISidebarData {
