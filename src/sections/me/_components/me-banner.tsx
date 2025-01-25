@@ -1,6 +1,6 @@
 import React from 'react'
 
-const StudentBanner = () => {
+const MeBanner = () => {
   return (
     <div className="page-title style-9 bg-5">
       <div className="tf-container">
@@ -38,4 +38,4 @@ const StudentBanner = () => {
   )
 }
 
-export default StudentBanner
+export default MeBanner
