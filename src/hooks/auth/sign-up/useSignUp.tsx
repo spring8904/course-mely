@@ -1,5 +1,6 @@
 'use client'
 
+import QUERY_KEY from '@/constants/query-key'
 import SignUpSuccessToast from '@/sections/signup/_components/signup-success-toast'
 import { authApi } from '@/services/auth/authApi'
 import { IAuthData } from '@/types'
@@ -22,7 +23,7 @@ export const useSignUp = () => {
       toast.success(
         <SignUpSuccessToast navigateToLogin={() => router.push('/sign-in')} />
       )
-      await queryClient.invalidateQueries({ queryKey: ['auth'] })
+      await queryClient.invalidateQueries({ queryKey: [QUERY_KEY.AUTH] })
     },
     onError: (error: AxiosError<ErrorResponse>) => {
       toast.error(
