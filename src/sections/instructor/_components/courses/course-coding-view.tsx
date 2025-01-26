@@ -1,6 +1,4 @@
 'use client'
-import React, { useEffect, useState } from 'react'
-import { MoveLeft } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -8,6 +6,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import {
   Select,
   SelectContent,
@@ -15,9 +15,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { Label } from '@/components/ui/label'
-import { Input } from '@/components/ui/input'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { MoveLeft } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import SolutionTab from './solution-tab'
 
 const CourseCodingView = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
@@ -33,7 +34,7 @@ const CourseCodingView = () => {
 
   return (
     <div className="relative min-h-screen">
-      <header className="fixed inset-x-0 top-0 z-10 flex justify-between border-b bg-white p-4">
+      <header className="fixed inset-x-0 top-0 z-10 flex justify-between bg-white p-4 shadow-md">
         <div className="flex items-center gap-4">
           <MoveLeft size={18} />
           <span>Quay lại chương trình giảng dạy</span>
@@ -74,9 +75,10 @@ const CourseCodingView = () => {
           </div>
         </DialogContent>
       </Dialog>
-      <Tabs defaultValue="plan" className="flex flex-col p-4 pb-16 pt-20">
+
+      <Tabs defaultValue="plan" className="py-[68px] [&>*]:mt-0">
         <TabsContent value="plan">
-          <main className="flex flex-col p-4 pb-16 pt-20">
+          <main className="flex flex-col p-4">
             <div className="container mx-auto max-w-4xl p-4">
               <h2 className="text-2xl font-bold">Bài tập Coding</h2>
               <p className="mt-4">
@@ -113,7 +115,7 @@ const CourseCodingView = () => {
           </main>
         </TabsContent>
         <TabsContent value="solution">
-          Make changes to your account here.
+          <SolutionTab />
         </TabsContent>
         <TabsContent value="guide">
           Make changes to your account here.
