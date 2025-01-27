@@ -23,7 +23,12 @@ const menuItems = [
   { icon: Home, label: 'Dashboard', component: <MeDashBoard /> },
   { icon: BookOpen, label: 'My Courses', component: <MeMyCourses /> },
   { icon: Star, label: 'Reviews', component: <MeReview /> },
-  { icon: Heart, label: 'Wishlist', component: <MeWishList /> },
+  {
+    icon: Heart,
+    label: 'Wishlist',
+    href: 'me/settings',
+    component: <MeWishList />,
+  },
   {
     icon: FileQuestion,
     label: 'Quizzes',
@@ -49,10 +54,7 @@ const MeSideBar = ({
       </div>
       <div className="">
         <div className="dashboard-title">STUDENT DASHBOARD</div>
-        {/* <a className="dashboard-item active"instructors-dashboard>
-          <i className="flaticon-activity"></i>
-          Dashboard
-        </a> */}
+        {/* instructors-dashboard> */}
         {menuItems.map((item, index) => {
           const Icon = item.icon
           const isActive = index === activeIndex

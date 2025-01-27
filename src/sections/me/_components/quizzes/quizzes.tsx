@@ -1,7 +1,18 @@
 import React from 'react'
+import QuizList from './_components/quiz-list'
+import Result from './_components/result'
+import QuizDetail from './_components/quiz-detail'
 
 const MeQuizzes = () => {
-  return <div>MeQuizzes 757567</div>
+  return (
+    <div className="section-quizzes-right">
+      <div className="section-inner">
+        <QuizList />
+        <Result />
+        <QuizDetail />
+      </div>
+    </div>
+  )
 }
 
 export default MeQuizzes

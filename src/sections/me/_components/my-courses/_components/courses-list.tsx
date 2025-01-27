@@ -72,7 +72,7 @@ const CoursesList = () => {
                 <div className="meta">
                   <div className="meta-item">
                     <i className="flaticon-calendar"></i>
-                    <p>{course.lessons} Lessons</p>
+                    <p>{course.lessons}Lessons</p>
                   </div>
                   <div className="meta-item">
                     <i className="flaticon-clock"></i>
