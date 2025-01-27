@@ -1,5 +1,10 @@
 import React from 'react'
-import MeView from './../../../sections/me/view/me-view'
+import { MeView } from '@/sections/me/view'
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Thông tin cá nhân',
+}
 
 const MePage = () => {
   return (

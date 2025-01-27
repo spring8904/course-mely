@@ -8,4 +8,4 @@ import '../../../public/assets/font/fonts.css'
 import '../../../public/assets/icons/flat/flaticon_upskill.css'
 import '../../../public/assets/icons/icomoon/style.css'
 
-export default {}
+// export default {}
