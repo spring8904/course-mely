@@ -11,9 +11,9 @@ const MeSort = () => {
         data-wow-delay="0.1s"
         tabIndex={0}
       >
-        <span className="current text text-1">Date6 Created</span>
+        <span className="current text text-1">Date Created</span>
         <ul className="list">
-          <li data-value className="option selected text text-1">
+          <li data-value="" className="option selected text text-1">
             Date Created
           </li>
           <li data-value="For Ren" className="option text text-1">

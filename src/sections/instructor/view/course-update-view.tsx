@@ -28,6 +28,7 @@ import {
   SquarePen,
   TableOfContents,
   Target,
+  Trash,
   Trash2,
   Video,
 } from 'lucide-react'
@@ -51,6 +52,8 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
   const [value, setValue] = useState('')
   const [image, setImage] = useState<string | ArrayBuffer | null>(null)
   const [video, setVideo] = useState<string | ArrayBuffer | null>(null)
+  const [benefits, setBenefits] = useState<string[]>(['', '', '', ''])
+  const [requirements, setRequirements] = useState(['', '', '', ''])
   const [addNewChapter, setAddNewChapter] = useState(false)
   const [addNewLesson, setAddNewLesson] = useState(false)
   const [selectedLesson, setSelectedLesson] = useState<string | null>(null)
@@ -77,6 +80,56 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
       }
       reader.readAsDataURL(file)
     }
+  }
+
+  const handleAddBenefit = () => {
+    if (benefits.length < 10) {
+      setBenefits([...benefits, ''])
+    }
+  }
+
+  const handleAddRequirement = () => {
+    if (requirements.length < 10) {
+      setRequirements([...requirements, ''])
+    }
+  }
+
+  const handleInputChange = (index: number, value: string) => {
+    const newBenefits = [...benefits]
+    newBenefits[index] = value
+    setBenefits(newBenefits)
+
+    if (
+      index === benefits.length - 1 &&
+      value.trim() !== '' &&
+      benefits.length < 10
+    ) {
+      handleAddBenefit()
+    }
+  }
+
+  const handleInputChangeRequirement = (index: number, value: string) => {
+    const newRequirements = [...requirements]
+    newRequirements[index] = value
+    setRequirements(newRequirements)
+
+    if (
+      index === requirements.length - 1 &&
+      value.trim() !== '' &&
+      requirements.length < 10
+    ) {
+      handleAddRequirement()
+    }
+  }
+
+  const handleRemoveBenefit = (index: number) => {
+    const newBenefits = benefits.filter((_, i) => i !== index)
+    setBenefits(newBenefits)
+  }
+
+  const handleRemoveRequirement = (index: number) => {
+    const newRequirements = requirements.filter((_, i) => i !== index)
+    setRequirements(newRequirements)
   }
 
   const handleAddNewChapter = () => {
@@ -114,7 +167,7 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
               <TabsList className="flex gap-4">
                 <TabsTrigger
                   value="courseInfo"
-                  className="w-full py-3 text-black hover:bg-[#FF6652] data-[state=active]:bg-primary data-[state=active]:text-white"
+                  className="w-full py-3 text-black data-[state=active]:bg-primary data-[state=active]:text-white hover:bg-[#FF6652]"
                 >
                   <div className="flex gap-2">
                     <TableOfContents size={18} />
@@ -123,7 +176,7 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
                 </TabsTrigger>
                 <TabsTrigger
                   value="courseBenefits"
-                  className="w-full py-3 text-black hover:bg-[#FF6652] data-[state=active]:bg-primary data-[state=active]:text-white"
+                  className="w-full py-3 text-black data-[state=active]:bg-primary data-[state=active]:text-white hover:bg-[#FF6652]"
                 >
                   <div className="flex gap-2">
                     <Target size={18} />
@@ -132,7 +185,7 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
                 </TabsTrigger>
                 <TabsTrigger
                   value="courseChapter"
-                  className="w-full py-3 text-black hover:bg-[#FF6652] data-[state=active]:bg-primary data-[state=active]:text-white"
+                  className="w-full py-3 text-black data-[state=active]:bg-primary data-[state=active]:text-white hover:bg-[#FF6652]"
                 >
                   <div className="flex gap-2">
                     <TableOfContents size={18} />
@@ -172,27 +225,39 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
                         được sau khi kết thúc khoá học.
                       </p>
                       <div>
-                        <Input
-                          placeholder="Nhập lợi ích số 1"
-                          className="mt-3 h-[40px]"
-                        />
-                        <Input
-                          placeholder="Nhập lợi ích số 2"
-                          className="mt-3 h-[40px]"
-                        />
-                        <Input
-                          placeholder="Nhập lợi ích số 3"
-                          className="mt-3 h-[40px]"
-                        />
-                        <Input
-                          placeholder="Nhập lợi ích số 4"
-                          className="mt-3 h-[40px]"
-                        />
+                        {benefits.map((benefit, index) => (
+                          <div key={index} className="relative mt-3">
+                            <Input
+                              placeholder={`Nhập lợi ích số ${index + 1}`}
+                              className="h-[40px] pr-10"
+                              value={benefit}
+                              onChange={(e) =>
+                                handleInputChange(index, e.target.value)
+                              }
+                            />
+                            {index >= 4 && (
+                              <button
+                                className="absolute right-2 top-1/2 -translate-y-1/2 text-red-500"
+                                onClick={() => handleRemoveBenefit(index)}
+                              >
+                                <Trash size={16} />
+                              </button>
+                            )}
+                          </div>
+                        ))}
                         <div className="mt-3">
-                          <Button>
+                          <Button
+                            disabled={benefits.length >= 10}
+                            onClick={handleAddBenefit}
+                          >
                             <CirclePlus size={18} />
                             Thêm lợi ích vào khoá học của bạn
                           </Button>
+                          {benefits.length >= 10 && (
+                            <p className="mt-2 text-sm text-red-500">
+                              Bạn đã đạt tối đa 10 lợi ích.
+                            </p>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -206,15 +271,42 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
                         học.
                       </p>
                       <div>
-                        <Input
-                          placeholder="Nhập yêu cầu số 1"
-                          className="mt-3 h-[40px]"
-                        />
+                        {requirements.map((requirement, index) => (
+                          <div key={index} className="relative mt-3">
+                            <Input
+                              placeholder={`Nhập yêu cầu số ${index + 1}`}
+                              className="h-[40px] pr-10"
+                              value={requirement}
+                              onChange={(e) =>
+                                handleInputChangeRequirement(
+                                  index,
+                                  e.target.value
+                                )
+                              }
+                            />
+                            {index >= 4 && (
+                              <button
+                                className="absolute right-2 top-1/2 -translate-y-1/2 text-red-500"
+                                onClick={() => handleRemoveRequirement(index)}
+                              >
+                                <Trash size={16} />
+                              </button>
+                            )}
+                          </div>
+                        ))}
                         <div className="mt-3">
-                          <Button>
+                          <Button
+                            onClick={handleAddRequirement}
+                            disabled={requirements.length >= 10}
+                          >
                             <CirclePlus size={18} />
                             Thêm yêu cầu khi tham gia khoá học
                           </Button>
+                          {requirements.length >= 10 && (
+                            <p className="mt-2 text-sm text-red-500">
+                              Bạn đã đạt tối đa 10 yêu cầu.
+                            </p>
+                          )}
                         </div>
                       </div>
                     </div>
