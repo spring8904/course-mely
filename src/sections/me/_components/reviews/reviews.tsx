@@ -56,7 +56,6 @@ const MeReview = () => {
                 </p>
                 <div
                   className="tf-btn"
-                  type="button"
                   data-bs-toggle="collapse"
                   data-bs-target="#comment-reply1"
                   aria-expanded="false"
@@ -126,7 +125,6 @@ const MeReview = () => {
 
                 <div
                   className="tf-btn"
-                  type="button"
                   data-bs-toggle="collapse"
                   data-bs-target="#comment-reply2"
                   aria-expanded="false"
@@ -192,7 +190,6 @@ const MeReview = () => {
 
                 <div
                   className="tf-btn"
-                  type="button"
                   data-bs-toggle="collapse"
                   data-bs-target="#comment-reply3"
                   aria-expanded="false"

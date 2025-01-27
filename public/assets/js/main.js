@@ -678,37 +678,37 @@
     })
   })
 
-  var dashboard = function () {
-    $(document).on('click', function (e) {
-      var clickID = e.target.id
-      if (clickID !== 's') {
-        $('.instructors-dashboard').removeClass('show')
-      }
-    })
-    $(document).on('click', function (e) {
-      var clickID = e.target.class
-      if (clickID !== 'a111') {
-        $('.dropbtn').removeClass('show')
-      }
-    })
-
-    $('.dropbtn').on('click', function (event) {
-      event.stopPropagation()
-    })
-    $('.instructors-dashboard').on('click', function (event) {
-      event.stopPropagation()
-    })
-
-    $('.dropbtn').on('click', function (event) {
-      if (!$('.instructors-dashboard').hasClass('show')) {
-        $('.instructors-dashboard').addClass('show')
-        event.preventDefault()
-      } else $('.instructors-dashboard').removeClass('show')
-      event.preventDefault()
-      if (!$('.dropbtn').hasClass('show')) $('.dropbtn').addClass('show')
-      else $('.dropbtn').removeClass('show')
-    })
-  }
+  // var dashboard = function () {
+  //   $(document).on('click', function (e) {
+  //     var clickID = e.target.id
+  //     if (clickID !== 's') {
+  //       $('.instructors-dashboard').removeClass('show')
+  //     }
+  //   })
+  //   $(document).on('click', function (e) {
+  //     var clickID = e.target.class
+  //     if (clickID !== 'a111') {
+  //       $('.dropbtn').removeClass('show')
+  //     }
+  //   })
+  //
+  //   $('.dropbtn').on('click', function (event) {
+  //     event.stopPropagation()
+  //   })
+  //   $('.instructors-dashboard').on('click', function (event) {
+  //     event.stopPropagation()
+  //   })
+  //
+  //   $('.dropbtn').on('click', function (event) {
+  //     if (!$('.instructors-dashboard').hasClass('show')) {
+  //       $('.instructors-dashboard').addClass('show')
+  //       event.preventDefault()
+  //     } else $('.instructors-dashboard').removeClass('show')
+  //     event.preventDefault()
+  //     if (!$('.dropbtn').hasClass('show')) $('.dropbtn').addClass('show')
+  //     else $('.dropbtn').removeClass('show')
+  //   })
+  // }
 
   // Dom Ready
   $(function () {
@@ -736,7 +736,7 @@
     loadmoreParagraph()
     progresslevel()
     gotop()
-    dashboard()
+    // dashboard()
     // btnShowProductSub();
     // img zoom
     // section_zoom();

@@ -1,5 +1,5 @@
 import { IUser } from '@/types'
-import UserMenu from '../common/UserMenu'
+// import UserMenu from '../common/UserMenu'
 import { SidebarTrigger } from '@/components/ui/sidebar'
 import { Separator } from '@/components/ui/separator'
 import InputSeach from '@/components/common/InputSeach'
@@ -15,7 +15,7 @@ const TopBar = ({ userData }: { userData: IUser }) => {
       </div>
       <div className="flex items-center space-x-4 px-6">
         <InputSeach />
-        <UserMenu userData={userData} />
+        {/*<UserMenu userData={userData} />*/}
       </div>
     </header>
   )

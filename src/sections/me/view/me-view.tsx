@@ -13,14 +13,14 @@ const MeView = () => {
         <div className="page-inner tf-spacing-1">
           <div className="tf-container">
             <div className="row">
-              <div className="col-xl-3">
+              <div className="col-xl-3 col-lg-12">
                 <MeSideBar
                   onSelect={(component) => {
                     setContent(component)
                   }}
                 />
               </div>
-              <div className="col-xl-9">
+              <div className="col-xl-9 col-lg-12">
                 <div>{content || <div>lỗi rùi hehe</div>}</div>
               </div>
             </div>
