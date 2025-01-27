@@ -1,6 +1,6 @@
 import React from 'react'
 
-const MeSetting = () => {
+const testsetting = () => {
   return (
     <div>
       <div className="section-setting-right section-right">
@@ -332,4 +332,4 @@ const MeSetting = () => {
   )
 }
 
-export default MeSetting
+export default testsetting
