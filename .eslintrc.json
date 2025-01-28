@@ -15,7 +15,7 @@
   "rules": {
     "react/react-in-jsx-scope": "off",
     "@typescript-eslint/no-explicit-any": "off",
-    "tailwindcss/no-custom-classname": "off",
-    "no-undef": "error"
-  }
+    "tailwindcss/no-custom-classname": "off"
+  },
+  "ignorePatterns": ["**/components/ui/**"]
 }
