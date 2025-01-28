@@ -1,16 +1,6 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import {
-  BookOpen,
-  FileQuestion,
-  Heart,
-  Home,
-  LogOut,
-  Settings,
-  ShoppingCart,
-  Star,
-} from 'lucide-react'
 
 import MeDashBoard from './dashboard/dashboard'
 import MeMyCourses from './my-courses/my-courses'
@@ -21,18 +11,47 @@ import MeSetting from './settings/settings'
 import MeWishList from './wishlist/wishlist'
 
 const menuItems = [
-  { icon: Home, label: 'Dashboard', component: <MeDashBoard /> },
-  { icon: BookOpen, label: 'My Courses', component: <MeMyCourses /> },
-  { icon: Star, label: 'Reviews', component: <MeReview /> },
-  { icon: Heart, label: 'Wishlist', component: <MeWishList /> },
   {
-    icon: FileQuestion,
+    icon: <i className="flaticon-activity"></i>,
+    label: 'Dashboard',
+    component: <MeDashBoard />,
+  },
+  {
+    icon: <i className="flaticon-play-1"></i>,
+    label: 'My Courses',
+    component: <MeMyCourses />,
+  },
+  {
+    icon: <i className="flaticon-message-1"></i>,
+    label: 'Reviews',
+    component: <MeReview />,
+  },
+  {
+    icon: <i className="flaticon-heart"></i>,
+    label: 'Wishlist',
+    href: 'me/settings',
+    component: <MeWishList />,
+  },
+  {
+    icon: <i className="flaticon-question"></i>,
     label: 'Quizzes',
     component: <MeQuizzes />,
   },
-  { icon: ShoppingCart, label: 'Order', component: <MeOrder /> },
-  { icon: Settings, label: 'Settings', component: <MeSetting /> },
-  { icon: LogOut, label: 'Logout', component: <div> logout</div> },
+  {
+    icon: <i className="flaticon-bag"></i>,
+    label: 'Order',
+    component: <MeOrder />,
+  },
+  {
+    icon: <i className="flaticon-setting-1"></i>,
+    label: 'Settings',
+    component: <MeSetting />,
+  },
+  {
+    icon: <i className="flaticon-export"></i>,
+    label: 'Logout',
+    component: <div> logout</div>,
+  },
 ]
 const MeSideBar = ({
   onSelect,
@@ -48,29 +67,24 @@ const MeSideBar = ({
       <div className="dropbtn">
         <i className="icon-home"></i> Dashboard Navigation
       </div>
-      <div className="">
+      <div className="instructors-dashboard">
         <div className="dashboard-title">STUDENT DASHBOARD</div>
-        {/* <a className="dashboard-item active"instructors-dashboard>
-          <i className="flaticon-activity"></i>
-          Dashboard
-        </a> */}
         {menuItems.map((item, index) => {
-          const Icon = item.icon
           const isActive = index === activeIndex
           return (
-            <button
+            <div
               key={item.label}
               onClick={() => {
                 setActiveIndex(index)
                 onSelect(item.component)
               }}
-              className={`dashboard-item ${
+              className={`dashboard-item cursor-pointer ${
                 isActive ? 'active' : 'hover:bg-blue-900/50'
               }`}
             >
-              <Icon size={20} />
+              {item.icon}
               <span>{item.label}</span>
-            </button>
+            </div>
           )
         })}
       </div>
