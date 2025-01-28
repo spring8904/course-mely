@@ -7,7 +7,7 @@ const MeMyCourses = () => {
     <div>
       <div className="section-my-courses-right section-right">
         <div className="row">
-          <div className="pd-40 flex items-center">
+          <div className="pd-40">
             <div className="header-search wow fadeInUp grow">
               <MeSearch />
             </div>

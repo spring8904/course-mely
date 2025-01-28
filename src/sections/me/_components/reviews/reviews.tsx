@@ -93,7 +93,6 @@ const MeReview = () => {
               </div>
               <div className="comment-box">
                 <h5 className="author-name">
-                  {' '}
                   <a href="#">Carolyn Welbron</a>
                 </h5>
                 <div className="ratings">
