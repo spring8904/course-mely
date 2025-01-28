@@ -1,11 +1,12 @@
 'use client'
 
 import Link from 'next/link'
-import { signupFormFieldList } from '@/configs'
 import { useForm } from 'react-hook-form'
 
 import { IAuthData } from '@/types'
+import { signupFormFieldList } from '@/configs'
 import { useSignUp } from '@/hooks/auth/sign-up/useSignUp'
+
 import FormField from '@/components/common/FormField'
 import PageImage from '@/components/common/PageImage'
 import SocialLogin from '@/components/common/SocialLogin'

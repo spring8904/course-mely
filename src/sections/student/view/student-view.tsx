@@ -1,4 +1,5 @@
 import { cn } from '@/lib/utils'
+
 import { courseData } from '@/sections/home/data/data'
 import CourseCard from '@/sections/student/_components/course-card'
 

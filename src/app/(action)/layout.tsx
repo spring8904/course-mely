@@ -1,4 +1,5 @@
 import React from 'react'
+
 import { leftSidebarStudentData } from '@/configs'
 
 import DashboardLayout from '@/components/layouts/DashboardLayout'

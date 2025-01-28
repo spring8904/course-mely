@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { Telescope } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
+
 import { buttonVariants } from '@/components/ui/button'
 
 interface CourseCategoryListProps {

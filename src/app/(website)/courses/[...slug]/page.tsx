@@ -1,6 +1,7 @@
 import { Metadata, ResolvingMetadata } from 'next'
 
 import { getCourseBySlug } from '@/services/courses/course-api'
+
 import CourseDetailView from '@/sections/courses/view/course-detail-view'
 
 interface Props {

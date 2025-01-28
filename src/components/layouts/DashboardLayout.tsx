@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { ISidebarData, IUser, UserStatus } from '@/types'
+
 import { AppSidebar } from '@/components/ui/app-sidebar'
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
 import { manropeFont } from '@/components/common/fonts'

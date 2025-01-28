@@ -2,9 +2,11 @@
 
 import { forwardRef, useState } from 'react'
 import { FaRegEye, FaRegEyeSlash } from 'react-icons/fa'
+
+import { cn } from '@/lib/utils'
+
 import { Button } from '@/components/ui/button'
 import { Input, InputProps } from '@/components/ui/input'
-import { cn } from '@/lib/utils'
 
 const PasswordInput = forwardRef<HTMLInputElement, InputProps>(
   ({ className, ...props }, ref) => {
