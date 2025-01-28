@@ -1,23 +1,24 @@
 'use client'
 
-import {
-  Home,
-  BookOpen,
-  Star,
-  Heart,
-  FileQuestion,
-  ShoppingCart,
-  Settings,
-  LogOut,
-} from 'lucide-react'
 import { useEffect, useState } from 'react'
+import {
+  BookOpen,
+  FileQuestion,
+  Heart,
+  Home,
+  LogOut,
+  Settings,
+  ShoppingCart,
+  Star,
+} from 'lucide-react'
+
 import MeDashBoard from './dashboard/dashboard'
 import MeMyCourses from './my-courses/my-courses'
-import MeReview from './reviews/reviews'
-import MeWishList from './wishlist/wishlist'
 import MeOrder from './order/order'
 import MeQuizzes from './quizzes/quizzes'
+import MeReview from './reviews/reviews'
 import MeSetting from './settings/settings'
+import MeWishList from './wishlist/wishlist'
 
 const menuItems = [
   { icon: Home, label: 'Dashboard', component: <MeDashBoard /> },

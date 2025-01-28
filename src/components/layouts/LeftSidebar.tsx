@@ -1,5 +1,7 @@
-import { ISidebarData } from '@/types'
 import Image from 'next/image'
+
+import { ISidebarData } from '@/types'
+
 import SidebarItem from '../common/SidebarItem'
 
 const LeftSidebar = ({

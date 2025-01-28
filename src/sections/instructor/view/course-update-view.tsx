@@ -1,23 +1,8 @@
 'use client'
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@/components/ui/accordion'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { chapterData } from '@/sections/courses/data/data'
+
+import React, { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import MuxUploader from '@mux/mux-uploader-react'
 import {
   CircleHelp,
   CirclePlay,
@@ -31,11 +16,16 @@ import {
   Trash2,
   Video,
 } from 'lucide-react'
-import React, { useState } from 'react'
 import ReactQuill from 'react-quill'
-import 'react-quill/dist/quill.snow.css'
-import { Textarea } from '@/components/ui/textarea'
-import MuxUploader from '@mux/mux-uploader-react'
+
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import {
   Dialog,
   DialogContent,
@@ -44,7 +34,20 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
-import { useRouter } from 'next/navigation'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Textarea } from '@/components/ui/textarea'
+import { chapterData } from '@/sections/courses/data/data'
+
+import 'react-quill/dist/quill.snow.css'
 
 const CourseUpdateView = ({ slug }: { slug: string }) => {
   console.log(slug)
@@ -114,7 +117,7 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
               <TabsList className="flex gap-4">
                 <TabsTrigger
                   value="courseInfo"
-                  className="w-full py-3 text-black hover:bg-[#FF6652] data-[state=active]:bg-primary data-[state=active]:text-white"
+                  className="w-full py-3 text-black data-[state=active]:bg-primary data-[state=active]:text-white hover:bg-[#FF6652]"
                 >
                   <div className="flex gap-2">
                     <TableOfContents size={18} />
@@ -123,7 +126,7 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
                 </TabsTrigger>
                 <TabsTrigger
                   value="courseBenefits"
-                  className="w-full py-3 text-black hover:bg-[#FF6652] data-[state=active]:bg-primary data-[state=active]:text-white"
+                  className="w-full py-3 text-black data-[state=active]:bg-primary data-[state=active]:text-white hover:bg-[#FF6652]"
                 >
                   <div className="flex gap-2">
                     <Target size={18} />
@@ -132,7 +135,7 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
                 </TabsTrigger>
                 <TabsTrigger
                   value="courseChapter"
-                  className="w-full py-3 text-black hover:bg-[#FF6652] data-[state=active]:bg-primary data-[state=active]:text-white"
+                  className="w-full py-3 text-black data-[state=active]:bg-primary data-[state=active]:text-white hover:bg-[#FF6652]"
                 >
                   <div className="flex gap-2">
                     <TableOfContents size={18} />

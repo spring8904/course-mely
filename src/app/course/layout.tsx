@@ -1,4 +1,5 @@
 import React from 'react'
+
 import { manropeFont } from '@/components/common/fonts'
 import QueryProvider from '@/components/layouts/QueryProvider'
 

@@ -1,6 +1,9 @@
 'use client'
 
 import React from 'react'
+import Image from 'next/image'
+import Link from 'next/link'
+import MuxPlayer from '@mux/mux-player-react/lazy'
 import {
   ChevronLeft,
   CirclePlay,
@@ -8,11 +11,7 @@ import {
   Plus,
   StickyNote,
 } from 'lucide-react'
-import Image from 'next/image'
-import Link from 'next/link'
-import LearningProcess from '@/components/common/LearningProcess'
-import MuxPlayer from '@mux/mux-player-react/lazy'
-import { chapterData, lessonData } from '@/sections/courses/data/data'
+
 import {
   Accordion,
   AccordionContent,
@@ -27,6 +26,8 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet'
+import LearningProcess from '@/components/common/LearningProcess'
+import { chapterData, lessonData } from '@/sections/courses/data/data'
 
 const LearningLessonView = () => {
   return (

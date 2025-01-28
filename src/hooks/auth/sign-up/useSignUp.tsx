@@ -1,13 +1,14 @@
 'use client'
 
-import QUERY_KEY from '@/constants/query-key'
-import SignUpSuccessToast from '@/sections/signup/_components/signup-success-toast'
-import { authApi } from '@/services/auth/authApi'
-import { IAuthData } from '@/types'
+import { useRouter } from 'next/navigation'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { AxiosError } from 'axios'
-import { useRouter } from 'next/navigation'
 import { toast } from 'react-toastify'
+
+import { IAuthData } from '@/types'
+import QUERY_KEY from '@/constants/query-key'
+import { authApi } from '@/services/auth/authApi'
+import SignUpSuccessToast from '@/sections/signup/_components/signup-success-toast'
 
 interface ErrorResponse {
   message: string

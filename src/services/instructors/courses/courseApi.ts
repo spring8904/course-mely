@@ -1,5 +1,5 @@
-import api from '@/configs/api'
 import { IStoreCourseData } from '@/types'
+import api from '@/configs/api'
 
 export const manageCourseApi = {
   storeCourse: async (courseData: IStoreCourseData) => {

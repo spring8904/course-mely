@@ -1,5 +1,5 @@
-import api from '@/configs/api'
 import { ICourse } from '@/types'
+import api from '@/configs/api'
 
 const prefix = '/courses'
 

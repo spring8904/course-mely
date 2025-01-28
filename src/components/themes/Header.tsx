@@ -1,11 +1,12 @@
 'use client'
+
 import React, { useState } from 'react'
-import Link from 'next/link'
 import Image from 'next/image'
+import Link from 'next/link'
 
 const Header = () => {
   const [query, setQuery] = useState('')
-  const [results, setResults] = useState([])
+  const [results, setResults] = useState<any[]>([])
 
   const data: any = [
     { type: 'course', name: 'Next.js Basics' },
@@ -724,7 +725,7 @@ const Header = () => {
                 </form>
                 {results.length > 0 && (
                   <ul>
-                    {results.map((result, index) => (
+                    {results.map((result: any, index) => (
                       <li key={index}>
                         <strong>{result?.type}:</strong> {result?.name}
                       </li>

@@ -1,5 +1,5 @@
-import Image from 'next/image'
 import React from 'react'
+import Image from 'next/image'
 import { AiFillDollarCircle, AiFillWarning } from 'react-icons/ai'
 
 const WalletView = () => {

@@ -9,7 +9,7 @@
     "lint": "next lint",
     "lint:fix": "next lint --fix",
     "format": "prettier --write .",
-    "check-types": "tsc --noEmit --pretty",
+    "type-check": "tsc --noEmit --pretty",
     "prepare": "husky"
   },
   "dependencies": {
@@ -82,6 +82,7 @@
     "prettier": "^3.4.2",
     "prettier-plugin-tailwindcss": "^0.6.9",
     "tailwindcss": "^3.4.1",
+    "tsc-files": "^1.1.4",
     "typescript": "^5",
     "typescript-eslint": "^8.18.2"
   }
