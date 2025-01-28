@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { IUser } from '@/types'
+
 import { Separator } from '@/components/ui/separator'
 import { SidebarTrigger } from '@/components/ui/sidebar'
 import InputSeach from '@/components/common/InputSeach'

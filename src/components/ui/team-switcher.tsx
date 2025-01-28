@@ -1,6 +1,7 @@
 'use client'
 
 import * as React from 'react'
+import Image from 'next/image'
 
 import {
   DropdownMenu,
@@ -12,7 +13,6 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@/components/ui/sidebar'
-import Image from 'next/image'
 
 export function TeamSwitcher({
   teams,
