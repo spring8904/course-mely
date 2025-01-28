@@ -4,8 +4,8 @@ import CoursesList from './_conponents/courses-list'
 const MeWishList = () => {
   return (
     <div className="section-wishlist-right section-right">
-      <div className="row">
-        <div className="border-bottom">
+      <div className="row mb-10">
+        <div className="mb-10 flex items-center">
           <div className="header-search grow">
             <h6 className="fw-5 fs-22 wow fadeInUp">Favorite Courses</h6>
           </div>
@@ -13,6 +13,7 @@ const MeWishList = () => {
             <MeSort />
           </div>
         </div>
+        <div className="border-bottom"></div>
       </div>
       <section className="section-inner">
         <CoursesList />

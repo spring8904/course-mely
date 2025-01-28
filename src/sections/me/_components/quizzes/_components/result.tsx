@@ -9,7 +9,7 @@ const Result = () => {
           Add New Quiz <i className="icon-arrow-top-right"></i>
         </a>
       </div>
-      <div className="pd-40">
+      <div className="pd-40 mb-10 flex items-center">
         <div className="header-search wow fadeInUp grow">
           <form action="#" className="form-search">
             <fieldset>

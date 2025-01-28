@@ -6,8 +6,8 @@ const MeMyCourses = () => {
   return (
     <div>
       <div className="section-my-courses-right section-right">
-        <div className="row">
-          <div className="pd-40">
+        <div className="row mb-10">
+          <div className="pd-40 flex items-center">
             <div className="header-search wow fadeInUp grow">
               <MeSearch />
             </div>
