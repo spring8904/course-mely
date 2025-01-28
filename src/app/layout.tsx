@@ -1,6 +1,8 @@
-import { manropeFont } from '@/components/common/fonts'
-import './globals.css'
 import { Metadata } from 'next'
+
+import { manropeFont } from '@/components/common/fonts'
+
+import './globals.css'
 
 export default function RootLayout({
   children,

@@ -1,11 +1,7 @@
+import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
 import SwiperCore from 'swiper'
-import 'swiper/css'
-import 'swiper/css/navigation'
-import 'swiper/css/pagination'
-import 'swiper/css/scrollbar'
 import {
   A11y,
   Autoplay,
@@ -14,6 +10,12 @@ import {
   Scrollbar,
 } from 'swiper/modules'
 import { Swiper, SwiperSlide } from 'swiper/react'
+
+import 'swiper/css'
+import 'swiper/css/navigation'
+import 'swiper/css/pagination'
+import 'swiper/css/scrollbar'
+
 // Install the necessary Swiper modules
 SwiperCore.use([Navigation, Pagination, Autoplay])
 

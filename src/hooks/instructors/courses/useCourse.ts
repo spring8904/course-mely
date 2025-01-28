@@ -1,7 +1,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+
 import { IStoreCourseData } from '@/types'
-import { manageCourseApi } from '@/services/instructors/courses/courseApi'
 import QUERY_KEY from '@/constants/query-key'
+import { manageCourseApi } from '@/services/instructors/courses/courseApi'
 
 export const useStoreCourse = () => {
   const queryClient = useQueryClient()

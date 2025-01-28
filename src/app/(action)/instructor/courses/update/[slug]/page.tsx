@@ -1,4 +1,5 @@
 import CourseUpdateView from '@/sections/instructor/view/course-update-view'
+
 // import { getInstructorsCourseBySlug } from '@/services/courses/course-api'
 // import { Metadata, ResolvingMetadata } from 'next'
 

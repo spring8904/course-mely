@@ -1,3 +1,6 @@
 node_modules
 .next
 dist
+
+*.min.css
+*.min.js

@@ -1,13 +1,14 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+
 import MeDashBoard from './dashboard/dashboard'
 import MeMyCourses from './my-courses/my-courses'
-import MeReview from './reviews/reviews'
-import MeWishList from './wishlist/wishlist'
 import MeOrder from './order/order'
 import MeQuizzes from './quizzes/quizzes'
+import MeReview from './reviews/reviews'
 import MeSetting from './settings/settings'
+import MeWishList from './wishlist/wishlist'
 
 const menuItems = [
   {

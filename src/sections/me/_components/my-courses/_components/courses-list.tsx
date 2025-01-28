@@ -1,4 +1,5 @@
 import React from 'react'
+
 const courses = [
   {
     image: '/assets/images/courses/courses-01.jpg',

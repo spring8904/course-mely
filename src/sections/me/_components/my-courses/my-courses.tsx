@@ -1,7 +1,9 @@
 import React from 'react'
+
 import MeSearch from '../me-search'
 import MeSort from '../me-sort'
 import CoursesList from './_components/courses-list'
+
 const MeMyCourses = () => {
   return (
     <div>

@@ -1,5 +1,5 @@
-import Image from 'next/image'
 import React from 'react'
+import Image from 'next/image'
 import { RxCrossCircled } from 'react-icons/rx'
 
 const ModalCheckoutCourseView = () => {

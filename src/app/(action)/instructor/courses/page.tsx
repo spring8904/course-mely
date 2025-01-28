@@ -1,6 +1,7 @@
 import React from 'react'
-import { CourseManageView } from '@/sections/instructor/view'
 import { Metadata } from 'next'
+
+import { CourseManageView } from '@/sections/instructor/view'
 
 export const metadata: Metadata = {
   title: 'Quản lý khóa học',

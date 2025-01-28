@@ -1,6 +1,8 @@
 import React from 'react'
+
 import MeSort from '../me-sort'
 import CoursesList from './_conponents/courses-list'
+
 const MeWishList = () => {
   return (
     <div className="section-wishlist-right section-right">

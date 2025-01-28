@@ -1,23 +1,8 @@
 'use client'
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@/components/ui/accordion'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { chapterData } from '@/sections/courses/data/data'
+
+import React, { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import MuxUploader from '@mux/mux-uploader-react'
 import {
   CircleHelp,
   CirclePlay,
@@ -32,11 +17,16 @@ import {
   Trash2,
   Video,
 } from 'lucide-react'
-import React, { useState } from 'react'
 import ReactQuill from 'react-quill'
-import 'react-quill/dist/quill.snow.css'
-import { Textarea } from '@/components/ui/textarea'
-import MuxUploader from '@mux/mux-uploader-react'
+
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import {
   Dialog,
   DialogContent,
@@ -45,7 +35,20 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
-import { useRouter } from 'next/navigation'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Textarea } from '@/components/ui/textarea'
+import { chapterData } from '@/sections/courses/data/data'
+
+import 'react-quill/dist/quill.snow.css'
 
 const CourseUpdateView = ({ slug }: { slug: string }) => {
   console.log(slug)

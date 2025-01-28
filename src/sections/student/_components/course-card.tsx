@@ -1,8 +1,10 @@
-import { Card, CardContent } from '@/components/ui/card'
-import { cn } from '@/lib/utils'
-import { ICourse } from '@/types'
-import { Star } from 'lucide-react'
 import Image from 'next/image'
+import { Star } from 'lucide-react'
+
+import { ICourse } from '@/types'
+import { cn } from '@/lib/utils'
+
+import { Card, CardContent } from '@/components/ui/card'
 
 interface CourseCardProps {
   course: ICourse

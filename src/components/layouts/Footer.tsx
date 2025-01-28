@@ -1,31 +1,29 @@
-import Link from 'next/link'
-
 type ContactInfo = {
   phone: string
   email: string
   address: string
 }
 
-const FooterColumn = ({
-  title,
-  links,
-}: {
-  title: string
-  links: { href: string; label: string }[]
-}) => (
-  <div>
-    <h2 className="mb-4 text-xl font-bold">{title}</h2>
-    <ul className="space-y-4">
-      {links.map((link) => (
-        <li key={`${link.label}-${link.href}`}>
-          <Link href={link.href} className="hover:underline">
-            {link.label}
-          </Link>
-        </li>
-      ))}
-    </ul>
-  </div>
-)
+// const FooterColumn = ({
+//   title,
+//   links,
+// }: {
+//   title: string
+//   links: { href: string; label: string }[]
+// }) => (
+//   <div>
+//     <h2 className="mb-4 text-xl font-bold">{title}</h2>
+//     <ul className="space-y-4">
+//       {links.map((link) => (
+//         <li key={`${link.label}-${link.href}`}>
+//           <Link href={link.href} className="hover:underline">
+//             {link.label}
+//           </Link>
+//         </li>
+//       ))}
+//     </ul>
+//   </div>
+// )
 
 const Footer = () => {
   const contactInfo: ContactInfo = {

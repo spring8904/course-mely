@@ -1,11 +1,14 @@
+import { ToastContainer } from 'react-toastify'
+
 import { manropeFont } from '@/components/common/fonts'
-import Footer from './Footer'
-import QueryProvider from './QueryProvider'
 import Header from '@/components/themes/Header'
 import HeadLinks from '@/components/themes/HeadLinks'
 import HeadScripts from '@/components/themes/HeadScripts'
+
+import Footer from './Footer'
+import QueryProvider from './QueryProvider'
+
 import '@/components/themes/assetsImports'
-import { ToastContainer } from 'react-toastify'
 
 interface LayoutProps {
   children?: React.ReactNode

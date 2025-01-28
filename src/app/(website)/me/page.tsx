@@ -1,6 +1,7 @@
 import React from 'react'
-import { MeView } from '@/sections/me/view'
 import { Metadata } from 'next'
+
+import { MeView } from '@/sections/me/view'
 
 export const metadata: Metadata = {
   title: 'Thông tin cá nhân',

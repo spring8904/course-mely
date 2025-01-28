@@ -1,4 +1,3 @@
-import { IFormControl, ISidebarData } from '@/types'
 import {
   BookText,
   Compass,
@@ -9,6 +8,8 @@ import {
   UserRoundCog,
   Wallet,
 } from 'lucide-react'
+
+import { IFormControl, ISidebarData } from '@/types'
 
 export const signupFormFieldList: IFormControl[] = [
   {

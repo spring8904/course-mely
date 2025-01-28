@@ -1,4 +1,5 @@
 import { BlogDetailView } from '@/sections/blogs/view'
+
 // import { getPostBySlug } from '@/services/posts/post-api'
 // import { Metadata, ResolvingMetadata } from 'next'
 

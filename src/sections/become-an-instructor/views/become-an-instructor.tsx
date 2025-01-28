@@ -1,23 +1,26 @@
 'use client'
+
 import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
+import { Autoplay } from 'swiper/modules'
+import { Swiper, SwiperSlide } from 'swiper/react'
+
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion'
-import { Label } from '@/components/ui/label'
-import { Input } from '@/components/ui/input'
-import { PasswordInput } from '@/components/ui/password-input'
-import { Checkbox } from '@/components/ui/checkbox'
 import { Button } from '@/components/ui/button'
-import Link from 'next/link'
-import { Swiper, SwiperSlide } from 'swiper/react'
-import { Autoplay } from 'swiper/modules'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { PasswordInput } from '@/components/ui/password-input'
+import ModalOption from '@/sections/become-an-instructor/_components/modal-option'
+
 import 'swiper/css'
 import 'swiper/css/autoplay'
-import ModalOption from '@/sections/become-an-instructor/_components/modal-option'
 
 const BecomeAnInstructor = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)

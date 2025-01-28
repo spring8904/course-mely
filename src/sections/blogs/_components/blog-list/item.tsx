@@ -1,4 +1,5 @@
 import React from 'react'
+
 const BlogListItem = () => {
   return (
     <div className="wrap-blog-list">

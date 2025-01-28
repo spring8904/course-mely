@@ -1,5 +1,6 @@
-import { IAuthData } from '@/types'
 import { RegisterOptions, UseFormRegister } from 'react-hook-form'
+
+import { IAuthData } from '@/types'
 
 type Props = {
   id: string
