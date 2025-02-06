@@ -1,5 +1,5 @@
-import api from '@/configs/api'
 import { IPost } from '@/types'
+import api from '@/configs/api'
 
 const prefix = '/posts'
 

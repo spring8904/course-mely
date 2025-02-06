@@ -1,6 +1,7 @@
 import React from 'react'
-import BecomeAnInstructor from '@/sections/become-an-instructor/views/become-an-instructor'
 import { Metadata } from 'next'
+
+import BecomeAnInstructor from '@/sections/become-an-instructor/views/become-an-instructor'
 
 export const metadata: Metadata = {
   title: 'Trở thành giảng viên',

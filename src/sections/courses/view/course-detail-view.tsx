@@ -1,18 +1,18 @@
+import React from 'react'
+import Link from 'next/link'
+import { Swiper, SwiperSlide } from 'swiper/react'
+
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion'
-
 import {
   chapterData,
   courseData,
   lessonData,
 } from '@/sections/courses/data/data'
-import Link from 'next/link'
-import { Swiper, SwiperSlide } from 'swiper/react'
-import React from 'react'
 
 const courses = [
   {

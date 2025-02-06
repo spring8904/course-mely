@@ -1,22 +1,35 @@
 'use client'
 
+import { useEffect } from 'react'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { useAuthStore } from '@/stores/useAuthStore'
+import { useForm } from 'react-hook-form'
+
+import { IAuthData } from '@/types'
+import { signupFormFieldList } from '@/configs'
+import { useSignUp } from '@/hooks/auth/sign-up/useSignUp'
+
 import FormField from '@/components/common/FormField'
 import PageImage from '@/components/common/PageImage'
 import SocialLogin from '@/components/common/SocialLogin'
 import SubmitButton from '@/components/common/SubmitButton'
-import { signupFormFieldList } from '@/configs'
-import { useSignUp } from '@/hooks/auth/sign-up/useSignUp'
-import { IAuthData } from '@/types'
-import Link from 'next/link'
-import { useForm } from 'react-hook-form'
 
 const SignupView = () => {
+  const router = useRouter()
+  const { isAuthenticated } = useAuthStore()
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<IAuthData>()
   const { mutate, status } = useSignUp()
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.push('/')
+    }
+  }, [isAuthenticated, router])
 
   const isPending = status === 'pending'
 

@@ -1,6 +1,7 @@
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 // import { userInfoFormControls } from '@/configs'
 import { ShieldCheck, UserRoundCog } from 'lucide-react'
+
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 const AccountView = () => {
   return (
@@ -14,7 +15,7 @@ const AccountView = () => {
               <TabsList className="mt-6 flex flex-col items-center justify-start gap-2">
                 <TabsTrigger
                   value="userinfo"
-                  className="w-full py-3 text-black hover:bg-[#FF6652] data-[state=active]:bg-primary data-[state=active]:text-white"
+                  className="w-full py-3 text-black data-[state=active]:bg-primary data-[state=active]:text-white hover:bg-[#FF6652]"
                 >
                   <div className="flex gap-2">
                     <UserRoundCog size={18} />
@@ -23,7 +24,7 @@ const AccountView = () => {
                 </TabsTrigger>
                 <TabsTrigger
                   value="sidebar"
-                  className="w-full py-3 text-black hover:bg-[#FF6652] data-[state=active]:bg-primary data-[state=active]:text-white"
+                  className="w-full py-3 text-black data-[state=active]:bg-primary data-[state=active]:text-white hover:bg-[#FF6652]"
                 >
                   <div className="flex gap-2">
                     <ShieldCheck size={18} />

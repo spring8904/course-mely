@@ -1,6 +1,7 @@
 'use client'
 
 import { cn } from '@/lib/utils'
+
 import {
   Banner,
   BecomeInstructorBanner,
@@ -8,6 +9,7 @@ import {
   PostList,
 } from '@/sections/home/components'
 import InstructorTop from '@/sections/home/components/Instructor-top'
+
 import './index.css'
 
 const HomeView = () => {

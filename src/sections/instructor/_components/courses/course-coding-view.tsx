@@ -1,4 +1,8 @@
 'use client'
+
+import { useEffect, useState } from 'react'
+import { MoveLeft } from 'lucide-react'
+
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -16,8 +20,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { MoveLeft } from 'lucide-react'
-import { useEffect, useState } from 'react'
+
 import SolutionTab from './solution-tab'
 
 const CourseCodingView = () => {

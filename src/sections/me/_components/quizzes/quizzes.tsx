@@ -1,7 +1,8 @@
 import React from 'react'
+
+import QuizDetail from './_components/quiz-detail'
 import QuizList from './_components/quiz-list'
 import Result from './_components/result'
-import QuizDetail from './_components/quiz-detail'
 
 const MeQuizzes = () => {
   return (

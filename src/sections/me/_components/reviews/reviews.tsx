@@ -1,4 +1,5 @@
 import React from 'react'
+
 import MeSort from '../me-sort'
 
 const MeReview = () => {
@@ -6,7 +7,7 @@ const MeReview = () => {
     <div>
       <div className="section-reviews-right section-right">
         <div className="row">
-          <div className="border-bottom">
+          <div className="mb-10 flex items-center">
             <div className="header-search grow">
               <h6 className="fw-5 fs-22 wow fadeInUp">Student Review</h6>
             </div>
@@ -14,6 +15,7 @@ const MeReview = () => {
               <MeSort />
             </div>
           </div>
+          <div className="border-bottom"></div>
           <section className="section-inner">
             <div className="review-item style-reply wow fadeInUp">
               <div className="avatar">
@@ -93,7 +95,6 @@ const MeReview = () => {
               </div>
               <div className="comment-box">
                 <h5 className="author-name">
-                  {' '}
                   <a href="#">Carolyn Welbron</a>
                 </h5>
                 <div className="ratings">

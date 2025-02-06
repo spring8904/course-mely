@@ -1,9 +1,12 @@
-import { IUser } from '@/types'
-// import UserMenu from '../common/UserMenu'
-import { SidebarTrigger } from '@/components/ui/sidebar'
-import { Separator } from '@/components/ui/separator'
-import InputSeach from '@/components/common/InputSeach'
 import React from 'react'
+
+import { IUser } from '@/types'
+
+import { Separator } from '@/components/ui/separator'
+import { SidebarTrigger } from '@/components/ui/sidebar'
+import InputSeach from '@/components/common/InputSeach'
+
+// import UserMenu from '../common/UserMenu'
 
 const TopBar = ({ userData }: { userData: IUser }) => {
   return (
@@ -15,7 +18,7 @@ const TopBar = ({ userData }: { userData: IUser }) => {
       </div>
       <div className="flex items-center space-x-4 px-6">
         <InputSeach />
-        {/*<UserMenu userData={userData} />*/}
+        {/* <UserMenu userData={userData} /> */}
       </div>
     </header>
   )

@@ -1,8 +1,7 @@
-import React from 'react'
-import SummaryCards from './_components/summary-cards'
-import CoursesList from './_components/courses-list'
 import MeSearch from '../me-search'
 import MeSort from '../me-sort'
+import CoursesList from './_components/courses-list'
+import SummaryCards from './_components/summary-cards'
 
 const MeDashBoard = () => {
   return (

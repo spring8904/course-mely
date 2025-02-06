@@ -1,12 +1,14 @@
 import React from 'react'
+
 import MeSearch from '../me-search'
 import MeSort from '../me-sort'
 import CoursesList from './_components/courses-list'
+
 const MeMyCourses = () => {
   return (
     <div>
       <div className="section-my-courses-right section-right">
-        <div className="row">
+        <div className="row mb-10">
           <div className="pd-40 flex items-center">
             <div className="header-search wow fadeInUp grow">
               <MeSearch />

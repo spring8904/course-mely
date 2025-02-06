@@ -1,12 +1,15 @@
 'use client'
 
-import { IUser, UserStatus } from '@/types'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-import UserMenu from '../common/UserMenu'
-import { Button } from '../ui/button'
+
+// import { useRouter } from 'next/navigation'
+
+// import { IUser, UserStatus } from '@/types'
 import InputSeach from '@/components/common/InputSeach'
+
+// import UserMenu from '../common/UserMenu'
+// import { Button } from '../ui/button'
 
 const Logo = () => (
   <Link href="/" className="flex items-center space-x-3">
@@ -35,51 +38,51 @@ const NavLinks = () => {
   )
 }
 
-const AuthButtons = () => {
-  const router = useRouter()
+// const AuthButtons = () => {
+//   const router = useRouter()
 
-  return (
-    <div className="flex items-center space-x-2">
-      <Button
-        variant="secondary"
-        className="text-base font-semibold"
-        onClick={() => router.push('/sign-up')}
-      >
-        Đăng ký
-      </Button>
-      <Button
-        className="text-base font-semibold"
-        onClick={() => router.push('/sign-in')}
-      >
-        Đăng nhập
-      </Button>
-    </div>
-  )
-}
+//   return (
+//     <div className="flex items-center space-x-2">
+//       <Button
+//         variant="secondary"
+//         className="text-base font-semibold"
+//         onClick={() => router.push('/sign-up')}
+//       >
+//         Đăng ký
+//       </Button>
+//       <Button
+//         className="text-base font-semibold"
+//         onClick={() => router.push('/sign-in')}
+//       >
+//         Đăng nhập
+//       </Button>
+//     </div>
+//   )
+// }
 
 const Header = () => {
-  const user: IUser | null = {
-    id: 1,
-    code: 'USR001',
-    name: 'John Doe',
-    email: 'johndoe@example.com',
-    emailVerifiedAt: new Date('2024-12-25T12:00:00Z'),
-    password: 'securepassword123',
-    avatar: 'https://example.com/avatar.jpg',
-    verificationToken: 'abc123xyz',
-    rememberToken: 'token56789',
-    status: UserStatus.Active,
-    deletedAt: null,
-    createdAt: new Date('2024-01-01T09:00:00Z'),
-    updatedAt: new Date('2024-12-27T15:30:00Z'),
-  }
+  // const user: IUser | null = {
+  //   id: 1,
+  //   code: 'USR001',
+  //   name: 'John Doe',
+  //   email: 'johndoe@example.com',
+  //   emailVerifiedAt: new Date('2024-12-25T12:00:00Z'),
+  //   password: 'securepassword123',
+  //   avatar: 'https://example.com/avatar.jpg',
+  //   verificationToken: 'abc123xyz',
+  //   rememberToken: 'token56789',
+  //   status: UserStatus.Active,
+  //   deletedAt: null,
+  //   createdAt: new Date('2024-01-01T09:00:00Z'),
+  //   updatedAt: new Date('2024-12-27T15:30:00Z'),
+  // }
 
   return (
     <header className="sticky inset-x-0 top-0 z-10 flex items-center justify-between bg-white px-32 py-6 shadow-sm">
       <Logo />
       <InputSeach className="w-[340px]" />
       <NavLinks />
-      {user ? <UserMenu userData={user} /> : <AuthButtons />}
+      {/* {user ? <UserMenu userData={user} /> : <AuthButtons />} */}
     </header>
   )
 }

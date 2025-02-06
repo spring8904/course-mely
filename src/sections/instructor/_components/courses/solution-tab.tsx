@@ -1,5 +1,11 @@
 'use client'
 
+import { useRef } from 'react'
+import { ArrowUp, Info, MoveHorizontal, RotateCcw } from 'lucide-react'
+import { ImperativePanelHandle } from 'react-resizable-panels'
+
+import { cn } from '@/lib/utils'
+
 import { Button } from '@/components/ui/button'
 import {
   ResizableHandle,
@@ -7,10 +13,6 @@ import {
   ResizablePanelGroup,
 } from '@/components/ui/resizable'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { cn } from '@/lib/utils'
-import { ArrowUp, Info, MoveHorizontal, RotateCcw } from 'lucide-react'
-import { useRef } from 'react'
-import { ImperativePanelHandle } from 'react-resizable-panels'
 
 const SolutionTab = () => {
   const solutionPanelRef = useRef<ImperativePanelHandle>(null)

@@ -1,13 +1,14 @@
 import React from 'react'
+import Image from 'next/image'
+import Link from 'next/link'
+
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
-import Image from 'next/image'
-import { Button } from '@/components/ui/button'
-import Link from 'next/link'
 
 const ModalOption = ({
   isOpen,

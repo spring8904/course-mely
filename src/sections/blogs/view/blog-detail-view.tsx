@@ -1,9 +1,10 @@
 import React from 'react'
+
 import BlogDetailPost from '../_components/blog-detail/post'
-import BlogDetailSharePost from '../_components/blog-detail/share-post'
 import BlogDetailProfileItem from '../_components/blog-detail/profile-item'
-import BlogDetailReviewList from '../_components/blog-detail/review-list'
 import BlogDetailReviewForm from '../_components/blog-detail/review-form'
+import BlogDetailReviewList from '../_components/blog-detail/review-list'
+import BlogDetailSharePost from '../_components/blog-detail/share-post'
 import BlogDetailSimilarPosts from '../_components/blog-detail/similar-posts'
 
 const BlogDetailView = ({ slug }: { slug: string }) => {

@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import Image from 'next/image'
 
 type ContactInfo = {
   phone: string
@@ -6,26 +6,26 @@ type ContactInfo = {
   address: string
 }
 
-const FooterColumn = ({
-  title,
-  links,
-}: {
-  title: string
-  links: { href: string; label: string }[]
-}) => (
-  <div>
-    <h2 className="mb-4 text-xl font-bold">{title}</h2>
-    <ul className="space-y-4">
-      {links.map((link) => (
-        <li key={`${link.label}-${link.href}`}>
-          <Link href={link.href} className="hover:underline">
-            {link.label}
-          </Link>
-        </li>
-      ))}
-    </ul>
-  </div>
-)
+// const FooterColumn = ({
+//   title,
+//   links,
+// }: {
+//   title: string
+//   links: { href: string; label: string }[]
+// }) => (
+//   <div>
+//     <h2 className="mb-4 text-xl font-bold">{title}</h2>
+//     <ul className="space-y-4">
+//       {links.map((link) => (
+//         <li key={`${link.label}-${link.href}`}>
+//           <Link href={link.href} className="hover:underline">
+//             {link.label}
+//           </Link>
+//         </li>
+//       ))}
+//     </ul>
+//   </div>
+// )
 
 const Footer = () => {
   const contactInfo: ContactInfo = {
@@ -48,7 +48,12 @@ const Footer = () => {
                   >
                     <div className="footer-logo">
                       <a href="#">
-                        <img src="/images/logo/logo.svg" alt="" />
+                        <Image
+                          src="/images/logo/logo.svg"
+                          alt=""
+                          width={500}
+                          height={300}
+                        />
                       </a>
                     </div>
                     <ul className="address">
