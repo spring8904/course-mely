@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form'
 
 import { IAuthData } from '@/types'
 import { signinFormFieldList } from '@/configs'
+import { useSignIn } from '@/hooks/auth/sign-in/useSignIn'
 
 import FormField from '@/components/common/FormField'
 import PageImage from '@/components/common/PageImage'
@@ -14,9 +15,17 @@ import SubmitButton from '@/components/common/SubmitButton'
 const SigninView = () => {
   const {
     register,
+    handleSubmit,
     formState: { errors },
   } = useForm<IAuthData>()
 
+  const { mutate, status } = useSignIn()
+
+  const isPending = status === 'pending'
+
+  const onSubmit = handleSubmit((data) => {
+    mutate(data)
+  })
   return (
     <div className="main-content page-login">
       <section className="section-page-login login-wrap tf-spacing-4">
@@ -50,7 +59,7 @@ const SigninView = () => {
                     Đăng ký
                   </Link>
                 </div>
-                <form action="#" className="form-login">
+                <form action="#" className="form-login" onSubmit={onSubmit}>
                   {signinFormFieldList.map(
                     ({ id, type, name, label, rules }) => (
                       <FormField
@@ -79,7 +88,7 @@ const SigninView = () => {
                       Quên mật khẩu?
                     </Link>
                   </div>
-                  <SubmitButton text="Đăng nhập" disabled={false} />
+                  <SubmitButton text="Đăng nhập" disabled={isPending} />
                 </form>
                 <p className="fs-15 wow fadeInUp" data-wow-delay="0s">
                   OR
