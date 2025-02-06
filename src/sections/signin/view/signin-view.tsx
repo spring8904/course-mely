@@ -1,6 +1,9 @@
 'use client'
 
+import { useEffect } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { useAuthStore } from '@/stores/useAuthStore'
 import { useForm } from 'react-hook-form'
 
 import { IAuthData } from '@/types'
@@ -13,19 +16,28 @@ import SocialLogin from '@/components/common/SocialLogin'
 import SubmitButton from '@/components/common/SubmitButton'
 
 const SigninView = () => {
+  const router = useRouter()
+  const { isAuthenticated } = useAuthStore()
+
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<IAuthData>()
-
   const { mutate, status } = useSignIn()
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.push('/')
+    }
+  }, [isAuthenticated, router])
 
   const isPending = status === 'pending'
 
   const onSubmit = handleSubmit((data) => {
     mutate(data)
   })
+
   return (
     <div className="main-content page-login">
       <section className="section-page-login login-wrap tf-spacing-4">

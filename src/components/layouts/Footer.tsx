@@ -1,3 +1,5 @@
+import Image from 'next/image'
+
 type ContactInfo = {
   phone: string
   email: string
@@ -46,7 +48,12 @@ const Footer = () => {
                   >
                     <div className="footer-logo">
                       <a href="#">
-                        <img src="/images/logo/logo.svg" alt="" />
+                        <Image
+                          src="/images/logo/logo.svg"
+                          alt=""
+                          width={500}
+                          height={300}
+                        />
                       </a>
                     </div>
                     <ul className="address">
