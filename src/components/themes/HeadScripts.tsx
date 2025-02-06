@@ -10,12 +10,6 @@ const HeadScripts = () => {
     if (menuElement) {
       new Mmenu(menuElement)
     }
-
-    const $ = window.jQuery
-    if ($) {
-      // Các plugin sử dụng jQuery có thể gọi ở đây
-      console.log('jQuery is ready')
-    }
   }, [])
 
   return (
