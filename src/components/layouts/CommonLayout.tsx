@@ -10,6 +10,8 @@ import QueryProvider from './QueryProvider'
 
 import '@/components/themes/assetsImports'
 
+import Script from 'next/script'
+
 interface LayoutProps {
   children?: React.ReactNode
 }

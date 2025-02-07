@@ -5,4 +5,10 @@ export const authApi = {
   signUp: async (formData: IAuthData) => {
     return await api.post('auth/sign-up', formData)
   },
+  signIn: async (formData: IAuthData) => {
+    return await api.post('auth/sign-in', formData)
+  },
+  logout: async () => {
+    return await api.post('auth/logout')
+  },
 }

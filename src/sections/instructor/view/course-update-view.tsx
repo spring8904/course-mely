@@ -18,6 +18,7 @@ import {
   Video,
 } from 'lucide-react'
 import ReactQuill from 'react-quill'
+import { useImmer } from 'use-immer'
 
 import {
   Accordion,
@@ -50,6 +51,11 @@ import { chapterData } from '@/sections/courses/data/data'
 
 import 'react-quill/dist/quill.snow.css'
 
+interface FAQ {
+  question: string
+  answer: string
+}
+
 const CourseUpdateView = ({ slug }: { slug: string }) => {
   console.log(slug)
   const [value, setValue] = useState('')
@@ -57,6 +63,11 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
   const [video, setVideo] = useState<string | ArrayBuffer | null>(null)
   const [benefits, setBenefits] = useState<string[]>(['', '', '', ''])
   const [requirements, setRequirements] = useState(['', '', '', ''])
+  const [faqs, setFaqs] = useImmer<FAQ[]>([
+    { question: 'Ví dụ câu hỏi?', answer: 'Ví dụ câu trả lời' },
+  ])
+  const [question, setQuestion] = useState('')
+  const [answer, setAnswer] = useState('')
   const [addNewChapter, setAddNewChapter] = useState(false)
   const [addNewLesson, setAddNewLesson] = useState(false)
   const [selectedLesson, setSelectedLesson] = useState<string | null>(null)
@@ -94,6 +105,16 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
   const handleAddRequirement = () => {
     if (requirements.length < 10) {
       setRequirements([...requirements, ''])
+    }
+  }
+
+  const handleAddQA = () => {
+    if (faqs.length < 10) {
+      setFaqs((draft) => {
+        draft.push({ question, answer })
+      })
+      setQuestion('')
+      setAnswer('')
     }
   }
 
@@ -135,6 +156,12 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
     setRequirements(newRequirements)
   }
 
+  const handleRemoveQA = (index: number) => {
+    setFaqs((draft) => {
+      draft.splice(index, 1)
+    })
+  }
+
   const handleAddNewChapter = () => {
     setAddNewChapter(true)
 
@@ -165,7 +192,7 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
             </h3>
             <Button className="bg-primary">Gửi yêu cầu duyệt khoá học</Button>
           </div>
-          <Tabs defaultValue="courseBenefits">
+          <Tabs defaultValue="courseInfo">
             <Card className="mt-6 py-3">
               <TabsList className="flex gap-4">
                 <TabsTrigger
@@ -315,28 +342,48 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
                     </div>
                     <div className="mt-4">
                       <h3 className="text-base font-semibold">
-                        Câu hỏi thường gặp?
+                        Câu hỏi và câu trả lời
                       </h3>
                       <p className="text-[14px] text-[#4b5563]">
-                        Hãy liệt kê các câu hỏi mà học viên thường gặp khi tham
-                        gia khoá học của bạn.
+                        Bạn phải nhập ít nhất 1 câu hỏi và câu trả lời, tối đa
+                        10 cặp FAQ.
                       </p>
                       <div>
-                        <div className="flex items-center gap-2">
-                          <Input
-                            placeholder="Nhập câu hỏi số 1"
-                            className="mt-3 h-[40px]"
-                          />
-                          <Input
-                            placeholder="Nhập câu trả lời số 1"
-                            className="mt-3 h-[40px]"
-                          />
-                        </div>
+                        {faqs.map((qa, index) => (
+                          <div key={index} className="relative mt-3 flex gap-2">
+                            <Input
+                              placeholder={`Nhập câu hỏi số ${index + 1}`}
+                              className="h-[40px] pr-10"
+                              defaultValue={qa.question}
+                            />
+                            <Input
+                              placeholder={`Nhập câu trả lời số ${index + 1}`}
+                              className="h-[40px] pr-10"
+                              defaultValue={qa.answer}
+                            />
+                            {index >= 1 && (
+                              <button
+                                className="absolute right-2 top-1/2 -translate-y-1/2 text-red-500"
+                                onClick={() => handleRemoveQA(index)}
+                              >
+                                <Trash size={16} />
+                              </button>
+                            )}
+                          </div>
+                        ))}
                         <div className="mt-3">
-                          <Button>
+                          <Button
+                            disabled={faqs.length >= 10}
+                            onClick={handleAddQA}
+                          >
                             <CirclePlus size={18} />
-                            Thêm câu hỏi thường gặp của khoá học
+                            Thêm câu hỏi và câu trả lời
                           </Button>
+                          {faqs.length >= 10 && (
+                            <p className="mt-2 text-sm text-red-500">
+                              Bạn đã đạt tối đa 10 câu hỏi.
+                            </p>
+                          )}
                         </div>
                       </div>
                     </div>

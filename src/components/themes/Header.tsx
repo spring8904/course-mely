@@ -3,10 +3,18 @@
 import React, { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useAuthStore } from '@/stores/useAuthStore'
+import Swal from 'sweetalert2'
+
+import { useLogOut } from '@/hooks/auth/logout'
+
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 
 const Header = () => {
   const [query, setQuery] = useState('')
   const [results, setResults] = useState<any[]>([])
+  const { user, isAuthenticated } = useAuthStore()
+  const { isPending, mutate } = useLogOut()
 
   const data: any = [
     { type: 'course', name: 'Next.js Basics' },
@@ -30,6 +38,26 @@ const Header = () => {
       setResults(filteredResults)
     }
   }
+
+  const handleLogout = () => {
+    if (isPending) return
+
+    Swal.fire({
+      title: 'Bạn có chắc muốn đăng xuất?',
+      text: 'Bạn sẽ cần đăng nhập lại để tiếp tục!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#E27447',
+      cancelButtonColor: '#6c757d',
+      confirmButtonText: 'Đăng xuất',
+      cancelButtonText: 'Hủy',
+    }).then((result: any) => {
+      if (result.isConfirmed) {
+        mutate()
+      }
+    })
+  }
+
   return (
     <>
       <div className="preload preload-container">
@@ -91,29 +119,94 @@ const Header = () => {
               >
                 <i className="icon-shopcart fs-18"></i>
               </a>
-              <div className="header-btn">
-                <div className="header-login">
-                  <Link
-                    href="/sign-up"
-                    className="tf-button-default header-text"
-                  >
-                    Đăng ký
-                  </Link>
-                </div>
-                <div className="header-register">
-                  <Link
-                    href="/sign-in"
-                    className="tf-button-default active header-text"
-                  >
-                    Đăng nhập
-                  </Link>
-                </div>
-                <div className="header-join d-lg-none flex">
-                  <a href="login.html" className="fs-15">
-                    Join
-                  </a>
-                </div>
-              </div>
+              {isAuthenticated ? (
+                <>
+                  <div className="dropdown">
+                    <a
+                      href="#"
+                      role="button"
+                      id="dropdownMenuLink"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                    >
+                      <Avatar className="size-12">
+                        <AvatarImage
+                          src="https://github.com/shadcn.png"
+                          alt="@shadcn"
+                        />
+                        <AvatarFallback>SC</AvatarFallback>
+                      </Avatar>
+                    </a>
+                    <ul
+                      className="dropdown-menu !mt-2 !w-[240px] !rounded-lg !bg-white !p-4 !text-base *:cursor-pointer"
+                      aria-labelledby="dropdownMenuLink"
+                    >
+                      <div>
+                        <span className="text-xl">Xin chào:</span>
+                        <span className="ml-2 text-xl text-orange-500">
+                          {user?.name}
+                        </span>
+                      </div>
+                      <li className="mt-4">
+                        <a
+                          href="#"
+                          className="dropdown-item !block !w-full !rounded-lg !bg-transparent !p-4 !font-medium !transition-colors !duration-200
+      hover:!bg-[#FFEFEA] hover:!text-[#E27447] "
+                        >
+                          Thông tin cá nhân
+                        </a>
+                        <a
+                          href="#"
+                          className="dropdown-item !block !w-full !rounded-lg !bg-transparent !p-4 !font-medium !transition-colors !duration-200
+      hover:!bg-[#FFEFEA] hover:!text-[#E27447] "
+                        >
+                          Khoá học của tôi
+                        </a>
+                        <a
+                          href="#"
+                          className="dropdown-item !block !w-full !rounded-lg !bg-transparent !p-4 !font-medium !transition-colors !duration-200
+      hover:!bg-[#FFEFEA] hover:!text-[#E27447] "
+                        >
+                          Bảng điều khiển giảng viên
+                        </a>
+                        <div
+                          onClick={handleLogout}
+                          className="dropdown-item !block !w-full !rounded-lg !bg-transparent !p-4 !font-medium !transition-colors !duration-200
+      hover:!bg-[#FFEFEA] hover:!text-[#E27447] "
+                        >
+                          Đăng xuất
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="header-btn">
+                    <div className="header-login">
+                      <Link
+                        href="/sign-up"
+                        className="tf-button-default header-text"
+                      >
+                        Đăng ký
+                      </Link>
+                    </div>
+                    <div className="header-register">
+                      <Link
+                        href="/sign-in"
+                        className="tf-button-default active header-text"
+                      >
+                        Đăng nhập
+                      </Link>
+                    </div>
+                    <div className="header-join d-lg-none flex">
+                      <a href="login.html" className="fs-15">
+                        Join
+                      </a>
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>

@@ -1,10 +1,14 @@
 'use client'
 
+import { useEffect } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { useAuthStore } from '@/stores/useAuthStore'
 import { useForm } from 'react-hook-form'
 
 import { IAuthData } from '@/types'
 import { signinFormFieldList } from '@/configs'
+import { useSignIn } from '@/hooks/auth/sign-in/useSignIn'
 
 import FormField from '@/components/common/FormField'
 import PageImage from '@/components/common/PageImage'
@@ -12,10 +16,27 @@ import SocialLogin from '@/components/common/SocialLogin'
 import SubmitButton from '@/components/common/SubmitButton'
 
 const SigninView = () => {
+  const router = useRouter()
+  const { isAuthenticated } = useAuthStore()
+
   const {
     register,
+    handleSubmit,
     formState: { errors },
   } = useForm<IAuthData>()
+  const { mutate, status } = useSignIn()
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.push('/')
+    }
+  }, [isAuthenticated, router])
+
+  const isPending = status === 'pending'
+
+  const onSubmit = handleSubmit((data) => {
+    mutate(data)
+  })
 
   return (
     <div className="main-content page-login">
@@ -50,7 +71,7 @@ const SigninView = () => {
                     Đăng ký
                   </Link>
                 </div>
-                <form action="#" className="form-login">
+                <form action="#" className="form-login" onSubmit={onSubmit}>
                   {signinFormFieldList.map(
                     ({ id, type, name, label, rules }) => (
                       <FormField
@@ -79,7 +100,7 @@ const SigninView = () => {
                       Quên mật khẩu?
                     </Link>
                   </div>
-                  <SubmitButton text="Đăng nhập" disabled={false} />
+                  <SubmitButton text="Đăng nhập" disabled={isPending} />
                 </form>
                 <p className="fs-15 wow fadeInUp" data-wow-delay="0s">
                   OR
