@@ -14,7 +14,7 @@ body {
     --card-foreground: 240 10% 3.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 3.9%;
-    --primary: 240 5.9% 10%;
+    --primary: 25 95% 53%;
     --primary-foreground: 0 0% 98%;
     --secondary: 240 4.8% 95.9%;
     --secondary-foreground: 240 5.9% 10%;
@@ -88,11 +88,10 @@ body {
 
 @layer components {
   .dropdown-menu {
-    @apply bg-white rounded-lg p-4 mt-2 w-[240px] text-base !important;
+    @apply mt-2 w-[240px] rounded-lg bg-white p-4 text-base !important;
   }
 
   .dropdown-item {
-    @apply block w-full p-4 text-xl rounded-lg bg-transparent font-medium
-    hover:bg-[#FFEFEA] hover:text-[#E27447] transition-colors duration-200 !important;
+    @apply block w-full rounded-lg bg-transparent p-4 text-xl font-medium transition-colors duration-200 hover:bg-[#FFEFEA] hover:text-[#E27447] !important;
   }
 }

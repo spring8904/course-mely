@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { useAuthStore } from '@/stores/useAuthStore'
 import Swal from 'sweetalert2'
 
+import { WEB_ROUTES } from '@/constants/routes'
 import { useLogOut } from '@/hooks/auth/logout'
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
@@ -129,50 +130,184 @@ const Header = () => {
                       data-bs-toggle="dropdown"
                       aria-expanded="false"
                     >
-                      <Avatar className="size-12">
+                      <Avatar className="size-8">
                         <AvatarImage
-                          src="https://github.com/shadcn.png"
+                          src={
+                            user?.avatar || '/assets/images/avatar/user-1.png'
+                          }
                           alt="@shadcn"
                         />
-                        <AvatarFallback>SC</AvatarFallback>
+                        <AvatarFallback>Avatar</AvatarFallback>
                       </Avatar>
                     </a>
                     <ul
-                      className="dropdown-menu !mt-2 !w-[240px] !rounded-lg !bg-white !p-4 !text-base *:cursor-pointer"
+                      className="dropdown-menu !mt-2 !min-w-[240px] !rounded-lg !bg-white !p-0 !text-base *:cursor-pointer"
                       aria-labelledby="dropdownMenuLink"
                     >
-                      <div>
-                        <span className="text-xl">Xin chào:</span>
-                        <span className="ml-2 text-xl text-orange-500">
-                          {user?.name}
-                        </span>
-                      </div>
-                      <li className="mt-4">
-                        <a
+                      <li>
+                        <Link href={'/me'}>
+                          <div className="flex items-center space-x-2 p-[16px]">
+                            <Avatar className="size-16">
+                              <AvatarImage
+                                src={
+                                  user?.avatar ||
+                                  '/assets/images/avatar/user-1.png'
+                                }
+                                alt="@shadcn"
+                              />
+                              <AvatarFallback>Avatar</AvatarFallback>
+                            </Avatar>
+
+                            <div className="space-y-1">
+                              <div className="text-lg">{user?.name}</div>
+                              <div className="text-sm text-gray-400">
+                                {user?.email}
+                              </div>
+                            </div>
+                          </div>
+                        </Link>
+                      </li>
+
+                      <li
+                        style={{
+                          borderTop: '1px solid #0000002d',
+                        }}
+                      >
+                        <Link
                           href="#"
-                          className="dropdown-item !block !w-full !rounded-lg !bg-transparent !p-4 !font-medium !transition-colors !duration-200
-      hover:!bg-[#FFEFEA] hover:!text-[#E27447] "
+                          className="dropdown-item !block !w-full !rounded-lg !bg-transparent !px-4 !py-2 !text-sm !font-medium !transition-colors !duration-200 hover:!bg-[#FFEFEA] hover:!text-[#E27447]"
                         >
-                          Thông tin cá nhân
-                        </a>
-                        <a
+                          Học tập
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
                           href="#"
-                          className="dropdown-item !block !w-full !rounded-lg !bg-transparent !p-4 !font-medium !transition-colors !duration-200
-      hover:!bg-[#FFEFEA] hover:!text-[#E27447] "
+                          className="dropdown-item !block !w-full !rounded-lg !bg-transparent !px-4 !py-2 !text-sm !font-medium !transition-colors !duration-200 hover:!bg-[#FFEFEA] hover:!text-[#E27447]"
                         >
-                          Khoá học của tôi
-                        </a>
-                        <a
+                          Giỏ hàng của tôi
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
                           href="#"
-                          className="dropdown-item !block !w-full !rounded-lg !bg-transparent !p-4 !font-medium !transition-colors !duration-200
-      hover:!bg-[#FFEFEA] hover:!text-[#E27447] "
+                          className="dropdown-item !block !w-full !rounded-lg !bg-transparent !px-4 !py-2 !text-sm !font-medium !transition-colors !duration-200 hover:!bg-[#FFEFEA] hover:!text-[#E27447]"
                         >
-                          Bảng điều khiển giảng viên
-                        </a>
+                          Mong muốn
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          href={WEB_ROUTES.BECOME_INSTRUCTOR}
+                          className="dropdown-item !block !w-full !rounded-lg !bg-transparent !px-4 !py-2 !text-sm !font-medium !transition-colors !duration-200 hover:!bg-[#FFEFEA] hover:!text-[#E27447]"
+                        >
+                          Giảng dạy trên CourseMeLy
+                        </Link>
+                      </li>
+
+                      <li
+                        style={{
+                          borderTop: '1px solid #0000002d',
+                        }}
+                      >
+                        <Link
+                          href="#"
+                          className="dropdown-item !block !w-full !rounded-lg !bg-transparent !px-4 !py-2 !text-sm !font-medium !transition-colors !duration-200 hover:!bg-[#FFEFEA] hover:!text-[#E27447]"
+                        >
+                          Thông báo
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          href="#"
+                          className="dropdown-item !block !w-full !rounded-lg !bg-transparent !px-4 !py-2 !text-sm !font-medium !transition-colors !duration-200 hover:!bg-[#FFEFEA] hover:!text-[#E27447]"
+                        >
+                          Tin nhắn
+                        </Link>
+                      </li>
+
+                      <li
+                        style={{
+                          borderTop: '1px solid #0000002d',
+                        }}
+                      >
+                        <Link
+                          href="#"
+                          className="dropdown-item !block !w-full !rounded-lg !bg-transparent !px-4 !py-2 !text-sm !font-medium !transition-colors !duration-200 hover:!bg-[#FFEFEA] hover:!text-[#E27447]"
+                        >
+                          Cài đặt tài khoản
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          href="#"
+                          className="dropdown-item !block !w-full !rounded-lg !bg-transparent !px-4 !py-2 !text-sm !font-medium !transition-colors !duration-200 hover:!bg-[#FFEFEA] hover:!text-[#E27447]"
+                        >
+                          Phương thức thanh toán
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          href="#"
+                          className="dropdown-item !block !w-full !rounded-lg !bg-transparent !px-4 !py-2 !text-sm !font-medium !transition-colors !duration-200 hover:!bg-[#FFEFEA] hover:!text-[#E27447]"
+                        >
+                          Thuê bao
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          href="#"
+                          className="dropdown-item !block !w-full !rounded-lg !bg-transparent !px-4 !py-2 !text-sm !font-medium !transition-colors !duration-200 hover:!bg-[#FFEFEA] hover:!text-[#E27447]"
+                        >
+                          Ưu đãi
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          href="#"
+                          className="dropdown-item !block !w-full !rounded-lg !bg-transparent !px-4 !py-2 !text-sm !font-medium !transition-colors !duration-200 hover:!bg-[#FFEFEA] hover:!text-[#E27447]"
+                        >
+                          Lịch sử mua
+                        </Link>
+                      </li>
+
+                      <li
+                        style={{
+                          borderTop: '1px solid #0000002d',
+                        }}
+                      >
+                        <Link
+                          href="#"
+                          className="dropdown-item !block !w-full !rounded-lg !bg-transparent !px-4 !py-2 !text-sm !font-medium !transition-colors !duration-200 hover:!bg-[#FFEFEA] hover:!text-[#E27447]"
+                        >
+                          Hồ sơ công khai
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          href="#"
+                          className="dropdown-item !block !w-full !rounded-lg !bg-transparent !px-4 !py-2 !text-sm !font-medium !transition-colors !duration-200 hover:!bg-[#FFEFEA] hover:!text-[#E27447]"
+                        >
+                          Chỉnh sửa hồ sơ
+                        </Link>
+                      </li>
+
+                      <li
+                        style={{
+                          borderTop: '1px solid #0000002d',
+                        }}
+                      >
+                        <Link
+                          href="#"
+                          className="dropdown-item !block !w-full !rounded-lg !bg-transparent !px-4 !py-2 !text-sm !font-medium !transition-colors !duration-200 hover:!bg-[#FFEFEA] hover:!text-[#E27447]"
+                        >
+                          Trợ giúp và Hỗ trợ
+                        </Link>
+                      </li>
+                      <li>
                         <div
                           onClick={handleLogout}
-                          className="dropdown-item !block !w-full !rounded-lg !bg-transparent !p-4 !font-medium !transition-colors !duration-200
-      hover:!bg-[#FFEFEA] hover:!text-[#E27447] "
+                          className="dropdown-item !block !w-full !rounded-lg !bg-transparent !px-4 !py-2 !text-sm !font-medium !transition-colors !duration-200 hover:!bg-[#FFEFEA] hover:!text-[#E27447]"
                         >
                           Đăng xuất
                         </div>
@@ -185,7 +320,7 @@ const Header = () => {
                   <div className="header-btn">
                     <div className="header-login">
                       <Link
-                        href="/sign-up"
+                        href={WEB_ROUTES.SIGN_UP}
                         className="tf-button-default header-text"
                       >
                         Đăng ký
@@ -193,16 +328,16 @@ const Header = () => {
                     </div>
                     <div className="header-register">
                       <Link
-                        href="/sign-in"
+                        href={WEB_ROUTES.SIGN_IN}
                         className="tf-button-default active header-text"
                       >
                         Đăng nhập
                       </Link>
                     </div>
                     <div className="header-join d-lg-none flex">
-                      <a href="login.html" className="fs-15">
+                      <Link href={WEB_ROUTES.SIGN_IN} className="fs-15">
                         Join
-                      </a>
+                      </Link>
                     </div>
                   </div>
                 </>
