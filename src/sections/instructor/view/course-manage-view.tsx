@@ -1,22 +1,37 @@
 'use client'
 
-import React from 'react'
+import { useState } from 'react'
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { Check, ChevronDown, Loader2 } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
+import { ICourse } from '@/types'
+import { cn } from '@/lib/utils'
 import { storeCourse } from '@/validations/course'
+import {
+  useGetCourses,
+  useStoreCourse,
+} from '@/hooks/instructors/courses/useCourse'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from '@/components/ui/command'
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog'
 import {
   Form,
@@ -28,12 +43,10 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
 import {
   Table,
   TableBody,
@@ -44,18 +57,69 @@ import {
 } from '@/components/ui/table'
 
 const CourseManageView = () => {
+  const router = useRouter()
+  const [openDialog, setOpenDialog] = useState(false)
+
+  const { data: coursesData, isLoading: isCoursesLoading } = useGetCourses()
+  //
+  console.log(coursesData)
+  //
+
+  const categoryOptions = [
+    {
+      value: '1',
+      label: 'Technology',
+    },
+    {
+      value: '2',
+      label: 'Business',
+    },
+    {
+      value: '3',
+      label: 'Design',
+    },
+    {
+      value: '4',
+      label: 'Marketing',
+    },
+    {
+      value: '5',
+      label: 'Science',
+    },
+  ]
+  const { mutate: createCourse, isPending: isCourseCreating } = useStoreCourse()
+
   const form = useForm<z.infer<typeof storeCourse>>({
     resolver: zodResolver(storeCourse),
     defaultValues: {
-      category_id: '',
       name: '',
     },
   })
 
-  function onSubmit(values: z.infer<typeof storeCourse>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values)
+  const onSubmit = (values: z.infer<typeof storeCourse>) => {
+    if (isCourseCreating) return
+
+    createCourse(values, {
+      onSuccess: (res) => {
+        const course: ICourse = res.data.course
+
+        if (course?.slug) {
+          router.push('/instructor/courses/update/' + course.slug)
+        } else {
+          setOpenDialog(false)
+        }
+      },
+    })
+  }
+
+  const isLoading = isCoursesLoading
+
+  if (isLoading) {
+    return (
+      <div className="mt-20">
+        <Loader2 className="mx-auto size-8 animate-spin" />
+      </div>
+    )
   }
 
   return (
@@ -64,80 +128,13 @@ const CourseManageView = () => {
         <div className="mt-2">
           <div className="flex justify-between">
             <p className="text-xl font-bold">Quản lý khóa học</p>
-            <Dialog>
-              <DialogTrigger asChild>
-                <div>
-                  <Button className="bg-primary">Tạo khoá học mới</Button>
-                </div>
-              </DialogTrigger>
-              <DialogContent className="max-w-lg">
-                <DialogHeader>
-                  <DialogTitle>
-                    Thêm tiêu đề và chọn danh mục cho khoá học
-                  </DialogTitle>
-                  <DialogDescription>
-                    Bạn có thể thêm tiêu đề và chọn danh mục cho khoá học của
-                    mình.
-                  </DialogDescription>
-                </DialogHeader>
-                <Form {...form}>
-                  <form onSubmit={form.handleSubmit(onSubmit)}>
-                    <FormField
-                      control={form.control}
-                      name="name"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Tiêu đề khoá học</FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder="Nhập tiêu đề cho khoá học"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="category_id"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Email</FormLabel>
-                          <Select
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
-                          >
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select a verified email to display" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <SelectItem value="m@example.com">
-                                m@example.com
-                              </SelectItem>
-                              <SelectItem value="m@google.com">
-                                m@google.com
-                              </SelectItem>
-                              <SelectItem value="m@support.com">
-                                m@support.com
-                              </SelectItem>
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <div className="mt-3 flex justify-end">
-                      <Button type="submit" className="bg-primary">
-                        Tiếp tục tạo khoá học
-                      </Button>
-                    </div>
-                  </form>
-                </Form>
-              </DialogContent>
-            </Dialog>
+            <Button
+              onClick={() => {
+                setOpenDialog(true)
+              }}
+            >
+              Tạo khoá học mới
+            </Button>
           </div>
           <Table className="mt-4">
             <TableHeader>
@@ -175,7 +172,7 @@ const CourseManageView = () => {
                   <span className="text-sm font-bold lg:text-base">
                     500.000đ
                   </span>
-                </TableCell>{' '}
+                </TableCell>
                 <TableCell>
                   <Badge className="bg-green-500">Đã duyệt</Badge>
                 </TableCell>
@@ -189,6 +186,119 @@ const CourseManageView = () => {
           </Table>
         </div>
       </div>
+
+      <Dialog open={openDialog} onOpenChange={setOpenDialog}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>
+              Thêm tiêu đề và chọn danh mục cho khoá học
+            </DialogTitle>
+            <DialogDescription>
+              Bạn có thể thêm tiêu đề và chọn danh mục cho khoá học của mình.
+            </DialogDescription>
+          </DialogHeader>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Tiêu đề khoá học</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Nhập tiêu đề cho khoá học"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="category_id"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col">
+                    <FormLabel>Danh mục khóa học</FormLabel>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <Button
+                            variant="outline"
+                            role="combobox"
+                            className={cn(
+                              'justify-between',
+                              !field.value && 'text-muted-foreground'
+                            )}
+                          >
+                            {field.value
+                              ? categoryOptions.find(
+                                  (category) =>
+                                    category.value === String(field.value)
+                                )?.label
+                              : 'Chọn danh mục cho khóa học'}
+                            <ChevronDown className="opacity-50" />
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
+                        <Command>
+                          <CommandInput
+                            placeholder="Tìm kiếm danh mục"
+                            className="h-9"
+                          />
+                          <CommandList>
+                            <CommandEmpty>
+                              Không có kết quả nào phù hợp
+                            </CommandEmpty>
+                            <CommandGroup>
+                              {categoryOptions.map((category) => (
+                                <CommandItem
+                                  value={category.label}
+                                  key={category.value}
+                                  onSelect={() => {
+                                    field.onChange(category.value)
+                                  }}
+                                >
+                                  {category.label}
+                                  <Check
+                                    className={cn(
+                                      'ml-auto',
+                                      category.value === String(field.value)
+                                        ? 'opacity-100'
+                                        : 'opacity-0'
+                                    )}
+                                  />
+                                </CommandItem>
+                              ))}
+                            </CommandGroup>
+                          </CommandList>
+                        </Command>
+                      </PopoverContent>
+                    </Popover>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <div className="mt-3 flex justify-end">
+                <Button
+                  type="submit"
+                  className="bg-primary"
+                  disabled={isCourseCreating}
+                >
+                  {isCourseCreating ? (
+                    <Loader2 className="size-4 animate-spin" />
+                  ) : (
+                    'Tiếp tục tạo khoá học'
+                  )}
+                </Button>
+              </div>
+            </form>
+          </Form>
+        </DialogContent>
+      </Dialog>
     </>
   )
 }

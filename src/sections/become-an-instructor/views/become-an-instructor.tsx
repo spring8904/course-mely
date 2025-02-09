@@ -125,7 +125,7 @@ const BecomeAnInstructor = () => {
             <h1 className="bold text-3xl">Chia sẻ kiến thức của bạn</h1>
 
             <p className="mb-16 mt-8 max-w-3xl">
-              Các khóa học trên CouseMely đều mang lại trải nghiệm học tập bằng
+              Các khóa học trên CourseMely đều mang lại trải nghiệm học tập bằng
               cách xem video. Điều này giúp học viên có cơ hội học kỹ năng dễ
               thực hành. Dù bạn đã có kinh nghiệm giảng dạy hay đây là lần đầu
               tiên bạn giảng dạy, thì chúng tôi sẽ giúp bạn đưa kiến thức của

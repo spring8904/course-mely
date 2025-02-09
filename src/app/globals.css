@@ -14,7 +14,7 @@ body {
     --card-foreground: 240 10% 3.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 3.9%;
-    --primary: 25 95% 53%;
+    --primary: 20.54 90.24% 48.24%;
     --primary-foreground: 0 0% 98%;
     --secondary: 240 4.8% 95.9%;
     --secondary-foreground: 240 5.9% 10%;
@@ -94,4 +94,8 @@ body {
   .dropdown-item {
     @apply block w-full rounded-lg bg-transparent p-4 text-xl font-medium transition-colors duration-200 hover:bg-[#FFEFEA] hover:text-[#E27447] !important;
   }
+}
+
+.Toastify__toast {
+  @apply pr-5;
 }

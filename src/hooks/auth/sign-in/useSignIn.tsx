@@ -29,9 +29,9 @@ export const useSignIn = () => {
 
   return useMutation({
     mutationFn: (data: IAuthData) => authApi.signIn(data),
-    onSuccess: async (res: any) => {
-      const token = res?.token
-      const user = res?.user
+    onSuccess: async (res) => {
+      const token = res.data?.token
+      const user = res.data?.user
 
       const currentToken = Cookies.get('access_token')
 
