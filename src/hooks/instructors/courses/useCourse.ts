@@ -7,7 +7,7 @@ import {
   createCourse,
   getCourseOverview,
   getCourses,
-} from '@/services/instructors/courses/course-api'
+} from '@/services/instructor/course/course-api'
 
 export const useGetCourses = () => {
   return useQuery({

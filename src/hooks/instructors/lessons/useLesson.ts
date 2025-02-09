@@ -3,7 +3,7 @@ import { toast } from 'react-toastify'
 
 import { AxiosResponseError } from '@/types/AxiosResponseError'
 import QUERY_KEY from '@/constants/query-key'
-import { createLesson } from '@/services/instructors/lessons/lesson-api'
+import { createLesson } from '@/services/instructor/lesson/lesson-api'
 
 export const useCreateLesson = () => {
   const queryClient = useQueryClient()

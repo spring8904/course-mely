@@ -8,12 +8,12 @@ import { useForm } from 'react-hook-form'
 import { Autoplay } from 'swiper/modules'
 import { Swiper, SwiperSlide } from 'swiper/react'
 
-import { questions } from '@/constants/common'
-import { cn } from '@/lib/utils'
 import {
   RegisterInstructorInput,
   registerInstructorSchema,
 } from '@/validations/instructor'
+import { questions } from '@/constants/common'
+import { cn } from '@/lib/utils'
 
 import {
   Accordion,
@@ -118,7 +118,7 @@ const BecomeAnInstructor = () => {
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <div
             className={cn(
-              'container mx-auto my-20 px-8 py-16',
+              'container mx-auto my-20 p-8 pb-16',
               step > questions.length && 'hidden'
             )}
           >
@@ -157,7 +157,7 @@ const BecomeAnInstructor = () => {
                           >
                             {question.options.map((option, optionIndex) => (
                               <FormItem key={optionIndex}>
-                                <FormLabel className="flex items-center space-x-4 rounded border p-4 font-normal">
+                                <FormLabel className="flex cursor-pointer items-center space-x-4 rounded border p-4 font-normal">
                                   <FormControl>
                                     <RadioGroupItem
                                       value={optionIndex.toString()}
@@ -190,7 +190,7 @@ const BecomeAnInstructor = () => {
                             render={({ field }) => {
                               return (
                                 <FormItem key={`${question.id}-${optionIndex}`}>
-                                  <FormLabel className="flex items-center space-x-4 rounded border p-4 font-normal">
+                                  <FormLabel className="flex cursor-pointer items-center space-x-4 rounded border p-4 font-normal">
                                     <FormControl>
                                       <Checkbox
                                         checked={field.value.includes(

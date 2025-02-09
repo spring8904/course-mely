@@ -3,7 +3,7 @@ import { toast } from 'react-toastify'
 
 import { AxiosResponseError } from '@/types/AxiosResponseError'
 import QUERY_KEY from '@/constants/query-key'
-import { createChapter } from '@/services/instructors/chapters/chapter-api'
+import { createChapter } from '@/services/instructor/chapter/chapter-api'
 
 export const useCreateChapter = () => {
   const queryClient = useQueryClient()
