@@ -1,7 +1,8 @@
-import CourseUpdateView from '@/sections/instructor/view/course-update-view'
-
-// import { getInstructorsCourseBySlug } from '@/services/courses/course-api'
 // import { Metadata, ResolvingMetadata } from 'next'
+
+// import { getCourseOverview } from '@/services/instructors/courses/course-api'
+
+import CourseUpdateView from '@/sections/instructor/view/course-update-view'
 
 type Props = {
   params: { slug: string }
@@ -13,17 +14,17 @@ type Props = {
 // ): Promise<Metadata> {
 //   const { slug } = params
 
-//   const course = await getInstructorsCourseBySlug(slug)
+//   const res = await getCourseOverview(slug)
 
 //   const previousImages = (await parent).openGraph?.images || []
 
 //   return {
-//     title: course.name,
-//     description: course.description,
+//     title: res.data.course.name,
+//     description: res.data.course.description,
 //     openGraph: {
-//       title: course.name,
-//       description: course.description || undefined,
-//       images: [course.thumbnail, ...previousImages].filter(
+//       title: res.data.course.name,
+//       description: res.data.course.description || undefined,
+//       images: [res.data.course.thumbnail, ...previousImages].filter(
 //         (img): img is string => !!img
 //       ),
 //     },

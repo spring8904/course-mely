@@ -3,12 +3,8 @@ import api from '@/configs/api'
 
 const prefix = '/instructor/manage/courses'
 
-export const getCourses = async () => {
-  const response = await api.get(prefix)
-  return response
-}
+export const getCourses = () => api.get(prefix)
 
-export const storeCourse = async (data: IStoreCourseData) => {
-  const response = await api.post(prefix, data)
-  return response
-}
+export const getCourseOverview = (slug: string) => api.get(`${prefix}/${slug}`)
+
+export const storeCourse = (data: IStoreCourseData) => api.post(prefix, data)

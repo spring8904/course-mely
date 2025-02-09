@@ -5,6 +5,7 @@ import { toast } from 'react-toastify'
 import { IStoreCourseData } from '@/types'
 import QUERY_KEY from '@/constants/query-key'
 import {
+  getCourseOverview,
   getCourses,
   storeCourse,
 } from '@/services/instructors/courses/course-api'
@@ -17,6 +18,14 @@ export const useGetCourses = () => {
   return useQuery({
     queryKey: [QUERY_KEY.INSTRUCTOR_COURSE],
     queryFn: () => getCourses(),
+  })
+}
+
+export const useGetCourseOverview = (slug?: string) => {
+  return useQuery({
+    queryKey: [QUERY_KEY.INSTRUCTOR_COURSE, slug],
+    queryFn: () => getCourseOverview(slug!),
+    enabled: !!slug,
   })
 }
 
