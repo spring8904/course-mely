@@ -49,11 +49,11 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
   const [question, setQuestion] = useState('')
   const [answer, setAnswer] = useState('')
 
-  const { data: getCourseOverviewData, isLoading: isCourseOverviewLoading } =
+  const { data: courseOverviewData, isLoading: isCourseOverviewLoading } =
     useGetCourseOverview(slug)
-
-  console.log(getCourseOverviewData)
-
+  //
+  console.log(courseOverviewData)
+  //
   const handleImageChange = (e: any) => {
     const file = e.target.files[0]
     if (file) {

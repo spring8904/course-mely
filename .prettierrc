@@ -10,12 +10,12 @@
 
     "",
     "^@/types(/.*)?$",
-    "^@/constants(/.*)?$",
+    "^@/validations(/.*)?$",
 
+    "^@/constants(/.*)?$",
     "^@/configs(/.*)?$",
     "^@/lib(/.*)?$",
 
-    "^@/validations(/.*)?$",
     "^@/services(/.*)?$",
     "^@/hooks(/.*)?$",
 

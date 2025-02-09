@@ -6,14 +6,13 @@ import { useRouter } from 'next/navigation'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Check, ChevronDown, Loader2 } from 'lucide-react'
 import { useForm } from 'react-hook-form'
-import { z } from 'zod'
 
 import { ICourse } from '@/types'
+import { CreateCoursePayload, createCourseSchema } from '@/validations/course'
 import { cn } from '@/lib/utils'
-import { storeCourse } from '@/validations/course'
 import {
+  useCreateCourse,
   useGetCourses,
-  useStoreCourse,
 } from '@/hooks/instructors/courses/useCourse'
 
 import { Badge } from '@/components/ui/badge'
@@ -64,7 +63,6 @@ const CourseManageView = () => {
   //
   console.log(coursesData)
   //
-
   const categoryOptions = [
     {
       value: '1',
@@ -87,16 +85,17 @@ const CourseManageView = () => {
       label: 'Science',
     },
   ]
-  const { mutate: createCourse, isPending: isCourseCreating } = useStoreCourse()
+  const { mutate: createCourse, isPending: isCourseCreating } =
+    useCreateCourse()
 
-  const form = useForm<z.infer<typeof storeCourse>>({
-    resolver: zodResolver(storeCourse),
+  const form = useForm<CreateCoursePayload>({
+    resolver: zodResolver(createCourseSchema),
     defaultValues: {
       name: '',
     },
   })
 
-  const onSubmit = (values: z.infer<typeof storeCourse>) => {
+  const onSubmit = (values: CreateCoursePayload) => {
     if (isCourseCreating) return
 
     createCourse(values, {
