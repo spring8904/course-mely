@@ -1,4 +1,5 @@
 import React from 'react'
+import { ToastContainer } from 'react-toastify'
 
 import { ISidebarData, IUser, UserStatus } from '@/types'
 
@@ -42,6 +43,7 @@ const DashboardLayout = ({ children }: LayoutProps) => {
               <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
                 {children}
               </div>
+              <ToastContainer newestOnTop className={'py-8'} />
             </SidebarInset>
           </SidebarProvider>
         </QueryProvider>
