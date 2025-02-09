@@ -176,60 +176,60 @@ const CourseChapterTab = ({ chapters, slug }: Props) => {
                   </Accordion>
 
                   <div className="mt-3">
-                    <Link
-                      href={`/course/${slug}/coding-exercise`}
-                      className={cn(
-                        buttonVariants({ variant: 'outline' }),
-                        'mr-2'
-                      )}
-                    >
-                      Coding
-                    </Link>
-                    {addNewLesson ? (
-                      <>
+                    <div className="flex items-center gap-2">
+                      <Link
+                        href={`/course/${slug}/coding-exercise`}
+                        className={cn(buttonVariants({ variant: 'outline' }))}
+                      >
+                        Coding
+                      </Link>
+
+                      {addNewLesson ? (
                         <Button
-                          onClick={() => setAddNewLesson(false)}
+                          onClick={() => {
+                            setAddNewLesson(false)
+                            setSelectedLesson(undefined)
+                          }}
                           variant="secondary"
                         >
-                          <CircleX size={18} />
+                          <CircleX />
                           Đóng
                         </Button>
+                      ) : (
+                        <Button onClick={() => setAddNewLesson(true)}>
+                          <CirclePlus />
+                          Thêm bài học
+                        </Button>
+                      )}
+                    </div>
 
-                        {selectedLesson ? (
-                          <CreateLesson
-                            onHide={() => setSelectedLesson(undefined)}
-                            type={selectedLesson!}
-                            chapterId={chapter.id!}
-                          />
-                        ) : (
-                          <div className="mt-4 flex justify-between rounded-lg border border-dashed p-2">
-                            <Button onClick={() => setSelectedLesson('video')}>
-                              <Video />
-                              Bài giảng
-                            </Button>
-                            <Button
-                              onClick={() => setSelectedLesson('document')}
-                            >
-                              <ScrollText />
-                              Tài liệu
-                            </Button>
-                            <Button onClick={() => setSelectedLesson('quiz')}>
-                              <CircleHelp />
-                              Câu hỏi
-                            </Button>
-                            <Button onClick={() => setSelectedLesson('file')}>
-                              <FileCode2 />
-                              Bài tập
-                            </Button>
-                          </div>
-                        )}
-                      </>
-                    ) : (
-                      <Button onClick={() => setAddNewLesson(true)}>
-                        <CirclePlus />
-                        Thêm bài học
-                      </Button>
-                    )}
+                    {addNewLesson &&
+                      (selectedLesson ? (
+                        <CreateLesson
+                          onHide={() => setSelectedLesson(undefined)}
+                          type={selectedLesson!}
+                          chapterId={chapter.id!}
+                        />
+                      ) : (
+                        <div className="mt-4 flex justify-evenly rounded-lg border border-dashed p-2">
+                          <Button onClick={() => setSelectedLesson('video')}>
+                            <Video />
+                            Bài giảng
+                          </Button>
+                          <Button onClick={() => setSelectedLesson('document')}>
+                            <ScrollText />
+                            Tài liệu
+                          </Button>
+                          <Button onClick={() => setSelectedLesson('quiz')}>
+                            <CircleHelp />
+                            Câu hỏi
+                          </Button>
+                          <Button onClick={() => setSelectedLesson('file')}>
+                            <FileCode2 />
+                            Bài tập
+                          </Button>
+                        </div>
+                      ))}
                   </div>
                 </AccordionContent>
               </AccordionItem>
@@ -240,10 +240,7 @@ const CourseChapterTab = ({ chapters, slug }: Props) => {
           <CreateChapter onHide={() => setAddNewChapter(false)} />
         ) : (
           <>
-            <Button
-              onClick={() => setAddNewChapter(true)}
-              className="mt-3 bg-primary"
-            >
+            <Button onClick={() => setAddNewChapter(true)} className="mt-4">
               <SquarePen size={18} />
               Thêm chương mới
             </Button>
