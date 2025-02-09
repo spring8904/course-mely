@@ -130,10 +130,7 @@ const Header = () => {
                       aria-expanded="false"
                     >
                       <Avatar className="size-12">
-                        <AvatarImage
-                          src="https://github.com/shadcn.png"
-                          alt="@shadcn"
-                        />
+                        <AvatarImage src={user?.avatar || ''} alt="@shadcn" />
                         <AvatarFallback>SC</AvatarFallback>
                       </Avatar>
                     </a>
