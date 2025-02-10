@@ -1,7 +1,7 @@
 import CommonLayout from '@/components/layouts/CommonLayout'
 import HeadScripts from '@/components/themes/HeadScripts'
 
-import '@/assets/css/themes.css'
+import '@/assets/styles/themes.css'
 
 interface LayoutProps {
   children?: React.ReactNode
