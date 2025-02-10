@@ -11,21 +11,30 @@ const HeadScripts = () => {
         crossOrigin="anonymous"
         referrerPolicy="no-referrer"
       /> */}
-      <Script src="/assets/js/bootstrap.min.js" />
-      <Script src="/assets/js/jquery.min.js" />
+      <Script src="/assets/js/bootstrap.min.js" strategy="afterInteractive" />
+      <Script src="/assets/js/jquery.min.js" strategy="afterInteractive" />
       {/* <Script src="/assets/js/mmenu.js" /> */}
       {/* <Script src="/assets/js/swiper-bundle.min.js" /> */}
       {/* <Script src="/assets/js/swiper.js" /> */}
-      <Script src="/assets/js/lazysize.min.js" />
-      <Script src="/assets/js/rangle-slider.js" />
-      <Script src="/assets/js/nouislider.min.js" />
-      <Script src="/assets/js/jquery.nice-select.min.js" />
-      <Script src="/assets/js/countto.js" />
-      <Script src="/assets/js/magnific-popup.min.js" />
-      <Script src="/assets/js/jquery.nice-select.min.js" />
-      <Script src="/assets/js/rangle-slider.js" />
-      <Script src="/assets/js/wow.min.js" />
-      <Script src="/assets/js/main.js" />
+      <Script src="/assets/js/lazysize.min.js" strategy="afterInteractive" />
+      <Script src="/assets/js/rangle-slider.js" strategy="afterInteractive" />
+      <Script src="/assets/js/nouislider.min.js" strategy="afterInteractive" />
+      <Script
+        src="/assets/js/jquery.nice-select.min.js"
+        strategy="afterInteractive"
+      />
+      <Script src="/assets/js/countto.js" strategy="afterInteractive" />
+      <Script
+        src="/assets/js/magnific-popup.min.js"
+        strategy="afterInteractive"
+      />
+      <Script
+        src="/assets/js/jquery.nice-select.min.js"
+        strategy="afterInteractive"
+      />
+      <Script src="/assets/js/rangle-slider.js" strategy="afterInteractive" />
+      <Script src="/assets/js/wow.min.js" strategy="afterInteractive" />
+      <Script src="/assets/js/main.js" strategy="afterInteractive" />
     </>
   )
 }

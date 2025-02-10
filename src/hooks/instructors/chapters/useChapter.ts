@@ -12,7 +12,7 @@ export const useCreateChapter = () => {
     mutationFn: createChapter,
     onSuccess: async (res) => {
       await queryClient.invalidateQueries({
-        queryKey: [QUERY_KEY.INSTRUCTOR_CHAPTER],
+        queryKey: [QUERY_KEY.INSTRUCTOR_COURSE],
       })
 
       const successMessage = res.data.message || 'Thành công'

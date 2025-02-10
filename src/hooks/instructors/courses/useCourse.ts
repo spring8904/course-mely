@@ -1,3 +1,4 @@
+import { useRouter } from 'next/navigation'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'react-toastify'
 
@@ -28,6 +29,7 @@ export const useGetCourseOverview = (slug?: string) => {
 
 export const useCreateCourse = () => {
   const queryClient = useQueryClient()
+  const router = useRouter()
 
   return useMutation({
     mutationFn: createCourse,
@@ -36,8 +38,12 @@ export const useCreateCourse = () => {
         queryKey: [QUERY_KEY.INSTRUCTOR_COURSE],
       })
 
-      const successMessage = res.data.message || 'Thành công'
-      toast.success(successMessage)
+      const courseSlug = res?.data?.slug
+
+      if (courseSlug) {
+        toast.success(res.data.message || 'Thành công')
+        router.push(`/instructor/courses/update/${courseSlug}`)
+      }
     },
     onError: (error: AxiosResponseError) => {
       const errorMessage =

@@ -24,7 +24,9 @@ api.interceptors.request.use((config) => {
 
 api.interceptors.response.use(
   (response) => {
-    return response
+    if (response.data) {
+      return response.data
+    }
   },
   (error) => {
     if (error.response) {

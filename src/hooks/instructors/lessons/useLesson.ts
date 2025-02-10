@@ -12,7 +12,7 @@ export const useCreateLesson = () => {
     mutationFn: createLesson,
     onSuccess: async (res) => {
       await queryClient.invalidateQueries({
-        queryKey: [QUERY_KEY.INSTRUCTOR_LESSON],
+        queryKey: [QUERY_KEY.INSTRUCTOR_COURSE],
       })
 
       const successMessage = res.data.message || 'Thành công'

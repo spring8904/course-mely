@@ -36,11 +36,12 @@ export interface IChapter {
   courseId?: number
   title: string
   order?: number | null
+  lessons?: ILesson[]
   createdAt?: Date | null
   updatedAt?: Date | null
 }
 
-export type LessonType = 'video' | 'document' | 'quiz' | 'file'
+export type LessonType = 'video' | 'document' | 'quiz' | 'coding'
 
 export interface ILesson {
   id?: number
@@ -51,6 +52,7 @@ export interface ILesson {
   playbackId?: string | null
   isFreePreview?: 0 | 1
   order?: number | null
+  type: LessonType
   createdAt?: Date | null
   updatedAt?: Date | null
 }

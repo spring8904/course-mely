@@ -2,14 +2,14 @@
 
 import { useState } from 'react'
 import Image from 'next/image'
-import { useRouter } from 'next/navigation'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Check, ChevronDown, Loader2 } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 
-import { ICourse } from '@/types'
+import { ICategory } from '@/types/Category'
 import { CreateCoursePayload, createCourseSchema } from '@/validations/course'
 import { cn } from '@/lib/utils'
+import { useGetCategories } from '@/hooks/categories/useCategory'
 import {
   useCreateCourse,
   useGetCourses,
@@ -56,35 +56,11 @@ import {
 } from '@/components/ui/table'
 
 const CourseManageView = () => {
-  const router = useRouter()
   const [openDialog, setOpenDialog] = useState(false)
 
   const { data: coursesData, isLoading: isCoursesLoading } = useGetCourses()
-  //
-  console.log(coursesData)
-  //
-  const categoryOptions = [
-    {
-      value: '1',
-      label: 'Technology',
-    },
-    {
-      value: '2',
-      label: 'Business',
-    },
-    {
-      value: '3',
-      label: 'Design',
-    },
-    {
-      value: '4',
-      label: 'Marketing',
-    },
-    {
-      value: '5',
-      label: 'Science',
-    },
-  ]
+  const { data: categoryData } = useGetCategories()
+
   const { mutate: createCourse, isPending: isCourseCreating } =
     useCreateCourse()
 
@@ -98,17 +74,7 @@ const CourseManageView = () => {
   const onSubmit = (values: CreateCoursePayload) => {
     if (isCourseCreating) return
 
-    createCourse(values, {
-      onSuccess: (res) => {
-        const course: ICourse = res.data.course
-
-        if (course?.slug) {
-          router.push('/instructor/courses/update/' + course.slug)
-        } else {
-          setOpenDialog(false)
-        }
-      },
-    })
+    createCourse(values)
   }
 
   const isLoading = isCoursesLoading
@@ -146,41 +112,55 @@ const CourseManageView = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              <TableRow>
-                <TableCell>1</TableCell>
-                <TableCell>
-                  <div className="flex items-center gap-3">
-                    <Image
-                      alt=""
-                      className="size-16 shrink-0 rounded-lg object-cover"
-                      height={80}
-                      src="https://res.cloudinary.com/dvrexlsgx/image/upload/v1734990491/oxbmdtk4x3jvfhxvhnec.jpg"
-                      width={80}
-                    />
-                    <div className="flex flex-col gap-1">
-                      <h3 className="whitespace-nowrap text-sm font-bold lg:text-base">
-                        Khoá học ReactJS cơ bản cho người mới bắt đầu
-                      </h3>
-                      <h4 className="text-xs text-slate-500 lg:text-sm">
-                        Công nghệ thông tin
-                      </h4>
+              {coursesData?.map((course: any, index: number) => (
+                <TableRow key={course.id}>
+                  <TableCell>{index + 1}</TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-3">
+                      <Image
+                        alt={course.name}
+                        className="size-16 shrink-0 rounded-lg object-cover"
+                        height={80}
+                        src={
+                          course.thumbnail ||
+                          'https://res.cloudinary.com/dvrexlsgx/image/upload/v1734990491/oxbmdtk4x3jvfhxvhnec.jpg'
+                        }
+                        width={80}
+                      />
+                      <div className="flex flex-col gap-1">
+                        <h3 className="whitespace-nowrap text-sm font-bold lg:text-base">
+                          {course.name}
+                        </h3>
+                        <h4 className="text-xs text-slate-500 lg:text-sm">
+                          {course?.category?.name || 'Chưa có danh mục'}
+                        </h4>
+                      </div>
                     </div>
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <span className="text-sm font-bold lg:text-base">
-                    500.000đ
-                  </span>
-                </TableCell>
-                <TableCell>
-                  <Badge className="bg-green-500">Đã duyệt</Badge>
-                </TableCell>
-                <TableCell>
-                  <div className="flex gap-3">
-                    <Button className="bg-indigo-600">Chi tiết</Button>
-                  </div>
-                </TableCell>
-              </TableRow>
+                  </TableCell>
+                  <TableCell>
+                    <span className="text-sm font-bold lg:text-base">
+                      {course?.price?.toLocaleString()}đ
+                    </span>
+                  </TableCell>
+                  <TableCell>
+                    <Badge
+                      className={cn(
+                        'text-white',
+                        course.status === 'approved'
+                          ? 'bg-green-500'
+                          : 'bg-red-500'
+                      )}
+                    >
+                      {course.status === 'approved' ? 'Đã duyệt' : 'Chưa duyệt'}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex gap-3">
+                      <Button className="bg-indigo-600">Chi tiết</Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
         </div>
@@ -233,10 +213,10 @@ const CourseManageView = () => {
                             )}
                           >
                             {field.value
-                              ? categoryOptions.find(
-                                  (category) =>
-                                    category.value === String(field.value)
-                                )?.label
+                              ? categoryData.find(
+                                  (category: ICategory) =>
+                                    category.id === field.value
+                                )?.name
                               : 'Chọn danh mục cho khóa học'}
                             <ChevronDown className="opacity-50" />
                           </Button>
@@ -253,19 +233,19 @@ const CourseManageView = () => {
                               Không có kết quả nào phù hợp
                             </CommandEmpty>
                             <CommandGroup>
-                              {categoryOptions.map((category) => (
+                              {categoryData.map((category: ICategory) => (
                                 <CommandItem
-                                  value={category.label}
-                                  key={category.value}
+                                  value={category.name}
+                                  key={category.id}
                                   onSelect={() => {
-                                    field.onChange(category.value)
+                                    field.onChange(category.id)
                                   }}
                                 >
-                                  {category.label}
+                                  {category.name}
                                   <Check
                                     className={cn(
                                       'ml-auto',
-                                      category.value === String(field.value)
+                                      category.id === field.value
                                         ? 'opacity-100'
                                         : 'opacity-0'
                                     )}
