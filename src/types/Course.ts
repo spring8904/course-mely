@@ -5,11 +5,6 @@ export enum CourseStatus {
   Reject = 'reject',
 }
 
-export interface IStoreCourseData {
-  category_id: number
-  name: string
-}
-
 export interface ICourse {
   id?: number
   userId?: number
@@ -44,6 +39,8 @@ export interface IChapter {
   createdAt?: Date | null
   updatedAt?: Date | null
 }
+
+export type LessonType = 'video' | 'document' | 'quiz' | 'file'
 
 export interface ILesson {
   id?: number

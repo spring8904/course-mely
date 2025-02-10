@@ -1,6 +1,5 @@
 import React from 'react'
 import Link from 'next/link'
-import { Swiper, SwiperSlide } from 'swiper/react'
 
 import {
   Accordion,
@@ -13,6 +12,8 @@ import {
   courseData,
   lessonData,
 } from '@/sections/courses/data/data'
+
+import CourseSlide from '../_components/course-slide'
 
 const courses = [
   {
@@ -28,6 +29,50 @@ const courses = [
   },
   {
     id: 2,
+    image: '/assets/images/courses/courses-02.jpg',
+    title: 'Advanced Python Programming: Mastering Python 3',
+    lessons: '15 Lessons',
+    hours: '20 hours',
+    rating: 4.7,
+    totalReviews: 150,
+    author: 'James Smith',
+    price: '$79.99',
+  },
+  {
+    id: 3,
+    image: '/assets/images/courses/courses-01.jpg',
+    title: 'Become a Certified Web Developer: HTML, CSS and JavaScript',
+    lessons: '11 Lessons',
+    hours: '16 hours',
+    rating: 4.9,
+    totalReviews: 230,
+    author: 'Carolyn Welborn',
+    price: '$89.29',
+  },
+  {
+    id: 4,
+    image: '/assets/images/courses/courses-02.jpg',
+    title: 'Advanced Python Programming: Mastering Python 3',
+    lessons: '15 Lessons',
+    hours: '20 hours',
+    rating: 4.7,
+    totalReviews: 150,
+    author: 'James Smith',
+    price: '$79.99',
+  },
+  {
+    id: 5,
+    image: '/assets/images/courses/courses-01.jpg',
+    title: 'Become a Certified Web Developer: HTML, CSS and JavaScript',
+    lessons: '11 Lessons',
+    hours: '16 hours',
+    rating: 4.9,
+    totalReviews: 230,
+    author: 'Carolyn Welborn',
+    price: '$89.29',
+  },
+  {
+    id: 6,
     image: '/assets/images/courses/courses-02.jpg',
     title: 'Advanced Python Programming: Mastering Python 3',
     lessons: '15 Lessons',
@@ -317,75 +362,7 @@ const CourseDetailView = ({ slug }: { slug: string }) => {
                       Khoá học khác của Trương Văn Tùng
                     </h6>
                   </div>
-                  <div className="swiper-container">
-                    <Swiper spaceBetween={25} slidesPerView={3}>
-                      {courses.map((course, index) => (
-                        <SwiperSlide key={index}>
-                          <div className="course-item hover-img title-small">
-                            <div className="features image-wrap">
-                              <img
-                                className="ls-is-cached lazyloaded"
-                                src={course.image}
-                                alt={course.title}
-                              />
-                              <div className="box-tags">
-                                <a href="#" className="item best-seller">
-                                  Best Seller
-                                </a>
-                              </div>
-                              <div className="box-wishlist tf-action-btns">
-                                <i className="flaticon-heart" />
-                              </div>
-                            </div>
-                            <div className="content">
-                              <div className="meta">
-                                <div className="meta-item">
-                                  <i className="flaticon-calendar" />
-                                  <p>{course.lessons}</p>
-                                </div>
-                                <div className="meta-item">
-                                  <i className="flaticon-clock" />
-                                  <p>{course.hours}</p>
-                                </div>
-                              </div>
-                              <h6 className="fw-5 line-clamp-2">
-                                <a href="#">{course.title}</a>
-                              </h6>
-                              <div className="ratings pb-30">
-                                <div className="number">{course.rating}</div>
-                                {[...Array(5)].map((_, i) => (
-                                  <i
-                                    key={i}
-                                    className={`icon-star-1 ${i < Math.floor(course.rating) ? 'filled' : ''}`}
-                                  />
-                                ))}
-                                <div className="total">
-                                  ({course.totalReviews})
-                                </div>
-                              </div>
-                              <div className="author">
-                                By:
-                                <a href="#" className="author">
-                                  {course.author}
-                                </a>
-                              </div>
-                              <div className="bottom">
-                                <div className="h6 price fw-5">
-                                  {course.price}
-                                </div>
-                                <a href="#" className="tf-btn-arrow">
-                                  <span className="fw-5 fs-15">
-                                    Enroll Course
-                                  </span>
-                                  <i className="icon-arrow-top-right" />
-                                </a>
-                              </div>
-                            </div>
-                          </div>
-                        </SwiperSlide>
-                      ))}
-                    </Swiper>
-                  </div>
+                  <CourseSlide courses={courses} />
                 </div>
                 <div className="review-wrap">
                   <div className="review-title flex items-center justify-between">
@@ -776,90 +753,7 @@ const CourseDetailView = ({ slug }: { slug: string }) => {
                   </a>
                 </div>
               </div>
-              <div className="swiper-container slider-courses-5">
-                <Swiper
-                  spaceBetween={25}
-                  slidesPerView={4}
-                  loop={true}
-                  pagination={{
-                    clickable: true,
-                  }}
-                >
-                  {courses.map((course) => (
-                    <SwiperSlide key={course.id}>
-                      <div className="course-item hover-img title-small wow fadeInUp">
-                        <div className="features image-wrap">
-                          <img
-                            className="ls-is-cached lazyloaded"
-                            data-src={course.image}
-                            src={course.image}
-                            alt={course.title}
-                          />
-                          <div className="box-tags">
-                            <a href="#" className="item best-seller">
-                              Best Seller
-                            </a>
-                          </div>
-                          <div className="box-wishlist tf-action-btns">
-                            <i className="flaticon-heart" />
-                          </div>
-                        </div>
-                        <div className="content">
-                          <div className="meta">
-                            <div className="meta-item">
-                              <i className="flaticon-calendar" />
-                              <p>{course.lessons} Lessons</p>
-                            </div>
-                            <div className="meta-item">
-                              <i className="flaticon-clock" />
-                              <p>{course.hours} hours</p>
-                            </div>
-                          </div>
-                          <h6 className="fw-5 line-clamp-2">
-                            <a href="course-single-v2.html">{course.title}</a>
-                          </h6>
-                          <div className="ratings pb-30">
-                            <div className="number">{course.rating}</div>
-                            <i className="icon-star-1" />
-                            <i className="icon-star-1" />
-                            <i className="icon-star-1" />
-                            <i className="icon-star-1" />
-                            <svg
-                              width={12}
-                              height={11}
-                              viewBox="0 0 12 11"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="M3.54831 7.10382L3.58894 6.85477L3.41273 6.67416L1.16841 4.37373L4.24914 3.90314L4.51288 3.86286L4.62625 3.62134L5.99989 0.694982L7.37398 3.62182L7.48735 3.86332L7.75108 3.9036L10.8318 4.37419L8.58749 6.67462L8.41128 6.85523L8.4519 7.10428L8.98079 10.3465L6.24201 8.8325L6.00014 8.69879L5.75826 8.83247L3.01941 10.3461L3.54831 7.10382ZM11.0444 4.15626L11.0442 4.15651L11.0444 4.15626Z"
-                                stroke="#131836"
-                              />
-                            </svg>
-                            <div className="total">({course.totalReviews})</div>
-                          </div>
-                          <div className="author">
-                            By:
-                            <a href="#" className="author">
-                              {course.author}
-                            </a>
-                          </div>
-                          <div className="bottom">
-                            <div className="h6 price fw-5">${course.price}</div>
-                            <a
-                              href="course-single-v2.html"
-                              className="tf-btn-arrow"
-                            >
-                              <span className="fw-5 fs-15">Enroll Course</span>
-                              <i className="icon-arrow-top-right" />
-                            </a>
-                          </div>
-                        </div>
-                      </div>
-                    </SwiperSlide>
-                  ))}
-                </Swiper>
-              </div>
+              <CourseSlide courses={courses} />
               <div
                 className="swiper-button-prev btns-style-arrow courses5-prev swiper-button-disabled"
                 tabIndex={-1}

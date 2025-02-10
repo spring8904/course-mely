@@ -88,7 +88,7 @@ const config: Config = {
             height: '0',
           },
         },
-        slideLoop: {
+        'slide-loop': {
           '0%': { transform: 'translateX(100%)' },
           '100%': { transform: 'translateX(-100%)' },
         },
@@ -96,7 +96,7 @@ const config: Config = {
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
-        slideLoop: 'slideLoop 10s linear infinite',
+        'slide-loop': 'slide-loop 20s linear infinite',
       },
     },
   },

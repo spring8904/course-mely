@@ -1,10 +1,4 @@
-import { ToastContainer } from 'react-toastify'
-
-import { manropeFont } from '@/components/common/fonts'
-import Header from '@/components/themes/Header'
-import HeadLinks from '@/components/themes/HeadLinks'
-import HeadScripts from '@/components/themes/HeadScripts'
-
+import Header from '../themes/Header'
 import Footer from './Footer'
 import QueryProvider from './QueryProvider'
 

@@ -1,21 +1,13 @@
 import { Metadata } from 'next'
+import { Manrope } from 'next/font/google'
 
-import { manropeFont } from '@/components/common/fonts'
+import AppProvider from '@/providers/app-provider'
 
-import './globals.css'
+import '@/assets/css/globals.css'
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode
-}>) {
-  return (
-    <html lang="en">
-      <body className={`${manropeFont.className} antialiased`}>{children}</body>
-    </html>
-  )
-}
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL!),
+
   title: 'CourseMeLy - Nền tảng học trực tuyến hàng đầu Việt Nam',
   description:
     '"Nền tảng trực tuyến với đa dạng khóa học từ cơ bản đến nâng cao với nhiều chuyên ngành' +
@@ -35,4 +27,25 @@ export const metadata: Metadata = {
       },
     ],
   },
+}
+
+const manrope = Manrope({
+  subsets: ['vietnamese'],
+  display: 'swap',
+})
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode
+}>) {
+  return (
+    <html lang="en">
+      <body className={`${manrope.className} antialiased`}>
+        <div id="wrapper">
+          <AppProvider>{children}</AppProvider>
+        </div>
+      </body>
+    </html>
+  )
 }
