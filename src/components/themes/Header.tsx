@@ -65,9 +65,9 @@ const Header = () => {
 
   return (
     <>
-      <div className="preload preload-container">
-        <div className="middle"></div>
-      </div>
+      {/*<div className="preload preload-container">*/}
+      {/*  <div className="middle"></div>*/}
+      {/*</div>*/}
       <div className="tf-top-bar overflow-x-hidden">
         <p className="h-full animate-slide-loop whitespace-nowrap">
           Chào mừng bạn đến với nền tảng học tập trực tuyến tại CourseMeLy

@@ -32,15 +32,6 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog'
-import { Input } from '@/components/ui/input'
-import {
   Select,
   SelectContent,
   SelectItem,
@@ -77,104 +68,84 @@ const CourseChapterTab = ({ chapters, slug }: Props) => {
             <Accordion type="single" collapsible key={chapterIndex}>
               <AccordionItem value={`item-${chapter.id}`}>
                 <AccordionTrigger className="rounded-lg">
-                  {chapter.title}
+                  Chương {chapterIndex + 1}: {chapter.title}
                 </AccordionTrigger>
                 <AccordionContent className="mt-3 rounded-lg p-4">
-                  <Accordion type="single" collapsible>
-                    <AccordionItem value="item-1">
-                      <AccordionTrigger className="rounded-lg">
-                        <div className="flex w-full items-center gap-3 text-sm font-semibold">
-                          <div className="flex items-center gap-4">
-                            <div className="flex items-center gap-2">
-                              <CirclePlay size={18} />
-                              <div>Bài giảng số 1</div>
-                            </div>
+                  {chapter?.lessons?.map((lesson, lessonIndex) => (
+                    <Accordion
+                      type="single"
+                      collapsible
+                      key={lesson.id}
+                      className="mb-3"
+                    >
+                      <AccordionItem value={`lesson-${lesson.id}`}>
+                        <AccordionTrigger className="rounded-lg">
+                          <div className="flex w-full items-center gap-3 text-sm font-semibold">
                             <div className="flex items-center gap-4">
-                              <SquarePen size={18} />
-                              <Trash2 size={18} />
-                            </div>
-                          </div>
-                        </div>
-                      </AccordionTrigger>
-                      <AccordionContent className="mt-2 space-y-3 rounded-lg p-4">
-                        <div className="space-y-2">
-                          <Label>Loại bài giảng</Label>
-                          <Select>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Chon loại bài giảng" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="video">Video</SelectItem>
-                              <SelectItem value="document">Tài liệu</SelectItem>
-                              <SelectItem value="quizz">Câu hỏi</SelectItem>
-                              <SelectItem value="coding">
-                                Bài tập Code
-                              </SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                        <div className="space-y-3">
-                          <div className="flex items-center justify-between">
-                            <Label>Danh sách câu hỏi</Label>
-                            <Dialog>
-                              <DialogTrigger asChild>
-                                <Button size="sm">Import Quiz</Button>
-                              </DialogTrigger>
-                              <DialogContent className="max-w-lg">
-                                <DialogHeader>
-                                  <DialogTitle>
-                                    Import Quiz vào bài học
-                                  </DialogTitle>
-                                  <DialogDescription>
-                                    Để thực hiện việc import quiz bạn cần tải
-                                    file mẫu của chúng tôi
-                                  </DialogDescription>
-                                </DialogHeader>
-                                <Button>Tải mẫu</Button>
-
-                                <div className="space-y-2">
-                                  <Label>Import file</Label>
-                                  <Input type="file" />
-                                  <Button className="mt-3">
-                                    Tiến hành import
-                                  </Button>
+                              <div className="flex items-center gap-2">
+                                {(() => {
+                                  switch (lesson?.type) {
+                                    case 'video':
+                                      return <CirclePlay size={18} />
+                                    case 'document':
+                                      return <ScrollText size={18} />
+                                    case 'quiz':
+                                      return <CircleHelp size={18} />
+                                    case 'coding':
+                                      return <FileCode2 size={18} />
+                                    default:
+                                      return <SquarePen size={18} />
+                                  }
+                                })()}
+                                <div>
+                                  Bài giảng {lessonIndex + 1}: {lesson.title}
                                 </div>
-                              </DialogContent>
-                            </Dialog>
-                          </div>
-                          <div className="rounded-lg border p-4">
-                            <div className="flex items-center justify-between border-b border-dashed">
-                              <span>Câu hỏi 1: Tìm hiểu về ReactJS</span>
-                              <div className="flex cursor-pointer items-center gap-4">
-                                <SquarePen size={18} />
-                                <Trash2 size={18} />
                               </div>
-                            </div>
-                            <div className="mt-5 flex items-center justify-between border-b border-dashed">
-                              <span>Câu hỏi 1: Tìm hiểu về ReactJS</span>
-                              <div className="flex cursor-pointer items-center gap-4">
+                              <div className="flex items-center gap-4">
                                 <SquarePen size={18} />
                                 <Trash2 size={18} />
                               </div>
                             </div>
                           </div>
-                        </div>
-                        <div className="space-y-2">
-                          <Label>Bài giảng</Label>
-                          <MuxUploader />
-                        </div>
-                        <div className="space-y-2">
-                          <Label>Nội dung </Label>
-                          <Textarea placeholder="Nội dung bài giảng" />
-                        </div>
-                        <div className="flex justify-end gap-2">
-                          <Button variant="outline">Xem trước</Button>
-                          <Button>Cập nhật</Button>
-                        </div>
-                      </AccordionContent>
-                    </AccordionItem>
-                  </Accordion>
-
+                        </AccordionTrigger>
+                        <AccordionContent className="mt-2 space-y-3 rounded-lg p-4">
+                          <div className="space-y-2">
+                            <Label>Loại bài giảng</Label>
+                            <Select>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Chọn loại bài giảng" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="video">Video</SelectItem>
+                                <SelectItem value="document">
+                                  Tài liệu
+                                </SelectItem>
+                                <SelectItem value="quiz">Câu hỏi</SelectItem>
+                                <SelectItem value="coding">
+                                  Bài tập Code
+                                </SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div className="space-y-2">
+                            <Label>Bài giảng</Label>
+                            <MuxUploader />
+                          </div>
+                          <div className="space-y-2">
+                            <Label>Nội dung </Label>
+                            <Textarea
+                              placeholder="Nội dung bài giảng"
+                              defaultValue={lesson.content}
+                            />
+                          </div>
+                          <div className="flex justify-end gap-2">
+                            <Button variant="outline">Xem trước</Button>
+                            <Button>Cập nhật</Button>
+                          </div>
+                        </AccordionContent>
+                      </AccordionItem>
+                    </Accordion>
+                  ))}
                   <div className="mt-3">
                     <div className="flex items-center gap-2">
                       <Link
@@ -224,7 +195,7 @@ const CourseChapterTab = ({ chapters, slug }: Props) => {
                             <CircleHelp />
                             Câu hỏi
                           </Button>
-                          <Button onClick={() => setSelectedLesson('file')}>
+                          <Button onClick={() => setSelectedLesson('coding')}>
                             <FileCode2 />
                             Bài tập
                           </Button>
