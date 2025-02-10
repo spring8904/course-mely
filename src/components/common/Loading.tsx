@@ -6,7 +6,7 @@ const Loading = () => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-opacity-50">
       <motion.div
-        className="relative flex size-16 items-center justify-center rounded-lg p-6 "
+        className="relative flex size-16 items-center justify-center rounded-lg p-6"
         animate={{ rotate: 360 }}
         transition={{ repeat: Infinity, duration: 1.5, ease: 'linear' }}
       >
