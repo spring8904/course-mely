@@ -3,7 +3,7 @@ import { Manrope } from 'next/font/google'
 
 import AppProvider from '@/providers/app-provider'
 
-import '@/assets/css/globals.css'
+import '@/assets/styles/globals.css'
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL!),
