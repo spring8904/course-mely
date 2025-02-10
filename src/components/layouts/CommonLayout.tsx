@@ -10,7 +10,7 @@ import QueryProvider from './QueryProvider'
 
 import '@/components/themes/assetsImports'
 
-// import Script from 'next/script'
+import React from 'react'
 
 interface LayoutProps {
   children?: React.ReactNode
@@ -28,8 +28,8 @@ const CommonLayout = ({ children }: LayoutProps) => {
             <Footer />
           </QueryProvider>
         </div>
+        <HeadScripts />
       </body>
-      <HeadScripts />
       <ToastContainer
         position="top-right"
         autoClose={5000}
