@@ -144,7 +144,7 @@ section {
 
 html {
   margin-right: 0 !important;
-  font-size: 62.5%;
+  /* font-size: 62.5%; */
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
   -ms-text-size-adjust: 100%;
@@ -7885,9 +7885,10 @@ instructors-item
   transition-timing-function: linear;
 }
 
+/* Tắt preload */
 /* preload */
 /* -------------------------------- */
-.preload-container {
+/* .preload-container {
   position: fixed;
   top: 0px;
   left: 0px;
@@ -7909,7 +7910,7 @@ instructors-item
   background-size: contain;
   content: url(../images/logo/favicon.png);
   animation: preload 1.2s linear infinite alternate;
-}
+} */
 
 .wrap-instructor {
   display: -webkit-box;

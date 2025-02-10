@@ -130,7 +130,10 @@ const Header = () => {
                       aria-expanded="false"
                     >
                       <Avatar className="size-12">
-                        <AvatarImage src={user?.avatar || ''} alt="@shadcn" />
+                        <AvatarImage
+                          src="https://github.com/shadcn.png"
+                          alt="@shadcn"
+                        />
                         <AvatarFallback>SC</AvatarFallback>
                       </Avatar>
                     </a>
@@ -147,29 +150,25 @@ const Header = () => {
                       <li className="mt-4">
                         <a
                           href="#"
-                          className="dropdown-item !block !w-full !rounded-lg !bg-transparent !p-4 !font-medium !transition-colors !duration-200
-      hover:!bg-[#FFEFEA] hover:!text-[#E27447] "
+                          className="dropdown-item !block !w-full !rounded-lg !bg-transparent !p-4 !font-medium !transition-colors !duration-200 hover:!bg-[#FFEFEA] hover:!text-[#E27447]"
                         >
                           Thông tin cá nhân
                         </a>
                         <a
                           href="#"
-                          className="dropdown-item !block !w-full !rounded-lg !bg-transparent !p-4 !font-medium !transition-colors !duration-200
-      hover:!bg-[#FFEFEA] hover:!text-[#E27447] "
+                          className="dropdown-item !block !w-full !rounded-lg !bg-transparent !p-4 !font-medium !transition-colors !duration-200 hover:!bg-[#FFEFEA] hover:!text-[#E27447]"
                         >
                           Khoá học của tôi
                         </a>
                         <a
                           href="#"
-                          className="dropdown-item !block !w-full !rounded-lg !bg-transparent !p-4 !font-medium !transition-colors !duration-200
-      hover:!bg-[#FFEFEA] hover:!text-[#E27447] "
+                          className="dropdown-item !block !w-full !rounded-lg !bg-transparent !p-4 !font-medium !transition-colors !duration-200 hover:!bg-[#FFEFEA] hover:!text-[#E27447]"
                         >
                           Bảng điều khiển giảng viên
                         </a>
                         <div
                           onClick={handleLogout}
-                          className="dropdown-item !block !w-full !rounded-lg !bg-transparent !p-4 !font-medium !transition-colors !duration-200
-      hover:!bg-[#FFEFEA] hover:!text-[#E27447] "
+                          className="dropdown-item !block !w-full !rounded-lg !bg-transparent !p-4 !font-medium !transition-colors !duration-200 hover:!bg-[#FFEFEA] hover:!text-[#E27447]"
                         >
                           Đăng xuất
                         </div>

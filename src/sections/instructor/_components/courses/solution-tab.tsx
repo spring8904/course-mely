@@ -4,15 +4,13 @@ import { useRef } from 'react'
 import { ArrowUp, Info, MoveHorizontal, RotateCcw } from 'lucide-react'
 import { ImperativePanelHandle } from 'react-resizable-panels'
 
-import { cn } from '@/lib/utils'
-
 import { Button } from '@/components/ui/button'
 import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
 } from '@/components/ui/resizable'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import MonacoEditor from '@/components/shared/monaco-editor'
 
 const SolutionTab = () => {
   const solutionPanelRef = useRef<ImperativePanelHandle>(null)
@@ -56,8 +54,8 @@ const SolutionTab = () => {
       </ResizablePanel>
 
       <ResizableHandle />
-      <ResizablePanel defaultSize={20} minSize={10} ref={resultPanelRef}>
-        <div className="flex items-center justify-between border-b border-gray-500 bg-gray-700 px-4 py-2 text-gray-200">
+      <ResizablePanel defaultSize={10} minSize={10} ref={resultPanelRef}>
+        <div className="flex items-center justify-between border-b border-gray-500 bg-[#0d0d0d] px-4 py-2 text-gray-200">
           <div className="flex items-center gap-2 text-lg font-bold">
             Result
           </div>
@@ -82,7 +80,7 @@ type PanelProps = {
 const SolutionPanel = ({ handleResize }: PanelProps) => {
   return (
     <div className="h-full text-white">
-      <div className="flex h-14 items-center justify-between border-b border-gray-500 bg-gray-700 px-4 py-2">
+      <div className="flex h-14 items-center justify-between border-b border-gray-500 bg-[#0d0d0d] px-4 py-2">
         <div className="flex items-center gap-2 text-xl font-bold">
           Giải pháp
           <Info size={18} />
@@ -97,163 +95,11 @@ const SolutionPanel = ({ handleResize }: PanelProps) => {
         </div>
       </div>
 
-      <Tabs
-        defaultValue="file-1"
-        className="h-[calc(100%-69px)] scrollbar-track-gray-300 scrollbar-thumb-gray-700"
-      >
-        <TabsList
-          className={cn(
-            'h-auto w-full items-center justify-start rounded-none bg-gray-700 px-4 pb-0 [&>*]:!text-white'
-          )}
-        >
-          <TabsTrigger
-            value="file-1"
-            className={cn(
-              'rounded-none border-b border-transparent',
-              'data-[state=active]:border-white data-[state=active]:bg-transparent'
-            )}
-          >
-            file-1.ts
-          </TabsTrigger>
-          <TabsTrigger
-            value="file-2"
-            className={cn(
-              'rounded-none border-b border-transparent',
-              'data-[state=active]:border-white data-[state=active]:bg-transparent'
-            )}
-          >
-            file-2.ts
-          </TabsTrigger>
-        </TabsList>
-        <TabsContent
-          value="file-1"
-          className={cn(
-            'mt-0 h-full overflow-y-auto bg-slate-900 p-4 scrollbar-thin'
-          )}
-        >
-          file-1.ts <br />
-        </TabsContent>
-        <TabsContent
-          value="file-2"
-          className={cn(
-            'mt-0 h-full overflow-y-auto bg-slate-900 p-4 scrollbar-thin'
-          )}
-        >
-          {' '}
-          file-2.ts <br />
-          file-2.ts <br />
-          file-2.ts <br />
-          file-2.ts <br />
-          file-2.ts <br />
-          file-2.ts <br />
-          file-2.ts <br />
-          file-2.ts <br />
-          file-2.ts <br />
-          file-2.ts <br />
-          file-2.ts <br />
-          file-2.ts <br />
-          file-2.ts <br />
-          file-2.ts <br />
-          file-2.ts <br />
-          file-2.ts <br />
-          file-2.ts <br />
-          file-2.ts <br />
-          file-2.ts <br />
-          file-2.ts <br />
-          file-2.ts <br />
-          file-2.ts <br />
-          file-2.ts <br />
-          file-2.ts <br />
-        </TabsContent>
-      </Tabs>
+      <MonacoEditor />
     </div>
   )
 }
 
 const EvaluationPanel = ({ handleResize }: PanelProps) => {
-  return (
-    <div className="h-full text-white">
-      <div className="flex h-14 items-center justify-between border-b border-gray-500 bg-gray-700 px-4 py-2">
-        <div className="flex items-center gap-2 text-xl font-bold">
-          Evaluation
-          <Info size={18} />
-        </div>
-
-        <div className="flex items-center gap-2">
-          <RotateCcw size={18} />
-          <MoveHorizontal size={18} onClick={handleResize} />
-        </div>
-      </div>
-
-      <Tabs
-        defaultValue="file-1"
-        className="h-[calc(100%-69px)] scrollbar-track-gray-300 scrollbar-thumb-gray-700"
-      >
-        <TabsList
-          className={cn(
-            'h-auto w-full items-center justify-start rounded-none bg-gray-700 px-4 pb-0 [&>*]:!text-white'
-          )}
-        >
-          <TabsTrigger
-            value="file-1"
-            className={cn(
-              'rounded-none border-b border-transparent',
-              'data-[state=active]:border-white data-[state=active]:bg-transparent'
-            )}
-          >
-            file-1.ts
-          </TabsTrigger>
-          <TabsTrigger
-            value="file-2"
-            className={cn(
-              'rounded-none border-b border-transparent',
-              'data-[state=active]:border-white data-[state=active]:bg-transparent'
-            )}
-          >
-            file-2.ts
-          </TabsTrigger>
-        </TabsList>
-        <TabsContent
-          value="file-1"
-          className={cn(
-            'mt-0 h-full overflow-y-auto bg-slate-900 p-4 scrollbar-thin'
-          )}
-        >
-          file-1.ts <br />
-        </TabsContent>
-        <TabsContent
-          value="file-2"
-          className={cn(
-            'mt-0 h-full overflow-y-auto bg-slate-900 p-4 scrollbar-thin'
-          )}
-        >
-          {' '}
-          file-2.ts <br />
-          file-2.ts <br />
-          file-2.ts <br />
-          file-2.ts <br />
-          file-2.ts <br />
-          file-2.ts <br />
-          file-2.ts <br />
-          file-2.ts <br />
-          file-2.ts <br />
-          file-2.ts <br />
-          file-2.ts <br />
-          file-2.ts <br />
-          file-2.ts <br />
-          file-2.ts <br />
-          file-2.ts <br />
-          file-2.ts <br />
-          file-2.ts <br />
-          file-2.ts <br />
-          file-2.ts <br />
-          file-2.ts <br />
-          file-2.ts <br />
-          file-2.ts <br />
-          file-2.ts <br />
-          file-2.ts <br />
-        </TabsContent>
-      </Tabs>
-    </div>
-  )
+  return <SolutionPanel handleResize={handleResize} />
 }
