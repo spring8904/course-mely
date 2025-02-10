@@ -1,5 +1,3 @@
-'use client'
-
 import { cn } from '@/lib/utils'
 
 import {
@@ -8,7 +6,7 @@ import {
   CourseList,
   PostList,
 } from '@/sections/home/components'
-import InstructorTop from '@/sections/home/components/Instructor-top'
+import InstructorTop from '@/sections/home/components/instructor-top'
 
 import './index.css'
 

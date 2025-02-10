@@ -1,14 +1,10 @@
 import React from 'react'
-import { ToastContainer } from 'react-toastify'
 
 import { ISidebarData, IUser, UserStatus } from '@/types'
 
 import { AppSidebar } from '@/components/ui/app-sidebar'
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
-import { manropeFont } from '@/components/common/fonts'
 import TopBar from '@/components/layouts/TopBar'
-
-import QueryProvider from './QueryProvider'
 
 interface LayoutProps {
   children?: React.ReactNode
@@ -33,22 +29,13 @@ const DashboardLayout = ({ children }: LayoutProps) => {
   }
 
   return (
-    <html lang="en">
-      <body className={`${manropeFont.className} antialiased`}>
-        <QueryProvider>
-          <SidebarProvider>
-            <AppSidebar />
-            <SidebarInset>
-              <TopBar userData={user} />
-              <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-                {children}
-              </div>
-              <ToastContainer newestOnTop className={'py-8'} />
-            </SidebarInset>
-          </SidebarProvider>
-        </QueryProvider>
-      </body>
-    </html>
+    <SidebarProvider>
+      <AppSidebar />
+      <SidebarInset>
+        <TopBar userData={user} />
+        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">{children}</div>
+      </SidebarInset>
+    </SidebarProvider>
   )
 }
 
