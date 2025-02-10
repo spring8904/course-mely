@@ -7,7 +7,6 @@ import Link from 'next/link'
 import { useAuthStore } from '@/stores/useAuthStore'
 import Swal from 'sweetalert2'
 
-import { WEB_ROUTES } from '@/constants/routes'
 import { useLogOut } from '@/hooks/auth/logout'
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
@@ -201,7 +200,7 @@ const Header = () => {
                       </li>
                       <li>
                         <Link
-                          href={WEB_ROUTES.BECOME_INSTRUCTOR}
+                          href="/become-an-instructor"
                           className="dropdown-item !block !w-full !rounded-lg !bg-transparent !px-4 !py-2 !text-sm !font-medium !transition-colors !duration-200 hover:!bg-[#FFEFEA] hover:!text-[#E27447]"
                         >
                           Giảng dạy trên CourseMeLy
@@ -323,7 +322,7 @@ const Header = () => {
                   <div className="header-btn">
                     <div className="header-login">
                       <Link
-                        href={WEB_ROUTES.SIGN_UP}
+                        href="/sign-up"
                         className="tf-button-default header-text"
                       >
                         Đăng ký
@@ -331,14 +330,14 @@ const Header = () => {
                     </div>
                     <div className="header-register">
                       <Link
-                        href={WEB_ROUTES.SIGN_IN}
+                        href="/sign-in"
                         className="tf-button-default active header-text"
                       >
                         Đăng nhập
                       </Link>
                     </div>
                     <div className="header-join d-lg-none flex">
-                      <Link href={WEB_ROUTES.SIGN_IN} className="fs-15">
+                      <Link href="/sign-in" className="fs-15">
                         Join
                       </Link>
                     </div>
