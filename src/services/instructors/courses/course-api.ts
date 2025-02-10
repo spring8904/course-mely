@@ -8,3 +8,10 @@ export const getCourses = () => api.get(prefix)
 export const getCourseOverview = (slug: string) => api.get(`${prefix}/${slug}`)
 
 export const storeCourse = (data: IStoreCourseData) => api.post(prefix, data)
+
+export const updateCourse = (data: FormData, slug: string) =>
+  api.post(`${prefix}/${slug}`, data, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  })
