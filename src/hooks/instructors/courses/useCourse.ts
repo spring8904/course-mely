@@ -2,12 +2,13 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { AxiosError } from 'axios'
 import { toast } from 'react-toastify'
 
-import { IStoreCourseData } from '@/types'
+import { ICourse, IStoreCourseData } from '@/types'
 import QUERY_KEY from '@/constants/query-key'
 import {
   getCourseOverview,
   getCourses,
   storeCourse,
+  updateCourse,
 } from '@/services/instructors/courses/course-api'
 
 type ErrorResponse = {
@@ -45,6 +46,34 @@ export const useStoreCourse = () => {
     onError: (error: AxiosError<ErrorResponse>) => {
       const errorMessage =
         error?.response?.data?.error || error.message || 'Đã xảy ra lỗi'
+      toast.error(errorMessage)
+    },
+  })
+}
+
+export const useUpdateCourse = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ data, slug }: { data: ICourse; slug: string }) => {
+      const formData = new FormData()
+      formData.append('_method', 'PUT')
+      formData.append('name', data.name)
+      formData.append('code', data.code)
+      formData.append('status', data.status)
+      return updateCourse(formData, slug)
+    },
+    onSuccess: async (res) => {
+      await queryClient.invalidateQueries({
+        queryKey: [QUERY_KEY.INSTRUCTOR_COURSE],
+      })
+
+      const successMessage = res?.data?.message ?? 'Thành công'
+      toast.success(successMessage)
+    },
+    onError: (error: AxiosError<ErrorResponse>) => {
+      const errorMessage =
+        error?.response?.data?.error ?? error?.message ?? 'Đã xảy ra lỗi'
       toast.error(errorMessage)
     },
   })
