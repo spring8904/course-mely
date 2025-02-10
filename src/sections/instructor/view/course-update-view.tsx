@@ -52,11 +52,11 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
   const avatarCourseRef = useRef<HTMLInputElement | null>(null)
   const trailerCourseRef = useRef<HTMLInputElement | null>(null)
 
-  const { data: getCourseOverviewData, isLoading: isCourseOverviewLoading } =
+  const { data: courseOverviewData, isLoading: isCourseOverviewLoading } =
     useGetCourseOverview(slug)
-
-  console.log('getCourseOverviewData', getCourseOverviewData)
-
+  //
+  console.log(courseOverviewData)
+  //
   const handleImageChange = (e: any) => {
     const file = e.target.files[0]
     if (file) {
