@@ -16,8 +16,9 @@ api.interceptors.request.use((config) => {
     config.headers.Authorization = `Bearer ${token}`
   }
 
-  config.headers.Accept = 'application/json'
-  config.headers['Content-Type'] = 'multipart/form-data'
+  if (!config.headers['Content-Type']) {
+    config.headers['Content-Type'] = 'application/json'
+  }
 
   return config
 })
