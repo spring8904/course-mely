@@ -112,7 +112,7 @@ const CourseManageView = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {coursesData?.map((course: any, index: number) => (
+              {coursesData?.data?.map((course: any, index: number) => (
                 <TableRow key={course.id}>
                   <TableCell>{index + 1}</TableCell>
                   <TableCell>
@@ -213,7 +213,7 @@ const CourseManageView = () => {
                             )}
                           >
                             {field.value
-                              ? categoryData.find(
+                              ? categoryData?.data.find(
                                   (category: ICategory) =>
                                     category.id === field.value
                                 )?.name
@@ -233,7 +233,7 @@ const CourseManageView = () => {
                               Không có kết quả nào phù hợp
                             </CommandEmpty>
                             <CommandGroup>
-                              {categoryData.map((category: ICategory) => (
+                              {categoryData?.data.map((category: ICategory) => (
                                 <CommandItem
                                   value={category.name}
                                   key={category.id}

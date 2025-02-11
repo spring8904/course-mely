@@ -4,25 +4,21 @@ import { toast } from 'react-toastify'
 
 import { ICourse } from '@/types'
 import { AxiosResponseError } from '@/types/AxiosResponseError'
+import { CreateCoursePayload } from '@/validations/course'
 import QUERY_KEY from '@/constants/query-key'
-import {
-  createCourse,
-  getCourseOverview,
-  getCourses,
-  updateCourse,
-} from '@/services/instructor/course/course-api'
+import { instructorCourseApi } from '@/services/instructor/course/course-api'
 
 export const useGetCourses = () => {
   return useQuery({
     queryKey: [QUERY_KEY.INSTRUCTOR_COURSE],
-    queryFn: getCourses,
+    queryFn: () => instructorCourseApi.getCourses(),
   })
 }
 
 export const useGetCourseOverview = (slug?: string) => {
   return useQuery({
     queryKey: [QUERY_KEY.INSTRUCTOR_COURSE, slug],
-    queryFn: () => getCourseOverview(slug!),
+    queryFn: () => instructorCourseApi.getCourseOverview(slug!),
     enabled: !!slug,
   })
 }
@@ -32,8 +28,9 @@ export const useCreateCourse = () => {
   const router = useRouter()
 
   return useMutation({
-    mutationFn: createCourse,
-    onSuccess: async (res) => {
+    mutationFn: (data: CreateCoursePayload) =>
+      instructorCourseApi.createCourse(data),
+    onSuccess: async (res: any) => {
       await queryClient.invalidateQueries({
         queryKey: [QUERY_KEY.INSTRUCTOR_COURSE],
       })
@@ -41,11 +38,10 @@ export const useCreateCourse = () => {
       const courseSlug = res?.data?.slug
 
       if (courseSlug) {
-        toast.success(res.data.message || 'Thành công')
         router.push(`/instructor/courses/update/${courseSlug}`)
       }
     },
-    onError: (error: AxiosResponseError) => {
+    onError: (error: any) => {
       const errorMessage =
         error?.response?.data?.error || error.message || 'Đã xảy ra lỗi'
       toast.error(errorMessage)
@@ -63,7 +59,7 @@ export const useUpdateCourse = () => {
       formData.append('name', data.name)
       formData.append('code', data.code)
       formData.append('status', data.status)
-      return updateCourse(formData, slug)
+      return instructorCourseApi.updateCourse(formData, slug)
     },
     onSuccess: async (res) => {
       await queryClient.invalidateQueries({

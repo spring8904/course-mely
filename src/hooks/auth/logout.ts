@@ -18,10 +18,10 @@ export const useLogOut = () => {
 
   return useMutation({
     mutationFn: async () => authApi.logout(),
-    onSuccess: async () => {
+    onSuccess: async (res: any) => {
       logout()
       router.push('/')
-      toast.success('Đăng xuất thành công')
+      toast.success(res?.message)
     },
     onError: (error: AxiosError<ErrorResponse>) => {
       toast.error(

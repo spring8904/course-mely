@@ -3,30 +3,30 @@ import api from '@/configs/api'
 
 const prefix = '/instructor/manage/lessons'
 
-export const getLessons = () => api.get(prefix)
-
-export const getLessonOverview = (slug: string) => api.get(`${prefix}/${slug}`)
-
-export const createLesson = (payload: CreateLessonPayload) =>
-  api.post(prefix, payload)
-
-export const updateLesson = (slug: string, payload: CreateLessonPayload) =>
-  api.put(`${prefix}/${slug}`, payload)
-
-export const updateOrderLesson = async (
-  slug: string,
-  payload: { lessons: { id: number; order: number }[] }
-) => {
-  const { data } = await api.put(
-    `${prefix}/${slug}/update-order`,
-    {
-      lessons: payload.lessons,
-    },
-    {
-      headers: {
-        'Content-Type': 'application/json',
+export const instructorLessonApi = {
+  getLessonOverview: async (slug: string) => {
+    return await api.get(`${prefix}/${slug}`)
+  },
+  createLesson: (payload: CreateLessonPayload) => {
+    return api.post(prefix, payload)
+  },
+  updateLesson: (slug: string, payload: CreateLessonPayload) => {
+    return api.put(`${prefix}/${slug}`, payload)
+  },
+  updateOrderLesson: async (
+    slug: string,
+    payload: { lessons: { id: number; order: number }[] }
+  ) => {
+    return await api.put(
+      `${prefix}/${slug}/update-order`,
+      {
+        lessons: payload.lessons,
       },
-    }
-  )
-  return data
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+  },
 }

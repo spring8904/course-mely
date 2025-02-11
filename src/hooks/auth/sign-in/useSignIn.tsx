@@ -3,23 +3,12 @@
 import { useRouter } from 'next/navigation'
 import { useAuthStore } from '@/stores/useAuthStore'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { AxiosError } from 'axios'
 import Cookies from 'js-cookie'
 import { toast } from 'react-toastify'
 
 import { IAuthData } from '@/types'
 import QUERY_KEY from '@/constants/query-key'
 import { authApi } from '@/services/auth/authApi'
-
-import SignInSuccessToast from '@/sections/signin/_components/signin-success-toast'
-
-interface ErrorResponse {
-  message: string
-}
-
-const SignInErrorToast = ({ message }: { message: string }) => (
-  <div className="text-xl font-semibold text-red-600">{message}</div>
-)
 
 export const useSignIn = () => {
   const queryClient = useQueryClient()
@@ -42,20 +31,17 @@ export const useSignIn = () => {
 
         setToken(token)
         setUser(user)
+        router.push('/')
 
-        toast.success(
-          <SignInSuccessToast navigateToLogin={() => router.push('/')} />
-        )
+        toast.success(res?.message)
 
         await queryClient.invalidateQueries({ queryKey: [QUERY_KEY.AUTH] })
       } else {
         toast.error('Đăng nhập thất bại, vui lòng thử lại')
       }
     },
-    onError: (error: AxiosError<ErrorResponse>) => {
-      toast.error(
-        <SignInErrorToast message={error?.response?.data?.message || ''} />
-      )
+    onError: (error: any) => {
+      toast.error(error?.response?.data?.message || '')
     },
   })
 }
