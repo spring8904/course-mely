@@ -5,6 +5,7 @@ import {
   AudioWaveform,
   BadgeEuro,
   Book,
+  ChartPie,
   CirclePlay,
   Command,
   GalleryVerticalEnd,
@@ -49,13 +50,13 @@ const data = {
   ],
   navMain: [
     {
-      title: 'Khám phá',
+      title: 'Thống kê',
       url: '/student',
-      icon: CirclePlay,
+      icon: ChartPie,
       isActive: true,
     },
     {
-      title: 'Khu vực học tập',
+      title: 'Quản lý khoá học',
       url: '#',
       icon: Book,
       items: [
@@ -64,13 +65,17 @@ const data = {
           url: '#',
         },
         {
-          title: 'Tiến độ học tập',
+          title: 'Quản lý học viên',
+          url: '#',
+        },
+        {
+          title: 'Theo dõi tiến độ',
           url: '#',
         },
       ],
     },
     {
-      title: 'Người hưỡng dẫn',
+      title: 'Trò chuyện',
       url: '#',
       icon: UsersRound,
     },
@@ -85,7 +90,7 @@ const data = {
       icon: Wallet,
     },
     {
-      title: 'Giao dịch gần đây',
+      title: 'Giao dịch của tôi',
       url: '#',
       icon: BadgeEuro,
     },
