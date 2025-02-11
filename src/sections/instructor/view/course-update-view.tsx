@@ -59,6 +59,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
+import { Progress } from '@/components/ui/progress'
 
 import CourseChapterTab from '../_components/courses-update/course-chapter-tab'
 
@@ -233,7 +234,13 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
           <h3 className="text-xl font-bold">
             Cập nhật nội dung khoá học: {courseOverviewData?.name}
           </h3>
-          <Button className="bg-primary">Gửi yêu cầu duyệt khoá học</Button>
+          <div className="flex flex-col gap-2">
+            <Button className="bg-primary">Gửi yêu cầu duyệt khoá học</Button>
+            <div>
+              <span className="text-base">Tiến trình</span>
+              <Progress value={90} />
+            </div>
+          </div>
         </div>
 
         <Tabs defaultValue="courseInfo">

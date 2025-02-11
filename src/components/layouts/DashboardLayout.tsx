@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { ISidebarData, IUser, UserStatus } from '@/types'
+import { ISidebarData } from '@/types'
 
 import { AppSidebar } from '@/components/ui/app-sidebar'
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
@@ -12,27 +12,11 @@ interface LayoutProps {
 }
 
 const DashboardLayout = ({ children }: LayoutProps) => {
-  const user: IUser = {
-    id: 1,
-    code: 'USR001',
-    name: 'John Doe',
-    email: 'johndoe@example.com',
-    emailVerifiedAt: new Date('2024-12-25T12:00:00Z'),
-    password: 'securepassword123',
-    avatar: 'https://example.com/avatar.jpg',
-    verificationToken: 'abc123xyz',
-    rememberToken: 'token56789',
-    status: UserStatus.Active,
-    deletedAt: null,
-    createdAt: new Date('2024-01-01T09:00:00Z'),
-    updatedAt: new Date('2024-12-27T15:30:00Z'),
-  }
-
   return (
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset>
-        <TopBar userData={user} />
+        <TopBar />
         <div className="flex flex-1 flex-col gap-4 p-4 pt-0">{children}</div>
       </SidebarInset>
     </SidebarProvider>

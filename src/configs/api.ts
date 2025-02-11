@@ -1,9 +1,8 @@
-import axios from 'axios'
+import axios, { AxiosResponse } from 'axios'
 import Cookies from 'js-cookie'
 
 const api = axios.create({
-  baseURL:
-    process.env.NEXT_PUBLIC_API_BACKEND_URL || 'http://127.0.0.1:8000/api/',
+  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api/',
   headers: {
     'Content-Type': 'application/json',
   },
@@ -24,10 +23,8 @@ api.interceptors.request.use((config) => {
 })
 
 api.interceptors.response.use(
-  (response) => {
-    if (response.data) {
-      return response.data
-    }
+  (response: AxiosResponse) => {
+    return response.data
   },
   (error) => {
     if (error.response) {
