@@ -1,5 +1,6 @@
 import axios, { AxiosResponse } from 'axios'
 import Cookies from 'js-cookie'
+import { toast } from 'react-toastify'
 
 const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api/',
@@ -24,6 +25,9 @@ api.interceptors.request.use((config) => {
 
 api.interceptors.response.use(
   (response: AxiosResponse) => {
+    if (response.status === 201 && response.data && response.data.message) {
+      toast.success(response.data.message)
+    }
     return response.data
   },
   (error) => {
@@ -32,28 +36,33 @@ api.interceptors.response.use(
 
       switch (status) {
         case 401: {
-          console.log('401', data)
+          console.log('Unauthorized', data)
           break
         }
         case 403: {
-          console.log('403', data)
+          toast.error('Forbidden', data)
           break
         }
         case 404: {
-          console.log('404', data)
+          console.log('Not Found', data)
           break
         }
         case 422: {
-          console.log('422', data)
+          console.log('Unprocessable Entity', data)
           break
         }
         case 500: {
-          console.log('500', data)
+          console.log('Internal Server Error', data)
           break
         }
+        default:
+          console.log('Error', data)
       }
+    } else if (error.request) {
+      toast.error('No response received from the server')
     } else {
       console.log('Network Error')
+      toast.error('Error: ' + error.message)
     }
 
     return Promise.reject(error)

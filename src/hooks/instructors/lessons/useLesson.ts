@@ -2,24 +2,20 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'react-toastify'
 
 import { AxiosResponseError } from '@/types/AxiosResponseError'
+import { CreateLessonPayload } from '@/validations/lesson'
 import QUERY_KEY from '@/constants/query-key'
-import {
-  createLesson,
-  updateOrderLesson,
-} from '@/services/instructor/lesson/lesson-api'
+import { instructorLessonApi } from '@/services/instructor/lesson/lesson-api'
 
 export const useCreateLesson = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: createLesson,
-    onSuccess: async (res) => {
+    mutationFn: (data: CreateLessonPayload) =>
+      instructorLessonApi.createLesson(data),
+    onSuccess: async () => {
       await queryClient.invalidateQueries({
         queryKey: [QUERY_KEY.INSTRUCTOR_COURSE],
       })
-
-      const successMessage = res.data.message || 'Thành công'
-      toast.success(successMessage)
     },
     onError: (error: AxiosResponseError) => {
       const errorMessage =
@@ -40,15 +36,15 @@ export const useUpdateOrderLesson = () => {
       slug: string
       lessons: { id: number; order: number }[]
     }) => {
-      return updateOrderLesson(slug, { lessons })
+      return instructorLessonApi.updateOrderLesson(slug, { lessons })
     },
-    onSuccess: async () => {
+    onSuccess: async (res: any) => {
       await queryClient.invalidateQueries({
         queryKey: [QUERY_KEY.INSTRUCTOR_COURSE],
       })
 
       const successMessage = 'Cập nhật thứ tự bài học thành công'
-      toast.success(successMessage)
+      toast.success(res?.message || successMessage)
     },
     onError: (error: AxiosResponseError) => {
       const errorMessage =
