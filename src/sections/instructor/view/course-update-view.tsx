@@ -26,7 +26,6 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { chapterData } from '@/sections/courses/data/data'
 
 import 'react-quill/dist/quill.snow.css'
 
