@@ -336,7 +336,7 @@ const Header = () => {
                         Đăng nhập
                       </Link>
                     </div>
-                    <div className="header-join d-lg-none flex">
+                    <div className="header-join flex lg:hidden">
                       <Link href="/sign-in" className="fs-15">
                         Join
                       </Link>

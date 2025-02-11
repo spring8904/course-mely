@@ -11,7 +11,7 @@ const CourseListView = () => {
           <div className="row">
             <div className="col-12">
               <div className="content">
-                <ul className="breadcrumbs mb-60 flex items-center justify-start gap-10">
+                <ul className="breadcrumbs mb-[60px] flex items-center justify-start gap-[10px]">
                   <li>
                     <Link href="/" className="flex">
                       <i className="icon-home" />

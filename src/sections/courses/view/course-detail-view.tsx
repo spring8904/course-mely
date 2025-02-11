@@ -102,7 +102,7 @@ const CourseDetailView = ({ slug }: { slug: string }) => {
           <div className="row">
             <div className="col-lg-8">
               <div className="content">
-                <ul className="breadcrumbs mb-60 flex items-center justify-start gap-10">
+                <ul className="breadcrumbs mb-[60px] flex items-center justify-start gap-[10px]">
                   <li>
                     <Link href="/" className="flex">
                       <i className="icon-home" />
@@ -328,7 +328,7 @@ const CourseDetailView = ({ slug }: { slug: string }) => {
                         eum reprehenderit voluptates est reprehenderit illo est
                         enim perferendis est neque sunt.{' '}
                       </p>
-                      <ul className="tf-social-icon flex items-center gap-10">
+                      <ul className="tf-social-icon flex items-center gap-[10px]">
                         <li>
                           <a href="#">
                             <i className="flaticon-facebook-1" />
@@ -740,7 +740,7 @@ const CourseDetailView = ({ slug }: { slug: string }) => {
                 >
                   Khoá học có thể phù hợp với bạn
                 </h2>
-                <div className="flex flex-wrap items-center justify-between gap-10">
+                <div className="flex flex-wrap items-center justify-between gap-[10px]">
                   <div className="sub fs-15 wow fadeInUp" data-wow-delay="0s">
                     Lorem ipsum dolor sit amet elit
                   </div>

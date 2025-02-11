@@ -95,7 +95,7 @@ const CourseList = ({ title, description }: CourseListProps) => {
               <h2 className="fw-7 wow fadeInUp" data-wow-delay="0s">
                 {title ?? ''}
               </h2>
-              <div className="flex flex-wrap items-center justify-between gap-10">
+              <div className="flex flex-wrap items-center justify-between gap-[10px]">
                 <div className="sub fs-15 wow fadeInUp" data-wow-delay="0.2s">
                   {description ?? ''}
                 </div>
