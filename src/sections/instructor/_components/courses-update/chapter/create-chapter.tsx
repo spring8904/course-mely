@@ -7,7 +7,7 @@ import {
   CreateChapterPayload,
   createChapterSchema,
 } from '@/validations/chapter'
-import { useCreateChapter } from '@/hooks/instructors/chapters/useChapter'
+import { useCreateChapter } from '@/hooks/instructor/chapter/useChapter'
 
 import { Button } from '@/components/ui/button'
 import {

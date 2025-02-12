@@ -57,26 +57,26 @@ const Footer = () => {
                       </a>
                     </div>
                     <ul className="address">
-                      <li className="flex items-center gap-10">
+                      <li className="flex items-center gap-[10px]">
                         <div className="icon">
                           <i className="flaticon-call" />
                         </div>
                         <p>Điện thoai: {contactInfo.phone}</p>
                       </li>
-                      <li className="flex items-center gap-10">
+                      <li className="flex items-center gap-[10px]">
                         <div className="icon">
                           <i className="flaticon-mail-1" />
                         </div>
                         <p>Email: {contactInfo.email}</p>
                       </li>
-                      <li className="flex items-center gap-10">
+                      <li className="flex items-center gap-[10px]">
                         <div className="icon">
                           <i className="flaticon-location" />
                         </div>
                         <p>Địa chỉ: {contactInfo.address}</p>
                       </li>
                     </ul>
-                    <ul className="tf-social-icon flex items-center gap-10">
+                    <ul className="tf-social-icon flex items-center gap-[10px]">
                       <li>
                         <a href="#">
                           <i className="flaticon-facebook-1" />

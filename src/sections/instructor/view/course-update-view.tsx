@@ -35,8 +35,8 @@ import { useForm } from 'react-hook-form'
 import { ICategory } from '@/types/Category'
 import { UpdateCoursePayload, updateCourseSchema } from '@/validations/course'
 import { cn } from '@/lib/utils'
-import { useGetCategories } from '@/hooks/categories/useCategory'
-import { useGetCourseOverview } from '@/hooks/instructors/courses/useCourse'
+import { useGetCategories } from '@/hooks/category/useCategory'
+import { useGetCourseOverview } from '@/hooks/instructor/course/useCourse'
 
 import {
   Command,

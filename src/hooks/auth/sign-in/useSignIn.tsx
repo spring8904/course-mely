@@ -8,6 +8,7 @@ import { toast } from 'react-toastify'
 
 import { IAuthData } from '@/types'
 import QUERY_KEY from '@/constants/query-key'
+import { StorageKeys } from '@/constants/storage-keys'
 import { authApi } from '@/services/auth/authApi'
 
 export const useSignIn = () => {
@@ -15,33 +16,30 @@ export const useSignIn = () => {
   const router = useRouter()
   const setUser = useAuthStore((state) => state.setUser)
   const setToken = useAuthStore((state) => state.setToken)
+  const setRole = useAuthStore((state) => state.setRole)
 
   return useMutation({
     mutationFn: (data: IAuthData) => authApi.signIn(data),
     onSuccess: async (res: any) => {
       const token = res?.token
       const user = res?.user
+      const role = res.role
 
-      const currentToken = Cookies.get('access_token')
+      const currentToken = Cookies.get(StorageKeys.ACCESS_TOKEN)
 
       if (token && currentToken !== token) {
-        Cookies.remove('access_token')
-        Cookies.set('access_token', token, { expires: 7 })
-        localStorage.setItem('user', JSON.stringify(user))
-
         setToken(token)
         setUser(user)
+        setRole(role)
         router.push('/')
-
-        toast.success(res?.message)
 
         await queryClient.invalidateQueries({ queryKey: [QUERY_KEY.AUTH] })
       } else {
         toast.error('Đăng nhập thất bại, vui lòng thử lại')
       }
     },
-    onError: (error: any) => {
-      toast.error(error?.response?.data?.message || '')
+    onError: (error) => {
+      toast.error(error.message)
     },
   })
 }

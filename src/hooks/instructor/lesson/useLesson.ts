@@ -1,7 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'react-toastify'
 
-import { AxiosResponseError } from '@/types/AxiosResponseError'
 import { CreateLessonPayload } from '@/validations/lesson'
 import QUERY_KEY from '@/constants/query-key'
 import { instructorLessonApi } from '@/services/instructor/lesson/lesson-api'
@@ -12,15 +11,15 @@ export const useCreateLesson = () => {
   return useMutation({
     mutationFn: (data: CreateLessonPayload) =>
       instructorLessonApi.createLesson(data),
-    onSuccess: async () => {
+    onSuccess: async (res: any) => {
       await queryClient.invalidateQueries({
         queryKey: [QUERY_KEY.INSTRUCTOR_COURSE],
       })
+
+      toast.success(res.message)
     },
-    onError: (error: AxiosResponseError) => {
-      const errorMessage =
-        error?.response?.data?.error || error.message || 'Đã xảy ra lỗi'
-      toast.error(errorMessage)
+    onError: (error) => {
+      toast.error(error.message)
     },
   })
 }
@@ -43,13 +42,10 @@ export const useUpdateOrderLesson = () => {
         queryKey: [QUERY_KEY.INSTRUCTOR_COURSE],
       })
 
-      const successMessage = 'Cập nhật thứ tự bài học thành công'
-      toast.success(res?.message || successMessage)
+      toast.success(res.message)
     },
-    onError: (error: AxiosResponseError) => {
-      const errorMessage =
-        error?.response?.data?.error || error.message || 'Đã xảy ra lỗi'
-      toast.error(errorMessage)
+    onError: (error) => {
+      toast.error(error.message)
     },
   })
 }

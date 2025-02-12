@@ -1,12 +1,10 @@
 'use client'
 
-import * as React from 'react'
 import {
   AudioWaveform,
   BadgeEuro,
   Book,
   ChartPie,
-  CirclePlay,
   Command,
   GalleryVerticalEnd,
   MessageSquareText,

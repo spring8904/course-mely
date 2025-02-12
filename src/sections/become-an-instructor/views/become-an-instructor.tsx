@@ -30,24 +30,14 @@ import ModalOption from '@/sections/become-an-instructor/_components/modal-optio
 import 'swiper/css'
 import 'swiper/css/autoplay'
 
-import { useRouter } from 'next/navigation'
-import { useAuthStore } from '@/stores/useAuthStore'
 import Swal from 'sweetalert2'
 
-import { useInstructorRegister } from '@/hooks/instructors/instructor-register/useInstructorRegister'
-import { useGetQaSystems } from '@/hooks/qa-systems/useQaSystem'
+import { useInstructorRegister } from '@/hooks/instructor/instructor-register/useInstructorRegister'
+import { useGetQaSystems } from '@/hooks/qa-system/useQaSystem'
 
 const BecomeAnInstructor = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [step, setStep] = useState(1)
-  const router = useRouter()
-  const { user, isAuthenticated } = useAuthStore()
-
-  useEffect(() => {
-    if (!isAuthenticated || !user) {
-      router.push('/forbidden')
-    }
-  }, [user, isAuthenticated, router])
 
   const { data: qaSystems } = useGetQaSystems()
   const { mutate: registerInstructor } = useInstructorRegister()
@@ -68,8 +58,9 @@ const BecomeAnInstructor = () => {
     console.log('Submitting...')
     console.group('Register Instructor')
     console.log(values)
-    registerInstructor(values)
     console.groupEnd()
+
+    registerInstructor(values)
   }
 
   useEffect(() => {

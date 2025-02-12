@@ -17,7 +17,7 @@ const CourseCategoryList = ({ courseCategories }: CourseCategoryListProps) => {
     <div className="w-full bg-[#FAFAFC] pb-10 pt-7">
       <div
         className={cn(
-          'container mx-auto flex flex-col gap-6 p-3',
+          'container mx-auto flex flex-col gap-6 p-4',
           'lg:p-5',
           'xl:p-10'
         )}
@@ -47,8 +47,8 @@ const CourseCategoryList = ({ courseCategories }: CourseCategoryListProps) => {
             >
               <div
                 className={cn(
-                  'm-4 flex flex-col items-center gap-6',
-                  'md:flex-row md:gap-3',
+                  'm-6 flex flex-col items-center gap-6',
+                  'md:flex-row md:gap-4',
                   'lg:mt-8 lg:flex-col'
                 )}
               >

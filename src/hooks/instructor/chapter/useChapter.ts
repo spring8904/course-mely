@@ -11,15 +11,14 @@ export const useCreateChapter = () => {
   return useMutation({
     mutationFn: (data: CreateChapterPayload) =>
       instructorChapterApi.createChapter(data),
-    onSuccess: async () => {
+    onSuccess: async (res: any) => {
       await queryClient.invalidateQueries({
         queryKey: [QUERY_KEY.INSTRUCTOR_COURSE],
       })
+      toast.success(res.message)
     },
-    onError: (error: any) => {
-      const errorMessage =
-        error?.response?.data?.error || error.message || 'Đã xảy ra lỗi'
-      toast.error(errorMessage)
+    onError: (error) => {
+      toast.error(error.message)
     },
   })
 }

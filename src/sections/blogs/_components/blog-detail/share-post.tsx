@@ -2,10 +2,10 @@ import React from 'react'
 
 const BlogDetailSharePost = () => {
   return (
-    <div className="bottom flex flex-wrap items-center justify-between gap-20">
-      <div className="share gap-20p flex items-center">
+    <div className="bottom flex flex-wrap items-center justify-between gap-[20px]">
+      <div className="share gap-[20px]p flex items-center">
         <h6 className="fw-5">Share this post</h6>
-        <ul className="tf-social-icon flex items-center gap-10">
+        <ul className="tf-social-icon flex items-center gap-[10px]">
           <li>
             <a href="#">
               <i className="flaticon-facebook-1"></i>
