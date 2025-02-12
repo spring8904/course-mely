@@ -1,20 +1,24 @@
+import { useRouter } from 'next/navigation'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'react-toastify'
 
-import { CreateChapterPayload } from '@/validations/chapter'
+import { RegisterInstructorInput } from '@/validations/instructor'
 import QUERY_KEY from '@/constants/query-key'
-import { instructorChapterApi } from '@/services/instructor/chapter/chapter-api'
+import { instructorRegisterApi } from '@/services/instructor/register/instructor-register-api'
 
-export const useCreateChapter = () => {
+export const useInstructorRegister = () => {
   const queryClient = useQueryClient()
+  const router = useRouter()
 
   return useMutation({
-    mutationFn: (data: CreateChapterPayload) =>
-      instructorChapterApi.createChapter(data),
+    mutationFn: (data: RegisterInstructorInput) =>
+      instructorRegisterApi.register(data),
     onSuccess: async () => {
       await queryClient.invalidateQueries({
-        queryKey: [QUERY_KEY.INSTRUCTOR_COURSE],
+        queryKey: [QUERY_KEY.AUTH],
       })
+
+      router.push('/')
     },
     onError: (error: any) => {
       const errorMessage =
