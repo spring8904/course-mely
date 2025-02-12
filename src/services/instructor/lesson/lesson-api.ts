@@ -1,4 +1,7 @@
-import { CreateLessonPayload } from '@/validations/lesson'
+import {
+  CreateLessonPayload,
+  UpdateContentLessonPayload,
+} from '@/validations/lesson'
 import api from '@/configs/api'
 
 const prefix = '/instructor/manage/lessons'
@@ -10,7 +13,7 @@ export const instructorLessonApi = {
   createLesson: (payload: CreateLessonPayload) => {
     return api.post(prefix, payload)
   },
-  updateLesson: (slug: string, payload: CreateLessonPayload) => {
+  updateContentLesson: (slug: string, payload: UpdateContentLessonPayload) => {
     return api.put(`${prefix}/${slug}`, payload)
   },
   updateOrderLesson: async (

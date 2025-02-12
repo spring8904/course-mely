@@ -35,7 +35,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
-import DraggableHandle from '@/sections/instructor/_components/courses-update/lesson/_components/draggable-handle'
+import DraggableHandle from '@/sections/instructor/_components/courses-update/_components/draggable-handle'
 import DraggableItem from '@/sections/instructor/_components/courses-update/lesson/_components/draggable-item'
 import CreateLesson from '@/sections/instructor/_components/courses-update/lesson/create-lesson'
 
