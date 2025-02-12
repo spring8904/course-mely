@@ -8,6 +8,7 @@ import { toast } from 'react-toastify'
 
 import { IAuthData } from '@/types'
 import QUERY_KEY from '@/constants/query-key'
+import { StorageKeys } from '@/constants/storage-keys'
 import { authApi } from '@/services/auth/authApi'
 
 export const useSignIn = () => {
@@ -22,26 +23,24 @@ export const useSignIn = () => {
       const token = res?.token
       const user = res?.user
 
-      const currentToken = Cookies.get('access_token')
+      const currentToken = Cookies.get(StorageKeys.ACCESS_TOKEN)
 
       if (token && currentToken !== token) {
-        Cookies.remove('access_token')
-        Cookies.set('access_token', token, { expires: 7 })
-        localStorage.setItem('user', JSON.stringify(user))
+        Cookies.remove(StorageKeys.ACCESS_TOKEN)
+        Cookies.set(StorageKeys.ACCESS_TOKEN, token, { expires: 7 })
+        localStorage.setItem(StorageKeys.USER, JSON.stringify(user))
 
         setToken(token)
         setUser(user)
         router.push('/')
-
-        toast.success(res?.message)
 
         await queryClient.invalidateQueries({ queryKey: [QUERY_KEY.AUTH] })
       } else {
         toast.error('Đăng nhập thất bại, vui lòng thử lại')
       }
     },
-    onError: (error: any) => {
-      toast.error(error?.response?.data?.message || '')
+    onError: (error) => {
+      toast.error(error.message)
     },
   })
 }

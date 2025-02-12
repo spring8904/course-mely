@@ -7,7 +7,7 @@ import Link from 'next/link'
 import { useAuthStore } from '@/stores/useAuthStore'
 import Swal from 'sweetalert2'
 
-import { useLogOut } from '@/hooks/auth/logout'
+import { useLogOut } from '@/hooks/auth/useLogOut'
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 

@@ -3,14 +3,9 @@
 import { useRouter } from 'next/navigation'
 import { useAuthStore } from '@/stores/useAuthStore'
 import { useMutation } from '@tanstack/react-query'
-import { AxiosError } from 'axios'
 import { toast } from 'react-toastify'
 
 import { authApi } from '@/services/auth/authApi'
-
-interface ErrorResponse {
-  message: string
-}
 
 export const useLogOut = () => {
   const router = useRouter()
@@ -23,10 +18,8 @@ export const useLogOut = () => {
       router.push('/')
       toast.success(res?.message)
     },
-    onError: (error: AxiosError<ErrorResponse>) => {
-      toast.error(
-        error?.response?.data?.message || 'Đăng ký thất bại, vui lòng thử lại'
-      )
+    onError: (error) => {
+      toast.error(error.message)
     },
   })
 }

@@ -1,6 +1,8 @@
-import axios, { AxiosResponse } from 'axios'
+import axios from 'axios'
 import Cookies from 'js-cookie'
 import { toast } from 'react-toastify'
+
+import { StorageKeys } from '@/constants/storage-keys'
 
 const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api/',
@@ -10,7 +12,7 @@ const api = axios.create({
 })
 
 api.interceptors.request.use((config) => {
-  const token = Cookies.get('access_token')
+  const token = Cookies.get(StorageKeys.ACCESS_TOKEN)
 
   if (token) {
     config.headers.Authorization = `Bearer ${token}`
@@ -24,10 +26,7 @@ api.interceptors.request.use((config) => {
 })
 
 api.interceptors.response.use(
-  (response: AxiosResponse) => {
-    if (response.status === 201 && response.data && response.data.message) {
-      toast.success(response.data.message)
-    }
+  (response) => {
     return response.data
   },
   (error) => {
@@ -40,7 +39,7 @@ api.interceptors.response.use(
           break
         }
         case 403: {
-          toast.error('Forbidden', data)
+          console.error('Forbidden', data)
           break
         }
         case 404: {
@@ -55,9 +54,13 @@ api.interceptors.response.use(
           console.log('Internal Server Error', data)
           break
         }
-        default:
+        default: {
           console.log('Error', data)
+          break
+        }
       }
+
+      if (!!data) return Promise.reject(data)
     } else if (error.request) {
       toast.error('No response received from the server')
     } else {

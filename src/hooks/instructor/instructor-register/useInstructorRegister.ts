@@ -20,10 +20,8 @@ export const useInstructorRegister = () => {
 
       router.push('/')
     },
-    onError: (error: any) => {
-      const errorMessage =
-        error?.response?.data?.error || error.message || 'Đã xảy ra lỗi'
-      toast.error(errorMessage)
+    onError: (error) => {
+      toast.error(error.message)
     },
   })
 }

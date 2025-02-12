@@ -3,7 +3,6 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'react-toastify'
 
 import { ICourse } from '@/types'
-import { AxiosResponseError } from '@/types/AxiosResponseError'
 import { CreateCoursePayload } from '@/validations/course'
 import QUERY_KEY from '@/constants/query-key'
 import { instructorCourseApi } from '@/services/instructor/course/course-api'
@@ -35,16 +34,14 @@ export const useCreateCourse = () => {
         queryKey: [QUERY_KEY.INSTRUCTOR_COURSE],
       })
 
-      const courseSlug = res?.data?.slug
+      const courseSlug = res?.slug
 
       if (courseSlug) {
         router.push(`/instructor/courses/update/${courseSlug}`)
       }
     },
-    onError: (error: any) => {
-      const errorMessage =
-        error?.response?.data?.error || error.message || 'Đã xảy ra lỗi'
-      toast.error(errorMessage)
+    onError: (error) => {
+      toast.error(error.message)
     },
   })
 }
@@ -61,18 +58,15 @@ export const useUpdateCourse = () => {
       formData.append('status', data.status)
       return instructorCourseApi.updateCourse(formData, slug)
     },
-    onSuccess: async (res) => {
+    onSuccess: async (res: any) => {
       await queryClient.invalidateQueries({
         queryKey: [QUERY_KEY.INSTRUCTOR_COURSE],
       })
 
-      const successMessage = res?.data?.message ?? 'Thành công'
-      toast.success(successMessage)
+      toast.success(res.message)
     },
-    onError: (error: AxiosResponseError) => {
-      const errorMessage =
-        error?.response?.data?.error ?? error?.message ?? 'Đã xảy ra lỗi'
-      toast.error(errorMessage)
+    onError: (error) => {
+      toast.error(error.message)
     },
   })
 }

@@ -1,11 +1,13 @@
+import { StorageKeys } from '@/constants/storage-keys'
+
 export const getAccessTokenFromLocalStorage = () => {
-  return localStorage.getItem('access_token') || null
+  return localStorage.getItem(StorageKeys.ACCESS_TOKEN) || null
 }
 
 export const setAccessTokenToLocalStorage = (accessToken: string) => {
-  localStorage.setItem('access_token', accessToken)
+  localStorage.setItem(StorageKeys.ACCESS_TOKEN, accessToken)
 }
 
 export const removeAccessTokenFromLocalStorage = () => {
-  localStorage.removeItem('access_token')
+  localStorage.removeItem(StorageKeys.ACCESS_TOKEN)
 }

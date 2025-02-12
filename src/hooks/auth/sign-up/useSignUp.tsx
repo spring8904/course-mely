@@ -14,12 +14,13 @@ export const useSignUp = () => {
 
   return useMutation({
     mutationFn: (data: IAuthData) => authApi.signUp(data),
-    onSuccess: async () => {
+    onSuccess: async (res: any) => {
       router.push('/sign-in')
+      toast.success(res.message)
       await queryClient.invalidateQueries({ queryKey: [QUERY_KEY.AUTH] })
     },
-    onError: (error: any) => {
-      toast.error(error?.response?.data?.message)
+    onError: (error) => {
+      toast.error(error.message)
     },
   })
 }
