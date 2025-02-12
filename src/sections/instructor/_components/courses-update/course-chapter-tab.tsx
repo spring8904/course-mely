@@ -1,11 +1,8 @@
 import React, { useState } from 'react'
-import { zodResolver } from '@hookform/resolvers/zod'
 import { CircleCheck, CircleX, SquarePen, Trash2 } from 'lucide-react'
-import { useForm } from 'react-hook-form'
 import Swal from 'sweetalert2'
 
 import { IChapter } from '@/types'
-import { UpdateChapterPayload } from '@/validations/chapter'
 import {
   useDeleteChapter,
   useUpdateChapter,

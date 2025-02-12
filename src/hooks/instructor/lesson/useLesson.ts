@@ -3,7 +3,7 @@ import { toast } from 'react-toastify'
 
 import {
   CreateLessonPayload,
-  UpdateContentLessonPayload,
+  UpdateTitleLessonPayload,
 } from '@/validations/lesson'
 import QUERY_KEY from '@/constants/query-key'
 import { instructorLessonApi } from '@/services/instructor/lesson/lesson-api'
@@ -31,8 +31,15 @@ export const useUpdateContentLesson = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (data: UpdateContentLessonPayload) =>
-      instructorLessonApi.updateContentLesson(data.slug, data),
+    mutationFn: ({
+      chapterId,
+      id,
+      data,
+    }: {
+      chapterId: number
+      id: number
+      data: UpdateTitleLessonPayload
+    }) => instructorLessonApi.updateContentLesson(chapterId, id, data),
     onSuccess: async (res: any) => {
       await queryClient.invalidateQueries({
         queryKey: [QUERY_KEY.INSTRUCTOR_COURSE],
@@ -63,6 +70,24 @@ export const useUpdateOrderLesson = () => {
         queryKey: [QUERY_KEY.INSTRUCTOR_COURSE],
       })
 
+      toast.success(res.message)
+    },
+    onError: (error) => {
+      toast.error(error.message)
+    },
+  })
+}
+
+export const useDeleteLesson = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ chapterId, id }: { chapterId: number; id: number }) =>
+      instructorLessonApi.deleteLesson(chapterId, id),
+    onSuccess: async (res: any) => {
+      await queryClient.invalidateQueries({
+        queryKey: [QUERY_KEY.INSTRUCTOR_COURSE],
+      })
       toast.success(res.message)
     },
     onError: (error) => {
