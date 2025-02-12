@@ -11,3 +11,11 @@ export const setAccessTokenToLocalStorage = (accessToken: string) => {
 export const removeAccessTokenFromLocalStorage = () => {
   localStorage.removeItem(StorageKeys.ACCESS_TOKEN)
 }
+
+export const getUserFromLocalStorage = () => {
+  if (typeof window !== 'undefined') {
+    const user = localStorage.getItem(StorageKeys.USER)
+    return user ? JSON.parse(user) : null
+  }
+  return null
+}

@@ -1,24 +1,39 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuthStore } from '@/stores/useAuthStore'
 
+import { Role } from '@/constants/role'
+
 interface Props {
+  roles: Role[]
   children: React.ReactNode
 }
 
-const ProtectedRoute: React.FC<Props> = ({ children }) => {
-  const { isAuthenticated } = useAuthStore()
+const ProtectedRoute: React.FC<Props> = ({ roles = [], children }) => {
+  const { isAuthenticated, role } = useAuthStore()
   const router = useRouter()
+
+  const permission = useMemo(() => {
+    return roles.length
+      ? [...roles, Role.SUPER_ADMIN]
+      : [Role.SUPER_ADMIN, Role.ADMIN, Role.INSTRUCTOR, Role.MEMBER]
+  }, [roles])
+
+  const authorized = isAuthenticated && role && permission.includes(role)
 
   useEffect(() => {
     if (!isAuthenticated) {
-      router.replace('/sign-in')
+      return router.replace('/sign-in')
     }
-  }, [isAuthenticated, router])
 
-  return isAuthenticated ? <>{children}</> : null
+    if (!authorized) {
+      return router.replace('/forbidden')
+    }
+  }, [authorized, isAuthenticated, router])
+
+  return authorized ? <>{children}</> : null
 }
 
 export default ProtectedRoute

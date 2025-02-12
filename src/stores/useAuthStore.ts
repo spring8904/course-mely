@@ -2,28 +2,25 @@ import Cookies from 'js-cookie'
 import { create } from 'zustand'
 
 import { IUser } from '@/types'
+import { Role } from '@/constants/role'
 import { StorageKeys } from '@/constants/storage-keys'
-
-const getUserFromLocalStorage = () => {
-  if (typeof window !== 'undefined') {
-    const user = localStorage.getItem(StorageKeys.USER)
-    return user ? JSON.parse(user) : null
-  }
-  return null
-}
+import { getUserFromLocalStorage } from '@/lib/common'
 
 interface UserState {
   user: IUser | null
   token: string | null
+  role: Role | null
   isAuthenticated: boolean
   setUser: (user: IUser | null) => void
   setToken: (token: string | null) => void
+  setRole: (role: Role | null) => void
   logout: () => void
 }
 
 export const useAuthStore = create<UserState>((set) => ({
   user: getUserFromLocalStorage(),
   token: Cookies.get(StorageKeys.ACCESS_TOKEN) || null,
+  role: (Cookies.get(StorageKeys.ROLE) as Role) || null,
   isAuthenticated: !!Cookies.get(StorageKeys.ACCESS_TOKEN),
 
   setUser: (user) => {
@@ -44,9 +41,19 @@ export const useAuthStore = create<UserState>((set) => ({
     set({ token, isAuthenticated: !!token })
   },
 
+  setRole: (role) => {
+    if (role) {
+      Cookies.set(StorageKeys.ROLE, role, { expires: 7 })
+    } else {
+      Cookies.remove(StorageKeys.ROLE)
+    }
+    set({ role, isAuthenticated: !!role })
+  },
+
   logout: () => {
     Cookies.remove(StorageKeys.ACCESS_TOKEN)
     localStorage.removeItem(StorageKeys.USER)
-    set({ user: null, token: null, isAuthenticated: false })
+    Cookies.remove(StorageKeys.ROLE)
+    set({ user: null, token: null, role: null, isAuthenticated: false })
   },
 }))

@@ -16,22 +16,21 @@ export const useSignIn = () => {
   const router = useRouter()
   const setUser = useAuthStore((state) => state.setUser)
   const setToken = useAuthStore((state) => state.setToken)
+  const setRole = useAuthStore((state) => state.setRole)
 
   return useMutation({
     mutationFn: (data: IAuthData) => authApi.signIn(data),
     onSuccess: async (res: any) => {
       const token = res?.token
       const user = res?.user
+      const role = res.role
 
       const currentToken = Cookies.get(StorageKeys.ACCESS_TOKEN)
 
       if (token && currentToken !== token) {
-        Cookies.remove(StorageKeys.ACCESS_TOKEN)
-        Cookies.set(StorageKeys.ACCESS_TOKEN, token, { expires: 7 })
-        localStorage.setItem(StorageKeys.USER, JSON.stringify(user))
-
         setToken(token)
         setUser(user)
+        setRole(role)
         router.push('/')
 
         await queryClient.invalidateQueries({ queryKey: [QUERY_KEY.AUTH] })
