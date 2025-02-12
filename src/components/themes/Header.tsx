@@ -107,7 +107,7 @@ const Header = () => {
                 </ul>
               </nav>
             </div>
-            <div className="header-right grow justify-end">
+            <div className="header-right grow !justify-end">
               <a
                 className="header-search-icon flex items-center justify-center"
                 href="#canvasSearch"
