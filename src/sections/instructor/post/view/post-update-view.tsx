@@ -60,7 +60,7 @@ const PostUpdateView = ({ slug }: { slug: string }) => {
                     <Label>Mô tả bài viết</Label>
                     <div className="mt-1">
                       <Editor
-                        apiKey="m3o33nrpj98lm1ueo3zwefgum674bex794nb3rzs8c04amvk"
+                        apiKey={process.env.NEXT_PUBLIC_TINYMCE_API_KEY}
                         init={{
                           plugins:
                             'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
