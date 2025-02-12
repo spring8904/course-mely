@@ -34,8 +34,8 @@ import { useRouter } from 'next/navigation'
 import { useAuthStore } from '@/stores/useAuthStore'
 import Swal from 'sweetalert2'
 
-import { useInstructorRegister } from '@/hooks/instructors/instructor-register/useInstructorRegister'
-import { useGetQaSystems } from '@/hooks/qa-systems/useQaSystem'
+import { useInstructorRegister } from '@/hooks/instructor/instructor-register/useInstructorRegister'
+import { useGetQaSystems } from '@/hooks/qa-system/useQaSystem'
 
 const BecomeAnInstructor = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)

@@ -8,7 +8,7 @@ import {
 } from '@/sections/home/components'
 import InstructorTop from '@/sections/home/components/instructor-top'
 
-import '@/assets/styles/custom-swiper-pagination.css'
+import '@/styles/custom-swiper-pagination.css'
 
 const HomeView = () => {
   return (

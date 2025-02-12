@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form'
 
 import { LessonType } from '@/types'
 import { CreateLessonPayload, createLessonSchema } from '@/validations/lesson'
-import { useCreateLesson } from '@/hooks/instructors/lessons/useLesson'
+import { useCreateLesson } from '@/hooks/instructor/lesson/useLesson'
 
 import { Button } from '@/components/ui/button'
 import {

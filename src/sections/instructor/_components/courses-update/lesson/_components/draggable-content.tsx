@@ -18,7 +18,7 @@ import {
 
 import { IChapter, ILesson, LessonType } from '@/types'
 import { cn } from '@/lib/utils'
-import { useUpdateOrderLesson } from '@/hooks/instructors/lessons/useLesson'
+import { useUpdateOrderLesson } from '@/hooks/instructor/lesson/useLesson'
 
 import {
   Accordion,

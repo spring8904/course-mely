@@ -4,7 +4,7 @@ import Link from 'next/link'
 // import { useRouter } from 'next/navigation'
 
 // import { IUser, UserStatus } from '@/types'
-import InputSeach from '@/components/common/InputSeach'
+import InputSeach from '@/components/common/InputSearch'
 
 // import UserMenu from '../common/UserMenu'
 // import { Button } from '../ui/button'

@@ -67,7 +67,6 @@ const PostUpdateView = ({ slug }: { slug: string }) => {
                           toolbar:
                             'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
                           min_height: 300,
-                          readonly: false,
                           menubar: true,
                           branding: false,
                           statusbar: true,

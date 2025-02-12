@@ -1,11 +1,10 @@
 'use client'
 
-import React, { useEffect } from 'react'
 import { useAuthStore } from '@/stores/useAuthStore'
 
 import { Separator } from '@/components/ui/separator'
 import { SidebarTrigger } from '@/components/ui/sidebar'
-import InputSeach from '@/components/common/InputSeach'
+import InputSearch from '@/components/common/InputSearch'
 
 const TopBar = () => {
   const { user } = useAuthStore()
@@ -18,7 +17,7 @@ const TopBar = () => {
         <h3 className="font-medium">Xin chào, {user?.name || 'Người dùng'}</h3>
       </div>
       <div className="flex items-center space-x-4 px-6">
-        <InputSeach />
+        <InputSearch />
         {/* <UserMenu userData={userData} /> */}
       </div>
     </header>

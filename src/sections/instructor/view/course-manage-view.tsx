@@ -9,11 +9,11 @@ import { useForm } from 'react-hook-form'
 import { ICategory } from '@/types/Category'
 import { CreateCoursePayload, createCourseSchema } from '@/validations/course'
 import { cn } from '@/lib/utils'
-import { useGetCategories } from '@/hooks/categories/useCategory'
+import { useGetCategories } from '@/hooks/category/useCategory'
 import {
   useCreateCourse,
   useGetCourses,
-} from '@/hooks/instructors/courses/useCourse'
+} from '@/hooks/instructor/course/useCourse'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
