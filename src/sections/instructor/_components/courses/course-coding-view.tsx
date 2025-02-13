@@ -20,15 +20,17 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import TinyEditor from '@/components/shared/tiny-editor'
 
 import SolutionTab from './solution-tab'
 
 const CourseCodingView = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [selectedLanguage, setSelectedLanguage] = useState<string>('')
+  const [content, setContent] = useState('')
 
   useEffect(() => {
-    setIsDialogOpen(true)
+    // setIsDialogOpen(true)
   }, [])
 
   const handleLanguageChange = (value: string) => {
@@ -79,7 +81,7 @@ const CourseCodingView = () => {
         </DialogContent>
       </Dialog>
 
-      <Tabs defaultValue="plan" className="py-[68px] [&>*]:mt-0">
+      <Tabs defaultValue="solution" className="h-screen py-[68px] [&>*]:mt-0">
         <TabsContent value="plan">
           <main className="flex flex-col p-4">
             <div className="container mx-auto max-w-4xl p-4">
@@ -117,11 +119,17 @@ const CourseCodingView = () => {
             </div>
           </main>
         </TabsContent>
-        <TabsContent value="solution">
+        <TabsContent value="solution" className="h-full">
           <SolutionTab />
         </TabsContent>
         <TabsContent value="guide">
-          Make changes to your account here.
+          <TinyEditor
+            value={content}
+            onEditorChange={(value: any) => {
+              setContent(value)
+              console.log(value)
+            }}
+          />
         </TabsContent>
         <footer className="fixed inset-x-0 bottom-0 z-10 flex justify-center border-t bg-white p-4">
           <TabsList className="flex gap-4">

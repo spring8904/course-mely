@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from 'react'
 import dynamic from 'next/dynamic'
-import files from '@/sample/files'
 
 import { cn } from '@/lib/utils'
 
@@ -16,29 +15,32 @@ type File = {
   value: string
 }
 
-const MonacoEditor = () => {
+type Props = {
+  files: { [key: string]: File }
+  onChange?: (value?: string, fileName?: string) => void
+  theme?: 'light' | 'vs-dark'
+}
+
+const MonacoEditor = ({
+  files,
+  onChange,
+  theme = 'vs-dark',
+  ...rest
+}: Props) => {
   const editorRef = useRef<any>(null)
   const [fileName, setFileName] = useState<string>('script.js')
 
-  const file = (
-    files as {
-      [key: string]: File
-    }
-  )[fileName]
-
-  const handleEditorChange = (value: any) => {
-    console.log('here is the current model value:', value)
-  }
+  const file = files[fileName]
 
   useEffect(() => {
     editorRef.current?.focus()
   }, [file.name])
 
   return (
-    <div className="h-[calc(100%-56px)]">
+    <div className="flex h-full flex-col">
       <div
         className={cn(
-          'flex w-full items-end justify-start',
+          'flex items-end justify-start',
           'rounded-none bg-[#151515] pb-0'
         )}
       >
@@ -57,14 +59,17 @@ const MonacoEditor = () => {
         ))}
       </div>
 
-      <div className="h-[calc(100%-32px)] bg-[#1e1e1e] pt-5">
+      <div className="flex-1 bg-[#1e1e1e] pt-5">
         <Editor
-          theme="vs-dark"
-          onChange={handleEditorChange}
+          theme={theme}
+          onChange={(value) => {
+            onChange?.(value, file.name)
+          }}
           path={file.name}
           defaultLanguage={file.language}
           defaultValue={file.value}
           onMount={(editor) => (editorRef.current = editor)}
+          {...rest}
         />
       </div>
     </div>
