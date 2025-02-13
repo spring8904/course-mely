@@ -7,7 +7,7 @@ const BlogListBanner = () => {
         <div className="row">
           <div className="col-12">
             <div className="content text-center">
-              <ul className="breadcrumbs flex items-center justify-center gap-10">
+              <ul className="breadcrumbs flex items-center justify-center gap-[10px]">
                 <li>
                   <a href="index.html" className="flex">
                     <i className="icon-home"></i>

@@ -35,11 +35,11 @@ import { useForm } from 'react-hook-form'
 import { ICategory } from '@/types/Category'
 import { UpdateCoursePayload, updateCourseSchema } from '@/validations/course'
 import { cn } from '@/lib/utils'
-import { useGetCategories } from '@/hooks/categories/useCategory'
+import { useGetCategories } from '@/hooks/category/useCategory'
 import {
   useGetCourseOverview,
   useUpdateCourse,
-} from '@/hooks/instructors/courses/useCourse'
+} from '@/hooks/instructor/course/useCourse'
 
 import {
   Command,
@@ -105,7 +105,7 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
   useEffect(() => {
     if (courseOverviewData) {
       form.reset({
-        name: courseOverviewData?.data?.name || '',
+        name: courseOverviewData?.data.name || '',
         category_id: courseOverviewData?.data.category_id || '',
         price: courseOverviewData?.data.price || 0,
         price_sale: courseOverviewData?.data.price_sale || 0,
@@ -197,7 +197,7 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
       <div className="mt-2">
         <div className="flex justify-between">
           <h3 className="text-xl font-bold">
-            Cập nhật nội dung khoá học: {courseOverviewData?.data?.name}
+            Cập nhật nội dung khoá học: {courseOverviewData?.data.name}
           </h3>
           <div className="flex flex-col gap-2">
             <Button className="bg-primary">Gửi yêu cầu duyệt khoá học</Button>
@@ -277,7 +277,7 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
                             disabled={updateCoursePending}
                           >
                             {updateCoursePending ? (
-                              <Loader2 className="mx-auto size-8 animate-spin" />
+                              <Loader2 />
                             ) : (
                               'Lưu thông tin'
                             )}
@@ -568,7 +568,7 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
                                           )}
                                         >
                                           {field.value
-                                            ? (categoryData?.find(
+                                            ? (categoryData?.data.find(
                                                 (category: ICategory) =>
                                                   category.id === field.value
                                               )?.name ??
@@ -589,7 +589,7 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
                                             Không có kết quả nào phù hợp
                                           </CommandEmpty>
                                           <CommandGroup>
-                                            {categoryData?.map(
+                                            {categoryData?.data.map(
                                               (category: ICategory) => (
                                                 <CommandItem
                                                   value={category.name}
@@ -829,7 +829,7 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
             <TabsContent value="courseChapter" className="m-0">
               <CourseChapterTab
                 slug={slug}
-                chapters={courseOverviewData?.data?.chapters}
+                chapters={courseOverviewData?.data.chapters}
               />
             </TabsContent>
           </div>

@@ -85,7 +85,7 @@ const LearningLessonView = () => {
           </div>
         </div>
         <div className="col-span-3">
-          <div className="p-3 font-semibold shadow-md">
+          <div className="p-4 font-semibold shadow-md">
             <h2>Nội dung khoá học</h2>
           </div>
           {chapterData?.map((chapter, chapterIndex) => (

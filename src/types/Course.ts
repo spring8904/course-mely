@@ -9,7 +9,7 @@ export interface ICourse {
   id?: number
   userId?: number
   categoryId?: number
-  code: string
+  code?: string
   name: string
   slug?: string
   thumbnail?: string | null

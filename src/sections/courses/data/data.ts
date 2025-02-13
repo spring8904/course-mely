@@ -129,6 +129,7 @@ export const lessonData: ILesson[] = [
     title: 'ReactJS cơ bản',
     content: 'ReactJS cơ bản',
     order: 1,
+    type: 'document',
   },
   {
     id: 2,
@@ -136,5 +137,6 @@ export const lessonData: ILesson[] = [
     title: 'Ôn lại kiến thức về ES6+',
     content: 'Ôn lại kiến thức về ES6+',
     order: 2,
+    type: 'document',
   },
 ]

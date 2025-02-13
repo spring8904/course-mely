@@ -2,50 +2,58 @@ import Cookies from 'js-cookie'
 import { create } from 'zustand'
 
 import { IUser } from '@/types'
-
-const getUserFromLocalStorage = () => {
-  if (typeof window !== 'undefined') {
-    const user = localStorage.getItem('user')
-    return user ? JSON.parse(user) : null
-  }
-  return null
-}
+import { Role } from '@/constants/role'
+import { StorageKeys } from '@/constants/storage-keys'
+import { getUserFromLocalStorage } from '@/lib/common'
 
 interface UserState {
   user: IUser | null
   token: string | null
+  role: Role | null
   isAuthenticated: boolean
   setUser: (user: IUser | null) => void
   setToken: (token: string | null) => void
+  setRole: (role: Role | null) => void
   logout: () => void
 }
 
 export const useAuthStore = create<UserState>((set) => ({
   user: getUserFromLocalStorage(),
-  token: Cookies.get('access_token') || null,
-  isAuthenticated: !!Cookies.get('access_token'),
+  token: Cookies.get(StorageKeys.ACCESS_TOKEN) || null,
+  role: (Cookies.get(StorageKeys.ROLE) as Role) || null,
+  isAuthenticated: !!Cookies.get(StorageKeys.ACCESS_TOKEN),
 
   setUser: (user) => {
     if (user) {
-      localStorage.setItem('user', JSON.stringify(user))
+      localStorage.setItem(StorageKeys.USER, JSON.stringify(user))
     } else {
-      localStorage.removeItem('user')
+      localStorage.removeItem(StorageKeys.USER)
     }
     set({ user })
   },
 
   setToken: (token) => {
     if (token) {
-      Cookies.set('access_token', token, { expires: 7 })
+      Cookies.set(StorageKeys.ACCESS_TOKEN, token, { expires: 7 })
     } else {
-      Cookies.remove('access_token')
+      Cookies.remove(StorageKeys.ACCESS_TOKEN)
     }
     set({ token, isAuthenticated: !!token })
   },
 
+  setRole: (role) => {
+    if (role) {
+      Cookies.set(StorageKeys.ROLE, role, { expires: 7 })
+    } else {
+      Cookies.remove(StorageKeys.ROLE)
+    }
+    set({ role, isAuthenticated: !!role })
+  },
+
   logout: () => {
-    Cookies.remove('access_token')
-    localStorage.removeItem('user')
-    set({ user: null, token: null, isAuthenticated: false })
+    Cookies.remove(StorageKeys.ACCESS_TOKEN)
+    localStorage.removeItem(StorageKeys.USER)
+    Cookies.remove(StorageKeys.ROLE)
+    set({ user: null, token: null, role: null, isAuthenticated: false })
   },
 }))

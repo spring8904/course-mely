@@ -9,11 +9,11 @@ import { useForm } from 'react-hook-form'
 import { ICategory } from '@/types/Category'
 import { CreateCoursePayload, createCourseSchema } from '@/validations/course'
 import { cn } from '@/lib/utils'
-import { useGetCategories } from '@/hooks/categories/useCategory'
+import { useGetCategories } from '@/hooks/category/useCategory'
 import {
   useCreateCourse,
   useGetCourses,
-} from '@/hooks/instructors/courses/useCourse'
+} from '@/hooks/instructor/course/useCourse'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -74,7 +74,6 @@ const CourseManageView = () => {
   const onSubmit = (values: CreateCoursePayload) => {
     if (isCourseCreating) return
 
-    console.log('values', values)
     createCourse(values)
   }
 
@@ -113,7 +112,7 @@ const CourseManageView = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {coursesData?.map((course: any, index: number) => (
+              {coursesData?.data?.map((course: any, index: number) => (
                 <TableRow key={course.id}>
                   <TableCell>{index + 1}</TableCell>
                   <TableCell>
@@ -214,7 +213,7 @@ const CourseManageView = () => {
                             )}
                           >
                             {field.value
-                              ? categoryData?.find(
+                              ? categoryData?.data.find(
                                   (category: ICategory) =>
                                     category.id === field.value
                                 )?.name
@@ -234,7 +233,7 @@ const CourseManageView = () => {
                               Không có kết quả nào phù hợp
                             </CommandEmpty>
                             <CommandGroup>
-                              {categoryData?.map((category: ICategory) => (
+                              {categoryData?.data.map((category: ICategory) => (
                                 <CommandItem
                                   value={category.name}
                                   key={category.id}

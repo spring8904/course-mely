@@ -51,11 +51,11 @@ const BlogDetailReviewList = () => {
               sunt.
             </div>
             <div className="helpful-wrap">
-              <div className="flex items-center gap-10">
+              <div className="flex items-center gap-[10px]">
                 <i className="icon-like"></i>
                 <div>Helpful</div>
               </div>
-              <div className="flex items-center gap-10">
+              <div className="flex items-center gap-[10px]">
                 <i className="icon-dislike"></i>
                 <div>Not helpful</div>
               </div>
@@ -97,11 +97,11 @@ const BlogDetailReviewList = () => {
               sunt.
             </div>
             <div className="helpful-wrap">
-              <div className="flex items-center gap-10">
+              <div className="flex items-center gap-[10px]">
                 <i className="icon-like"></i>
                 <div>Helpful</div>
               </div>
-              <div className="flex items-center gap-10">
+              <div className="flex items-center gap-[10px]">
                 <i className="icon-dislike"></i>
                 <div>Not helpful</div>
               </div>

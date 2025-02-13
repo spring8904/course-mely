@@ -2,26 +2,21 @@ import { useRouter } from 'next/navigation'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'react-toastify'
 
-import { AxiosResponseError } from '@/types/AxiosResponseError'
+import { CreateCoursePayload, UpdateCoursePayload } from '@/validations/course'
 import QUERY_KEY from '@/constants/query-key'
-import {
-  createCourse,
-  getCourseOverview,
-  getCourses,
-  updateCourse,
-} from '@/services/instructor/course/course-api'
+import { instructorCourseApi } from '@/services/instructor/course/course-api'
 
 export const useGetCourses = () => {
   return useQuery({
     queryKey: [QUERY_KEY.INSTRUCTOR_COURSE],
-    queryFn: getCourses,
+    queryFn: () => instructorCourseApi.getCourses(),
   })
 }
 
 export const useGetCourseOverview = (slug?: string) => {
   return useQuery({
     queryKey: [QUERY_KEY.INSTRUCTOR_COURSE, slug],
-    queryFn: () => getCourseOverview(slug!),
+    queryFn: () => instructorCourseApi.getCourseOverview(slug!),
     enabled: !!slug,
   })
 }
@@ -31,26 +26,21 @@ export const useCreateCourse = () => {
   const router = useRouter()
 
   return useMutation({
-    mutationFn: createCourse,
-    onSuccess: async ({ data }: any) => {
+    mutationFn: (data: CreateCoursePayload) =>
+      instructorCourseApi.createCourse(data),
+    onSuccess: async (res: any) => {
       await queryClient.invalidateQueries({
         queryKey: [QUERY_KEY.INSTRUCTOR_COURSE],
       })
 
-      console.log('data', data)
-      const courseSlug = data?.slug
-
-      console.log('courseSlug', courseSlug)
+      const courseSlug = res?.slug
 
       if (courseSlug) {
-        toast.success(data?.message ?? 'Thành công')
         router.push(`/instructor/courses/update/${courseSlug}`)
       }
     },
-    onError: (error: AxiosResponseError) => {
-      const errorMessage =
-        error?.response?.data?.error || error.message || 'Đã xảy ra lỗi'
-      toast.error(errorMessage)
+    onError: (error) => {
+      toast.error(error.message)
     },
   })
 }
@@ -59,7 +49,13 @@ export const useUpdateCourse = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: ({ data, slug }: { data: any; slug: string }) => {
+    mutationFn: ({
+      data,
+      slug,
+    }: {
+      data: UpdateCoursePayload
+      slug: string
+    }) => {
       const formData = new FormData()
       formData.append('_method', 'PUT')
 
@@ -69,19 +65,17 @@ export const useUpdateCourse = () => {
         }
       })
 
-      return updateCourse(formData, slug)
+      return instructorCourseApi.updateCourse(formData, slug)
     },
-    onSuccess: async (res) => {
+    onSuccess: async (res: any) => {
       await queryClient.invalidateQueries({
         queryKey: [QUERY_KEY.INSTRUCTOR_COURSE],
       })
-      console.log(res)
-      const successMessage = res?.data?.message ?? 'Thành công'
-      toast.success(successMessage)
+
+      toast.success(res.message)
     },
-    onError: (error: any) => {
-      const errorMessage = error?.response?.data?.message ?? 'Đã xảy ra lỗi'
-      toast.error(errorMessage)
+    onError: (error) => {
+      toast.error(error.message)
     },
   })
 }

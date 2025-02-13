@@ -25,7 +25,7 @@ const BlogDetailView = ({ slug }: { slug: string }) => {
             <BlogDetailPost />
             <BlogDetailSharePost />
             <BlogDetailProfileItem />
-            <div className="post-control flex flex-wrap items-center justify-between gap-20">
+            <div className="post-control flex flex-wrap items-center justify-between gap-[20px]">
               <div className="prev wow fadeInLeft">
                 <a href="#" className="fw-5 h6 flex items-center">
                   <i className="icon-arrow-left"></i>

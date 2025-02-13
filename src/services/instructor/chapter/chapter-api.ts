@@ -1,14 +1,25 @@
-import { CreateChapterPayload } from '@/validations/chapter'
+import {
+  CreateChapterPayload,
+  UpdateChapterPayload,
+} from '@/validations/chapter'
 import api from '@/configs/api'
 
 const prefix = '/instructor/manage/chapters'
 
-export const getChapters = () => api.get(prefix)
-
-export const getChapterOverview = (slug: string) => api.get(`${prefix}/${slug}`)
-
-export const createChapter = (payload: CreateChapterPayload) =>
-  api.post(prefix, payload)
-
-export const updateChapter = (slug: string, payload: CreateChapterPayload) =>
-  api.put(`${prefix}/${slug}`, payload)
+export const instructorChapterApi = {
+  getChapters: async () => {
+    return await api.get(prefix)
+  },
+  getChapterOverview: async (slug: string) => {
+    return await api.get(`${prefix}/${slug}`)
+  },
+  createChapter: (payload: CreateChapterPayload) => {
+    return api.post(prefix, payload)
+  },
+  updateChapter: (slug: string, id: number, payload: UpdateChapterPayload) => {
+    return api.put(`${prefix}/${slug}/${id}`, payload)
+  },
+  deleteChapter: (slug: string, id: number) => {
+    return api.delete(`${prefix}/${slug}/${id}`)
+  },
+}

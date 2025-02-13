@@ -45,7 +45,7 @@ export function NavMain({
             <SidebarMenuItem>
               <CollapsibleTrigger asChild>
                 <SidebarMenuButton
-                  className="mb-4 flex cursor-pointer items-center space-x-2 rounded-lg p-3 text-base font-medium hover:bg-[#F69983] hover:text-white"
+                  className="mb-4 flex cursor-pointer items-center space-x-2 rounded-lg p-4 text-base font-medium hover:bg-[#F69983] hover:text-white"
                   tooltip={item.title}
                 >
                   {item.icon && <item.icon />}

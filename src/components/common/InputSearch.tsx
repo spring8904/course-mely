@@ -3,7 +3,7 @@ import { Search } from 'lucide-react'
 
 import { Input } from '@/components/ui/input'
 
-const InputSeach = ({ className }: { className?: string }) => {
+const InputSearch = ({ className }: { className?: string }) => {
   return (
     <div className="relative">
       <Input
@@ -17,4 +17,4 @@ const InputSeach = ({ className }: { className?: string }) => {
   )
 }
 
-export default InputSeach
+export default InputSearch

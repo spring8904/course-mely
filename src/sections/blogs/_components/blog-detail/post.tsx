@@ -44,13 +44,13 @@ const BlogDetailPost = () => {
       </div>
       <div className="title text-22 fw-5 wow fadeInUp">What you ll learn</div>
       <ul className="wrap-list-text-check">
-        <li className="list-text-item flex items-center gap-10">
+        <li className="list-text-item flex items-center gap-[10px]">
           <div className="icon">
             <i className="flaticon-check"></i>
           </div>
           <div className="fs-15">Prepare for Industry Certification Exam</div>
         </li>
-        <li className="list-text-item flex items-center gap-10">
+        <li className="list-text-item flex items-center gap-[10px]">
           <div className="icon">
             <i className="flaticon-check"></i>
           </div>
@@ -58,13 +58,13 @@ const BlogDetailPost = () => {
             Earn Certification that is Proof of your Competence
           </div>
         </li>
-        <li className="list-text-item flex items-center gap-10">
+        <li className="list-text-item flex items-center gap-[10px]">
           <div className="icon">
             <i className="flaticon-check"></i>
           </div>
           <div className="fs-15">Hours and Hours of Video Instruction</div>
         </li>
-        <li className="list-text-item flex items-center gap-10">
+        <li className="list-text-item flex items-center gap-[10px]">
           <div className="icon">
             <i className="flaticon-check"></i>
           </div>
@@ -72,19 +72,19 @@ const BlogDetailPost = () => {
             Dozens of Code Examples to Download and Study
           </div>
         </li>
-        <li className="list-text-item flex items-center gap-10">
+        <li className="list-text-item flex items-center gap-[10px]">
           <div className="icon">
             <i className="flaticon-check"></i>
           </div>
           <div className="fs-15">Over 25 Engaging Lab Exercises</div>
         </li>
-        <li className="list-text-item flex items-center gap-10">
+        <li className="list-text-item flex items-center gap-[10px]">
           <div className="icon">
             <i className="flaticon-check"></i>
           </div>
           <div className="fs-15">All Lab Solutions</div>
         </li>
-        <li className="list-text-item flex items-center gap-10">
+        <li className="list-text-item flex items-center gap-[10px]">
           <div className="icon">
             <i className="flaticon-check"></i>
           </div>
@@ -92,31 +92,31 @@ const BlogDetailPost = () => {
             Instructor Available by Email or on the Forums
           </div>
         </li>
-        <li className="list-text-item flex items-center gap-10">
+        <li className="list-text-item flex items-center gap-[10px]">
           <div className="icon">
             <i className="flaticon-check"></i>
           </div>
           <div className="fs-15">All Free Tools</div>
         </li>
-        <li className="list-text-item flex items-center gap-10">
+        <li className="list-text-item flex items-center gap-[10px]">
           <div className="icon">
             <i className="flaticon-check"></i>
           </div>
           <div className="fs-15">Comprehensive Coverage of HTML and CSS</div>
         </li>
-        <li className="list-text-item flex items-center gap-10">
+        <li className="list-text-item flex items-center gap-[10px]">
           <div className="icon">
             <i className="flaticon-check"></i>
           </div>
           <div className="fs-15">Client Side Programming with Javascript</div>
         </li>
-        <li className="list-text-item flex items-center gap-10">
+        <li className="list-text-item flex items-center gap-[10px]">
           <div className="icon">
             <i className="flaticon-check"></i>
           </div>
           <div className="fs-15">Server Side Development with PHP</div>
         </li>
-        <li className="list-text-item flex items-center gap-10">
+        <li className="list-text-item flex items-center gap-[10px]">
           <div className="icon">
             <i className="flaticon-check"></i>
           </div>

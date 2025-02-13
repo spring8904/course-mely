@@ -1,7 +1,7 @@
 import CommonLayout from '@/components/layouts/CommonLayout'
 import HeadScripts from '@/components/themes/HeadScripts'
 
-import '@/assets/styles/themes.css'
+import '@/styles/themes.css'
 
 interface LayoutProps {
   children?: React.ReactNode
@@ -9,10 +9,10 @@ interface LayoutProps {
 
 const Layout = ({ children }: LayoutProps) => {
   return (
-    <CommonLayout>
-      {children}
+    <>
+      <CommonLayout>{children}</CommonLayout>
       <HeadScripts />
-    </CommonLayout>
+    </>
   )
 }
 export default Layout

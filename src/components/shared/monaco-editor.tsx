@@ -2,10 +2,9 @@
 
 import { useEffect, useRef, useState } from 'react'
 import dynamic from 'next/dynamic'
+import files from '@/sample/files'
 
 import { cn } from '@/lib/utils'
-
-import files from '@/sections/instructor/_test/files'
 
 const Editor = dynamic(() => import('@monaco-editor/react'), {
   ssr: false,

@@ -55,7 +55,7 @@ const courses = [
 const CourseListItem = () => {
   return (
     <div className="wrap-courses style-left">
-      <div className="sort-by-wrap mb-30">
+      <div className="sort-by-wrap mb-[30px]">
         <div className="sort-wrap">
           <p className="text text-1 wow fadeInUp grow">
             Showing 1-9 Of 62 Courses
