@@ -29,11 +29,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 import 'react-quill/dist/quill.snow.css'
 
+import { useRouter } from 'next/navigation'
+import { useAuthStore } from '@/stores/useAuthStore'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 
 import { ICategory } from '@/types/Category'
 import { UpdateCoursePayload, updateCourseSchema } from '@/validations/course'
+import { formatNumber } from '@/lib/common'
 import { cn } from '@/lib/utils'
 import { useGetCategories } from '@/hooks/category/useCategory'
 import {
@@ -72,6 +75,8 @@ interface FAQ {
 }
 
 const CourseUpdateView = ({ slug }: { slug: string }) => {
+  const { user } = useAuthStore()
+  const router = useRouter()
   const [benefits, setBenefits] = useState<string[]>(['', '', '', ''])
   const [requirements, setRequirements] = useState(['', '', '', ''])
   const [faqs, setFaqs] = useImmer<FAQ[]>([
@@ -95,12 +100,24 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
       category_id: undefined,
       price: 0,
       price_sale: 0,
-      level: 'beginner',
+      description: '',
       benefits: [''],
       requirements: [''],
       faqs: [{ question: '', answer: '' }],
+      level: '' as 'beginner' | 'intermediate' | 'advanced',
+      visibility: '' as 'public' | 'private',
+      is_free: '0' as '0' | '1',
     },
   })
+
+  useEffect(() => {
+    if (
+      !isCourseOverviewLoading &&
+      user?.id !== courseOverviewData?.data?.user_id
+    ) {
+      router.push('/forbidden')
+    }
+  }, [user, courseOverviewData, isCourseOverviewLoading, router])
 
   useEffect(() => {
     if (courseOverviewData) {
@@ -110,6 +127,9 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
         price: courseOverviewData?.data.price || 0,
         price_sale: courseOverviewData?.data.price_sale || 0,
         level: courseOverviewData?.data.level || '',
+        description: courseOverviewData?.data.description || '',
+        visibility: courseOverviewData?.data.visibility || '',
+        is_free: courseOverviewData?.data.is_free || '0',
       })
     }
   }, [courseOverviewData, form])
@@ -189,6 +209,11 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
   }
 
   const onSubmit = (data: UpdateCoursePayload) => {
+    if (data.is_free === '1') {
+      data.price = 0
+      data.price_sale = 0
+    }
+
     updateCourse({ data, slug })
   }
 
@@ -517,9 +542,19 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
                               <FormItem>
                                 <FormControl>
                                   <Input
-                                    type="number"
+                                    type="text"
                                     placeholder="Nhập giá khoá học"
                                     {...field}
+                                    value={formatNumber(field.value || 0)}
+                                    onChange={(e) => {
+                                      const rawValue = e.target.value.replace(
+                                        /\D/g,
+                                        ''
+                                      )
+                                      field.onChange(
+                                        rawValue ? parseInt(rawValue, 10) : 0
+                                      )
+                                    }}
                                   />
                                 </FormControl>
                                 <FormMessage />
@@ -533,9 +568,19 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
                               <FormItem>
                                 <FormControl>
                                   <Input
-                                    type="number"
+                                    type="text"
                                     placeholder="Giá khuyến mãi"
                                     {...field}
+                                    value={formatNumber(field.value || 0)}
+                                    onChange={(e) => {
+                                      const rawValue = e.target.value.replace(
+                                        /\D/g,
+                                        ''
+                                      )
+                                      field.onChange(
+                                        rawValue ? parseInt(rawValue, 10) : 0
+                                      )
+                                    }}
                                   />
                                 </FormControl>
                                 <FormMessage />
@@ -629,8 +674,9 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
                                 <FormItem>
                                   <FormControl>
                                     <Select
-                                      value={field.value}
+                                      key={field.value}
                                       onValueChange={field.onChange}
+                                      value={field.value}
                                     >
                                       <SelectTrigger>
                                         <SelectValue placeholder="Chọn cấp độ" />
@@ -656,11 +702,12 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
                           <div className="mt-3">
                             <FormField
                               control={form.control}
-                              name="status"
+                              name="visibility"
                               render={({ field }) => (
                                 <FormItem>
                                   <FormControl>
                                     <Select
+                                      key={field.value}
                                       value={field.value}
                                       onValueChange={field.onChange}
                                     >
@@ -820,6 +867,38 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
                             )}
                           />
                         </div>
+                      </div>
+
+                      <div className="mt-3">
+                        <Label className="text-base font-semibold">
+                          Miễn phí
+                        </Label>
+                        <FormField
+                          control={form.control}
+                          name="is_free"
+                          render={({ field }) => (
+                            <FormItem className="mt-3">
+                              <FormControl>
+                                <Select
+                                  key={field.value}
+                                  onValueChange={(value) =>
+                                    field.onChange(value)
+                                  }
+                                  value={String(field.value)}
+                                >
+                                  <SelectTrigger>
+                                    <SelectValue placeholder="Miễn phí hay không?" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="1">Miễn phí</SelectItem>
+                                    <SelectItem value="0">Có phí</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
                       </div>
                     </CardContent>
                   </Card>

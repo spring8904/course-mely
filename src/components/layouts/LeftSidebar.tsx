@@ -13,11 +13,11 @@ const LeftSidebar = ({
     <div className="mx-auto flex w-fit items-center space-x-3">
       <Image
         src="/images/Logo.png"
-        alt="CourseHUB logo"
+        alt="CourseMeLy logo"
         width={40}
         height={40}
       />
-      <h2 className="text-xl font-extrabold">CourseHUB</h2>
+      <h2 className="text-xl font-extrabold">CourseMeLy</h2>
     </div>
 
     <div className="mt-12 space-y-4">

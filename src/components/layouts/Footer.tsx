@@ -30,7 +30,7 @@ type ContactInfo = {
 const Footer = () => {
   const contactInfo: ContactInfo = {
     phone: '0868313293',
-    email: 'coursehub.support@gmail.com',
+    email: 'coursemely.support@gmail.com',
     address: 'Trịnh Văn Bô, Nam Từ Liêm, TP. Hà Nội',
   }
 
