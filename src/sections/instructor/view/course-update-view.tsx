@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import {
   Check,
   ChevronDown,
@@ -36,7 +36,10 @@ import { ICategory } from '@/types/Category'
 import { UpdateCoursePayload, updateCourseSchema } from '@/validations/course'
 import { cn } from '@/lib/utils'
 import { useGetCategories } from '@/hooks/categories/useCategory'
-import { useGetCourseOverview } from '@/hooks/instructors/courses/useCourse'
+import {
+  useGetCourseOverview,
+  useUpdateCourse,
+} from '@/hooks/instructors/courses/useCourse'
 
 import {
   Command,
@@ -69,8 +72,6 @@ interface FAQ {
 }
 
 const CourseUpdateView = ({ slug }: { slug: string }) => {
-  // const [image, setImage] = useState<string | ArrayBuffer | null>(null)
-  // const [video, setVideo] = useState<string | ArrayBuffer | null>(null)
   const [benefits, setBenefits] = useState<string[]>(['', '', '', ''])
   const [requirements, setRequirements] = useState(['', '', '', ''])
   const [faqs, setFaqs] = useImmer<FAQ[]>([
@@ -84,6 +85,8 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
   const { data: courseOverviewData, isLoading: isCourseOverviewLoading } =
     useGetCourseOverview(slug)
   const { data: categoryData } = useGetCategories()
+  const { mutate: updateCourse, isPending: updateCoursePending } =
+    useUpdateCourse()
 
   const form = useForm<UpdateCoursePayload>({
     resolver: zodResolver(updateCourseSchema),
@@ -102,50 +105,14 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
   useEffect(() => {
     if (courseOverviewData) {
       form.reset({
-        name: courseOverviewData.name || '',
-        category_id: courseOverviewData.category_id || '',
-        price: courseOverviewData.price || 0,
-        price_sale: courseOverviewData.price_sale || 0,
-        level: courseOverviewData.level || '',
+        name: courseOverviewData?.data?.name || '',
+        category_id: courseOverviewData?.data.category_id || '',
+        price: courseOverviewData?.data.price || 0,
+        price_sale: courseOverviewData?.data.price_sale || 0,
+        level: courseOverviewData?.data.level || '',
       })
     }
   }, [courseOverviewData, form])
-
-  // const handleImageChange = (e: any) => {
-  //   const file = e.target.files[0]
-  //   if (file) {
-  //     const reader = new FileReader()
-  //     reader.onloadend = () => {
-  //       setImage(reader?.result)
-  //     }
-  //     reader.readAsDataURL(file)
-  //   }
-  // }
-  //
-  // const handleResetImage = () => {
-  //   setImage('')
-  //   if (avatarCourseRef.current) {
-  //     avatarCourseRef.current.value = ''
-  //   }
-  // }
-  //
-  // const handleVideoChange = (e: any) => {
-  //   const file = e.target.files[0]
-  //   if (file) {
-  //     const reader = new FileReader()
-  //     reader.onloadend = () => {
-  //       setVideo(reader.result)
-  //     }
-  //     reader.readAsDataURL(file)
-  //   }
-  // }
-  //
-  // const handleResetTrailer = () => {
-  //   setVideo('')
-  //   if (trailerCourseRef.current) {
-  //     trailerCourseRef.current.value = ''
-  //   }
-  // }
 
   const handleAddBenefit = () => {
     if (benefits.length < 10) {
@@ -213,9 +180,7 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
     })
   }
 
-  const isLoading = isCourseOverviewLoading
-
-  if (isLoading) {
+  if (isCourseOverviewLoading) {
     return (
       <div className="mt-20">
         <Loader2 className="mx-auto size-8 animate-spin" />
@@ -224,7 +189,7 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
   }
 
   const onSubmit = (data: UpdateCoursePayload) => {
-    console.log(data)
+    updateCourse({ data, slug })
   }
 
   return (
@@ -232,7 +197,7 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
       <div className="mt-2">
         <div className="flex justify-between">
           <h3 className="text-xl font-bold">
-            Cập nhật nội dung khoá học: {courseOverviewData?.name}
+            Cập nhật nội dung khoá học: {courseOverviewData?.data?.name}
           </h3>
           <div className="flex flex-col gap-2">
             <Button className="bg-primary">Gửi yêu cầu duyệt khoá học</Button>
@@ -306,8 +271,16 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
                         </div>
                         <div>
                           <Button variant="destructive">Nhập lại</Button>
-                          <Button type="submit" className="ms-2 bg-primary">
-                            Lưu thông tin
+                          <Button
+                            type="submit"
+                            className="ms-2 bg-primary"
+                            disabled={updateCoursePending}
+                          >
+                            {updateCoursePending ? (
+                              <Loader2 className="mx-auto size-8 animate-spin" />
+                            ) : (
+                              'Lưu thông tin'
+                            )}
                           </Button>
                         </div>
                       </CardTitle>
@@ -711,134 +684,142 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
                           </div>
                         </div>
                       </div>
-                      <div className="mt-3">
-                        <Label className="text-base font-semibold">
-                          Ảnh đại diện
-                        </Label>
-                        <FormField
-                          control={form.control}
-                          name="thumbnail"
-                          render={({ field }) => (
-                            <FormItem>
-                              <div className="relative mt-3">
-                                <div
-                                  className="flex h-[200px] w-full items-center justify-center rounded-lg bg-primary"
-                                  style={{
-                                    backgroundImage: field.value
-                                      ? `url(${field.value})`
-                                      : 'none',
-                                    backgroundSize: 'cover',
-                                    backgroundPosition: 'center',
-                                  }}
-                                  onClick={() =>
-                                    avatarCourseRef.current?.click()
-                                  }
-                                >
-                                  {!field.value && (
-                                    <p className="cursor-pointer text-white">
-                                      Thêm ảnh đại diện
-                                    </p>
-                                  )}
-                                </div>
-                                {field.value && (
-                                  <button
-                                    onClick={() => field.onChange(null)}
-                                    className="absolute right-0 top-0 p-2 text-white opacity-80 transition-opacity duration-200 ease-in-out hover:opacity-100"
+
+                      <div className="mt-3 flex space-x-4">
+                        <div className="flex-1">
+                          <Label className="text-base font-semibold">
+                            Ảnh đại diện
+                          </Label>
+                          <FormField
+                            control={form.control}
+                            name="thumbnail"
+                            render={({ field }) => (
+                              <FormItem>
+                                <div className="relative mt-3">
+                                  <div
+                                    className="flex h-[200px] w-full items-center justify-center rounded-lg bg-primary"
+                                    style={{
+                                      backgroundImage: field.value
+                                        ? `url(${URL.createObjectURL(field.value)})`
+                                        : 'none',
+                                      backgroundSize: 'cover',
+                                      backgroundPosition: 'center',
+                                    }}
+                                    onClick={() =>
+                                      avatarCourseRef.current?.click()
+                                    }
                                   >
-                                    <Trash2 />
-                                  </button>
-                                )}
-                                <div className="hidden">
-                                  <p>Tải hình ảnh khoá học lên tại đây</p>
-                                  <div className="mt-3">
-                                    <Input
-                                      ref={avatarCourseRef}
-                                      id="thumbnail"
-                                      type="file"
-                                      onChange={(e) => {
-                                        if (e.target.files) {
-                                          field.onChange(
-                                            URL.createObjectURL(
-                                              e.target.files[0]
-                                            )
-                                          )
-                                        }
-                                      }}
-                                      accept="image/png, image/jpeg, image/jpg"
-                                    />
+                                    {!field.value && (
+                                      <p className="cursor-pointer text-white">
+                                        Thêm ảnh đại diện
+                                      </p>
+                                    )}
                                   </div>
-                                </div>
-                              </div>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-                      <div className="mt-3">
-                        <Label className="text-base font-semibold">
-                          Video giới thiệu
-                        </Label>
-                        <FormField
-                          control={form.control}
-                          name="intro"
-                          render={({ field }) => (
-                            <FormItem>
-                              <div className="relative mt-3">
-                                <div className="flex h-[200px] w-full items-center justify-center rounded-lg bg-primary">
-                                  {field.value ? (
-                                    <video
-                                      className="size-full rounded-lg object-cover"
-                                      controls
-                                      src={
-                                        typeof field.value === 'string'
-                                          ? field.value
-                                          : undefined
-                                      }
-                                    />
-                                  ) : (
-                                    <p
-                                      className="cursor-pointer text-white"
-                                      onClick={() =>
-                                        trailerCourseRef.current?.click()
-                                      }
+                                  {field.value && (
+                                    <button
+                                      onClick={() => {
+                                        if (avatarCourseRef.current) {
+                                          avatarCourseRef.current.value = ''
+                                        }
+                                        field.onChange(null)
+                                      }}
+                                      className="absolute right-0 top-0 p-2 text-white opacity-80 transition-opacity duration-200 ease-in-out hover:opacity-100"
                                     >
-                                      Thêm video giới thiệu
-                                    </p>
+                                      <Trash2 />
+                                    </button>
                                   )}
-                                </div>
-                                {field.value && (
-                                  <button
-                                    onClick={() => field.onChange(null)}
-                                    className="absolute right-0 top-0 p-2 text-white opacity-80 transition-opacity duration-200 ease-in-out hover:opacity-100"
-                                  >
-                                    <Trash2 />
-                                  </button>
-                                )}
-                                <div className="hidden">
-                                  <p>Tải video khoá học lên tại đây</p>
-                                  <div className="mt-3">
-                                    <Input
-                                      ref={trailerCourseRef}
-                                      id="intro"
-                                      type="file"
-                                      onChange={(e) => {
-                                        if (e.target.files) {
-                                          field.onChange(
-                                            URL.createObjectURL(
-                                              e.target.files[0]
-                                            )
-                                          )
-                                        }
-                                      }}
-                                      accept="video/mp4, video/webm, video/ogg"
-                                    />
+                                  <div className="hidden">
+                                    <p>Tải hình ảnh khoá học lên tại đây</p>
+                                    <div className="mt-3">
+                                      <Input
+                                        ref={avatarCourseRef}
+                                        id="thumbnail"
+                                        type="file"
+                                        onChange={(e) => {
+                                          if (e.target.files?.length) {
+                                            const file = e.target.files[0]
+                                            field.onChange(file)
+                                          }
+                                        }}
+                                        accept="image/png, image/jpeg, image/jpg"
+                                      />
+                                    </div>
                                   </div>
                                 </div>
-                              </div>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+
+                        <div className="flex-1">
+                          <Label className="text-base font-semibold">
+                            Video giới thiệu
+                          </Label>
+                          <FormField
+                            control={form.control}
+                            name="intro"
+                            render={({ field }) => (
+                              <FormItem>
+                                <div className="relative mt-3">
+                                  <div className="flex h-[200px] w-full items-center justify-center rounded-lg bg-primary">
+                                    {field.value ? (
+                                      <video
+                                        className="size-full rounded-lg object-cover"
+                                        controls
+                                        src={
+                                          field.value instanceof File
+                                            ? URL.createObjectURL(field.value)
+                                            : undefined
+                                        }
+                                      />
+                                    ) : (
+                                      <p
+                                        className="cursor-pointer text-white"
+                                        onClick={() =>
+                                          trailerCourseRef.current?.click()
+                                        }
+                                      >
+                                        Thêm video giới thiệu
+                                      </p>
+                                    )}
+                                  </div>
+                                  {field.value && (
+                                    <button
+                                      onClick={() => {
+                                        if (trailerCourseRef.current) {
+                                          trailerCourseRef.current.value = ''
+                                        }
+                                        field.onChange(null)
+                                      }}
+                                      className="absolute right-0 top-0 p-2 text-white opacity-80 transition-opacity duration-200 ease-in-out hover:opacity-100"
+                                    >
+                                      <Trash2 />
+                                    </button>
+                                  )}
+                                  <div className="hidden">
+                                    <p>Tải video khoá học lên tại đây</p>
+                                    <div className="mt-3">
+                                      <Input
+                                        ref={trailerCourseRef}
+                                        id="intro"
+                                        type="file"
+                                        onChange={(e) => {
+                                          if (e.target.files?.length) {
+                                            const file = e.target.files[0]
+                                            field.onChange(file)
+                                          }
+                                        }}
+                                        accept="video/mp4, video/webm, video/ogg"
+                                      />
+                                    </div>
+                                  </div>
+                                </div>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
                       </div>
                     </CardContent>
                   </Card>
@@ -848,7 +829,7 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
             <TabsContent value="courseChapter" className="m-0">
               <CourseChapterTab
                 slug={slug}
-                chapters={courseOverviewData?.chapters}
+                chapters={courseOverviewData?.data?.chapters}
               />
             </TabsContent>
           </div>

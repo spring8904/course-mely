@@ -30,6 +30,8 @@ export const useSignIn = () => {
   return useMutation({
     mutationFn: (data: IAuthData) => authApi.signIn(data),
     onSuccess: async (res: any) => {
+      console.log(res)
+
       const token = res?.token
       const user = res?.user
 

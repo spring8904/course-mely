@@ -9,15 +9,14 @@ export const getCourses = async () => {
 }
 
 export const getCourseOverview = async (slug: string) => {
-  const { data } = await api.get(`${prefix}/${slug}`)
-  return data
+  return await api.get(`${prefix}/${slug}`)
 }
 
 export const createCourse = (payload: CreateCoursePayload) =>
   api.post(prefix, payload)
 
 export const updateCourse = (data: FormData, slug: string) =>
-  api.post(`${prefix}/${slug}`, data, {
+  api.post(`${prefix}/${slug}/contentCourse`, data, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },

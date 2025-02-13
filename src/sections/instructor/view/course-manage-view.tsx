@@ -74,6 +74,7 @@ const CourseManageView = () => {
   const onSubmit = (values: CreateCoursePayload) => {
     if (isCourseCreating) return
 
+    console.log('values', values)
     createCourse(values)
   }
 
@@ -213,7 +214,7 @@ const CourseManageView = () => {
                             )}
                           >
                             {field.value
-                              ? categoryData.find(
+                              ? categoryData?.find(
                                   (category: ICategory) =>
                                     category.id === field.value
                                 )?.name
@@ -233,7 +234,7 @@ const CourseManageView = () => {
                               Không có kết quả nào phù hợp
                             </CommandEmpty>
                             <CommandGroup>
-                              {categoryData.map((category: ICategory) => (
+                              {categoryData?.map((category: ICategory) => (
                                 <CommandItem
                                   value={category.name}
                                   key={category.id}
