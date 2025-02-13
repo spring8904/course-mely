@@ -1,4 +1,7 @@
-import { CreateLessonPayload } from '@/validations/lesson'
+import {
+  CreateLessonPayload,
+  UpdateTitleLessonPayload,
+} from '@/validations/lesson'
 import api from '@/configs/api'
 
 const prefix = '/instructor/manage/lessons'
@@ -10,8 +13,12 @@ export const instructorLessonApi = {
   createLesson: (payload: CreateLessonPayload) => {
     return api.post(prefix, payload)
   },
-  updateLesson: (slug: string, payload: CreateLessonPayload) => {
-    return api.put(`${prefix}/${slug}`, payload)
+  updateContentLesson: (
+    chapterId: number,
+    id: number,
+    payload: UpdateTitleLessonPayload
+  ) => {
+    return api.put(`${prefix}/${chapterId}/${id}`, payload)
   },
   updateOrderLesson: async (
     slug: string,
@@ -28,5 +35,8 @@ export const instructorLessonApi = {
         },
       }
     )
+  },
+  deleteLesson: (chapterId: number, id: number) => {
+    return api.delete(`${prefix}/${chapterId}/${id}`)
   },
 }

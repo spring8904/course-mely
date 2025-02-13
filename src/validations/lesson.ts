@@ -9,4 +9,12 @@ export const createLessonSchema = z.object({
   type: z.enum(['video', 'document', 'quiz', 'coding']),
 })
 
+export const updateTitleLessonSchema = z.object({
+  title: z
+    .string()
+    .min(3, 'Tiêu đề phải có ít nhất 3 ký tự')
+    .max(255, 'Tiêu đề không được vượt quá 255 ký tự'),
+})
+
 export type CreateLessonPayload = z.infer<typeof createLessonSchema>
+export type UpdateTitleLessonPayload = z.infer<typeof updateTitleLessonSchema>
