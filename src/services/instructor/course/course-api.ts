@@ -14,7 +14,7 @@ export const instructorCourseApi = {
     return api.post(prefix, payload)
   },
   updateCourse: (data: FormData, slug: string) => {
-    return api.post(`${prefix}/${slug}`, data, {
+    return api.post(`${prefix}/${slug}/contentCourse`, data, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
