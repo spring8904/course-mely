@@ -51,11 +51,11 @@ export function TeamSwitcher({
                 {/*</div>*/}
                 <Image
                   src="/images/Logo.png"
-                  alt="CourseHUB logo"
+                  alt="CourseMeLy logo"
                   width={40}
                   height={40}
                 />
-                <h2 className="text-xl font-extrabold">CourseHUB</h2>
+                <h2 className="text-xl font-extrabold">CourseMeLy</h2>
               </SidebarMenuButton>
             </Link>
           </DropdownMenuTrigger>

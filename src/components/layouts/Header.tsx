@@ -12,7 +12,7 @@ import InputSeach from '@/components/common/InputSearch'
 const Logo = () => (
   <Link href="/" className="flex items-center space-x-3">
     <Image src="/images/Logo.png" alt="logo" width={54} height={54} />
-    <h2 className="text-3xl font-extrabold">CourseHUB</h2>
+    <h2 className="text-3xl font-extrabold">CourseMeLy</h2>
   </Link>
 )
 

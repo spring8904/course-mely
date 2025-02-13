@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { DndContext, DragEndEvent, UniqueIdentifier } from '@dnd-kit/core'
 import { arrayMove, SortableContext } from '@dnd-kit/sortable'
 import { Label } from '@radix-ui/react-label'
+import { motion } from 'framer-motion'
 import {
   CircleCheck,
   CircleHelp,
@@ -339,23 +340,21 @@ const DraggableContent = ({ chapter, slug }: DraggableContentProps) => {
               Coding
             </Link>
 
-            {addNewLesson ? (
-              <Button
-                onClick={() => {
-                  setAddNewLesson(false)
-                  setSelectedLesson(undefined)
-                }}
-                variant="secondary"
+            <Button
+              onClick={() => {
+                setAddNewLesson((prev) => !prev)
+                setSelectedLesson(undefined)
+              }}
+              variant={addNewLesson ? 'secondary' : 'default'}
+            >
+              <motion.div
+                animate={{ rotate: addNewLesson ? 180 : 0 }}
+                transition={{ duration: 0.3 }}
               >
-                <CircleX />
-                Đóng
-              </Button>
-            ) : (
-              <Button onClick={() => setAddNewLesson(true)}>
-                <CirclePlus />
-                Thêm bài học
-              </Button>
-            )}
+                {addNewLesson ? <CircleX /> : <CirclePlus />}
+              </motion.div>
+              {addNewLesson ? 'Đóng' : 'Thêm bài học'}
+            </Button>
           </div>
 
           {addNewLesson &&
@@ -364,6 +363,10 @@ const DraggableContent = ({ chapter, slug }: DraggableContentProps) => {
                 onHide={() => setSelectedLesson(undefined)}
                 type={selectedLesson!}
                 chapterId={chapter.id!}
+                onSuccess={() => {
+                  setAddNewLesson(false)
+                  setSelectedLesson(undefined)
+                }}
               />
             ) : (
               <div className="mt-4 flex justify-evenly rounded-lg border border-dashed p-2">

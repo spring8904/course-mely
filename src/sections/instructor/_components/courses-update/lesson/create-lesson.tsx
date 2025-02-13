@@ -21,9 +21,10 @@ type Props = {
   chapterId: number
   type: LessonType
   onHide: () => void
+  onSuccess: () => void
 }
 
-const CreateLesson = ({ chapterId, onHide, type }: Props) => {
+const CreateLesson = ({ chapterId, onHide, onSuccess, type }: Props) => {
   const { mutate: createLesson, isPending: isLessonCreating } =
     useCreateLesson()
 
@@ -40,7 +41,10 @@ const CreateLesson = ({ chapterId, onHide, type }: Props) => {
     if (isLessonCreating) return
 
     createLesson(values, {
-      onSuccess: onHide,
+      onSuccess: () => {
+        onSuccess()
+        onHide()
+      },
     })
   }
 
