@@ -1,6 +1,7 @@
 'use client'
 
 import { useRef } from 'react'
+import files from '@/sample/files'
 import { ArrowUp, Info, MoveHorizontal, RotateCcw } from 'lucide-react'
 import { ImperativePanelHandle } from 'react-resizable-panels'
 
@@ -93,7 +94,15 @@ const SolutionPanel = ({ handleResize }: PanelProps) => {
       </div>
 
       <div className="flex-1">
-        <MonacoEditor />
+        <MonacoEditor
+          files={files}
+          onChange={(value, fileName) => {
+            console.group('onChange')
+            console.log(fileName)
+            console.log(value)
+            console.groupEnd()
+          }}
+        />
       </div>
     </div>
   )
