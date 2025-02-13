@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { DndContext, DragEndEvent, UniqueIdentifier } from '@dnd-kit/core'
 import { arrayMove, SortableContext } from '@dnd-kit/sortable'
-import MuxUploader from '@mux/mux-uploader-react'
 import { Label } from '@radix-ui/react-label'
 import {
   CircleCheck,
@@ -16,6 +15,7 @@ import {
   Trash2,
   Video,
 } from 'lucide-react'
+import { toast } from 'react-toastify'
 import Swal from 'sweetalert2'
 
 import { IChapter, ILesson, LessonType } from '@/types'
@@ -58,6 +58,10 @@ const DraggableContent = ({ chapter, slug }: DraggableContentProps) => {
   const [lessonEdit, setLessonEdit] = useState<number | null>(null)
   const [editTitle, setEditTitle] = useState<string>('')
 
+  const fileInputRef = useRef<HTMLInputElement | null>(null)
+  const [selectedFile, setSelectedFile] = useState<any>(null)
+  const [videoUrl, setVideoUrl] = useState('')
+
   const { mutate } = useUpdateOrderLesson()
   const { mutate: updateContentLesson } = useUpdateContentLesson()
   const { mutate: deleteLesson } = useDeleteLesson()
@@ -95,19 +99,21 @@ const DraggableContent = ({ chapter, slug }: DraggableContentProps) => {
       return
     }
 
-    updateContentLesson(
-      {
-        chapterId: chapter.id as number,
-        id,
-        data: { title: editTitle },
-      },
-      {
-        onSuccess: () => {
-          setLessonEdit(null)
-          setEditTitle('')
-        },
-      }
-    )
+    if (editTitle !== lessonList.find((lesson) => lesson.id === id)?.title) {
+      updateContentLesson(
+        { chapterId: chapter.id as number, id, data: { title: editTitle } },
+        {
+          onSuccess: () => {
+            setLessonEdit(null)
+            setEditTitle('')
+          },
+        }
+      )
+    } else {
+      setLessonEdit(null)
+      setEditTitle('')
+      toast.info('Dữ liệu không thay đổi')
+    }
   }
 
   const handleDeleteLesson = (id: number) => {
@@ -126,6 +132,26 @@ const DraggableContent = ({ chapter, slug }: DraggableContentProps) => {
         })
       }
     })
+  }
+
+  const handleFileChange = (event: any) => {
+    const file = event.target.files[0]
+    if (file) {
+      setSelectedFile(file)
+      const videoUrl = URL.createObjectURL(file)
+      setVideoUrl(videoUrl)
+    }
+  }
+
+  const handleUploadClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click()
+    }
+  }
+
+  const handleResetClick = () => {
+    setSelectedFile(null)
+    setVideoUrl('')
   }
 
   return (
@@ -245,8 +271,47 @@ const DraggableContent = ({ chapter, slug }: DraggableContentProps) => {
                       </Select>
                     </div>
                     <div className="space-y-2">
-                      <Label>Bài giảng</Label>
-                      <MuxUploader />
+                      <label>Bài giảng</label>
+                      {selectedFile ? (
+                        <div className="flex flex-col items-center justify-center gap-4 rounded-md border-2 border-dashed border-gray-300 p-5">
+                          <video
+                            src={videoUrl}
+                            controls
+                            loop
+                            className="size-full rounded-lg object-cover"
+                          />
+                          <div className="mt-2 flex w-full items-center justify-between">
+                            <p className="text-left text-sm font-medium">
+                              Đã chọn video: {selectedFile?.name || ''}
+                            </p>
+                            <button
+                              onClick={handleResetClick}
+                              type="button"
+                              className="rounded-lg border bg-red-500 px-6 py-2 font-medium text-white hover:bg-red-600"
+                            >
+                              Tải lại
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="flex flex-col items-center justify-center gap-4 rounded-md border-2 border-dashed border-gray-300 p-5">
+                          <span>Tải dữ liệu video hoặc kéo thả vào đây</span>
+                          <button
+                            type="button"
+                            className="rounded-lg border border-black p-4 font-medium transition-all duration-300 ease-in-out hover:bg-[#404040] hover:text-white"
+                            onClick={handleUploadClick}
+                          >
+                            Upload a video
+                          </button>
+                          <input
+                            ref={fileInputRef}
+                            type="file"
+                            accept=".mp4,.avi,.mkv,.flv"
+                            style={{ display: 'none' }}
+                            onChange={handleFileChange}
+                          />
+                        </div>
+                      )}
                     </div>
                     <div className="space-y-2">
                       <Label>Nội dung </Label>

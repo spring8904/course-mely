@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { CircleCheck, CircleX, SquarePen, Trash2 } from 'lucide-react'
+import { toast } from 'react-toastify'
 import Swal from 'sweetalert2'
 
 import { IChapter } from '@/types'
@@ -50,15 +51,21 @@ const CourseChapterTab = ({ chapters, slug }: Props) => {
       return
     }
 
-    updateChapter(
-      { slug, id, data: { title: editTitle } },
-      {
-        onSuccess: () => {
-          setChapterEdit(null)
-          setEditTitle('')
-        },
-      }
-    )
+    if (editTitle !== chapters.find((chapter) => chapter.id === id)?.title) {
+      updateChapter(
+        { slug, id, data: { title: editTitle } },
+        {
+          onSuccess: () => {
+            setChapterEdit(null)
+            setEditTitle('')
+          },
+        }
+      )
+    } else {
+      setChapterEdit(null)
+      setEditTitle('')
+      toast.info('Dữ liệu không thay đổi')
+    }
   }
 
   const handleDeleteChapter = (id: number) => {
@@ -75,6 +82,7 @@ const CourseChapterTab = ({ chapters, slug }: Props) => {
       }
     })
   }
+
   return (
     <Card className="rounded-md">
       <CardHeader>
