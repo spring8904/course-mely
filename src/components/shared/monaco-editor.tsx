@@ -35,10 +35,10 @@ const MonacoEditor = () => {
   }, [file.name])
 
   return (
-    <div className="h-[calc(100%-56px)]">
+    <div className="flex h-full flex-col">
       <div
         className={cn(
-          'flex w-full items-end justify-start',
+          'flex items-end justify-start',
           'rounded-none bg-[#151515] pb-0'
         )}
       >
@@ -57,7 +57,7 @@ const MonacoEditor = () => {
         ))}
       </div>
 
-      <div className="h-[calc(100%-32px)] bg-[#1e1e1e] pt-5">
+      <div className="flex-1 bg-[#1e1e1e] pt-5">
         <Editor
           theme="vs-dark"
           onChange={handleEditorChange}

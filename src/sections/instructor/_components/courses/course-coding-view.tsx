@@ -79,7 +79,7 @@ const CourseCodingView = () => {
         </DialogContent>
       </Dialog>
 
-      <Tabs defaultValue="plan" className="py-[68px] [&>*]:mt-0">
+      <Tabs defaultValue="plan" className="h-100vh py-[68px] [&>*]:mt-0">
         <TabsContent value="plan">
           <main className="flex flex-col p-4">
             <div className="container mx-auto max-w-4xl p-4">
@@ -117,7 +117,7 @@ const CourseCodingView = () => {
             </div>
           </main>
         </TabsContent>
-        <TabsContent value="solution">
+        <TabsContent value="solution" className="h-full">
           <SolutionTab />
         </TabsContent>
         <TabsContent value="guide">

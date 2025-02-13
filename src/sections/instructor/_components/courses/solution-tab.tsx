@@ -28,10 +28,7 @@ const SolutionTab = () => {
   }
 
   return (
-    <ResizablePanelGroup
-      direction="vertical"
-      className="mt-0 min-h-[calc(100vh-68px-68px)]"
-    >
+    <ResizablePanelGroup direction="vertical" className="mt-0">
       <ResizablePanel minSize={10}>
         <ResizablePanelGroup direction="horizontal" className="mt-0">
           <ResizablePanel minSize={35} ref={solutionPanelRef}>
@@ -79,7 +76,7 @@ type PanelProps = {
 
 const SolutionPanel = ({ handleResize }: PanelProps) => {
   return (
-    <div className="h-full text-white">
+    <div className="flex h-full flex-col text-white">
       <div className="flex h-14 items-center justify-between border-b border-gray-500 bg-[#0d0d0d] px-4 py-2">
         <div className="flex items-center gap-2 text-xl font-bold">
           Giải pháp
@@ -95,7 +92,9 @@ const SolutionPanel = ({ handleResize }: PanelProps) => {
         </div>
       </div>
 
-      <MonacoEditor />
+      <div className="flex-1">
+        <MonacoEditor />
+      </div>
     </div>
   )
 }
