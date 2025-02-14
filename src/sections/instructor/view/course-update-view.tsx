@@ -71,19 +71,17 @@ import CourseChapterTab from '../_components/courses-update/course-chapter-tab'
 
 interface FAQ {
   question: string
-  answer: string
+  answers: string
 }
 
 const CourseUpdateView = ({ slug }: { slug: string }) => {
   const { user } = useAuthStore()
   const router = useRouter()
   const [benefits, setBenefits] = useState<string[]>(['', '', '', ''])
-  const [requirements, setRequirements] = useState(['', '', '', ''])
+  const [requirements, setRequirements] = useState<string[]>(['', '', '', ''])
   const [faqs, setFaqs] = useImmer<FAQ[]>([
-    { question: 'Ví dụ câu hỏi?', answer: 'Ví dụ câu trả lời' },
+    { question: 'Ví dụ câu hỏi?', answers: 'Ví dụ câu trả lời' },
   ])
-  const [question, setQuestion] = useState('')
-  const [answer, setAnswer] = useState('')
   const avatarCourseRef = useRef<HTMLInputElement | null>(null)
   const trailerCourseRef = useRef<HTMLInputElement | null>(null)
 
@@ -101,9 +99,9 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
       price: 0,
       price_sale: 0,
       description: '',
-      benefits: [''],
-      requirements: [''],
-      faqs: [{ question: '', answer: '' }],
+      benefits: ['', '', '', ''],
+      requirements: ['', '', '', ''],
+      faqs: [{ question: '', answers: '' }],
       level: '' as 'beginner' | 'intermediate' | 'advanced',
       visibility: '' as 'public' | 'private',
       is_free: '0' as '0' | '1',
@@ -120,46 +118,97 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
   }, [user, courseOverviewData, isCourseOverviewLoading, router])
 
   useEffect(() => {
-    if (courseOverviewData) {
-      form.reset({
-        name: courseOverviewData?.data.name || '',
-        category_id: courseOverviewData?.data.category_id || '',
-        price: courseOverviewData?.data.price || 0,
-        price_sale: courseOverviewData?.data.price_sale || 0,
-        level: courseOverviewData?.data.level || '',
-        description: courseOverviewData?.data.description || '',
-        visibility: courseOverviewData?.data.visibility || '',
-        is_free: courseOverviewData?.data.is_free || '0',
-      })
+    if (courseOverviewData?.data) {
+      const data = courseOverviewData.data
+
+      try {
+        // Parse benefits
+        const parsedBenefits = data.benefits
+          ? JSON.parse(data.benefits)
+          : ['', '', '', '']
+        setBenefits(parsedBenefits)
+
+        // Parse requirements
+        const parsedRequirements = data.requirements
+          ? JSON.parse(data.requirements)
+          : ['', '', '', '']
+        setRequirements(parsedRequirements)
+
+        // Parse FAQs
+        const parsedFAQs = data.qa
+          ? JSON.parse(data.qa)
+          : [{ question: 'Ví dụ câu hỏi?', answers: 'Ví dụ câu trả lời' }]
+        setFaqs(parsedFAQs)
+
+        // Reset form with all data
+        form.reset({
+          name: data.name || '',
+          category_id: data.category_id || '',
+          price: parseFloat(data.price) || 0,
+          price_sale: parseFloat(data.price_sale) || 0,
+          level: data.level || '',
+          description: data.description || '',
+          visibility: data.visibility || '',
+          is_free: data.is_free || '0',
+          benefits: parsedBenefits,
+          requirements: parsedRequirements,
+          faqs: parsedFAQs,
+        })
+      } catch (error) {
+        console.error('Error parsing data:', error)
+      }
     }
   }, [courseOverviewData, form])
 
   const handleAddBenefit = () => {
     if (benefits.length < 10) {
-      setBenefits([...benefits, ''])
+      const newBenefits = [...benefits, '']
+      setBenefits(newBenefits)
+      form.setValue('benefits', newBenefits)
     }
   }
 
   const handleAddRequirement = () => {
     if (requirements.length < 10) {
-      setRequirements([...requirements, ''])
+      const newRequirements = [...requirements, '']
+      setRequirements(newRequirements)
+      form.setValue('requirements', newRequirements)
     }
   }
 
   const handleAddQA = () => {
     if (faqs.length < 10) {
       setFaqs((draft) => {
-        draft.push({ question, answer })
+        draft.push({ question: '', answers: '' })
       })
-      setQuestion('')
-      setAnswer('')
+      form.setValue('faqs', faqs)
     }
+  }
+
+  const handleRemoveBenefit = (index: number) => {
+    const newBenefits = benefits.filter((_, i) => i !== index)
+    setBenefits(newBenefits)
+    form.setValue('benefits', newBenefits)
+  }
+
+  const handleRemoveRequirement = (index: number) => {
+    const newRequirements = requirements.filter((_, i) => i !== index)
+    setRequirements(newRequirements)
+    form.setValue('requirements', newRequirements)
+  }
+
+  const handleRemoveQA = (index: number) => {
+    setFaqs((draft) => {
+      draft.splice(index, 1)
+    })
+    form.setValue('faqs', faqs)
   }
 
   const handleInputChange = (index: number, value: string) => {
     const newBenefits = [...benefits]
     newBenefits[index] = value
     setBenefits(newBenefits)
+    form.setValue('benefits', newBenefits)
 
     if (
       index === benefits.length - 1 &&
@@ -174,6 +223,7 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
     const newRequirements = [...requirements]
     newRequirements[index] = value
     setRequirements(newRequirements)
+    form.setValue('requirements', newRequirements)
 
     if (
       index === requirements.length - 1 &&
@@ -184,20 +234,30 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
     }
   }
 
-  const handleRemoveBenefit = (index: number) => {
-    const newBenefits = benefits.filter((_, i) => i !== index)
-    setBenefits(newBenefits)
-  }
+  const onSubmit = (data: UpdateCoursePayload) => {
+    if (data.is_free === '1') {
+      data.price = 0
+      data.price_sale = 0
+    }
 
-  const handleRemoveRequirement = (index: number) => {
-    const newRequirements = requirements.filter((_, i) => i !== index)
-    setRequirements(newRequirements)
-  }
+    // Ensure benefits and requirements are arrays
+    const formData = {
+      ...data,
+      benefits: Array.isArray(data.benefits) ? data.benefits : benefits,
+      requirements: Array.isArray(data.requirements)
+        ? data.requirements
+        : requirements,
+      faqs: Array.isArray(data.faqs) ? data.faqs : faqs,
+    }
 
-  const handleRemoveQA = (index: number) => {
-    setFaqs((draft) => {
-      draft.splice(index, 1)
-    })
+    // Filter out empty values
+    formData.benefits = formData.benefits.filter((b) => b.trim() !== '')
+    formData.requirements = formData.requirements.filter((r) => r.trim() !== '')
+    formData.faqs = formData.faqs.filter(
+      (f) => f.question.trim() !== '' || f.answers.trim() !== ''
+    )
+
+    updateCourse({ data: formData, slug })
   }
 
   if (isCourseOverviewLoading) {
@@ -206,15 +266,6 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
         <Loader2 className="mx-auto size-8 animate-spin" />
       </div>
     )
-  }
-
-  const onSubmit = (data: UpdateCoursePayload) => {
-    if (data.is_free === '1') {
-      data.price = 0
-      data.price_sale = 0
-    }
-
-    updateCourse({ data, slug })
   }
 
   return (
@@ -302,7 +353,7 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
                             disabled={updateCoursePending}
                           >
                             {updateCoursePending ? (
-                              <Loader2 />
+                              <Loader2 className="animate-spin" />
                             ) : (
                               'Lưu thông tin'
                             )}
@@ -312,148 +363,212 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
                     </CardHeader>
                     <CardContent>
                       <div>
-                        <h3 className="text-base font-semibold">
-                          Lợi ích mà khoá học mang lại?
-                        </h3>
-                        <p className="text-[14px] text-[#4b5563]">
-                          Bạn phải nhập ít nhất 4 lợi ích mà Học viên có thể
-                          nhận được sau khi kết thúc khoá học.
-                        </p>
-                        <div>
-                          {benefits.map((benefit, index) => (
-                            <div key={index} className="relative mt-3">
-                              <Input
-                                placeholder={`Nhập lợi ích số ${index + 1}`}
-                                className="h-[40px] pr-10"
-                                value={benefit}
-                                onChange={(e) =>
-                                  handleInputChange(index, e.target.value)
-                                }
-                              />
-                              {index >= 4 && (
-                                <button
-                                  className="absolute right-2 top-1/2 -translate-y-1/2 text-red-500"
-                                  onClick={() => handleRemoveBenefit(index)}
-                                >
-                                  <Trash size={16} />
-                                </button>
-                              )}
-                            </div>
-                          ))}
-                          <div className="mt-3">
-                            <Button
-                              disabled={benefits.length >= 10}
-                              onClick={handleAddBenefit}
-                            >
-                              <CirclePlus size={18} />
-                              Thêm lợi ích vào khoá học của bạn
-                            </Button>
-                            {benefits.length >= 10 && (
-                              <p className="mt-2 text-sm text-red-500">
-                                Bạn đã đạt tối đa 10 lợi ích.
+                        <FormField
+                          control={form.control}
+                          name="benefits"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>
+                                Lợi ích mà khóa học mang lại
+                              </FormLabel>
+                              <p className="text-[14px] text-[#4b5563]">
+                                Bạn phải nhập ít nhất 4 lợi ích mà Học viên có
+                                thể nhận được sau khi kết thúc khóa học.
                               </p>
-                            )}
-                          </div>
-                        </div>
+                              <FormControl>
+                                <div>
+                                  {benefits.map((benefit, index) => (
+                                    <div key={index} className="relative mt-3">
+                                      <Input
+                                        {...field}
+                                        placeholder={`Nhập lợi ích số ${index + 1}`}
+                                        className="h-[40px] pr-10"
+                                        value={benefit}
+                                        onChange={(e) =>
+                                          handleInputChange(
+                                            index,
+                                            e.target.value
+                                          )
+                                        }
+                                      />
+                                      {index >= 4 && (
+                                        <button
+                                          type="button"
+                                          className="absolute right-2 top-1/2 -translate-y-1/2 text-red-500"
+                                          onClick={() =>
+                                            handleRemoveBenefit(index)
+                                          }
+                                        >
+                                          <Trash size={16} />
+                                        </button>
+                                      )}
+                                    </div>
+                                  ))}
+                                  <div className="mt-3">
+                                    <Button
+                                      type="button"
+                                      disabled={benefits.length >= 10}
+                                      onClick={handleAddBenefit}
+                                    >
+                                      <CirclePlus size={18} />
+                                      Thêm lợi ích vào khóa học của bạn
+                                    </Button>
+                                    {benefits.length >= 10 && (
+                                      <p className="mt-2 text-sm text-red-500">
+                                        Bạn đã đạt tối đa 10 lợi ích.
+                                      </p>
+                                    )}
+                                  </div>
+                                </div>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
                       </div>
-                      <div className="mt-4">
-                        <h3 className="text-base font-semibold">
-                          Yêu cầu khi tham gia khoá học?
-                        </h3>
-                        <p className="text-[14px] text-[#4b5563]">
-                          Liệt kê các kỹ năng, kinh nghiệm, công cụ hoặc thiết
-                          bị mà học viên bắt buộc phải có trước khi tham gia
-                          khóa học.
-                        </p>
-                        <div>
-                          {requirements.map((requirement, index) => (
-                            <div key={index} className="relative mt-3">
-                              <Input
-                                placeholder={`Nhập yêu cầu số ${index + 1}`}
-                                className="h-[40px] pr-10"
-                                value={requirement}
-                                onChange={(e) =>
-                                  handleInputChangeRequirement(
-                                    index,
-                                    e.target.value
-                                  )
-                                }
-                              />
-                              {index >= 4 && (
-                                <button
-                                  className="absolute right-2 top-1/2 -translate-y-1/2 text-red-500"
-                                  onClick={() => handleRemoveRequirement(index)}
-                                >
-                                  <Trash size={16} />
-                                </button>
-                              )}
-                            </div>
-                          ))}
-                          <div className="mt-3">
-                            <Button
-                              onClick={handleAddRequirement}
-                              disabled={requirements.length >= 10}
-                            >
-                              <CirclePlus size={18} />
-                              Thêm yêu cầu khi tham gia khoá học
-                            </Button>
-                            {requirements.length >= 10 && (
-                              <p className="mt-2 text-sm text-red-500">
-                                Bạn đã đạt tối đa 10 yêu cầu.
+                      <div className="mt-6">
+                        <FormField
+                          control={form.control}
+                          name="requirements"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>
+                                Yêu cầu khi tham gia khóa học
+                              </FormLabel>
+                              <p className="text-[14px] text-[#4b5563]">
+                                Liệt kê các kỹ năng, kinh nghiệm, công cụ hoặc
+                                thiết bị mà học viên bắt buộc phải có trước khi
+                                tham gia khóa học.
                               </p>
-                            )}
-                          </div>
-                        </div>
+                              <FormControl>
+                                <div>
+                                  {requirements.map((requirement, index) => (
+                                    <div key={index} className="relative mt-3">
+                                      <Input
+                                        placeholder={`Nhập yêu cầu số ${index + 1}`}
+                                        className="h-[40px] pr-10"
+                                        value={requirement}
+                                        onChange={(e) =>
+                                          handleInputChangeRequirement(
+                                            index,
+                                            e.target.value
+                                          )
+                                        }
+                                      />
+                                      {index >= 4 && (
+                                        <button
+                                          type="button"
+                                          className="absolute right-2 top-1/2 -translate-y-1/2 text-red-500"
+                                          onClick={() =>
+                                            handleRemoveRequirement(index)
+                                          }
+                                        >
+                                          <Trash size={16} />
+                                        </button>
+                                      )}
+                                    </div>
+                                  ))}
+                                  <div className="mt-3">
+                                    <Button
+                                      type="button"
+                                      disabled={requirements.length >= 10}
+                                      onClick={handleAddRequirement}
+                                    >
+                                      <CirclePlus size={18} />
+                                      Thêm yêu cầu vào khóa học của bạn
+                                    </Button>
+                                    {requirements.length >= 10 && (
+                                      <p className="mt-2 text-sm text-red-500">
+                                        Bạn đã đạt tối đa 10 yêu cầu.
+                                      </p>
+                                    )}
+                                  </div>
+                                </div>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
                       </div>
-                      <div className="mt-4">
-                        <h3 className="text-base font-semibold">
-                          Câu hỏi và câu trả lời
-                        </h3>
-                        <p className="text-[14px] text-[#4b5563]">
-                          Bạn phải nhập ít nhất 1 câu hỏi và câu trả lời, tối đa
-                          10 cặp FAQ.
-                        </p>
-                        <div>
-                          {faqs.map((qa, index) => (
-                            <div
-                              key={index}
-                              className="relative mt-3 flex gap-2"
-                            >
-                              <Input
-                                placeholder={`Nhập câu hỏi số ${index + 1}`}
-                                className="h-[40px] pr-10"
-                                defaultValue={qa.question}
-                              />
-                              <Input
-                                placeholder={`Nhập câu trả lời số ${index + 1}`}
-                                className="h-[40px] pr-10"
-                                defaultValue={qa.answer}
-                              />
-                              {index >= 1 && (
-                                <button
-                                  className="absolute right-2 top-1/2 -translate-y-1/2 text-red-500"
-                                  onClick={() => handleRemoveQA(index)}
-                                >
-                                  <Trash size={16} />
-                                </button>
-                              )}
-                            </div>
-                          ))}
-                          <div className="mt-3">
-                            <Button
-                              disabled={faqs.length >= 10}
-                              onClick={handleAddQA}
-                            >
-                              <CirclePlus size={18} />
-                              Thêm câu hỏi và câu trả lời
-                            </Button>
-                            {faqs.length >= 10 && (
-                              <p className="mt-2 text-sm text-red-500">
-                                Bạn đã đạt tối đa 10 câu hỏi.
+
+                      <div className="mt-6">
+                        <FormField
+                          control={form.control}
+                          name="faqs"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Câu hỏi thường gặp</FormLabel>
+                              <p className="text-[14px] text-[#4b5563]">
+                                Thêm các câu hỏi và câu trả lời thường gặp về
+                                khóa học.
                               </p>
-                            )}
-                          </div>
-                        </div>
+                              <FormControl>
+                                <div>
+                                  {faqs.map((faq, index) => (
+                                    <div
+                                      key={index}
+                                      className="relative mt-3 grid grid-cols-2 gap-2"
+                                    >
+                                      <Input
+                                        placeholder={`Câu hỏi ${index + 1}`}
+                                        className="h-[40px]"
+                                        value={faq.question}
+                                        onChange={(e) => {
+                                          setFaqs((draft) => {
+                                            draft[index].question =
+                                              e.target.value
+                                          })
+                                          field.onChange(faqs)
+                                        }}
+                                      />
+                                      <div className="relative">
+                                        <Input
+                                          placeholder={`Câu trả lời ${index + 1}`}
+                                          className="h-[40px] pr-10"
+                                          value={faq.answers}
+                                          onChange={(e) => {
+                                            setFaqs((draft) => {
+                                              draft[index].answers =
+                                                e.target.value
+                                            })
+                                            field.onChange(faqs)
+                                          }}
+                                        />
+                                        {index >= 1 && (
+                                          <button
+                                            type="button"
+                                            className="absolute right-2 top-1/2 -translate-y-1/2 text-red-500"
+                                            onClick={() =>
+                                              handleRemoveQA(index)
+                                            }
+                                          >
+                                            <Trash size={16} />
+                                          </button>
+                                        )}
+                                      </div>
+                                    </div>
+                                  ))}
+                                  <div className="mt-3">
+                                    <Button
+                                      type="button"
+                                      disabled={faqs.length >= 10}
+                                      onClick={handleAddQA}
+                                    >
+                                      <CirclePlus size={18} />
+                                      Thêm câu hỏi và câu trả lời
+                                    </Button>
+                                    {faqs.length >= 10 && (
+                                      <p className="mt-2 text-sm text-red-500">
+                                        Bạn đã đạt tối đa 10 câu hỏi.
+                                      </p>
+                                    )}
+                                  </div>
+                                </div>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
                       </div>
                     </CardContent>
                   </Card>
@@ -473,8 +588,16 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
                         </div>
                         <div>
                           <Button variant="destructive">Nhập lại</Button>
-                          <Button className="ms-2 bg-primary">
-                            Lưu thông tin
+                          <Button
+                            type="submit"
+                            className="ms-2 bg-primary"
+                            disabled={updateCoursePending}
+                          >
+                            {updateCoursePending ? (
+                              <Loader2 className="animate-spin" />
+                            ) : (
+                              'Lưu thông tin'
+                            )}
                           </Button>
                         </div>
                       </CardTitle>

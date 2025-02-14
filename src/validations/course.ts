@@ -69,13 +69,17 @@ export const updateCourseSchema = z
     level: z.enum(['beginner', 'intermediate', 'advanced'], {
       errorMap: () => ({ message: 'Vui lòng chọn cấp độ hợp lệ' }),
     }),
-    requirements: z.array(z.string()).optional(),
-    benefits: z.array(z.string()).optional(),
+    benefits: z
+      .array(z.string())
+      .min(4, { message: 'Bạn cần ít nhất 4 lợi ích' }), // mảng phải có ít nhất 4 lợi ích
+    requirements: z
+      .array(z.string())
+      .min(4, { message: 'Bạn cần ít nhất 4 yêu cầu' }), // mảng phải có ít nhất 4 yêu cầu
     faqs: z
       .array(
         z.object({
-          question: z.string().min(3, 'Câu hỏi phải có ít nhất 3 ký tự'),
-          answer: z.string().min(3, 'Câu trả lời phải có ít nhất 3 ký tự'),
+          question: z.string(),
+          answers: z.string(),
         })
       )
       .optional(),
