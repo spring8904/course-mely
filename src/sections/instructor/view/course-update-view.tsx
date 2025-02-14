@@ -122,26 +122,25 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
       const data = courseOverviewData.data
 
       try {
-        const parsedBenefits = Array.isArray(data.benefits)
-          ? data.benefits
-          : [JSON.parse(data.benefits || '')]
+        // Parse benefits
+        const parsedBenefits = data.benefits
+          ? JSON.parse(data.benefits)
+          : ['', '', '', '']
+        setBenefits(parsedBenefits)
 
-        const parsedRequirements = Array.isArray(data.requirements)
-          ? data.requirements
-          : JSON.parse(data.requirements || '[]')
-        const parsedFAQs = Array.isArray(data.qa)
-          ? data.qa
-          : JSON.parse(data.qa || '[]')
-        setBenefits(parsedBenefits.length ? parsedBenefits : ['', '', '', ''])
-        setRequirements(
-          parsedRequirements.length ? parsedRequirements : ['', '', '', '']
-        )
-        setFaqs(
-          parsedFAQs.length
-            ? parsedFAQs
-            : [{ question: 'Ví dụ câu hỏi?', answers: 'Ví dụ câu trả lời' }]
-        )
-        // Reset form với dữ liệu mới
+        // Parse requirements
+        const parsedRequirements = data.requirements
+          ? JSON.parse(data.requirements)
+          : ['', '', '', '']
+        setRequirements(parsedRequirements)
+
+        // Parse FAQs
+        const parsedFAQs = data.qa
+          ? JSON.parse(data.qa)
+          : [{ question: 'Ví dụ câu hỏi?', answers: 'Ví dụ câu trả lời' }]
+        setFaqs(parsedFAQs)
+
+        // Reset form with all data
         form.reset({
           name: data.name || '',
           category_id: data.category_id || '',
@@ -156,10 +155,11 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
           faqs: parsedFAQs,
         })
       } catch (error) {
-        console.error('Lỗi khi phân tích dữ liệu:', error)
+        console.error('Error parsing data:', error)
       }
     }
   }, [courseOverviewData, form])
+
   const handleAddBenefit = () => {
     if (benefits.length < 10) {
       const newBenefits = [...benefits, '']
@@ -210,9 +210,6 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
     setBenefits(newBenefits)
     form.setValue('benefits', newBenefits)
 
-    // Log giá trị của benefits khi thay đổi
-    console.log('Dữ liệu benefits sau khi thay đổi:', newBenefits)
-
     if (
       index === benefits.length - 1 &&
       value.trim() !== '' &&
@@ -238,8 +235,12 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
   }
 
   const onSubmit = (data: UpdateCoursePayload) => {
-    console.log('Dữ liệu trước khi gửi:', data)
+    if (data.is_free === '1') {
+      data.price = 0
+      data.price_sale = 0
+    }
 
+    // Ensure benefits and requirements are arrays
     const formData = {
       ...data,
       benefits: Array.isArray(data.benefits) ? data.benefits : benefits,
@@ -249,8 +250,7 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
       faqs: Array.isArray(data.faqs) ? data.faqs : faqs,
     }
 
-    console.log('Dữ liệu sau khi xử lý:', formData)
-
+    // Filter out empty values
     formData.benefits = formData.benefits.filter((b) => b.trim() !== '')
     formData.requirements = formData.requirements.filter((r) => r.trim() !== '')
     formData.faqs = formData.faqs.filter(
@@ -372,7 +372,7 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
                                 Lợi ích mà khóa học mang lại
                               </FormLabel>
                               <p className="text-[14px] text-[#4b5563]">
-                                Bạn phải nhập ít nhất 4 lợi ích mà học viên có
+                                Bạn phải nhập ít nhất 4 lợi ích mà Học viên có
                                 thể nhận được sau khi kết thúc khóa học.
                               </p>
                               <FormControl>
@@ -380,6 +380,7 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
                                   {benefits.map((benefit, index) => (
                                     <div key={index} className="relative mt-3">
                                       <Input
+                                        {...field}
                                         placeholder={`Nhập lợi ích số ${index + 1}`}
                                         className="h-[40px] pr-10"
                                         value={benefit}
@@ -425,150 +426,150 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
                           )}
                         />
                       </div>
-                      {/*<div className="mt-6">*/}
-                      {/*  <FormField*/}
-                      {/*    control={form.control}*/}
-                      {/*    name="requirements"*/}
-                      {/*    render={({ field }) => (*/}
-                      {/*      <FormItem>*/}
-                      {/*        <FormLabel>*/}
-                      {/*          Yêu cầu khi tham gia khóa học*/}
-                      {/*        </FormLabel>*/}
-                      {/*        <p className="text-[14px] text-[#4b5563]">*/}
-                      {/*          Liệt kê các kỹ năng, kinh nghiệm, công cụ hoặc*/}
-                      {/*          thiết bị mà học viên bắt buộc phải có trước khi*/}
-                      {/*          tham gia khóa học.*/}
-                      {/*        </p>*/}
-                      {/*        <FormControl>*/}
-                      {/*          <div>*/}
-                      {/*            {requirements.map((requirement, index) => (*/}
-                      {/*              <div key={index} className="relative mt-3">*/}
-                      {/*                <Input*/}
-                      {/*                  placeholder={`Nhập yêu cầu số ${index + 1}`}*/}
-                      {/*                  className="h-[40px] pr-10"*/}
-                      {/*                  value={requirement}*/}
-                      {/*                  onChange={(e) =>*/}
-                      {/*                    handleInputChangeRequirement(*/}
-                      {/*                      index,*/}
-                      {/*                      e.target.value*/}
-                      {/*                    )*/}
-                      {/*                  }*/}
-                      {/*                />*/}
-                      {/*                {index >= 4 && (*/}
-                      {/*                  <button*/}
-                      {/*                    type="button"*/}
-                      {/*                    className="absolute right-2 top-1/2 -translate-y-1/2 text-red-500"*/}
-                      {/*                    onClick={() =>*/}
-                      {/*                      handleRemoveRequirement(index)*/}
-                      {/*                    }*/}
-                      {/*                  >*/}
-                      {/*                    <Trash size={16} />*/}
-                      {/*                  </button>*/}
-                      {/*                )}*/}
-                      {/*              </div>*/}
-                      {/*            ))}*/}
-                      {/*            <div className="mt-3">*/}
-                      {/*              <Button*/}
-                      {/*                type="button"*/}
-                      {/*                disabled={requirements.length >= 10}*/}
-                      {/*                onClick={handleAddRequirement}*/}
-                      {/*              >*/}
-                      {/*                <CirclePlus size={18} />*/}
-                      {/*                Thêm yêu cầu vào khóa học của bạn*/}
-                      {/*              </Button>*/}
-                      {/*              {requirements.length >= 10 && (*/}
-                      {/*                <p className="mt-2 text-sm text-red-500">*/}
-                      {/*                  Bạn đã đạt tối đa 10 yêu cầu.*/}
-                      {/*                </p>*/}
-                      {/*              )}*/}
-                      {/*            </div>*/}
-                      {/*          </div>*/}
-                      {/*        </FormControl>*/}
-                      {/*        <FormMessage />*/}
-                      {/*      </FormItem>*/}
-                      {/*    )}*/}
-                      {/*  />*/}
-                      {/*</div>*/}
+                      <div className="mt-6">
+                        <FormField
+                          control={form.control}
+                          name="requirements"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>
+                                Yêu cầu khi tham gia khóa học
+                              </FormLabel>
+                              <p className="text-[14px] text-[#4b5563]">
+                                Liệt kê các kỹ năng, kinh nghiệm, công cụ hoặc
+                                thiết bị mà học viên bắt buộc phải có trước khi
+                                tham gia khóa học.
+                              </p>
+                              <FormControl>
+                                <div>
+                                  {requirements.map((requirement, index) => (
+                                    <div key={index} className="relative mt-3">
+                                      <Input
+                                        placeholder={`Nhập yêu cầu số ${index + 1}`}
+                                        className="h-[40px] pr-10"
+                                        value={requirement}
+                                        onChange={(e) =>
+                                          handleInputChangeRequirement(
+                                            index,
+                                            e.target.value
+                                          )
+                                        }
+                                      />
+                                      {index >= 4 && (
+                                        <button
+                                          type="button"
+                                          className="absolute right-2 top-1/2 -translate-y-1/2 text-red-500"
+                                          onClick={() =>
+                                            handleRemoveRequirement(index)
+                                          }
+                                        >
+                                          <Trash size={16} />
+                                        </button>
+                                      )}
+                                    </div>
+                                  ))}
+                                  <div className="mt-3">
+                                    <Button
+                                      type="button"
+                                      disabled={requirements.length >= 10}
+                                      onClick={handleAddRequirement}
+                                    >
+                                      <CirclePlus size={18} />
+                                      Thêm yêu cầu vào khóa học của bạn
+                                    </Button>
+                                    {requirements.length >= 10 && (
+                                      <p className="mt-2 text-sm text-red-500">
+                                        Bạn đã đạt tối đa 10 yêu cầu.
+                                      </p>
+                                    )}
+                                  </div>
+                                </div>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
 
-                      {/*<div className="mt-6">*/}
-                      {/*  <FormField*/}
-                      {/*    control={form.control}*/}
-                      {/*    name="faqs"*/}
-                      {/*    render={({ field }) => (*/}
-                      {/*      <FormItem>*/}
-                      {/*        <FormLabel>Câu hỏi thường gặp</FormLabel>*/}
-                      {/*        <p className="text-[14px] text-[#4b5563]">*/}
-                      {/*          Thêm các câu hỏi và câu trả lời thường gặp về*/}
-                      {/*          khóa học.*/}
-                      {/*        </p>*/}
-                      {/*        <FormControl>*/}
-                      {/*          <div>*/}
-                      {/*            {faqs.map((faq, index) => (*/}
-                      {/*              <div*/}
-                      {/*                key={index}*/}
-                      {/*                className="relative mt-3 grid grid-cols-2 gap-2"*/}
-                      {/*              >*/}
-                      {/*                <Input*/}
-                      {/*                  placeholder={`Câu hỏi ${index + 1}`}*/}
-                      {/*                  className="h-[40px]"*/}
-                      {/*                  value={faq.question}*/}
-                      {/*                  onChange={(e) => {*/}
-                      {/*                    setFaqs((draft) => {*/}
-                      {/*                      draft[index].question =*/}
-                      {/*                        e.target.value*/}
-                      {/*                    })*/}
-                      {/*                    field.onChange(faqs)*/}
-                      {/*                  }}*/}
-                      {/*                />*/}
-                      {/*                <div className="relative">*/}
-                      {/*                  <Input*/}
-                      {/*                    placeholder={`Câu trả lời ${index + 1}`}*/}
-                      {/*                    className="h-[40px] pr-10"*/}
-                      {/*                    value={faq.answers}*/}
-                      {/*                    onChange={(e) => {*/}
-                      {/*                      setFaqs((draft) => {*/}
-                      {/*                        draft[index].answers =*/}
-                      {/*                          e.target.value*/}
-                      {/*                      })*/}
-                      {/*                      field.onChange(faqs)*/}
-                      {/*                    }}*/}
-                      {/*                  />*/}
-                      {/*                  {index >= 1 && (*/}
-                      {/*                    <button*/}
-                      {/*                      type="button"*/}
-                      {/*                      className="absolute right-2 top-1/2 -translate-y-1/2 text-red-500"*/}
-                      {/*                      onClick={() =>*/}
-                      {/*                        handleRemoveQA(index)*/}
-                      {/*                      }*/}
-                      {/*                    >*/}
-                      {/*                      <Trash size={16} />*/}
-                      {/*                    </button>*/}
-                      {/*                  )}*/}
-                      {/*                </div>*/}
-                      {/*              </div>*/}
-                      {/*            ))}*/}
-                      {/*            <div className="mt-3">*/}
-                      {/*              <Button*/}
-                      {/*                type="button"*/}
-                      {/*                disabled={faqs.length >= 10}*/}
-                      {/*                onClick={handleAddQA}*/}
-                      {/*              >*/}
-                      {/*                <CirclePlus size={18} />*/}
-                      {/*                Thêm câu hỏi và câu trả lời*/}
-                      {/*              </Button>*/}
-                      {/*              {faqs.length >= 10 && (*/}
-                      {/*                <p className="mt-2 text-sm text-red-500">*/}
-                      {/*                  Bạn đã đạt tối đa 10 câu hỏi.*/}
-                      {/*                </p>*/}
-                      {/*              )}*/}
-                      {/*            </div>*/}
-                      {/*          </div>*/}
-                      {/*        </FormControl>*/}
-                      {/*        <FormMessage />*/}
-                      {/*      </FormItem>*/}
-                      {/*    )}*/}
-                      {/*  />*/}
-                      {/*</div>*/}
+                      <div className="mt-6">
+                        <FormField
+                          control={form.control}
+                          name="faqs"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Câu hỏi thường gặp</FormLabel>
+                              <p className="text-[14px] text-[#4b5563]">
+                                Thêm các câu hỏi và câu trả lời thường gặp về
+                                khóa học.
+                              </p>
+                              <FormControl>
+                                <div>
+                                  {faqs.map((faq, index) => (
+                                    <div
+                                      key={index}
+                                      className="relative mt-3 grid grid-cols-2 gap-2"
+                                    >
+                                      <Input
+                                        placeholder={`Câu hỏi ${index + 1}`}
+                                        className="h-[40px]"
+                                        value={faq.question}
+                                        onChange={(e) => {
+                                          setFaqs((draft) => {
+                                            draft[index].question =
+                                              e.target.value
+                                          })
+                                          field.onChange(faqs)
+                                        }}
+                                      />
+                                      <div className="relative">
+                                        <Input
+                                          placeholder={`Câu trả lời ${index + 1}`}
+                                          className="h-[40px] pr-10"
+                                          value={faq.answers}
+                                          onChange={(e) => {
+                                            setFaqs((draft) => {
+                                              draft[index].answers =
+                                                e.target.value
+                                            })
+                                            field.onChange(faqs)
+                                          }}
+                                        />
+                                        {index >= 1 && (
+                                          <button
+                                            type="button"
+                                            className="absolute right-2 top-1/2 -translate-y-1/2 text-red-500"
+                                            onClick={() =>
+                                              handleRemoveQA(index)
+                                            }
+                                          >
+                                            <Trash size={16} />
+                                          </button>
+                                        )}
+                                      </div>
+                                    </div>
+                                  ))}
+                                  <div className="mt-3">
+                                    <Button
+                                      type="button"
+                                      disabled={faqs.length >= 10}
+                                      onClick={handleAddQA}
+                                    >
+                                      <CirclePlus size={18} />
+                                      Thêm câu hỏi và câu trả lời
+                                    </Button>
+                                    {faqs.length >= 10 && (
+                                      <p className="mt-2 text-sm text-red-500">
+                                        Bạn đã đạt tối đa 10 câu hỏi.
+                                      </p>
+                                    )}
+                                  </div>
+                                </div>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
                     </CardContent>
                   </Card>
                 </TabsContent>
