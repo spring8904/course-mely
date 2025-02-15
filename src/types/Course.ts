@@ -37,6 +37,7 @@ export interface ICourse {
   created_at?: Date | null
   updated_at?: Date | null
 }
+export type ICourses = ICourse[]
 
 export interface IChapter {
   id?: number

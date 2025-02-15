@@ -1,11 +1,7 @@
 import { PostAddView } from '@/sections/instructor/post/view'
 
 const PostPage = () => {
-  return (
-    <div>
-      <PostAddView />
-    </div>
-  )
+  return <PostAddView />
 }
 
 export default PostPage
