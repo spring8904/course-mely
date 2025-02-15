@@ -53,13 +53,13 @@ const PostManageView = () => {
           <div className="flex items-center gap-3">
             <Image
               alt={post.title ?? ''}
-              className="size-16 shrink-0 rounded-lg object-cover"
-              height={80}
+              className="size-[100px] rounded-lg"
+              height={100}
               src={
                 post.thumbnail ||
                 'https://res.cloudinary.com/dvrexlsgx/image/upload/v1734990491/oxbmdtk4x3jvfhxvhnec.jpg'
               }
-              width={80}
+              width={100}
             />
             <div className="flex flex-col gap-1">
               <h3 className="whitespace-nowrap text-sm font-bold lg:text-base">
@@ -110,7 +110,7 @@ const PostManageView = () => {
       header: 'Hành động',
       cell: ({ row }) => (
         <div className="flex gap-3">
-          <Link href={`/instructor/post/update/${row.original.slug}`}>
+          <Link href={`/instructor/posts/update/${row.original.slug}`}>
             <Button type="button">
               <Eye />
             </Button>
@@ -125,7 +125,9 @@ const PostManageView = () => {
       <div className="mt-2">
         <div className="flex justify-between">
           <p className="text-xl font-bold">Quản lý bài viết</p>
-          <Button>Viết blog</Button>
+          <Link href={'/instructor/posts/create'}>
+            <Button>Viết blog</Button>
+          </Link>
         </div>
 
         <DataTable

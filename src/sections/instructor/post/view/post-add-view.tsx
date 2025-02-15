@@ -17,6 +17,7 @@ import { Button } from '@/components/ui/button'
 import 'react-datepicker/dist/react-datepicker.css'
 
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 import { parseISO } from 'date-fns'
 
 import { useCreatePost } from '@/hooks/post/usePost'
@@ -48,6 +49,8 @@ import {
 import TinyEditor from '@/components/shared/tiny-editor'
 
 const PostAddView = () => {
+  const router = useRouter()
+
   const { data: categoryData } = useGetCategories()
   const { mutate: createPost, isPending } = useCreatePost()
 
@@ -76,9 +79,13 @@ const PostAddView = () => {
     }
   }
 
-  const handleReset = (field: any) => {
+  const handleReset = (field?: { onChange?: (value: any) => void }) => {
     setPreview(null)
-    field.onChange(null)
+
+    if (field?.onChange) {
+      field.onChange(null)
+    }
+
     if (fileInputRef.current) {
       fileInputRef.current.value = ''
     }
@@ -87,14 +94,21 @@ const PostAddView = () => {
   const onSubmit = (values: CreatePostPayload) => {
     if (isPending) return
 
-    console.log(values)
-
-    createPost({
-      ...values,
-      description,
-      content,
-      thumbnail: form.getValues('thumbnail'),
-    })
+    createPost(
+      {
+        ...values,
+        description,
+        content,
+        thumbnail: form.getValues('thumbnail'),
+      },
+      {
+        onSuccess: () => {
+          form.reset()
+          setPreview(null)
+          router.push('/instructor/posts')
+        },
+      }
+    )
   }
 
   return (
@@ -144,7 +158,9 @@ const PostAddView = () => {
                                     type="file"
                                     accept="image/*"
                                     className="cursor-pointer"
-                                    onChange={(e) => handleFileChange(e, field)}
+                                    onChange={(event) =>
+                                      handleFileChange(event, field)
+                                    }
                                     ref={fileInputRef}
                                   />
                                 </FormControl>
@@ -167,7 +183,9 @@ const PostAddView = () => {
                             <div className="mt-2 text-end">
                               <Button
                                 type="button"
-                                onClick={() => handleReset(form.setValue)}
+                                onClick={() =>
+                                  handleReset(form.setValue as any)
+                                }
                               >
                                 Reset
                               </Button>
@@ -238,10 +256,12 @@ const PostAddView = () => {
                       render={({ field }) => {
                         let selectedDate: Date | null = null
 
-                        if (typeof field.value === 'string') {
-                          selectedDate = parseISO(field.value)
-                        } else if (field.value instanceof Date) {
-                          selectedDate = field.value
+                        const fieldValue = field.value as any
+
+                        if (typeof fieldValue === 'string') {
+                          selectedDate = parseISO(fieldValue)
+                        } else if (fieldValue instanceof Date) {
+                          selectedDate = fieldValue
                         } else {
                           selectedDate = new Date()
                         }
