@@ -33,10 +33,13 @@ export const useCreateCourse = () => {
         queryKey: [QUERY_KEY.INSTRUCTOR_COURSE],
       })
 
-      const courseSlug = res?.slug
+      const courseSlug = res?.data.slug
+      const successMessage = res?.message || 'Khóa học đã được tạo thành công!'
 
       if (courseSlug) {
-        router.push(`/instructor/courses/update/${courseSlug}`)
+        await router.push(`/instructor/courses/update/${courseSlug}`)
+
+        toast.success(successMessage)
       }
     },
     onError: (error) => {
@@ -59,9 +62,13 @@ export const useUpdateCourse = () => {
       const formData = new FormData()
       formData.append('_method', 'PUT')
 
-      Object.entries(data).forEach(([key, value]) => {
+      Object.entries(data).forEach(([key, value]: any) => {
         if (value !== undefined && value !== null) {
-          formData.append(key, value instanceof Blob ? value : String(value))
+          if (Array.isArray(value) || typeof value === 'object') {
+            formData.append(key, JSON.stringify(value))
+          } else {
+            formData.append(key, value instanceof Blob ? value : String(value))
+          }
         }
       })
 

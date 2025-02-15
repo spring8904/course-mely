@@ -96,7 +96,7 @@ const CourseDetailView = ({ slug }: { slug: string }) => {
   )
 
   return (
-    <div className="main-content pt-0">
+    <div className="pt-0">
       <section className="section-page-title page-title style-5">
         <div className="tf-container">
           <div className="row">

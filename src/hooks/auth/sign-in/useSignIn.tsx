@@ -36,6 +36,8 @@ export const useSignIn = () => {
         router.push('/')
 
         await queryClient.invalidateQueries({ queryKey: [QUERY_KEY.AUTH] })
+
+        toast.success(res?.message)
       } else {
         toast.error('Đăng nhập thất bại, vui lòng thử lại')
       }

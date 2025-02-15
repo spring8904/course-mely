@@ -6,7 +6,7 @@ import {
   CourseList,
   PostList,
 } from '@/sections/home/components'
-import InstructorTop from '@/sections/home/components/instructor-top'
+import InstructorTop from '@/sections/home/components/Instructor-top'
 
 import '@/styles/custom-swiper-pagination.css'
 
