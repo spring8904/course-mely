@@ -60,7 +60,6 @@ const CourseManageView = () => {
 
   const { data: coursesData, isLoading: isCoursesLoading } = useGetCourses()
   const { data: categoryData } = useGetCategories()
-
   const { mutate: createCourse, isPending: isCourseCreating } =
     useCreateCourse()
 
@@ -198,7 +197,6 @@ const CourseManageView = () => {
                   </FormItem>
                 )}
               />
-
               <FormField
                 control={form.control}
                 name="category_id"

@@ -1,9 +1,27 @@
-import { IPost } from '@/types'
+import { CreatePostPayload, UpdatePostPayload } from '@/validations/post'
 import api from '@/configs/api'
 
 const prefix = '/posts'
 
-export const getPostBySlug = async (slug: string): Promise<IPost> => {
-  const response = await api.get(`${prefix}/${slug}`)
-  return response.data
+export const postApi = {
+  getPosts: async () => {
+    return await api.get(prefix)
+  },
+  getPostBySlug: async (slug: string) => {
+    return await api.get(`${prefix}/${slug}`)
+  },
+  createPost: (payload: CreatePostPayload) => {
+    return api.post(prefix, payload, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    })
+  },
+  updatePost: (slug: string, data: UpdatePostPayload) => {
+    return api.post(`${prefix}/${slug}`, data, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    })
+  },
 }
