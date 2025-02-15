@@ -1,6 +1,5 @@
 'use client'
 
-import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import SwiperCore from 'swiper'
@@ -18,74 +17,18 @@ import 'swiper/css/navigation'
 import 'swiper/css/pagination'
 import 'swiper/css/scrollbar'
 
-// Install the necessary Swiper modules
+import { ICourses } from '@/types'
+
 SwiperCore.use([Navigation, Pagination, Autoplay])
 
 interface CourseListProps {
   className?: string
   title: string
   description?: string
+  courses: ICourses[]
 }
 
-const CourseList = ({ title, description }: CourseListProps) => {
-  const [courses, setCourses] = useState<any[]>([])
-
-  useEffect(() => {
-    const fakeData = [
-      {
-        id: 1,
-        title: 'Become a Certified Web Developer: HTML, CSS and JavaScript',
-        lessons: 11,
-        duration: '16 hours',
-        rating: 4.9,
-        instructor: 'Carolyn Welborn',
-        price: '$89.29',
-        image: '/assets/images/courses/courses-01.jpg',
-      },
-      {
-        id: 2,
-        title: 'Master React and Redux with JavaScript',
-        lessons: 12,
-        duration: '20 hours',
-        rating: 4.8,
-        instructor: 'John Doe',
-        price: '$99.99',
-        image: '/assets/images/courses/courses-02.jpg',
-      },
-      {
-        id: 3,
-        title: 'Advanced Node.js and Express for Backend Development',
-        lessons: 15,
-        duration: '18 hours',
-        rating: 4.7,
-        instructor: 'Jane Smith',
-        price: '$79.99',
-        image: '/assets/images/courses/courses-03.jpg',
-      },
-      {
-        id: 4,
-        title: 'Advanced Node.js and Express for Backend Development',
-        lessons: 15,
-        duration: '18 hours',
-        rating: 4.7,
-        instructor: 'Jane Smith',
-        price: '$79.99',
-        image: '/assets/images/courses/courses-03.jpg',
-      },
-      {
-        id: 5,
-        title: 'Advanced Node.js and Express for Backend Development',
-        lessons: 15,
-        duration: '18 hours',
-        rating: 4.7,
-        instructor: 'Jane Smith',
-        price: '$79.99',
-        image: '/assets/images/courses/courses-03.jpg',
-      },
-    ]
-    setCourses(fakeData)
-  }, [])
-
+const CourseList = ({ title, description, courses }: CourseListProps) => {
   return (
     <section className="tf-spacing-6 section-course pt-0">
       <div className="tf-container">
@@ -139,8 +82,8 @@ const CourseList = ({ title, description }: CourseListProps) => {
                         width={256}
                         height={187}
                         className="lazyload"
-                        src={course.image}
-                        alt={course.title}
+                        src={course.thumbnail}
+                        alt={course.name}
                       />
 
                       <div className="box-tags">
@@ -159,7 +102,7 @@ const CourseList = ({ title, description }: CourseListProps) => {
                       <div className="meta !gap-[0px] md:gap-4">
                         <div className="meta-item !pr-2 md:pr-[10px]">
                           <i className="flaticon-calendar" />
-                          <p>{course.lessons} Lessons</p>
+                          <p>{course.lessons_count} Lessons</p>
                         </div>
 
                         <div className="meta-item pl-2 md:pl-[10px]">
@@ -169,7 +112,7 @@ const CourseList = ({ title, description }: CourseListProps) => {
                       </div>
 
                       <h6 className="fw-5 line-clamp-2">
-                        <a href="course-single-v1.html">{course.title}</a>
+                        <a href="course-single-v1.html">{course.name}</a>
                       </h6>
 
                       <div className="ratings pb-30">
@@ -188,12 +131,14 @@ const CourseList = ({ title, description }: CourseListProps) => {
                       <div className="author">
                         By:
                         <a href="#" className="author">
-                          {course.instructor}
+                          {course.user.name}
                         </a>
                       </div>
 
                       <div className="bottom">
-                        <div className="h6 price fw-5">{course.price}</div>
+                        <div className="h6 price fw-5">
+                          {course.is_free ? 'Free' : `${course.price} VND`}
+                        </div>
 
                         <a
                           href="course-single-v1.html"
