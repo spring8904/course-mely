@@ -35,6 +35,7 @@ interface Props {
 
 const CourseDetailPage = ({ params }: Props) => {
   const { slug } = params
+
   return <CourseDetailView slug={slug} />
 }
 

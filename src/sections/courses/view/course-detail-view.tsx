@@ -1,5 +1,18 @@
-import React from 'react'
+'use client'
+
+import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
+import {
+  CircleHelp,
+  CirclePlay,
+  CircleX,
+  FileCode2,
+  Loader2,
+  ScrollText,
+} from 'lucide-react'
+
+import { formatCurrency } from '@/lib/common'
+import { useGetCourseDetails } from '@/hooks/course/useCourse'
 
 import {
   Accordion,
@@ -7,11 +20,6 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion'
-import {
-  chapterData,
-  courseData,
-  lessonData,
-} from '@/sections/courses/data/data'
 
 import CourseSlide from '../_components/course-slide'
 
@@ -84,16 +92,89 @@ const courses = [
   },
 ]
 
-const CourseDetailView = ({ slug }: { slug: string }) => {
-  console.log(slug)
+const lessonTypeIcons = {
+  video: <CirclePlay size={16} />,
+  document: <ScrollText size={16} />,
+  quiz: <CircleHelp size={16} />,
+  coding: <FileCode2 size={16} />,
+}
 
-  const benefitsCoulumn1 = courseData.benefits?.slice(
-    0,
-    Math.ceil(courseData.benefits.length / 2)
-  )
-  const benefitsCoulumn2 = courseData.benefits?.slice(
-    Math.ceil(courseData.benefits.length / 2)
-  )
+const CourseDetailView = ({ slug }: { slug: string }) => {
+  const [lastUpdated, setLastUpdated] = useState<string>('')
+  const [benefitsColumn1, setBenefitsColumn1] = useState<string[]>([])
+  const [benefitsColumn2, setBenefitsColumn2] = useState<string[]>([])
+  const [requirementsColumn1, setRequirementsColumn1] = useState<string[]>([])
+  const [requirementsColumn2, setRequirementsColumn2] = useState<string[]>([])
+  const [isOpenIntro, setIsOpenIntro] = useState<boolean>(false)
+  const { data: courseDetails, isLoading: isCourseDetailsLoading } =
+    useGetCourseDetails(slug)
+
+  useEffect(() => {
+    if (courseDetails?.updated_at) {
+      const date = new Date(courseDetails.updated_at)
+      const year = date.getFullYear()
+      const month = String(date.getMonth() + 1).padStart(2, '0')
+      const day = String(date.getDate()).padStart(2, '0')
+
+      setLastUpdated(`${day}/${month}/${year}`)
+    }
+  }, [courseDetails?.updated_at])
+
+  useEffect(() => {
+    if (courseDetails?.benefits) {
+      const parsedBenefits = JSON.parse(`${courseDetails.benefits}`)
+
+      if (parsedBenefits.length > 5) {
+        setBenefitsColumn1(
+          parsedBenefits.slice(0, Math.ceil(parsedBenefits.length / 2))
+        )
+        setBenefitsColumn2(
+          parsedBenefits.slice(Math.ceil(parsedBenefits.length / 2))
+        )
+      } else {
+        setBenefitsColumn1(parsedBenefits)
+      }
+    }
+  }, [courseDetails?.benefits])
+
+  useEffect(() => {
+    if (courseDetails?.requirements) {
+      const parsedRequirements = JSON.parse(`${courseDetails.requirements}`)
+
+      if (parsedRequirements.length > 5) {
+        setRequirementsColumn1(
+          parsedRequirements.slice(0, Math.ceil(parsedRequirements.length / 2))
+        )
+        setRequirementsColumn2(
+          parsedRequirements.slice(Math.ceil(parsedRequirements.length / 2))
+        )
+      } else {
+        setRequirementsColumn1(parsedRequirements)
+      }
+    }
+  }, [courseDetails?.requirements])
+
+  useEffect(() => {
+    if (isOpenIntro) {
+      document.body.classList.add('overflow-hidden')
+    } else {
+      document.body.classList.remove('overflow-hidden')
+    }
+
+    return () => {
+      if (isOpenIntro) {
+        document.body.classList.remove('overflow-hidden')
+      }
+    }
+  }, [isOpenIntro])
+
+  if (isCourseDetailsLoading) {
+    return (
+      <div className="mt-20">
+        <Loader2 className="mx-auto size-8 animate-spin" />
+      </div>
+    )
+  }
 
   return (
     <div className="pt-0">
@@ -115,18 +196,10 @@ const CourseDetailView = ({ slug }: { slug: string }) => {
                   <li>
                     <i className="icon-arrow-right" />
                   </li>
-                  <li>Khoá học ReactJS cơ bản cho người mới bắt đầu</li>
+                  <li>{courseDetails?.name}</li>
                 </ul>
-                <h2 className="fw-7">
-                  Khoá học ReactJS cơ bản cho người mới bắt đầu
-                </h2>
-                <p className="except">
-                  Khóa học ReactJS từ cơ bản tới nâng cao, kết quả của khóa học
-                  này là bạn có thể làm hầu hết các dự án thường gặp với
-                  ReactJS. Cuối khóa học này bạn sẽ sở hữu một dự án giống
-                  Tiktok.com, bạn có thể tự tin đi xin việc khi nắm chắc các
-                  kiến thức được chia sẻ trong khóa học này.
-                </p>
+                <h2 className="fw-7">{courseDetails?.name}</h2>
+                <p className="except">{courseDetails?.description}</p>
                 <ul className="entry-meta">
                   <li>
                     <div className="ratings">
@@ -152,15 +225,15 @@ const CourseDetailView = ({ slug }: { slug: string }) => {
                   </li>
                   <li>
                     <i className="flaticon-book" />
-                    <p>11 Lessons</p>
+                    <p>{courseDetails?.chapters_count}</p>
                   </li>
                   <li>
                     <i className="flaticon-user" />
-                    <p>229 Students</p>
+                    <p>{courseDetails?.total_student} Students</p>
                   </li>
                   <li>
                     <i className="flaticon-clock" />
-                    <p>Last updated 12/2024</p>
+                    <p>Last updated {lastUpdated}</p>
                   </li>
                 </ul>
                 <div className="author-item">
@@ -169,7 +242,7 @@ const CourseDetailView = ({ slug }: { slug: string }) => {
                   </div>
                   <div className="text">
                     <span className="text-1">By </span>
-                    <a href="#">Theresa Edin</a>
+                    <a href="#">{courseDetails?.user?.name}</a>
                     <span className="text-1 mx-2">In</span>
                     <a href="#">Development</a>
                   </div>
@@ -195,7 +268,7 @@ const CourseDetailView = ({ slug }: { slug: string }) => {
                   </h2>
                   <div className="learn-inner">
                     <ul className="learn-list">
-                      {benefitsCoulumn1?.map((benefit, index) => (
+                      {benefitsColumn1?.map((benefit, index) => (
                         <li key={index} className="item">
                           <i className="flaticon-check" />
                           {benefit}
@@ -203,7 +276,7 @@ const CourseDetailView = ({ slug }: { slug: string }) => {
                       ))}
                     </ul>
                     <ul className="learn-list">
-                      {benefitsCoulumn2?.map((benefit, index) => (
+                      {benefitsColumn2?.map((benefit, index) => (
                         <li key={index} className="item">
                           <i className="flaticon-check" />
                           {benefit}
@@ -218,18 +291,18 @@ const CourseDetailView = ({ slug }: { slug: string }) => {
                   </h2>
                   <div className="learn-inner">
                     <ul className="learn-list">
-                      {benefitsCoulumn1?.map((benefit, index) => (
+                      {requirementsColumn1?.map((requirement, index) => (
                         <li key={index} className="item">
                           <i className="flaticon-check" />
-                          {benefit}
+                          {requirement}
                         </li>
                       ))}
                     </ul>
                     <ul className="learn-list">
-                      {benefitsCoulumn2?.map((benefit, index) => (
+                      {requirementsColumn2?.map((requirement, index) => (
                         <li key={index} className="item">
                           <i className="flaticon-check" />
-                          {benefit}
+                          {requirement}
                         </li>
                       ))}
                     </ul>
@@ -239,7 +312,7 @@ const CourseDetailView = ({ slug }: { slug: string }) => {
                   <h2 className="text-22 fw-5 wow fadeInUp" data-wow-delay="0s">
                     Nội dung khoá học
                   </h2>
-                  {chapterData?.map((chapter, chapterIndex) => (
+                  {courseDetails?.chapters?.map((chapter, chapterIndex) => (
                     <Accordion
                       type="single"
                       collapsible
@@ -247,26 +320,22 @@ const CourseDetailView = ({ slug }: { slug: string }) => {
                       className="mb-6"
                     >
                       <AccordionItem value={`item-${chapter.id}`}>
-                        <AccordionTrigger className="rounded-lg p-4 text-2xl">
-                          {chapter.title}
+                        <AccordionTrigger className="rounded-lg p-4 text-xl">
+                          {chapter?.title}
                         </AccordionTrigger>
                         <AccordionContent className="rounded-lg">
-                          {lessonData
-                            ?.filter(
-                              (lesson) => lesson.chapterId === chapter.id
-                            )
-                            .map((lesson, lessonIndex) => (
-                              <div
-                                className="mb-3 flex items-center gap-2 pb-2 text-2xl font-medium"
-                                key={lessonIndex}
-                              >
-                                <i className="flaticon-play-1" />
-                                {lesson.content}
-                                <span className="ml-auto shrink-0 text-xl font-semibold">
-                                  0 phút
-                                </span>
-                              </div>
-                            ))}
+                          {chapter?.lessons?.map((lesson, lessonIndex) => (
+                            <div
+                              className="mb-3 flex items-center gap-2 pb-2 text-base font-medium"
+                              key={lessonIndex}
+                            >
+                              {lessonTypeIcons[lesson?.type]}
+                              {lesson?.title}
+                              <span className="ml-auto shrink-0 text-base font-semibold">
+                                0 phút
+                              </span>
+                            </div>
+                          ))}
                         </AccordionContent>
                       </AccordionItem>
                     </Accordion>
@@ -287,7 +356,7 @@ const CourseDetailView = ({ slug }: { slug: string }) => {
                     </div>
                     <div className="entry-content">
                       <h5 className="entry-title">
-                        <a href="#">Trương Văn Tùng</a>
+                        <a href="#">{courseDetails?.user?.name}</a>
                       </h5>
                       <p className="short-description">FrontEnd Developer</p>
                       <ul className="entry-meta">
@@ -398,7 +467,7 @@ const CourseDetailView = ({ slug }: { slug: string }) => {
                       <div className="comment-box">
                         <h5 className="author-name">
                           {' '}
-                          <a href="#">Theresa Edin</a>
+                          <a href="#">{courseDetails?.user?.name}</a>
                         </h5>
                         <div className="ratings">
                           <div className="number">4.9</div>
@@ -642,26 +711,101 @@ const CourseDetailView = ({ slug }: { slug: string }) => {
             <div className="col-lg-4">
               <div className="sidebar-course course-single-v2">
                 <div className="widget-video">
-                  <img
-                    className="lazyload"
-                    data-src="/assets/images/courses/courses-03.jpg"
-                    src="/assets/images/courses/courses-03.jpg"
-                    alt=""
-                  />
-                  <a
-                    href="https://www.youtube.com/watch?v=MLpWrANjFbI"
-                    className="popup-youtube"
-                  >
-                    <i className="flaticon-play fs-18" />
-                  </a>
+                  {courseDetails?.intro ? (
+                    <>
+                      <div className="relative inline-block cursor-pointer">
+                        <img
+                          src={courseDetails?.thumbnail}
+                          alt="Video thumbnail"
+                          className="w-full max-w-md rounded-lg shadow-lg transition-opacity hover:opacity-50"
+                          onClick={() => setIsOpenIntro(true)}
+                        />
+
+                        <div
+                          className="absolute inset-0 flex items-center justify-center"
+                          onClick={() => setIsOpenIntro(true)}
+                        >
+                          <CirclePlay
+                            size={36}
+                            className="text-white opacity-80 hover:opacity-100"
+                          />
+                        </div>
+                      </div>
+
+                      {isOpenIntro && (
+                        <div
+                          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+                          onClick={() => setIsOpenIntro(false)}
+                        >
+                          <div
+                            className="flex w-full max-w-2xl flex-col space-y-4 rounded-lg bg-white p-6 shadow-lg"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <div className="flex items-center justify-between">
+                              <p className="text-2xl font-bold">Intro</p>
+
+                              <button
+                                onClick={() => setIsOpenIntro(false)}
+                                className="text-gray-600 hover:text-gray-900"
+                              >
+                                <CircleX color="#321a1a" />
+                              </button>
+                            </div>
+                            <video controls className="w-full">
+                              <source
+                                src={courseDetails.intro}
+                                type="video/mp4"
+                              />
+                              Trình duyệt của bạn không hỗ trợ video.
+                            </video>
+                          </div>
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <img
+                      src={courseDetails?.thumbnail}
+                      alt={courseDetails?.name}
+                    />
+                  )}
                 </div>
                 <div className="sidebar-course-content">
                   <div className="course-price">
-                    <div className="price">
-                      <h3 className="fw-5">$ 249.00</h3>
-                      <h6 className="fs-15">$ 449.00</h6>
-                    </div>
-                    <p className="sale-off">39% OFF</p>
+                    {parseFloat(`${courseDetails?.price_sale}`) ? (
+                      <>
+                        <div className="price">
+                          <h3 className="fw-5">
+                            {formatCurrency(
+                              parseFloat(`${courseDetails?.price_sale}`)
+                            )}
+                          </h3>
+                          <h6 className="fs-15">
+                            {formatCurrency(
+                              parseFloat(`${courseDetails?.price}`)
+                            )}
+                          </h6>
+                        </div>
+                        <p className="sale-off">
+                          {courseDetails?.price &&
+                            courseDetails?.price_sale &&
+                            Math.round(
+                              ((courseDetails?.price -
+                                courseDetails?.price_sale) /
+                                courseDetails?.price) *
+                                100
+                            )}
+                          % OFF
+                        </p>
+                      </>
+                    ) : (
+                      <div className="price">
+                        <h3 className="fw-5">
+                          {formatCurrency(
+                            parseFloat(`${courseDetails?.price}`)
+                          )}
+                        </h3>
+                      </div>
+                    )}
                   </div>
                   <a className="tf-btn add-to-cart" href="#">
                     Mua khoá học
