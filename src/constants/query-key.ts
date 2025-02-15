@@ -5,6 +5,7 @@ const QUERY_KEY = {
   INSTRUCTOR_LESSON: 'instructor-lesson',
   CATEGORY: 'categories',
   QA_SYSTEM: 'qa-systems',
+  POSTS: 'posts',
 }
 
 export default QUERY_KEY
