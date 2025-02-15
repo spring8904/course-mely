@@ -23,10 +23,7 @@ export const updateCourseSchema = z
       .string()
       .min(3, 'Tiêu đề phải có ít nhất 3 ký tự')
       .max(255, 'Tiêu đề không được vượt quá 255 ký tự'),
-    description: z
-      .string()
-      .max(255, 'Mô tả khoá học không được vượt quá 255 ký tự')
-      .optional(),
+    description: z.string().optional(),
     thumbnail: z
       .instanceof(File, { message: 'Vui lòng chọn một tệp ảnh hợp lệ' })
       .refine((file) => file.size <= 5 * 1024 * 1024, {
@@ -42,7 +39,7 @@ export const updateCourseSchema = z
         message: 'Vui lòng nhập giá khoá học',
       })
       .int()
-      .positive('Giá phải là số dương')
+      .min(0, 'Giá không được nhỏ hơn 0')
       .max(10000000, 'Giá không được vượt quá 10.000.000 triệu')
       .optional(),
     intro: z
@@ -61,21 +58,24 @@ export const updateCourseSchema = z
       .int()
       .nonnegative('Giá khuyến mãi phải lớn hơn hoặc bằng 0')
       .optional(),
-    is_free: z.enum(['0', '1'], {
-      errorMap: () => ({
-        message: 'Trường này chỉ được nhận giá trị 0 hoặc 1.',
-      }),
-    }),
+    is_free: z.preprocess(
+      (val) => String(val),
+      z.enum(['0', '1'], {
+        errorMap: () => ({
+          message: 'Trường này chỉ được nhận giá trị 0 hoặc 1.',
+        }),
+      })
+    ),
     level: z.enum(['beginner', 'intermediate', 'advanced'], {
       errorMap: () => ({ message: 'Vui lòng chọn cấp độ hợp lệ' }),
     }),
     benefits: z
       .array(z.string())
-      .min(4, { message: 'Bạn cần ít nhất 4 lợi ích' }), // mảng phải có ít nhất 4 lợi ích
+      .min(4, { message: 'Bạn cần ít nhất 4 lợi ích' }),
     requirements: z
       .array(z.string())
-      .min(4, { message: 'Bạn cần ít nhất 4 yêu cầu' }), // mảng phải có ít nhất 4 yêu cầu
-    faqs: z
+      .min(4, { message: 'Bạn cần ít nhất 4 yêu cầu' }),
+    qa: z
       .array(
         z.object({
           question: z.string(),
@@ -84,7 +84,7 @@ export const updateCourseSchema = z
       )
       .optional(),
     visibility: z.enum(['public', 'private'], {
-      errorMap: () => ({ message: 'Vui lòng chọn quyền riêng tư hợp lệ' }),
+      errorMap: () => ({ message: 'Vui lòng chọn trạng thái hợp lệ' }),
     }),
   })
   .superRefine((data: number | any, ctx) => {

@@ -74,7 +74,11 @@ const CourseManageView = () => {
   const onSubmit = (values: CreateCoursePayload) => {
     if (isCourseCreating) return
 
-    createCourse(values)
+    createCourse(values, {
+      onSuccess: () => {
+        setOpenDialog(false)
+      },
+    })
   }
 
   const isLoading = isCoursesLoading
