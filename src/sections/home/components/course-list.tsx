@@ -17,7 +17,11 @@ import 'swiper/css/navigation'
 import 'swiper/css/pagination'
 import 'swiper/css/scrollbar'
 
+import Swal from 'sweetalert2'
+
 import { ICourses } from '@/types'
+import { CreateWishListPayload } from '@/validations/wish-list'
+import { useCreateWishList } from '@/hooks/wish-list/useWishList'
 
 SwiperCore.use([Navigation, Pagination, Autoplay])
 
@@ -29,6 +33,27 @@ interface CourseListProps {
 }
 
 const CourseList = ({ title, description, courses }: CourseListProps) => {
+  const { mutate: createWishList, isPending: isWishListPending } =
+    useCreateWishList()
+
+  const handleAddToWishList = (values: CreateWishListPayload) => {
+    if (isWishListPending) return
+
+    Swal.fire({
+      title: 'Thêm khóa học vào danh sách yêu thích?',
+      text: 'Bạn có chắc chắn muốn thêm khóa học này vào danh sách yêu thích?',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Đồng ý',
+      cancelButtonText: 'Hủy',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        createWishList(values)
+      }
+    })
+  }
+
   return (
     <section className="tf-spacing-6 section-course pt-0">
       <div className="tf-container">
@@ -74,7 +99,7 @@ const CourseList = ({ title, description, courses }: CourseListProps) => {
                 },
               }}
             >
-              {courses.map((course) => (
+              {courses.map((course: any) => (
                 <SwiperSlide key={course.id}>
                   <div className="course-item hover-img title-small">
                     <div className="features image-wrap">
@@ -92,14 +117,18 @@ const CourseList = ({ title, description, courses }: CourseListProps) => {
                         </Link>
                       </div>
 
-                      <div className="box-wishlist tf-action-btns">
+                      <div
+                        onClick={() =>
+                          handleAddToWishList({ course_id: course.id })
+                        }
+                        className="box-wishlist tf-action-btns"
+                      >
                         <i className="flaticon-heart" />
                       </div>
                     </div>
 
                     <div className="content">
-                      {/* eslint-disable-next-line tailwindcss/no-unnecessary-arbitrary-value */}
-                      <div className="meta !gap-[0px] md:gap-4">
+                      <div className="meta !gap-0 md:gap-4">
                         <div className="meta-item !pr-2 md:pr-[10px]">
                           <i className="flaticon-calendar" />
                           <p>{course.lessons_count} Lessons</p>
@@ -112,7 +141,9 @@ const CourseList = ({ title, description, courses }: CourseListProps) => {
                       </div>
 
                       <h6 className="fw-5 line-clamp-2">
-                        <a href="course-single-v1.html">{course.name}</a>
+                        <Link href={`/courses/${course.slug}`}>
+                          {course.name}
+                        </Link>
                       </h6>
 
                       <div className="ratings pb-30">

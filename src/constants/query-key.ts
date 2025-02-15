@@ -10,6 +10,7 @@ const QUERY_KEY = {
   QA_SYSTEM: 'qa-systems',
   POSTS: 'posts',
   BLOGS: 'blogs',
+  WISH_LIST: 'wish-list',
 }
 
 export default QUERY_KEY

@@ -1,15 +1,19 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import dynamic from 'next/dynamic'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useAuthStore } from '@/stores/useAuthStore'
+import { useWishListStore } from '@/stores/useWishListStore'
 import Swal from 'sweetalert2'
 
 import { useLogOut } from '@/hooks/auth/useLogOut'
+import { useGetCategories } from '@/hooks/category/useCategory'
+import { useGetWishLists } from '@/hooks/wish-list/useWishList'
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import WishListIcon from '@/components/common/WishListIcon'
 
 const MobileMenu = dynamic(() => import('./MobileMenu'), {
   ssr: false,
@@ -20,6 +24,24 @@ const Header = () => {
   const [results, setResults] = useState<any[]>([])
   const { user, isAuthenticated } = useAuthStore()
   const { isPending, mutate } = useLogOut()
+  const [categories, setCategories] = useState<any[]>([])
+  const { data: wishListData } = useGetWishLists()
+  const setWishList = useWishListStore((state) => state.setWishList)
+  useGetWishLists()
+  const { data: categoryData } = useGetCategories()
+
+  useEffect(() => {
+    if (wishListData) {
+      const ids = wishListData?.data.map((item: any) => item.course_id)
+      setWishList(ids)
+    }
+  }, [wishListData, setWishList])
+
+  useEffect(() => {
+    if (categoryData) {
+      setCategories(categoryData?.data)
+    }
+  }, [categoryData])
 
   const data: any = [
     { type: 'course', name: 'Next.js Basics' },
@@ -98,6 +120,27 @@ const Header = () => {
                   <li className="current">
                     <Link href="/">Trang chủ</Link>
                   </li>
+                  <li className="has-children">
+                    <a href="javascript:void(0);">Danh mục</a>
+                    <ul>
+                      {categories.map((category: any) => (
+                        <li key={category.id}>
+                          <Link
+                            style={{
+                              width: '100%',
+                              display: 'block',
+                              whiteSpace: 'nowrap',
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis',
+                            }}
+                            href={`/categories/${category.slug}`}
+                          >
+                            {category.name}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </li>
                   <li className="">
                     <Link href="/courses">Khoá học</Link>
                   </li>
@@ -116,12 +159,7 @@ const Header = () => {
               >
                 <i className="icon-search fs-20"></i>
               </a>
-              <a
-                href="#"
-                className="header-cart flex items-center justify-center"
-              >
-                <i className="icon-shopcart fs-18"></i>
-              </a>
+              <WishListIcon />
               {isAuthenticated ? (
                 <>
                   <div className="dropdown">
