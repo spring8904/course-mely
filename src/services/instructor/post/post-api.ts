@@ -1,9 +1,9 @@
 import { CreatePostPayload, UpdatePostPayload } from '@/validations/post'
 import api from '@/configs/api'
 
-const prefix = '/posts'
+const prefix = '/instructor/posts'
 
-export const postApi = {
+export const instructorPostApi = {
   getPosts: async () => {
     return await api.get(prefix)
   },

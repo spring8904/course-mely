@@ -20,7 +20,7 @@ import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { parseISO } from 'date-fns'
 
-import { useCreatePost } from '@/hooks/post/usePost'
+import { useCreatePost } from '@/hooks/instructor/post/usePost'
 
 import { Card, CardContent } from '@/components/ui/card'
 import {

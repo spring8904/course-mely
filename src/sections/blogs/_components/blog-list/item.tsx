@@ -1,229 +1,66 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import Image from 'next/image'
+import Link from 'next/link'
 
-const BlogListItem = () => {
+import BlogListPagination from '@/sections/blogs/_components/blog-list/pagination'
+
+interface BlogListItemProps {
+  initialBlogs: any
+}
+
+const BlogListItem = ({ initialBlogs }: BlogListItemProps) => {
+  const [posts, setPosts] = useState<any>(initialBlogs?.data)
+
   return (
-    <div className="wrap-blog-list">
-      <div className="blog-article-item style-row hover-img wow fadeInUp">
-        <div className="article-thumb image-wrap">
-          <img
-            className="lazyload"
-            data-src="/assets/images/blog/blog-01.jpg"
-            src="/assets/images/blog/blog-01.jpg"
-            alt=""
-          />
-        </div>
-        <div className="article-content">
-          <div className="article-label">
-            <a href="blog-single.html" className="">
-              Development
-            </a>
-          </div>
-          <h3 className="fw-5">
-            <a href="blog-single.html">
-              The Technical Certifications That Matter Most for the Future
-            </a>
-          </h3>
-          <p>
-            There are many variations of passages of Lorem Ipsum available, but
-            the majority have suffered alteration in some form, by injected
-            humour, or randomised.
-          </p>
-          <div className="meta">
-            <div className="meta-item">
-              <i className="flaticon-calendar"></i>
-              <p>06 April 2024</p>
+    <>
+      <div className="wrap-blog-list">
+        {posts?.data.map((blog: any) => (
+          <div
+            key={blog.id}
+            className="blog-article-item style-row hover-img wow fadeInUp"
+          >
+            <div className="article-thumb image-wrap">
+              <Image
+                className="lazyload object-fit-cover"
+                src={blog.thumbnail}
+                alt=""
+                width={500}
+                height={250}
+              />
             </div>
-            <div className="meta-item">
-              <i className="flaticon-message"></i>
-              <p>14</p>
+            <div className="article-content">
+              <div className="article-label">
+                <Link href="#" className="">
+                  {blog.category.name}
+                </Link>
+              </div>
+              <h3 className="fw-5">
+                <Link href="#">{blog.title}</Link>
+              </h3>
+              <p dangerouslySetInnerHTML={{ __html: blog.description }} />
+              <div className="meta">
+                <div className="meta-item">
+                  <i className="flaticon-calendar"></i>
+                  <p>06 April 2024</p>
+                </div>
+                <div className="meta-item">
+                  <i className="flaticon-message"></i>
+                  <p>14</p>
+                </div>
+                <a href="#" className="meta-item">
+                  <i className="flaticon-user-1"></i>
+                  <p>{blog.user.name}</p>
+                </a>
+              </div>
+              <Link href={`/blogs/${blog.slug}`} className="tf-btn-arrow">
+                Đọc thêm <i className="icon-arrow-top-right"></i>
+              </Link>
             </div>
-            <a href="#" className="meta-item">
-              <i className="flaticon-user-1"></i>
-              <p>Esther Howard</p>
-            </a>
           </div>
-          <a href="blog-single.html" className="tf-btn-arrow">
-            Read More <i className="icon-arrow-top-right"></i>
-          </a>
-        </div>
+        ))}
       </div>
-      <div className="blog-article-item style-row hover-img wow fadeInUp">
-        <div className="article-thumb image-wrap">
-          <img
-            className="lazyload"
-            data-src="/assets/images/blog/blog-06.jpg"
-            src="/assets/images/blog/blog-06.jpg"
-            alt=""
-          />
-        </div>
-        <div className="article-content">
-          <div className="article-label">
-            <a href="blog-single.html" className="">
-              Development
-            </a>
-          </div>
-          <h3 className="fw-5">
-            <a href="blog-single.html">
-              The Challenge Of Global Learning In Public Education
-            </a>
-          </h3>
-          <p>
-            There are many variations of passages of Lorem Ipsum available, but
-            the majority have suffered alteration in some form, by injected
-            humour, or randomised.
-          </p>
-          <div className="meta">
-            <div className="meta-item">
-              <i className="flaticon-calendar"></i>
-              <p>06 April 2024</p>
-            </div>
-            <div className="meta-item">
-              <i className="flaticon-message"></i>
-              <p>14</p>
-            </div>
-            <a href="#" className="meta-item">
-              <i className="flaticon-user-1"></i>
-              <p>Esther Howard</p>
-            </a>
-          </div>
-          <a href="blog-single.html" className="tf-btn-arrow">
-            Read More <i className="icon-arrow-top-right"></i>
-          </a>
-        </div>
-      </div>
-      <div className="blog-article-item style-row hover-img wow fadeInUp">
-        <div className="article-thumb image-wrap">
-          <img
-            className="lazyload"
-            data-src="/assets/images/blog/blog-07.jpg"
-            src="/assets/images/blog/blog-07.jpg"
-            alt=""
-          />
-        </div>
-        <div className="article-content">
-          <div className="article-label">
-            <a href="blog-single.html" className="">
-              Development
-            </a>
-          </div>
-          <h3 className="fw-5">
-            <a href="blog-single.html">
-              The Importance Of Intrinsic Motivation for Students
-            </a>
-          </h3>
-          <p>
-            There are many variations of passages of Lorem Ipsum available, but
-            the majority have suffered alteration in some form, by injected
-            humour, or randomised.
-          </p>
-          <div className="meta">
-            <div className="meta-item">
-              <i className="flaticon-calendar"></i>
-              <p>06 April 2024</p>
-            </div>
-            <div className="meta-item">
-              <i className="flaticon-message"></i>
-              <p>14</p>
-            </div>
-            <a href="#" className="meta-item">
-              <i className="flaticon-user-1"></i>
-              <p>Esther Howard</p>
-            </a>
-          </div>
-          <a href="blog-single.html" className="tf-btn-arrow">
-            Read More <i className="icon-arrow-top-right"></i>
-          </a>
-        </div>
-      </div>
-      <div className="blog-article-item style-row hover-img wow fadeInUp">
-        <div className="article-thumb image-wrap">
-          <img
-            className="lazyload"
-            data-src="/assets/images/blog/blog-11.jpg"
-            src="/assets/images/blog/blog-11.jpg"
-            alt=""
-          />
-        </div>
-        <div className="article-content">
-          <div className="article-label">
-            <a href="blog-single.html" className="">
-              Development
-            </a>
-          </div>
-          <h3 className="fw-5">
-            <a href="blog-single.html">
-              Ten Benefits Of Rentals That May Change Your Perspective
-            </a>
-          </h3>
-          <p>
-            There are many variations of passages of Lorem Ipsum available, but
-            the majority have suffered alteration in some form, by injected
-            humour, or randomised.
-          </p>
-          <div className="meta">
-            <div className="meta-item">
-              <i className="flaticon-calendar"></i>
-              <p>06 April 2024</p>
-            </div>
-            <div className="meta-item">
-              <i className="flaticon-message"></i>
-              <p>14</p>
-            </div>
-            <a href="#" className="meta-item">
-              <i className="flaticon-user-1"></i>
-              <p>Esther Howard</p>
-            </a>
-          </div>
-          <a href="blog-single.html" className="tf-btn-arrow">
-            Read More <i className="icon-arrow-top-right"></i>
-          </a>
-        </div>
-      </div>
-      <div className="blog-article-item style-row hover-img wow fadeInUp">
-        <div className="article-thumb image-wrap">
-          <img
-            className="lazyload"
-            data-src="/assets/images/blog/blog-09.jpg"
-            src="/assets/images/blog/blog-09.jpg"
-            alt=""
-          />
-        </div>
-        <div className="article-content">
-          <div className="article-label">
-            <a href="blog-single.html" className="">
-              Development
-            </a>
-          </div>
-          <h3 className="fw-5">
-            <a href="blog-single.html">
-              It’s Time To Think Differently About Writing In The classNameroom
-            </a>
-          </h3>
-          <p>
-            There are many variations of passages of Lorem Ipsum available, but
-            the majority have suffered alteration in some form, by injected
-            humour, or randomised.
-          </p>
-          <div className="meta">
-            <div className="meta-item">
-              <i className="flaticon-calendar"></i>
-              <p>06 April 2024</p>
-            </div>
-            <div className="meta-item">
-              <i className="flaticon-message"></i>
-              <p>14</p>
-            </div>
-            <a href="#" className="meta-item">
-              <i className="flaticon-user-1"></i>
-              <p>Esther Howard</p>
-            </a>
-          </div>
-          <a href="blog-single.html" className="tf-btn-arrow">
-            Read More <i className="icon-arrow-top-right"></i>
-          </a>
-        </div>
-      </div>
-    </div>
+      <BlogListPagination />
+    </>
   )
 }
 
