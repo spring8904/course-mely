@@ -3,7 +3,6 @@ import React from 'react'
 const BlogListPagination = () => {
   return (
     <div>
-      {/* phan trang */}
       <ul className="wg-pagination wow fadeInUp justify-center">
         <li>
           <a href="#">

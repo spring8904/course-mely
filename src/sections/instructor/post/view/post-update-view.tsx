@@ -16,7 +16,10 @@ import { ICategory } from '@/types/Category'
 import { UpdatePostPayload, updatePostSchema } from '@/validations/post'
 import { cn } from '@/lib/utils'
 import { useGetCategories } from '@/hooks/category/useCategory'
-import { useGetPostBySlug, useUpdatePost } from '@/hooks/post/usePost'
+import {
+  useGetPostBySlug,
+  useUpdatePost,
+} from '@/hooks/instructor/post/usePost'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'

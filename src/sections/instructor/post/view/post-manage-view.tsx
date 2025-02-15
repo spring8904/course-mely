@@ -8,7 +8,7 @@ import { format } from 'date-fns'
 import { Eye, Loader2 } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
-import { useGetPosts } from '@/hooks/post/usePost'
+import { useGetPosts } from '@/hooks/instructor/post/usePost'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'

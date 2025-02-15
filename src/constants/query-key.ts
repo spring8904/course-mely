@@ -8,6 +8,7 @@ const QUERY_KEY = {
   CATEGORY: 'categories',
   QA_SYSTEM: 'qa-systems',
   POSTS: 'posts',
+  BLOGS: 'blogs',
 }
 
 export default QUERY_KEY

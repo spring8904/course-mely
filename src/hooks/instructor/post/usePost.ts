@@ -5,19 +5,19 @@ import { toast } from 'react-toastify'
 
 import { CreatePostPayload, UpdatePostPayload } from '@/validations/post'
 import QUERY_KEY from '@/constants/query-key'
-import { postApi } from '@/services/post/post-api'
+import { instructorPostApi } from '@/services/instructor/post/post-api'
 
 export const useGetPosts = () => {
   return useQuery({
     queryKey: [QUERY_KEY.POSTS],
-    queryFn: () => postApi.getPosts(),
+    queryFn: () => instructorPostApi.getPosts(),
   })
 }
 
 export const useGetPostBySlug = (slug?: string) => {
   return useQuery({
-    queryKey: [QUERY_KEY.INSTRUCTOR_COURSE, slug],
-    queryFn: () => postApi.getPostBySlug(slug!),
+    queryKey: [QUERY_KEY.POSTS, slug],
+    queryFn: () => instructorPostApi.getPostBySlug(slug!),
     enabled: !!slug,
   })
 }
@@ -49,7 +49,7 @@ export const useCreatePost = () => {
         }
       })
 
-      return postApi.createPost(formData as any)
+      return instructorPostApi.createPost(formData as any)
     },
     onSuccess: async (res: any) => {
       await queryClient.invalidateQueries({
@@ -98,7 +98,7 @@ export const useUpdatePost = () => {
         }
       })
 
-      return postApi.updatePost(slug, formData as any)
+      return instructorPostApi.updatePost(slug, formData as any)
     },
     onSuccess: async (res: any) => {
       await queryClient.invalidateQueries({
