@@ -4,6 +4,7 @@ const QUERY_KEY = {
   INSTRUCTOR_CHAPTER: 'instructor-chapter',
   INSTRUCTOR_LESSON: 'instructor-lesson',
   CATEGORY: 'categories',
+  COURSE: 'course',
   QA_SYSTEM: 'qa-systems',
 }
 

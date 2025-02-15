@@ -12478,7 +12478,7 @@ instructors-item
   display: -ms-flexbox;
   display: -webkit-flex;
   display: flex;
-  align-items: center;
+  align-items: start;
   justify-content: flex-start;
   gap: 10px;
   font-size: 15px;
@@ -12496,9 +12496,8 @@ instructors-item
   display: -moz-box;
   display: -ms-flexbox;
   display: -webkit-flex;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: inline;
+  margin-top: 2px
 }
 .section-page-course .course-single-inner .page-requirement {
   padding-bottom: 44px !important;

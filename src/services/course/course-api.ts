@@ -14,3 +14,10 @@ export const getInstructorsCourseBySlug = async (
   const response = await api.get(`${prefix}/instructors/${slug}`)
   return response.data
 }
+
+export const getCourseDetailsBySlug = async (
+  slug: string
+): Promise<ICourse> => {
+  const { data } = await api.get(`${prefix}/${slug}`)
+  return data
+}
