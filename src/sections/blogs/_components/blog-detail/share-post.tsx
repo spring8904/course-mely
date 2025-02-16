@@ -1,10 +1,14 @@
 import React from 'react'
 
-const BlogDetailSharePost = () => {
+interface BlogDetailPostProps {
+  initialBlogDetail?: any
+}
+
+const BlogDetailSharePost = ({ initialBlogDetail }: BlogDetailPostProps) => {
   return (
     <div className="bottom flex flex-wrap items-center justify-between gap-[20px]">
       <div className="share gap-[20px]p flex items-center">
-        <h6 className="fw-5">Share this post</h6>
+        <h6 className="fw-5 mr-2">Share this post </h6>
         <ul className="tf-social-icon flex items-center gap-[10px]">
           <li>
             <a href="#">
@@ -29,26 +33,13 @@ const BlogDetailSharePost = () => {
         </ul>
       </div>
       <ul className="tags-list">
-        <li>
-          <a href="#" className="tags-item">
-            Course
-          </a>
-        </li>
-        <li>
-          <a href="#" className="tags-item">
-            SEO
-          </a>
-        </li>
-        <li>
-          <a href="#" className="tags-item">
-            Designer
-          </a>
-        </li>
-        <li>
-          <a href="#" className="tags-item">
-            Software
-          </a>
-        </li>
+        {initialBlogDetail?.tags.map((tag, index) => (
+          <li key={index}>
+            <a href="#" className="tags-item">
+              {tag.name}
+            </a>
+          </li>
+        ))}
       </ul>
     </div>
   )

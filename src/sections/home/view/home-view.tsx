@@ -12,6 +12,8 @@ import InstructorTop from '@/sections/home/components/Instructor-top'
 
 import '@/styles/custom-swiper-pagination.css'
 
+import { Loader2 } from 'lucide-react'
+
 import {
   useGetDiscountedCourses,
   useGetFreeCourses,
@@ -22,8 +24,13 @@ const HomeView = () => {
     useGetDiscountedCourses()
   const { data: freeCourses, isLoading: isLoadingFree } = useGetFreeCourses()
 
-  if (isLoadingDiscounted) return <p>Loading courses...</p>
-  if (isLoadingFree) return <p>Loading courses...</p>
+  if (isLoadingDiscounted || isLoadingFree) {
+    return (
+      <div className="mt-20">
+        <Loader2 className="mx-auto size-8 animate-spin" />
+      </div>
+    )
+  }
 
   return (
     <div>
