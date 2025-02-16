@@ -10,6 +10,7 @@ const QUERY_KEY = {
   QA_SYSTEM: 'qa-systems',
   POSTS: 'posts',
   BLOGS: 'blogs',
+  BLOG_DETAILS: 'blog-details',
   WISH_LIST: 'wish-list',
 }
 

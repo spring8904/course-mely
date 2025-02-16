@@ -1,12 +1,16 @@
 import React from 'react'
 
-const BlogDetailPost = () => {
+interface BlogDetailPostProps {
+  initialBlogDetail: any
+}
+
+const BlogDetailPost = ({ initialBlogDetail }: BlogDetailPostProps) => {
   return (
     <div className="blog-single-content">
       <div className="meta wow fadeInUp">
         <div className="meta-item">
           <i className="flaticon-calendar"></i>
-          <p>06 April 2024</p>
+          <p>{initialBlogDetail.published_at}</p>
         </div>
         <div className="meta-item">
           <i className="flaticon-message"></i>
@@ -14,33 +18,27 @@ const BlogDetailPost = () => {
         </div>
         <a href="#" className="meta-item">
           <i className="flaticon-user-1"></i>
-          <p>Esther Howard</p>
+          <p>{initialBlogDetail.user.name}</p>
         </a>
       </div>
-      <h2 className="fw-7 wow fadeInUp">
-        The Technical Certifications That Matter Most <br /> For The Future
-      </h2>
+      <h2 className="fw-7 wow fadeInUp">{initialBlogDetail.title}</h2>
       <div className="title text-22 fw-5 wow fadeInUp">About This Course</div>
       <p className="fs-15">
-        Lorem ipsum dolor sit amet consectur adipisicing elit, sed do eiusmod
-        tempor inc idid unt ut labore et dolore magna aliqua enim ad minim
-        veniam, quis nostrud exerec tation ullamco laboris nis aliquip commodo
-        consequat duis aute irure dolor in reprehenderit in voluptate velit esse
-        cillum dolore eu fugiat nulla pariatur enim ipsam.
-        <br />
-        <br />
-        Excepteur sint occaecat cupidatat non proident sunt in culpa qui officia
-        deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste
-        natus error sit voluptatem accusantium doloremque laudantium totam rem
-        aperiam.
+        <div
+          dangerouslySetInnerHTML={{ __html: initialBlogDetail?.description }}
+        />
+      </p>
+      <p className="fs-15 mt-3">
+        <div dangerouslySetInnerHTML={{ __html: initialBlogDetail?.content }} />
       </p>
       <div className="blockquote">
         <div className="desc fs-15">
-          Aliquam hendrerit sollicitudin purus, quis rutrum mi accumsan nec.
-          Quisque bibendum orci ac <br /> nibh facilisis, at malesuada orci
-          congue.{' '}
+          Professional Web Developer Lorem ipsum dolor sit amet. Qui incidunt
+          dolores non similique ducimus et debitis molestiae. Et autem quia eum
+          reprehenderit voluptates est reprehenderit illo est enim perferendis
+          est neque sunt.
         </div>
-        <div className="name">Luis Pickford</div>
+        <div className="name">{initialBlogDetail.user.name}</div>
       </div>
       <div className="title text-22 fw-5 wow fadeInUp">What you ll learn</div>
       <ul className="wrap-list-text-check">

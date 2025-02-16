@@ -1,14 +1,21 @@
 import React from 'react'
 
-const BlogDetailProfileItem = () => {
+interface BlogDetailPostProps {
+  initialBlogDetail: any
+}
+
+const BlogDetailProfileItem = ({ initialBlogDetail }: BlogDetailPostProps) => {
   return (
     <div className="profile-item">
       <div className="image">
-        <img src="/assets/images/avatar/profile-1.png" alt="" />
+        <img
+          src={initialBlogDetail.user.avatar}
+          alt={initialBlogDetail.user.name}
+        />
       </div>
       <div className="content">
         <h5>
-          <a className="fw-5">Theresa Edin</a>
+          <a className="fw-5">{initialBlogDetail.user.name}</a>
         </h5>
         <div className="sub fs-15">Professional Web Developer</div>
         <div className="fs-15">
