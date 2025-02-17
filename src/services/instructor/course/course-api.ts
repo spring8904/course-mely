@@ -1,4 +1,7 @@
-import { CreateCoursePayload } from '@/validations/course'
+import {
+  CreateCoursePayload,
+  UpdateCourseObjectivePayload,
+} from '@/validations/course'
 import api from '@/configs/api'
 
 const prefix = '/instructor/manage/courses'
@@ -13,11 +16,17 @@ export const instructorCourseApi = {
   createCourse: (payload: CreateCoursePayload) => {
     return api.post(prefix, payload)
   },
-  updateCourse: (data: FormData, slug: string) => {
-    return api.post(`${prefix}/${slug}/contentCourse`, data, {
+  updateCourseOverView: (slug: string, data: FormData) => {
+    return api.post(`${prefix}/${slug}/courseOverView`, data, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
     })
+  },
+  updateCourseObjective: (
+    slug: string,
+    payload: UpdateCourseObjectivePayload
+  ) => {
+    return api.put(`${prefix}/${slug}/courseObjective`, payload)
   },
 }

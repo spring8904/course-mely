@@ -2,7 +2,11 @@ import { useRouter } from 'next/navigation'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'react-toastify'
 
-import { CreateCoursePayload, UpdateCoursePayload } from '@/validations/course'
+import {
+  CreateCoursePayload,
+  UpdateCourseObjectivePayload,
+  UpdateCourseOverViewPayload,
+} from '@/validations/course'
 import QUERY_KEY from '@/constants/query-key'
 import { instructorCourseApi } from '@/services/instructor/course/course-api'
 
@@ -48,31 +52,94 @@ export const useCreateCourse = () => {
   })
 }
 
-export const useUpdateCourse = () => {
+export const useUpdateCourseObjective = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
     mutationFn: ({
-      data,
       slug,
+      data,
     }: {
-      data: UpdateCoursePayload
       slug: string
+      data: UpdateCourseObjectivePayload
+    }) => instructorCourseApi.updateCourseObjective(slug, data),
+    onSuccess: async (res: any) => {
+      await queryClient.invalidateQueries({
+        queryKey: [QUERY_KEY.INSTRUCTOR_COURSE],
+      })
+      toast.success(res.message)
+    },
+    onError: (error) => {
+      toast.error(error.message)
+    },
+  })
+}
+
+export const useUpdateCourseOverView = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({
+      slug,
+      data,
+    }: {
+      slug: string
+      data: UpdateCourseOverViewPayload
     }) => {
       const formData = new FormData()
       formData.append('_method', 'PUT')
 
-      Object.entries(data).forEach(([key, value]: any) => {
-        if (value !== undefined && value !== null) {
-          if (Array.isArray(value) || typeof value === 'object') {
-            formData.append(key, JSON.stringify(value))
+      const appendFormData = (
+        formData: FormData,
+        data: Record<string, any>
+      ) => {
+        Object.entries(data).forEach(([key, value]) => {
+          if (value === undefined || value === null) return
+
+          if (value instanceof File) {
+            formData.append(key, value)
+          } else if (Array.isArray(value)) {
+            value.forEach((item, index) => {
+              appendFormData(formData, { [`${key}[${index}]`]: item })
+            })
+          } else if (typeof value === 'object' && !(value instanceof File)) {
+            appendFormData(formData, value)
           } else {
-            formData.append(key, value instanceof Blob ? value : String(value))
+            formData.append(key, String(value))
           }
+        })
+      }
+
+      if (data.thumbnail instanceof File) {
+        formData.append('thumbnail', data.thumbnail)
+      }
+      if (data.intro instanceof File) {
+        formData.append('intro', data.intro)
+      }
+
+      formData.append('is_free', data.is_free === '1' ? '1' : '0')
+
+      if (data.is_free === '1') {
+        formData.append('price', '0')
+        formData.append('price_sale', '0')
+      } else {
+        if (data.price !== undefined) {
+          formData.append('price', String(data.price))
         }
+        if (data.price_sale !== undefined) {
+          formData.append('price_sale', String(data.price_sale))
+        }
+      }
+
+      appendFormData(formData, {
+        category_id: data.category_id,
+        name: data.name,
+        description: data.description,
+        level: data.level,
+        visibility: data.visibility,
       })
 
-      return instructorCourseApi.updateCourse(formData, slug)
+      return instructorCourseApi.updateCourseOverView(slug, formData)
     },
     onSuccess: async (res: any) => {
       await queryClient.invalidateQueries({

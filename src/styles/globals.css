@@ -103,7 +103,7 @@ body {
 }
 
 .custom-quill .ql-editor {
-  @apply min-h-[240px];
+  @apply min-h-[100px];
 }
 
 .DragHandle {

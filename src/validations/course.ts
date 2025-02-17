@@ -12,7 +12,7 @@ export const createCourseSchema = z.object({
     .max(255, 'Tiêu đề không được vượt quá 255 ký tự'),
 })
 
-export const updateCourseSchema = z
+export const updateCourseOverViewSchema = z
   .object({
     category_id: z.coerce
       .number({
@@ -23,16 +23,36 @@ export const updateCourseSchema = z
       .string()
       .min(3, 'Tiêu đề phải có ít nhất 3 ký tự')
       .max(255, 'Tiêu đề không được vượt quá 255 ký tự'),
-    description: z.string().optional(),
-    thumbnail: z
-      .instanceof(File, { message: 'Vui lòng chọn một tệp ảnh hợp lệ' })
-      .refine((file) => file.size <= 5 * 1024 * 1024, {
-        message: 'Ảnh không được lớn hơn 5MB',
-      })
+    description: z
+      .string()
+      .optional()
       .refine(
-        (file) => ['image/jpeg', 'image/png', 'image/webp'].includes(file.type),
-        { message: 'Chỉ chấp nhận định dạng ảnh JPG, PNG, hoặc WEBP' }
-      )
+        (val) => {
+          if (val) {
+            const wordCount = val.trim().split(/\s+/).length
+            return wordCount >= 150
+          }
+          return true
+        },
+        {
+          message: 'Mô tả phải có ít nhất 150 từ',
+        }
+      ),
+    thumbnail: z
+      .union([
+        z
+          .instanceof(File)
+          .refine((file) => file.size <= 5 * 1024 * 1024, {
+            message: 'Ảnh không được lớn hơn 5MB',
+          })
+          .refine(
+            (file) =>
+              ['image/jpeg', 'image/png', 'image/webp'].includes(file.type),
+            { message: 'Chỉ chấp nhận định dạng ảnh JPG, PNG, hoặc WEBP' }
+          ),
+        z.string(),
+        z.undefined(),
+      ])
       .optional(),
     price: z.coerce
       .number({
@@ -43,13 +63,18 @@ export const updateCourseSchema = z
       .max(10000000, 'Giá không được vượt quá 10.000.000 triệu')
       .optional(),
     intro: z
-      .instanceof(File, { message: 'Vui lòng chọn một tệp video hợp lệ' })
-      .refine((file) => file.size <= 50 * 1024 * 1024, {
-        message: 'Video không được lớn hơn 50MB',
-      })
-      .refine((file) => file.type === 'video/mp4', {
-        message: 'Chỉ chấp nhận định dạng video MP4',
-      })
+      .union([
+        z
+          .instanceof(File)
+          .refine((file) => file.size <= 50 * 1024 * 1024, {
+            message: 'Video không được lớn hơn 50MB',
+          })
+          .refine((file) => file.type === 'video/mp4', {
+            message: 'Chỉ chấp nhận định dạng video MP4',
+          }),
+        z.string(),
+        z.undefined(),
+      ])
       .optional(),
     price_sale: z.coerce
       .number({
@@ -69,20 +94,6 @@ export const updateCourseSchema = z
     level: z.enum(['beginner', 'intermediate', 'advanced'], {
       errorMap: () => ({ message: 'Vui lòng chọn cấp độ hợp lệ' }),
     }),
-    benefits: z
-      .array(z.string())
-      .min(4, { message: 'Bạn cần ít nhất 4 lợi ích' }),
-    requirements: z
-      .array(z.string())
-      .min(4, { message: 'Bạn cần ít nhất 4 yêu cầu' }),
-    qa: z
-      .array(
-        z.object({
-          question: z.string(),
-          answers: z.string(),
-        })
-      )
-      .optional(),
     visibility: z.enum(['public', 'private'], {
       errorMap: () => ({ message: 'Vui lòng chọn trạng thái hợp lệ' }),
     }),
@@ -114,5 +125,25 @@ export const updateCourseSchema = z
     }
   })
 
-export type UpdateCoursePayload = z.infer<typeof updateCourseSchema>
+export const updateCourseObjectiveSchema = z.object({
+  benefits: z
+    .array(z.string())
+    .min(4, { message: 'Bạn cần ít nhất 4 lợi ích' }),
+  requirements: z.array(z.string()).optional(),
+  qa: z
+    .array(
+      z.object({
+        question: z.string(),
+        answers: z.string(),
+      })
+    )
+    .optional(),
+})
+
 export type CreateCoursePayload = z.infer<typeof createCourseSchema>
+export type UpdateCourseOverViewPayload = z.infer<
+  typeof updateCourseOverViewSchema
+>
+export type UpdateCourseObjectivePayload = z.infer<
+  typeof updateCourseObjectiveSchema
+>
