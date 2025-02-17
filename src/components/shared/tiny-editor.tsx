@@ -2,7 +2,7 @@
 
 import { Editor } from '@tinymce/tinymce-react'
 
-const configEditor = {
+const fullInit = {
   plugins:
     'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
   toolbar:
@@ -14,13 +14,32 @@ const configEditor = {
   resize: true,
 }
 
+const minimalistInit = {
+  plugins:
+    'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+  toolbar: 'bold italic numlist bullist',
+  height: 150,
+  menubar: false,
+  branding: false,
+  statusbar: true,
+  resize: true,
+}
+
 type Props = {
   init?: any
   value?: string
   onEditorChange?: (a: string, editor: any) => void
+  minimalist?: boolean
 }
 
-const TinyEditor = ({ init, value, onEditorChange, ...rest }: Props) => {
+const TinyEditor = ({
+  init,
+  value,
+  onEditorChange,
+  minimalist = false,
+  ...rest
+}: Props) => {
+  const configEditor = minimalist ? minimalistInit : fullInit
   return (
     <Editor
       apiKey={process.env.NEXT_PUBLIC_TINYMCE_API_KEY}
