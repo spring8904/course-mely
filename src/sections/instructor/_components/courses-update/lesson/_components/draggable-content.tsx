@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { DndContext, DragEndEvent, UniqueIdentifier } from '@dnd-kit/core'
 import { arrayMove, SortableContext } from '@dnd-kit/sortable'
 import { Label } from '@radix-ui/react-label'
@@ -57,6 +58,8 @@ export interface DraggableContentProps {
 }
 
 const DraggableContent = ({ chapter, slug }: DraggableContentProps) => {
+  const router = useRouter()
+
   const typeIndexMap = { video: 0, document: 0, quiz: 0, coding: 0 }
 
   const [addNewLesson, setAddNewLesson] = useState(false)
@@ -69,7 +72,6 @@ const DraggableContent = ({ chapter, slug }: DraggableContentProps) => {
   const [selectedFile, setSelectedFile] = useState<any>(null)
   const [videoUrl, setVideoUrl] = useState('')
 
-  const [isOpenDialog, setIsOpenDialog] = useState(false)
   const [isOpenAddQuestion, setIsOpenAddQuestion] = useState(false)
 
   const { mutate } = useUpdateOrderLesson()
@@ -280,6 +282,11 @@ const DraggableContent = ({ chapter, slug }: DraggableContentProps) => {
                                       e.stopPropagation()
                                       setLessonEdit(lesson.id as number)
                                       setEditTitle(lesson.title || '')
+                                      if (lesson.type === 'coding') {
+                                        router.push(
+                                          `/course/${lesson.slug}/coding-exercise?coding=${lesson.id}`
+                                        )
+                                      }
                                     }}
                                   >
                                     <SquarePen size={14} />

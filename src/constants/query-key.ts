@@ -8,6 +8,7 @@ const QUERY_KEY = {
   INSTRUCTOR_COURSE_VALIDATE: 'instructor-course-validate',
   INSTRUCTOR_CHECK_COURSE_COMPLETED: 'instructor-check-course-completed',
   INSTRUCTOR_CHAPTER_DETAIL: 'instructor-chapter-detail',
+  INSTRUCTOR_LESSON_CODING: 'instructor-lesson-coding',
   CATEGORY: 'categories',
   COURSE: 'course',
   QA_SYSTEM: 'qa-systems',
