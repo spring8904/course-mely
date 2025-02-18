@@ -166,7 +166,7 @@ const DraggableContent = ({ chapter, slug }: DraggableContentProps) => {
     setVideoUrl('')
   }
 
-  const handleDowloadQuizForm = async () => {
+  const handleDownloadQuizForm = async () => {
     try {
       const res = await instructorCourseApi.downloadQuizForm()
 
@@ -246,15 +246,25 @@ const DraggableContent = ({ chapter, slug }: DraggableContentProps) => {
                                   {(() => {
                                     switch (lesson?.type) {
                                       case 'video':
-                                        return <CirclePlay size={18} />
+                                        return (
+                                          <CirclePlay className="size-4 shrink-0" />
+                                        )
                                       case 'document':
-                                        return <ScrollText size={18} />
+                                        return (
+                                          <ScrollText className="size-4 shrink-0" />
+                                        )
                                       case 'quiz':
-                                        return <CircleHelp size={18} />
+                                        return (
+                                          <CircleHelp className="size-4 shrink-0" />
+                                        )
                                       case 'coding':
-                                        return <FileCode2 size={18} />
+                                        return (
+                                          <FileCode2 className="size-4 shrink-0" />
+                                        )
                                       default:
-                                        return <SquarePen size={18} />
+                                        return (
+                                          <SquarePen className="size-4 shrink-0" />
+                                        )
                                     }
                                   })()}
                                   <div>
@@ -303,40 +313,41 @@ const DraggableContent = ({ chapter, slug }: DraggableContentProps) => {
                                 </div>
                               </>
                             )}
-                            <div className="ml-auto mr-4 flex items-center">
-                              {lessonEdit !== lesson.id && (
-                                <div className="flex gap-2">
-                                  <Button
-                                    onClick={(e) => {
-                                      e.stopPropagation()
-                                      handleDowloadQuizForm()
-                                    }}
-                                    variant="default"
-                                    className="bg-[#FFF7ED] p-2 text-xs text-primary shadow hover:text-white"
-                                  >
-                                    Mẫu Import
-                                    <FileDown className="size-2" />
-                                  </Button>
-                                  <Button
-                                    onClick={(e) => {
-                                      e.stopPropagation()
-                                    }}
-                                    className="bg-[#FFF7ED] p-2 text-xs text-primary shadow hover:text-white"
-                                  >
-                                    Import câu hỏi
-                                    <FileUp className="size-2" />
-                                  </Button>
-                                  <Button
-                                    onClick={(e) => {
-                                      e.stopPropagation()
-                                      setIsOpenAddQuestion(true)
-                                    }}
-                                    className="rounded-lg border bg-[#FFF7ED] p-2 text-xs text-primary shadow hover:text-white"
-                                  >
-                                    Thêm câu hỏi
-                                  </Button>
-                                </div>
-                              )}
+                            <div className="ml-auto mr-4 flex items-center gap-2">
+                              {lessonEdit !== lesson.id &&
+                                lesson.type === 'quiz' && (
+                                  <div className="flex gap-2">
+                                    <Button
+                                      onClick={(e) => {
+                                        e.stopPropagation()
+                                        handleDownloadQuizForm()
+                                      }}
+                                      variant="default"
+                                      className="bg-[#FFF7ED] p-2 text-xs text-primary shadow hover:text-white"
+                                    >
+                                      Mẫu Import
+                                      <FileDown className="size-2" />
+                                    </Button>
+                                    <Button
+                                      onClick={(e) => {
+                                        e.stopPropagation()
+                                      }}
+                                      className="bg-[#FFF7ED] p-2 text-xs text-primary shadow hover:text-white"
+                                    >
+                                      Import câu hỏi
+                                      <FileUp className="size-2" />
+                                    </Button>
+                                    <Button
+                                      onClick={(e) => {
+                                        e.stopPropagation()
+                                        setIsOpenAddQuestion(true)
+                                      }}
+                                      className="rounded-lg border bg-[#FFF7ED] p-2 text-xs text-primary shadow hover:text-white"
+                                    >
+                                      Thêm câu hỏi
+                                    </Button>
+                                  </div>
+                                )}
                               <DraggableHandle />
                             </div>
                           </div>
@@ -345,7 +356,7 @@ const DraggableContent = ({ chapter, slug }: DraggableContentProps) => {
                       <AccordionContent className="mt-2 space-y-3 rounded-lg p-4">
                         <div className="space-y-2">
                           <Label>Loại nội dung</Label>
-                          <Select>
+                          <Select defaultValue={lesson.type}>
                             <SelectTrigger>
                               <SelectValue placeholder="Chọn loại nội dung" />
                             </SelectTrigger>

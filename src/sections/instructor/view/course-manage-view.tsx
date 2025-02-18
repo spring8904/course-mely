@@ -2,12 +2,24 @@
 
 import { useState } from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Check, ChevronDown, Loader2 } from 'lucide-react'
+import { ColumnDef } from '@tanstack/react-table'
+import {
+  Check,
+  ChevronDown,
+  Eye,
+  Loader2,
+  MoreVertical,
+  SquarePen,
+  Trash2,
+} from 'lucide-react'
 import { useForm } from 'react-hook-form'
 
+import { CourseStatusMap, ICourse } from '@/types'
 import { ICategory } from '@/types/Category'
 import { CreateCoursePayload, createCourseSchema } from '@/validations/course'
+import { formatCurrency, formatDateTime } from '@/lib/common'
 import { cn } from '@/lib/utils'
 import { useGetCategories } from '@/hooks/category/useCategory'
 import {
@@ -17,6 +29,7 @@ import {
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { Checkbox } from '@/components/ui/checkbox'
 import {
   Command,
   CommandEmpty,
@@ -25,6 +38,8 @@ import {
   CommandItem,
   CommandList,
 } from '@/components/ui/command'
+import { DataTable } from '@/components/ui/data-table'
+import { DataTableColumnHeader } from '@/components/ui/data-table-column-header'
 import {
   Dialog,
   DialogContent,
@@ -32,6 +47,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import {
   Form,
   FormControl,
@@ -46,20 +67,14 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table'
 
 const CourseManageView = () => {
   const [openDialog, setOpenDialog] = useState(false)
 
-  const { data: coursesData, isLoading: isCoursesLoading } = useGetCourses()
-  const { data: categoryData } = useGetCategories()
+  const { data: courses, isLoading: isCoursesLoading } = useGetCourses()
+  const { data: categories, isLoading: isCategoriesLoading } =
+    useGetCategories()
+
   const { mutate: createCourse, isPending: isCourseCreating } =
     useCreateCourse()
 
@@ -70,6 +85,149 @@ const CourseManageView = () => {
     },
   })
 
+  const isLoading = isCoursesLoading || isCategoriesLoading
+
+  const columns: ColumnDef<ICourse>[] = [
+    {
+      id: 'select',
+      header: ({ table }) => (
+        <Checkbox
+          checked={
+            table.getIsAllPageRowsSelected() ||
+            (table.getIsSomePageRowsSelected() && 'indeterminate')
+          }
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label="Select all"
+          className="border-foreground"
+        />
+      ),
+      cell: ({ row }) => (
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label="Select row"
+          className="border-foreground"
+        />
+      ),
+      enableSorting: false,
+      enableHiding: false,
+    },
+    {
+      accessorKey: 'name',
+
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Khóa học" />
+      ),
+      cell: ({ row }) => {
+        const course = row.original
+        return (
+          <div className="flex items-center gap-4">
+            <Image
+              alt={course.name ?? ''}
+              className="size-16 rounded-lg object-cover"
+              height={128}
+              width={128}
+              src={course.thumbnail}
+            />
+            <div className="flex-1 space-y-1">
+              <h3 className="font-semibold">{course.name}</h3>
+              <h4 className="text-xs text-muted-foreground">
+                {course.category?.name}
+              </h4>
+            </div>
+          </div>
+        )
+      },
+    },
+    {
+      accessorKey: 'created_at',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Ngày tạo" />
+      ),
+      cell: () => (
+        <div className="space-y-1">
+          <div className="font-medium">
+            {formatDateTime('2025-01-25T15:41:03.000000Z', 'date')}
+          </div>
+          <div className="text-xs text-muted-foreground">
+            {formatDateTime('2025-01-25T15:41:03.000000Z', 'time')}
+          </div>
+        </div>
+      ),
+    },
+    {
+      accessorKey: 'price',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Giá bán" />
+      ),
+      cell: ({ row }) => (
+        <div className="font-medium">
+          {formatCurrency(row.getValue('price') || 0)}
+        </div>
+      ),
+    },
+    {
+      accessorKey: 'total_student',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Học viên" />
+      ),
+    },
+    {
+      accessorKey: 'status',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Trạng thái" />
+      ),
+      cell: ({ row }) => {
+        // const course = CourseStatusMap[row.original.status]
+
+        // return <Badge variant={course.badge}>{course.label}</Badge>
+
+        return Object.values(CourseStatusMap)
+          .reverse()
+          .map((status, index) => {
+            if (row.index === index) {
+              return (
+                <Badge key={index} variant={status.badge}>
+                  {status.label}
+                </Badge>
+              )
+            }
+          })
+      },
+    },
+    {
+      id: 'actions',
+      cell: ({ row }) => {
+        const course = row.original
+        return (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                className="size-8 rounded-full p-0 hover:bg-gray-200/70"
+              >
+                <MoreVertical className="size-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem>
+                <Eye /> Xem
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href={`/instructor/courses/update/${course.slug}`}>
+                  <SquarePen /> Sửa
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem className="text-destructive focus:bg-destructive/10 focus:text-destructive">
+                <Trash2 /> Xóa
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )
+      },
+    },
+  ]
+
   const onSubmit = (values: CreateCoursePayload) => {
     if (isCourseCreating) return
 
@@ -79,8 +237,6 @@ const CourseManageView = () => {
       },
     })
   }
-
-  const isLoading = isCoursesLoading
 
   if (isLoading) {
     return (
@@ -93,9 +249,9 @@ const CourseManageView = () => {
   return (
     <>
       <div className="px-5 py-6">
-        <div className="mt-2">
-          <div className="flex justify-between">
-            <p className="text-xl font-bold">Quản lý khóa học</p>
+        <div className="mt-2 space-y-6">
+          <div className="flex items-center justify-between">
+            <h1 className="text-xl font-bold">Quản lý khóa học</h1>
             <Button
               onClick={() => {
                 setOpenDialog(true)
@@ -104,68 +260,7 @@ const CourseManageView = () => {
               Tạo khoá học mới
             </Button>
           </div>
-          <Table className="mt-4">
-            <TableHeader>
-              <TableRow>
-                <TableHead>#</TableHead>
-                <TableHead>Thông tin</TableHead>
-                <TableHead>Giá</TableHead>
-                <TableHead>Trạng thái</TableHead>
-                <TableHead>Hành động</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {coursesData?.data?.map((course: any, index: number) => (
-                <TableRow key={course.id}>
-                  <TableCell>{index + 1}</TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-3">
-                      <Image
-                        alt={course.name}
-                        className="size-16 shrink-0 rounded-lg object-cover"
-                        height={80}
-                        src={
-                          course.thumbnail ||
-                          'https://res.cloudinary.com/dvrexlsgx/image/upload/v1734990491/oxbmdtk4x3jvfhxvhnec.jpg'
-                        }
-                        width={80}
-                      />
-                      <div className="flex flex-col gap-1">
-                        <h3 className="whitespace-nowrap text-sm font-bold lg:text-base">
-                          {course.name}
-                        </h3>
-                        <h4 className="text-xs text-slate-500 lg:text-sm">
-                          {course?.category?.name || 'Chưa có danh mục'}
-                        </h4>
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <span className="text-sm font-bold lg:text-base">
-                      {course?.price?.toLocaleString()}đ
-                    </span>
-                  </TableCell>
-                  <TableCell>
-                    <Badge
-                      className={cn(
-                        'text-white',
-                        course.status === 'approved'
-                          ? 'bg-green-500'
-                          : 'bg-red-500'
-                      )}
-                    >
-                      {course.status === 'approved' ? 'Đã duyệt' : 'Chưa duyệt'}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex gap-3">
-                      <Button className="bg-indigo-600">Chi tiết</Button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+          <DataTable columns={columns} data={courses?.data} />
         </div>
       </div>
 
@@ -215,7 +310,7 @@ const CourseManageView = () => {
                             )}
                           >
                             {field.value
-                              ? categoryData?.data.find(
+                              ? categories?.data.find(
                                   (category: ICategory) =>
                                     category.id === field.value
                                 )?.name
@@ -235,7 +330,7 @@ const CourseManageView = () => {
                               Không có kết quả nào phù hợp
                             </CommandEmpty>
                             <CommandGroup>
-                              {categoryData?.data.map((category: ICategory) => (
+                              {categories?.data.map((category: ICategory) => (
                                 <CommandItem
                                   value={category.name}
                                   key={category.id}
