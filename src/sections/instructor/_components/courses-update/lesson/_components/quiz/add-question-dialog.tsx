@@ -28,6 +28,7 @@ const AddQuestionDialog = ({ isOpen, onOpenChange }: Props) => {
   // const [correctAnswer, setCorrectAnswer] = useState(null)
   // const [correctAnswers, setCorrectAnswers] = useState([])
   const [selectedAnswer, setSelectedAnswer] = useState<string | undefined>()
+  const [selectedAnswers, setSelectedAnswers] = useState<string[]>([])
   const [answerType, setAnswerType] = useState<'single' | 'multiple'>('single')
   const [answers, setAnswers] = useState([
     { id: '1', color: 'bg-[#2196F3]', text: '' },
@@ -85,12 +86,20 @@ const AddQuestionDialog = ({ isOpen, onOpenChange }: Props) => {
       if (selectedAnswer === id) {
         setSelectedAnswer(undefined)
       }
+      setSelectedAnswers(selectedAnswers.filter((answerId) => answerId !== id))
     }
   }
 
   const handleAnswerChange = (id: string, text: string) => {
     setAnswers(
       answers.map((answer) => (answer.id === id ? { ...answer, text } : answer))
+    )
+  }
+  const toggleAnswerSelection = (id: string) => {
+    setSelectedAnswers((prev) =>
+      prev.includes(id)
+        ? prev.filter((answerId) => answerId !== id)
+        : [...prev, id]
     )
   }
 
@@ -127,19 +136,25 @@ const AddQuestionDialog = ({ isOpen, onOpenChange }: Props) => {
             <div className="flex gap-4">
               <Button
                 variant={answerType === 'single' ? 'default' : 'outline'}
-                onClick={() => setAnswerType('single')}
+                onClick={() => {
+                  setAnswerType('single')
+                  setSelectedAnswers([])
+                }}
               >
                 Một đáp án
               </Button>
               <Button
                 variant={answerType === 'multiple' ? 'default' : 'outline'}
-                onClick={() => setAnswerType('multiple')}
+                onClick={() => {
+                  setAnswerType('multiple')
+                  setSelectedAnswer(undefined)
+                }}
               >
                 Nhiều đáp án
               </Button>
             </div>
           </div>
-
+          {/*goc*/}
           {/*<div className="space-y-4">*/}
           {/*  <Label>Đáp án</Label>*/}
           {/*  {answers.map((answer, index) => (*/}
@@ -166,13 +181,11 @@ const AddQuestionDialog = ({ isOpen, onOpenChange }: Props) => {
           {/*          }}*/}
           {/*        />*/}
           {/*      )}*/}
-
           {/*      <Input*/}
           {/*        value={answer}*/}
           {/*        onChange={(e) => handleAnswerChange(index, e.target.value)}*/}
           {/*        placeholder={`Nhập đáp án ${index + 1}`}*/}
           {/*      />*/}
-
           {/*      {answers.length > 2 && (*/}
           {/*        <Button*/}
           {/*          variant="ghost"*/}
@@ -185,15 +198,16 @@ const AddQuestionDialog = ({ isOpen, onOpenChange }: Props) => {
           {/*    </div>*/}
           {/*  ))}*/}
           {/*</div>*/}
-
           {/*{answers.length < 5 && (*/}
           {/*  <Button onClick={handleAddAnswer} variant="outline">*/}
           {/*    + Thêm đáp án*/}
           {/*  </Button>*/}
           {/*)}*/}
+          {/*end goc*/}
+
           <div className="space-y-4">
             <Label>Đáp án</Label>
-            <div className="flex flex-col gap-4">
+            <div className="space-y-4">
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {answers.map((answer) => (
                   <div
@@ -222,14 +236,11 @@ const AddQuestionDialog = ({ isOpen, onOpenChange }: Props) => {
                         </div>
                       </RadioGroup>
                     ) : (
-                      <button
-                        onClick={() => setSelectedAnswer(answer.id)}
-                        className="absolute right-2 top-2 flex size-5 items-center justify-center rounded border border-white/80 transition-colors hover:border-white"
-                      >
-                        {selectedAnswer === answer.id && (
-                          <Check className="size-4" />
-                        )}
-                      </button>
+                      <Checkbox
+                        checked={selectedAnswers.includes(answer.id)}
+                        onCheckedChange={() => toggleAnswerSelection(answer.id)}
+                        className="absolute right-2 top-2 border-white data-[state=checked]:border-white data-[state=checked]:bg-white data-[state=checked]:text-primary"
+                      />
                     )}
                     <div className="flex h-full flex-col items-center justify-center">
                       <textarea
@@ -238,7 +249,7 @@ const AddQuestionDialog = ({ isOpen, onOpenChange }: Props) => {
                           handleAnswerChange(answer.id, e.target.value)
                         }
                         className="size-full resize-none bg-transparent text-center text-lg font-light text-white [-ms-overflow-style:none] [scrollbar-width:none] placeholder:text-white/90 focus:outline-none [&::-webkit-scrollbar]:hidden"
-                        placeholder="Nhập đán của bạn"
+                        placeholder="Nhập đáp án của bạn"
                       />
                     </div>
                   </div>
@@ -248,7 +259,7 @@ const AddQuestionDialog = ({ isOpen, onOpenChange }: Props) => {
                 <Button
                   onClick={handleAddAnswer}
                   variant="outline"
-                  className="mx-auto flex items-center gap-2"
+                  className="mx-auto flex w-full items-center justify-center gap-2 py-6"
                 >
                   <Plus className="size-4" />
                   Thêm đáp án
