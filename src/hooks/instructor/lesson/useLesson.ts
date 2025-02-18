@@ -3,10 +3,35 @@ import { toast } from 'react-toastify'
 
 import {
   CreateLessonPayload,
+  LessonQuizPayload,
   UpdateTitleLessonPayload,
 } from '@/validations/lesson'
 import QUERY_KEY from '@/constants/query-key'
 import { instructorLessonApi } from '@/services/instructor/lesson/lesson-api'
+
+export const useCreateLessonVideo = () => {
+  return useMutation({
+    mutationFn: ({
+      chapterId,
+      payload,
+    }: {
+      chapterId: string
+      payload: FormData
+    }) => instructorLessonApi.createLessonVideo(chapterId, payload),
+  })
+}
+
+export const useCreateLessonDocument = () => {
+  return useMutation({
+    mutationFn: ({
+      chapterId,
+      payload,
+    }: {
+      chapterId: string
+      payload: FormData
+    }) => instructorLessonApi.createLessonDocument(chapterId, payload),
+  })
+}
 
 export const useCreateLesson = () => {
   const queryClient = useQueryClient()
@@ -24,6 +49,18 @@ export const useCreateLesson = () => {
     onError: (error) => {
       toast.error(error.message)
     },
+  })
+}
+
+export const useCreateLessonQuiz = () => {
+  return useMutation({
+    mutationFn: ({
+      chapterId,
+      payload,
+    }: {
+      chapterId: string
+      payload: LessonQuizPayload
+    }) => instructorLessonApi.createLessonQuiz(chapterId, payload),
   })
 }
 

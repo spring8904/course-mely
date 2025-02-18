@@ -1,5 +1,6 @@
 import {
   CreateLessonPayload,
+  LessonQuizPayload,
   UpdateTitleLessonPayload,
 } from '@/validations/lesson'
 import api from '@/configs/api'
@@ -11,7 +12,28 @@ export const instructorLessonApi = {
     return await api.get(`${prefix}/${slug}`)
   },
   createLesson: (payload: CreateLessonPayload) => {
-    return api.post(prefix, payload)
+    return api.post(prefix, payload, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    })
+  },
+  createLessonVideo: (chapterId: string, payload: FormData) => {
+    return api.post(`${prefix}/${chapterId}/store-lesson-video`, payload, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    })
+  },
+  createLessonDocument: (chapterId: string, payload: FormData) => {
+    return api.post(`${prefix}/${chapterId}/store-lesson-document`, payload, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    })
+  },
+  createLessonQuiz: (chapterId: string, payload: LessonQuizPayload) => {
+    return api.post(`${prefix}/${chapterId}/store-lesson-quiz`, payload)
   },
   updateContentLesson: (
     chapterId: number,
