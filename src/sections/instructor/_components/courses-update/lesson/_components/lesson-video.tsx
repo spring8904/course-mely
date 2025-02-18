@@ -34,7 +34,6 @@ const LessonVideo = ({ onHide, chapterId }: Props) => {
   const fileInputRef = useRef<HTMLInputElement | null>(null)
   const [selectedFile, setSelectedFile] = useState<any>(null)
   const [videoUrl, setVideoUrl] = useState('')
-  const [content, setContent] = useState<string>('')
 
   const { mutate: createLessonVideo, isPending: isLessonVideoCreating } =
     useCreateLessonVideo()
@@ -143,11 +142,8 @@ const LessonVideo = ({ onHide, chapterId }: Props) => {
                   <FormLabel>Nội dung bài giảng</FormLabel>
                   <FormControl>
                     <TinyEditor
-                      value={content}
-                      onEditorChange={(value: string) => {
-                        setContent(value)
-                        form.setValue('content', value)
-                      }}
+                      value={field.value}
+                      onEditorChange={field.onChange}
                       minimalist
                     />
                   </FormControl>

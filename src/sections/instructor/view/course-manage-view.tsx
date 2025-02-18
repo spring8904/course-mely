@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { ColumnDef } from '@tanstack/react-table'
 import {
@@ -196,7 +197,8 @@ const CourseManageView = () => {
     },
     {
       id: 'actions',
-      cell: () => {
+      cell: ({ row }) => {
+        const course = row.original
         return (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -211,8 +213,10 @@ const CourseManageView = () => {
               <DropdownMenuItem>
                 <Eye /> Xem
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <SquarePen /> Sửa
+              <DropdownMenuItem asChild>
+                <Link href={`/instructor/courses/update/${course.slug}`}>
+                  <SquarePen /> Sửa
+                </Link>
               </DropdownMenuItem>
               <DropdownMenuItem className="text-destructive focus:bg-destructive/10 focus:text-destructive">
                 <Trash2 /> Xóa
