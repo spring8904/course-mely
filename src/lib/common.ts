@@ -1,23 +1,19 @@
-import { StorageKeys } from '@/constants/storage-keys'
-
-export const getAccessTokenFromLocalStorage = () => {
-  return localStorage.getItem(StorageKeys.ACCESS_TOKEN) || null
-}
-
-export const setAccessTokenToLocalStorage = (accessToken: string) => {
-  localStorage.setItem(StorageKeys.ACCESS_TOKEN, accessToken)
-}
-
-export const removeAccessTokenFromLocalStorage = () => {
-  localStorage.removeItem(StorageKeys.ACCESS_TOKEN)
-}
-
-export const getUserFromLocalStorage = () => {
+export const setLocalStorage = (key: string, value: any): void => {
   if (typeof window !== 'undefined') {
-    const user = localStorage.getItem(StorageKeys.USER)
-    return user ? JSON.parse(user) : null
+    localStorage.setItem(key, JSON.stringify(value))
   }
-  return null
+}
+
+export const getLocalStorage = <T>(key: string): T | null => {
+  if (typeof window === 'undefined') return null
+  const item = localStorage.getItem(key)
+  return item ? JSON.parse(item) : null
+}
+
+export const removeLocalStorage = (key: string): void => {
+  if (typeof window !== 'undefined') {
+    localStorage.removeItem(key)
+  }
 }
 
 export const formatNumber = (value: number): string => {
@@ -29,4 +25,29 @@ export const formatCurrency = (value: number): string => {
     style: 'currency',
     currency: 'VND',
   }).format(value)
+}
+
+export const formatDateTime = (
+  value: string,
+  type: 'date' | 'time' | 'both' = 'both'
+): string => {
+  const options: Intl.DateTimeFormatOptions = {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true,
+  }
+
+  if (type === 'date') {
+    delete options.hour
+    delete options.minute
+  } else if (type === 'time') {
+    delete options.day
+    delete options.month
+    delete options.year
+  }
+
+  return new Intl.DateTimeFormat('vi-VN', options).format(new Date(value))
 }
