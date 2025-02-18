@@ -28,6 +28,7 @@ export function DataTableColumnHeader<TData, TValue>({
       variant="ghost"
       onClick={() => column.toggleSorting(isSortedAsc)}
       className={cn(
+        'px-0 hover:bg-transparent',
         column.getIsSorted() && 'text-accent-foreground',
         className
       )}
