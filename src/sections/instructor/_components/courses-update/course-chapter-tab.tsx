@@ -15,13 +15,6 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion'
 import { Button } from '@/components/ui/button'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import DraggableHandle from '@/sections/instructor/_components/courses-update/_components/draggable-handle'
 import DraggableContent from '@/sections/instructor/_components/courses-update/lesson/_components/draggable-content'
@@ -84,18 +77,18 @@ const CourseChapterTab = ({ chapters, slug }: Props) => {
   }
 
   return (
-    <Card className="rounded-md">
-      <CardHeader>
-        <CardTitle className="text-xl">Chương trình giảng dạy</CardTitle>
-        <CardDescription>
+    <div className="rounded-md">
+      <div>
+        <h1 className="text-xl font-bold">Chương trình giảng dạy</h1>
+        <p className="mt-2 text-sm text-muted-foreground">
           Bắt đầu xây dựng khoá học của bạn bằng cách tạo các phần bài giảng và
           các hoạt động thực hành.
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
+        </p>
+      </div>
+      <div className="mt-4">
         <div className="space-y-6">
           {chapters?.map((chapter, chapterIndex) => (
-            <>
+            <div key={chapter.id}>
               <Accordion
                 type="single"
                 collapsible={!chapterEdit}
@@ -176,7 +169,7 @@ const CourseChapterTab = ({ chapters, slug }: Props) => {
                   <DraggableContent chapter={chapter} slug={slug} />
                 </AccordionItem>
               </Accordion>
-            </>
+            </div>
           ))}
         </div>
         {addNewChapter ? (
@@ -189,8 +182,8 @@ const CourseChapterTab = ({ chapters, slug }: Props) => {
             </Button>
           </>
         )}
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   )
 }
 export default CourseChapterTab
