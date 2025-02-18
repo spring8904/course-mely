@@ -53,6 +53,7 @@ export type LessonType = 'video' | 'document' | 'quiz' | 'coding'
 
 export interface ILesson {
   id?: number
+  slug?: string
   chapterId?: number
   title: string
   duration?: number | null

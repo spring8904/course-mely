@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import {
   BadgeCheck,
   Bell,
@@ -8,6 +9,9 @@ import {
   LogOut,
   Sparkles,
 } from 'lucide-react'
+import Swal from 'sweetalert2'
+
+import { useLogOut } from '@/hooks/auth/useLogOut'
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import {
@@ -25,6 +29,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@/components/ui/sidebar'
+import { UserProfileModal } from '@/sections/instructor/_components/user-profile/user-profile'
 
 export function NavUser({
   user,
@@ -35,7 +40,37 @@ export function NavUser({
     avatar: string
   }
 }) {
+  const [isModalOpen, setModalOpen] = useState(false)
+
   const { isMobile } = useSidebar()
+  const { isPending, mutate } = useLogOut()
+
+  const handleLogout = () => {
+    if (isPending) return
+
+    Swal.fire({
+      title: 'Bạn có chắc muốn đăng xuất?',
+      text: 'Bạn sẽ cần đăng nhập lại để tiếp tục!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#E27447',
+      cancelButtonColor: '#6c757d',
+      confirmButtonText: 'Đăng xuất',
+      cancelButtonText: 'Hủy',
+    }).then((result: any) => {
+      if (result.isConfirmed) {
+        mutate()
+      }
+    })
+  }
+
+  const handleProfileClick = () => {
+    setModalOpen(true) // Open the modal when clicked
+  }
+
+  const handleModalClose = () => {
+    setModalOpen(false) // Close the modal
+  }
 
   return (
     <SidebarMenu>
@@ -77,34 +112,32 @@ export function NavUser({
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <Sparkles />
-                Upgrade to Pro
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={handleProfileClick}>
                 <BadgeCheck />
-                Account
+                Thông tin cá nhân
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <CreditCard />
-                Billing
+                Ví của bạn
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <Bell />
-                Notifications
+                Thông báo
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={handleLogout}>
               <LogOut />
-              Log out
+              Đăng xuất
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
+      <UserProfileModal
+        user={user}
+        isOpen={isModalOpen}
+        onClose={handleModalClose}
+      />
     </SidebarMenu>
   )
 }

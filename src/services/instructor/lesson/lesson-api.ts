@@ -1,5 +1,6 @@
 import {
   CreateLessonPayload,
+  LessonCodingPayload,
   LessonQuizPayload,
   UpdateTitleLessonPayload,
 } from '@/validations/lesson'
@@ -10,6 +11,9 @@ const prefix = '/instructor/manage/lessons'
 export const instructorLessonApi = {
   getLessonOverview: async (slug: string) => {
     return await api.get(`${prefix}/${slug}`)
+  },
+  getLessonCoding: async (lessonId: string, coding: string) => {
+    return await api.get(`${prefix}/${lessonId}/${coding}/coding-exercise`)
   },
   createLesson: (payload: CreateLessonPayload) => {
     return api.post(prefix, payload, {
@@ -34,6 +38,9 @@ export const instructorLessonApi = {
   },
   createLessonQuiz: (chapterId: string, payload: LessonQuizPayload) => {
     return api.post(`${prefix}/${chapterId}/store-lesson-quiz`, payload)
+  },
+  createLessonCoding: (chapterId: string, payload: LessonCodingPayload) => {
+    return api.post(`${prefix}/${chapterId}/store-lesson-coding`, payload)
   },
   updateContentLesson: (
     chapterId: number,
