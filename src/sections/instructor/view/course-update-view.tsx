@@ -1,7 +1,7 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
-import { Loader2 } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { CheckCircle, Loader2, XCircle } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 
@@ -11,17 +11,27 @@ import { useRouter } from 'next/navigation'
 import { useAuthStore } from '@/stores/useAuthStore'
 import { buildStyles, CircularProgressbar } from 'react-circular-progressbar'
 
-import { useGetCourseOverview } from '@/hooks/instructor/course/useCourse'
+import {
+  useGetCourseOverview,
+  useValidateCourse,
+} from '@/hooks/instructor/course/useCourse'
 
 import 'react-circular-progressbar/dist/styles.css'
 
+import { Accordion } from '@radix-ui/react-accordion'
 import Swal from 'sweetalert2'
 
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { formatPercentage } from '@/lib/common'
+import { cn } from '@/lib/utils'
+
+import {
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion'
 import {
   Sheet,
   SheetContent,
-  SheetDescription,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
@@ -73,6 +83,8 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
 
   const { data: courseOverviewData, isLoading: isCourseOverviewLoading } =
     useGetCourseOverview(slug)
+  const { data: validateData, isLoading: isValidateLoading } =
+    useValidateCourse(slug)
 
   useEffect(() => {
     if (
@@ -84,7 +96,7 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
     setCourseStatus(courseOverviewData?.data.status)
   }, [user, courseOverviewData, isCourseOverviewLoading, router])
 
-  if (isCourseOverviewLoading) {
+  if (isCourseOverviewLoading || isValidateLoading) {
     return (
       <div className="mt-20">
         <Loader2 className="mx-auto size-8 animate-spin" />
@@ -123,7 +135,7 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
       </div>
       <div className="mt-4">
         <div className="grid grid-cols-12 gap-8">
-          <div className="col-span-3">
+          <div className="col-span-4">
             <div>
               {groups.map((group) => (
                 <div key={group.id} className="mb-8">
@@ -152,6 +164,17 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
                         >
                           {tab.label}
                         </span>
+                        {validateData?.data.completion_status[tab.id]
+                          ?.status === true ? (
+                          <CheckCircle
+                            className={cn('size-5 text-green-500')}
+                          />
+                        ) : (
+                          validateData?.data.completion_status[tab.id]
+                            ?.status === false && (
+                            <XCircle className={cn('size-5 text-red-500')} />
+                          )
+                        )}
                       </div>
                     ))}
                   </div>
@@ -163,8 +186,8 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
                 <h1 className="mb-4 text-base font-bold">Điều kiện</h1>
                 <div className="font-bold" style={{ width: 50, height: 50 }}>
                   <CircularProgressbar
-                    value={10}
-                    text={`${10}%`}
+                    value={validateData?.data.progress}
+                    text={formatPercentage(validateData?.data.progress)}
                     strokeWidth={3}
                     styles={buildStyles({
                       pathColor: `#FA802B`,
@@ -175,21 +198,59 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
                 </div>
               </div>
               <Sheet>
-                <SheetTrigger>
+                <SheetTrigger asChild>
                   <Button type="button"> Xem chi tiết</Button>
                 </SheetTrigger>
-                <SheetContent>
+                <SheetContent
+                  aria-describedby={undefined}
+                  className="overflow-y-auto"
+                >
                   <SheetHeader>
                     <SheetTitle>Các tiêu chí chưa hoàn thành</SheetTitle>
-                    <SheetDescription>
-                      <Alert variant="destructive" className="mb-4">
-                        <AlertTitle className="mb-4">
-                          Chưa đáp ứng điều kiện!
-                        </AlertTitle>
-                        <AlertDescription>ahihi</AlertDescription>
-                      </Alert>
-                    </SheetDescription>
                   </SheetHeader>
+
+                  <Accordion
+                    type="single"
+                    collapsible
+                    className="space-y-4 py-4"
+                  >
+                    {Object.entries(validateData?.data.completion_status).map(
+                      ([key, value]) => {
+                        const typedValue = value as {
+                          status: boolean
+                          errors: string[]
+                        }
+
+                        if (typedValue.status === false)
+                          return (
+                            <AccordionItem key={key} value={key}>
+                              <AccordionTrigger>
+                                {(() => {
+                                  switch (key) {
+                                    case 'course_objectives':
+                                      return 'Mục tiêu khoá học'
+                                    case 'course_overview':
+                                      return 'Trang đích của khóa học'
+                                    case 'course_curriculum':
+                                      return 'Chương trình giảng dạy'
+                                    default:
+                                      return ''
+                                  }
+                                })()}
+                              </AccordionTrigger>
+                              {typedValue.errors.map((error, index) => (
+                                <AccordionContent
+                                  key={index}
+                                  className="text-sm text-red-500"
+                                >
+                                  {error}
+                                </AccordionContent>
+                              ))}
+                            </AccordionItem>
+                          )
+                      }
+                    )}
+                  </Accordion>
                 </SheetContent>
               </Sheet>
             </div>
@@ -203,7 +264,7 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
                 : 'Gửi yêu cầu kiểm duyệt'}
             </Button>
           </div>
-          <div className="col-span-9 rounded border bg-white p-4 shadow-lg">
+          <div className="col-span-8 rounded border bg-white p-4 shadow-lg">
             {activeGroup === 'planning' && (
               <>
                 {activeTabs.planning === 'course_objectives' && (

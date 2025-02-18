@@ -163,9 +163,6 @@ const CourseOverView = ({ courseOverView }: any) => {
                   </FormItem>
                 )}
               />
-              <p className="mt-2 text-[14px] text-[#4b5563]">
-                Mô tả phải dài ít nhất là 150 từ.
-              </p>
             </div>
             <div className="mt-3">
               <Label className="text-base font-semibold">Giá khoá học</Label>

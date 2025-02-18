@@ -64,9 +64,14 @@ export const useUpdateCourseObjective = () => {
       data: UpdateCourseObjectivePayload
     }) => instructorCourseApi.updateCourseObjective(slug, data),
     onSuccess: async (res: any) => {
-      await queryClient.invalidateQueries({
-        queryKey: [QUERY_KEY.INSTRUCTOR_COURSE],
-      })
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_KEY.INSTRUCTOR_COURSE],
+        }),
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_KEY.VALIDATE_COURSE],
+        }),
+      ])
       toast.success(res.message)
     },
     onError: (error) => {
@@ -142,14 +147,27 @@ export const useUpdateCourseOverView = () => {
       return instructorCourseApi.updateCourseOverView(slug, formData)
     },
     onSuccess: async (res: any) => {
-      await queryClient.invalidateQueries({
-        queryKey: [QUERY_KEY.INSTRUCTOR_COURSE],
-      })
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_KEY.INSTRUCTOR_COURSE],
+        }),
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_KEY.VALIDATE_COURSE],
+        }),
+      ])
 
       toast.success(res.message)
     },
     onError: (error) => {
       toast.error(error.message)
     },
+  })
+}
+
+export const useValidateCourse = (slug?: string) => {
+  return useQuery({
+    queryKey: [QUERY_KEY.VALIDATE_COURSE, slug],
+    queryFn: () => instructorCourseApi.validateCourse(slug!),
+    enabled: !!slug,
   })
 }

@@ -51,3 +51,9 @@ export const formatDateTime = (
 
   return new Intl.DateTimeFormat('vi-VN', options).format(new Date(value))
 }
+
+export const formatPercentage = (value: number): string => {
+  return new Intl.NumberFormat('vi-VN', {
+    style: 'percent',
+  }).format(value / 100)
+}

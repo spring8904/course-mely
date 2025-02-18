@@ -34,4 +34,7 @@ export const instructorCourseApi = {
       responseType: 'blob',
     })
   },
+  validateCourse: (slug: string) => {
+    return api.get(`${prefix}/${slug}/validate-course`)
+  },
 }

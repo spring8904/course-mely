@@ -37,7 +37,7 @@ export function DataTableColumnHeader<TData, TValue>({
       <ArrowUp
         className={cn(
           'size-4 transition-transform',
-          isSortedAsc ? 'rotate-0' : isSortedDesc ? 'rotate-180' : 'hidden'
+          isSortedAsc ? 'rotate-0' : isSortedDesc ? '-rotate-180' : 'hidden'
         )}
       />
     </Button>
