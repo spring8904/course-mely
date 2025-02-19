@@ -5,6 +5,9 @@ export interface IInstructorProfile {
   address?: string | null
   experience?: string | null
   bio?: string[]
+  avatar?: string | null
+  email?: string
+  name?: string
   createdAt?: Date | null
   updatedAt?: Date | null
 }

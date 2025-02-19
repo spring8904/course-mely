@@ -18,6 +18,7 @@ const QUERY_KEY = {
   BLOGS: 'blogs',
   BLOG_DETAILS: 'blog-details',
   WISH_LIST: 'wish-list',
+  SEARCH: 'search',
   VALIDATE_COURSE: 'validate-course',
   INSTRUCTOR_QUIZ: 'instructor-quiz',
   INSTRUCTOR_QUESTION: 'instructor-question',
