@@ -8,6 +8,7 @@ const QUERY_KEY = {
   INSTRUCTOR_COURSE_VALIDATE: 'instructor-course-validate',
   INSTRUCTOR_CHECK_COURSE_COMPLETED: 'instructor-check-course-completed',
   INSTRUCTOR_CHAPTER_DETAIL: 'instructor-chapter-detail',
+  INSTRUCTOR_LESSON_CODING: 'instructor-lesson-coding',
   CATEGORY: 'categories',
   COURSE: 'course',
   QA_SYSTEM: 'qa-systems',
@@ -15,6 +16,9 @@ const QUERY_KEY = {
   BLOGS: 'blogs',
   BLOG_DETAILS: 'blog-details',
   WISH_LIST: 'wish-list',
+  VALIDATE_COURSE: 'validate-course',
+  INSTRUCTOR_QUIZ: 'instructor-quiz',
+  INSTRUCTOR_QUESTION: 'instructor-question',
 }
 
 export default QUERY_KEY

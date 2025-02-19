@@ -30,8 +30,11 @@ export const instructorCourseApi = {
     return api.put(`${prefix}/${slug}/courseObjective`, payload)
   },
   downloadQuizForm: async () => {
-    return await api.get(`/download-quiz-form`, {
+    return await api.get(`/instructor/manage/lessons/quiz/download-quiz-form`, {
       responseType: 'blob',
     })
+  },
+  validateCourse: (slug: string) => {
+    return api.get(`${prefix}/${slug}/validate-course`)
   },
 }

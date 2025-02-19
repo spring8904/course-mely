@@ -1,6 +1,15 @@
-import { useState } from 'react'
-import { Check, Plus, Trash2 } from 'lucide-react'
-import { toast } from 'react-toastify'
+import React, { useEffect, useState } from 'react'
+import Image from 'next/image'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { Check, ImagePlus, Loader2, Plus, Trash2, X } from 'lucide-react'
+import { useForm } from 'react-hook-form'
+
+import { StoreQuestionPayload, storeQuestionSchema } from '@/validations/lesson'
+import {
+  useCreateQuestion,
+  useGetQuestion,
+  useUpdateQuestion,
+} from '@/hooks/instructor/quiz/useQuiz'
 
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -8,276 +17,461 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import TinyEditor from '@/components/shared/tiny-editor'
 
 type Props = {
   isOpen: boolean
   onOpenChange: (open: boolean) => void
+  isEdit?: boolean
+  questionId?: string
+  quizId: string
 }
 
-const AddQuestionDialog = ({ isOpen, onOpenChange }: Props) => {
-  const [question, setQuestion] = useState('')
-  // const [answers, setAnswers] = useState<string[]>(['', '', '', ''])
-  // const [answerType, setAnswerType] = useState('single')
-  // const [correctAnswer, setCorrectAnswer] = useState(null)
-  // const [correctAnswers, setCorrectAnswers] = useState([])
-  const [selectedAnswer, setSelectedAnswer] = useState<string | undefined>()
-  const [selectedAnswers, setSelectedAnswers] = useState<string[]>([])
-  const [answerType, setAnswerType] = useState<'single' | 'multiple'>('single')
-  const [answers, setAnswers] = useState([
-    { id: '1', color: 'bg-[#2196F3]', text: '' },
-    { id: '2', color: 'bg-[#26A69A]', text: '' },
-    { id: '3', color: 'bg-[#FFA726]', text: '' },
-    { id: '4', color: 'bg-[#EF5350]', text: '' },
-  ])
+const colors = [
+  'bg-[#2196F3]',
+  'bg-[#26A69A]',
+  'bg-[#FFA726]',
+  'bg-[#EF5350]',
+  'bg-[#AB47BC]',
+]
 
-  // const handleAddAnswer = () => {
-  //   if (answers.length < 5) {
-  //     setAnswers([...answers, ''])
-  //   } else {
-  //     toast.info('Số lượng đáp án tối đa là 5')
-  //   }
-  // }
-  //
-  // const handleRemoveAnswer = (index) => {
-  //   const newAnswers = answers.filter((_, i) => i !== index)
-  //   setAnswers(newAnswers)
-  //
-  //   if (answerType === 'single' && correctAnswer === index) {
-  //     setCorrectAnswer(null)
-  //   } else if (answerType === 'multiple') {
-  //     setCorrectAnswers(correctAnswers.filter((i) => i !== index))
-  //   }
-  // }
-  //
-  // const handleAnswerChange = (index, value) => {
-  //   const newAnswers = [...answers]
-  //   newAnswers[index] = value
-  //   setAnswers(newAnswers)
-  // }
-  const colors = [
-    'bg-[#2196F3]',
-    'bg-[#26A69A]',
-    'bg-[#FFA726]',
-    'bg-[#EF5350]',
-    'bg-[#AB47BC]',
-  ]
+const AddQuestionDialog = ({
+  isOpen,
+  isEdit,
+  quizId,
+  onOpenChange,
+  questionId,
+}: Props) => {
+  const [image, setImage] = useState<string | null>(null)
+  const [modalOpen, setModalOpen] = useState(false)
+
+  const { data: questionData, isLoading: isQuestionLoading } = useGetQuestion(
+    questionId as string
+  )
+  const { mutate: createQuestion, isPending: isQuestionCreatePending } =
+    useCreateQuestion()
+  const { mutate: updateQuestion, isPending: isQuestionUpdatePending } =
+    useUpdateQuestion()
+
+  const form = useForm<StoreQuestionPayload>({
+    resolver: zodResolver(storeQuestionSchema),
+    defaultValues: {
+      question: '',
+      description: '',
+      answer_type: 'single_choice',
+      options: [
+        { answer: '', is_correct: false },
+        { answer: '', is_correct: false },
+        { answer: '', is_correct: false },
+        { answer: '', is_correct: false },
+      ],
+      image: undefined,
+    },
+  })
+
+  useEffect(() => {
+    if (isEdit && questionData?.data) {
+      const options = questionData.data.answers.map((opt: any) => ({
+        answer: opt.answer,
+        is_correct: !!opt.is_correct,
+      })) || [
+        { answer: '', is_correct: false },
+        { answer: '', is_correct: false },
+        { answer: '', is_correct: false },
+        { answer: '', is_correct: false },
+      ]
+
+      form.reset({
+        question: questionData.data.question,
+        description: questionData.data.description,
+        answer_type: questionData.data.answer_type,
+        options,
+        image: questionData.data.image,
+      })
+
+      setImage(questionData.data.image)
+    }
+  }, [isEdit, questionData, form])
+
+  useEffect(() => {
+    if (form.getValues('answer_type') === 'single_choice') {
+      const options = form.getValues('options').map((opt) => ({
+        ...opt,
+        is_correct: false,
+      }))
+      form.setValue('options', options, { shouldValidate: true })
+    }
+  }, [form.watch('answer_type')])
+
+  const handleChangeOption = (optionIndex: number, value: string) => {
+    const options = form.getValues('options')
+    options[optionIndex].answer = value
+    form.setValue('options', [...options])
+  }
+
+  const handleSelectCorrectAnswer = (selectedIndex: number) => {
+    const options = form.getValues('options').map((opt, i) => ({
+      ...opt,
+      is_correct: i === selectedIndex,
+    }))
+
+    form.setValue('options', options, { shouldValidate: true })
+  }
+
+  const handleToggleCorrectAnswer = (optionIndex: number) => {
+    const options = form.getValues('options')
+
+    if (form.getValues('answer_type') === 'single_choice') {
+      options.forEach((opt, i) => {
+        opt.is_correct = i === optionIndex
+      })
+    } else {
+      options[optionIndex].is_correct = !options[optionIndex].is_correct
+    }
+
+    form.setValue('options', [...options], { shouldValidate: true })
+  }
 
   const handleAddAnswer = () => {
-    if (answers.length < 5) {
-      const newAnswer = {
-        id: (answers.length + 1).toString(),
-        color: colors[answers.length],
-        text: '',
-      }
-      setAnswers([...answers, newAnswer])
+    const options = form.getValues('options')
+    if (options.length < 5) {
+      const newOption = { answer: '', is_correct: false }
+      form.setValue('options', [...options, newOption])
     }
   }
 
-  const handleDeleteAnswer = (id: string) => {
-    if (answers.length > 1) {
-      setAnswers(answers.filter((answer) => answer.id !== id))
-      if (selectedAnswer === id) {
-        setSelectedAnswer(undefined)
-      }
-      setSelectedAnswers(selectedAnswers.filter((answerId) => answerId !== id))
+  const handleDeleteAnswer = (optionIndex: number) => {
+    const options = form.getValues('options')
+    if (options.length > 1) {
+      const newOptions = options.filter((_, i) => i !== optionIndex)
+      form.setValue('options', newOptions)
     }
   }
 
-  const handleAnswerChange = (id: string, text: string) => {
-    setAnswers(
-      answers.map((answer) => (answer.id === id ? { ...answer, text } : answer))
-    )
-  }
-  const toggleAnswerSelection = (id: string) => {
-    setSelectedAnswers((prev) =>
-      prev.includes(id)
-        ? prev.filter((answerId) => answerId !== id)
-        : [...prev, id]
-    )
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setImage(reader.result as string)
+      }
+      reader.readAsDataURL(file)
+    }
   }
 
-  const handleSubmit = () => {
-    console.log('Câu hỏi:', question)
-    console.log('Đáp án:', answers)
-    console.log('Loại đáp án:', answerType)
-    console.log(
-      'Đáp án đúng:',
-      answerType === 'single' ? correctAnswer : correctAnswers
-    )
-    // onOpenChange(false)
+  const handleDeleteImage = () => {
+    setImage(null)
+  }
+
+  const openImageModal = () => {
+    setModalOpen(true)
+  }
+
+  const closeImageModal = () => {
+    setModalOpen(false)
+  }
+
+  const handleCloseOrCancel = () => {
+    form.reset()
+    setImage(null)
+  }
+
+  const onSubmit = (data: StoreQuestionPayload) => {
+    if (isQuestionCreatePending) return
+
+    if (isEdit && questionData?.data) {
+      updateQuestion(
+        {
+          questionId: questionData.data.id,
+          payload: data,
+        },
+        {
+          onSuccess: () => {
+            handleCloseOrCancel()
+            onOpenChange(false)
+          },
+        }
+      )
+    } else {
+      createQuestion(
+        {
+          quizId,
+          payload: data,
+        },
+        {
+          onSuccess: () => {
+            handleCloseOrCancel()
+            onOpenChange(false)
+          },
+        }
+      )
+    }
+  }
+
+  if (isQuestionLoading) {
+    return <Loader2 />
   }
 
   return (
-    <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="w-full max-w-7xl">
-        <DialogHeader>
-          <DialogTitle>Thêm câu hỏi trắc nghiệm</DialogTitle>
-          <DialogDescription>
-            Câu hỏi trắc nghiệm giúp học viên kiểm tra kiến thức.
-          </DialogDescription>
-          <div className="space-y-2">
-            <Label>Câu hỏi</Label>
-            <Input
-              value={question}
-              onChange={(e) => setQuestion(e.target.value)}
-              placeholder="Nhập câu hỏi"
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label>Loại đáp án</Label>
-            <div className="flex gap-4">
-              <Button
-                variant={answerType === 'single' ? 'default' : 'outline'}
-                onClick={() => {
-                  setAnswerType('single')
-                  setSelectedAnswers([])
-                }}
-              >
-                Một đáp án
-              </Button>
-              <Button
-                variant={answerType === 'multiple' ? 'default' : 'outline'}
-                onClick={() => {
-                  setAnswerType('multiple')
-                  setSelectedAnswer(undefined)
-                }}
-              >
-                Nhiều đáp án
-              </Button>
-            </div>
-          </div>
-          {/*goc*/}
-          {/*<div className="space-y-4">*/}
-          {/*  <Label>Đáp án</Label>*/}
-          {/*  {answers.map((answer, index) => (*/}
-          {/*    <div key={index} className="flex items-center gap-4">*/}
-          {/*      {answerType === 'single' ? (*/}
-          {/*        <RadioGroup>*/}
-          {/*          <RadioGroupItem*/}
-          {/*            value={index.toString()}*/}
-          {/*            checked={correctAnswer === index}*/}
-          {/*            onChange={() => setCorrectAnswer(index)}*/}
-          {/*          />*/}
-          {/*        </RadioGroup>*/}
-          {/*      ) : (*/}
-          {/*        <Checkbox*/}
-          {/*          checked={correctAnswers.includes(index)}*/}
-          {/*          onCheckedChange={(checked) => {*/}
-          {/*            if (checked) {*/}
-          {/*              setCorrectAnswers([...correctAnswers, index])*/}
-          {/*            } else {*/}
-          {/*              setCorrectAnswers(*/}
-          {/*                correctAnswers.filter((i) => i !== index)*/}
-          {/*              )*/}
-          {/*            }*/}
-          {/*          }}*/}
-          {/*        />*/}
-          {/*      )}*/}
-          {/*      <Input*/}
-          {/*        value={answer}*/}
-          {/*        onChange={(e) => handleAnswerChange(index, e.target.value)}*/}
-          {/*        placeholder={`Nhập đáp án ${index + 1}`}*/}
-          {/*      />*/}
-          {/*      {answers.length > 2 && (*/}
-          {/*        <Button*/}
-          {/*          variant="ghost"*/}
-          {/*          size="icon"*/}
-          {/*          onClick={() => handleRemoveAnswer(index)}*/}
-          {/*        >*/}
-          {/*          <Trash2 className="size-4 text-red-500" />*/}
-          {/*        </Button>*/}
-          {/*      )}*/}
-          {/*    </div>*/}
-          {/*  ))}*/}
-          {/*</div>*/}
-          {/*{answers.length < 5 && (*/}
-          {/*  <Button onClick={handleAddAnswer} variant="outline">*/}
-          {/*    + Thêm đáp án*/}
-          {/*  </Button>*/}
-          {/*)}*/}
-          {/*end goc*/}
-
-          <div className="space-y-4">
-            <Label>Đáp án</Label>
-            <div className="space-y-4">
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                {answers.map((answer) => (
-                  <div
-                    key={answer.id}
-                    className={`${answer.color} relative min-h-[120px] rounded-lg p-6 text-white shadow-lg transition-transform hover:scale-[1.02]`}
-                  >
-                    <button
-                      className="absolute left-2 top-2 text-white/80 transition-colors hover:text-white"
-                      onClick={() => handleDeleteAnswer(answer.id)}
-                      aria-label="Delete answer"
-                    >
-                      <Trash2 className="size-4" />
-                    </button>
-                    {answerType === 'single' ? (
-                      <RadioGroup
-                        value={selectedAnswer}
-                        onValueChange={setSelectedAnswer}
-                        className="absolute right-2 top-2"
-                      >
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem
-                            value={answer.id}
-                            id={answer.id}
-                            className="border-white text-white data-[state=checked]:bg-white"
+    <>
+      <Dialog
+        open={isOpen}
+        onOpenChange={() => {
+          onOpenChange(false)
+          handleCloseOrCancel()
+        }}
+      >
+        <DialogContent className="w-full max-w-7xl">
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)}>
+              <DialogHeader>
+                <div className="flex items-center justify-between pr-7">
+                  <DialogTitle>
+                    {isEdit ? 'Sửa' : 'Tạo '} câu hỏi trắc nghiệm
+                  </DialogTitle>
+                  <DialogTitle>
+                    {image ? (
+                      <div className="relative">
+                        <div onClick={openImageModal}>
+                          <Image
+                            src={image || ''}
+                            width={40}
+                            height={40}
+                            className="size-12 cursor-pointer rounded-lg object-cover"
+                            alt="Image description"
                           />
                         </div>
-                      </RadioGroup>
+                        <button
+                          className="absolute right-0 top-0 rounded-full bg-black/50 p-1 text-white"
+                          onClick={handleDeleteImage}
+                        >
+                          <X size={12} />
+                        </button>
+                      </div>
                     ) : (
-                      <Checkbox
-                        checked={selectedAnswers.includes(answer.id)}
-                        onCheckedChange={() => toggleAnswerSelection(answer.id)}
-                        className="absolute right-2 top-2 border-white data-[state=checked]:border-white data-[state=checked]:bg-white data-[state=checked]:text-primary"
-                      />
+                      <label>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleImageChange}
+                          className="hidden"
+                        />
+                        <ImagePlus className="cursor-pointer" size={16} />
+                      </label>
                     )}
-                    <div className="flex h-full flex-col items-center justify-center">
-                      <textarea
-                        value={answer.text}
-                        onChange={(e) =>
-                          handleAnswerChange(answer.id, e.target.value)
-                        }
-                        className="size-full resize-none bg-transparent text-center text-lg font-light text-white [-ms-overflow-style:none] [scrollbar-width:none] placeholder:text-white/90 focus:outline-none [&::-webkit-scrollbar]:hidden"
-                        placeholder="Nhập đáp án của bạn"
-                      />
-                    </div>
-                  </div>
-                ))}
+                  </DialogTitle>
+                </div>
+                <DialogDescription>
+                  Câu hỏi trắc nghiệm giúp học viên kiểm tra kiến thức.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4">
+                <FormField
+                  control={form.control}
+                  name={`question`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Câu hỏi</FormLabel>
+                      <FormControl>
+                        <Input {...field} placeholder="Nhập câu hỏi" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name={`description`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Mô tả</FormLabel>
+                      <FormControl>
+                        <TinyEditor
+                          value={field.value}
+                          onEditorChange={field.onChange}
+                          minimalist
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name={`answer_type`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Loại đáp án</FormLabel>
+                      <FormControl>
+                        <RadioGroup
+                          value={field.value}
+                          onValueChange={field.onChange}
+                          className="flex gap-4"
+                        >
+                          <Button
+                            type="button"
+                            variant={
+                              field.value === 'single_choice'
+                                ? 'default'
+                                : 'outline'
+                            }
+                            onClick={() => field.onChange('single_choice')}
+                          >
+                            Một đáp án
+                          </Button>
+                          <Button
+                            type="button"
+                            variant={
+                              field.value === 'multiple_choice'
+                                ? 'default'
+                                : 'outline'
+                            }
+                            onClick={() => field.onChange('multiple_choice')}
+                          >
+                            Nhiều đáp án
+                          </Button>
+                        </RadioGroup>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name={`options`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Đáp án</FormLabel>
+                      <div className="flex gap-4">
+                        {field.value.map((option, optionIndex) => (
+                          <div
+                            key={optionIndex}
+                            className={`${colors[optionIndex]} relative min-h-[120px] rounded-lg p-6 text-white shadow-lg transition-transform hover:scale-[1.02]`}
+                            style={{
+                              flex: '1 1 0',
+                              minWidth: 'calc(20% - 1rem)',
+                            }}
+                          >
+                            {field.value.length > 2 && (
+                              <button
+                                className="absolute left-1 top-2 rounded bg-[#fff3] p-1 text-white/80 transition-colors hover:bg-[#ffffff54] hover:text-white"
+                                onClick={() => handleDeleteAnswer(optionIndex)}
+                                aria-label="Delete answer"
+                              >
+                                <Trash2 className="size-4" />
+                              </button>
+                            )}
+                            {form.watch(`answer_type`) === 'single_choice' ? (
+                              <RadioGroup
+                                value={String(
+                                  field.value.findIndex((opt) => opt.is_correct) // Tìm index của đáp án đúng
+                                )}
+                                onValueChange={(value) =>
+                                  handleSelectCorrectAnswer(Number(value))
+                                }
+                                className="absolute right-2 top-2"
+                              >
+                                <RadioGroupItem
+                                  value={String(optionIndex)}
+                                  id={`option-${optionIndex}`}
+                                  className="border-white text-white data-[state=checked]:bg-white"
+                                />
+                              </RadioGroup>
+                            ) : (
+                              <Checkbox
+                                checked={option.is_correct}
+                                onCheckedChange={() =>
+                                  handleToggleCorrectAnswer(optionIndex)
+                                }
+                                className="absolute right-2 top-2 flex size-5 items-center justify-center rounded border border-white/80 transition-colors hover:border-white"
+                              >
+                                {option.is_correct && (
+                                  <Check className="size-4" />
+                                )}
+                              </Checkbox>
+                            )}
+                            <div className="flex h-full flex-col items-center justify-center">
+                              <textarea
+                                value={option.answer}
+                                onChange={(e) =>
+                                  handleChangeOption(
+                                    optionIndex,
+                                    e.target.value
+                                  )
+                                }
+                                className="size-full resize-none bg-transparent text-center text-lg font-light text-white [-ms-overflow-style:none] [scrollbar-width:none] placeholder:text-white/90 focus:outline-none [&::-webkit-scrollbar]:hidden"
+                                placeholder="Nhập đáp án"
+                              />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      <FormMessage />
+                      <div className="mt-4">
+                        {field.value.length < 5 && (
+                          <Button
+                            type="button"
+                            onClick={() => handleAddAnswer()}
+                            variant="outline"
+                            className="mx-auto flex items-center gap-2"
+                          >
+                            <Plus className="size-4" />
+                            Thêm đáp án
+                          </Button>
+                        )}
+                      </div>
+                    </FormItem>
+                  )}
+                />
               </div>
-              {answers.length < 5 && (
+              <div className="flex justify-end gap-2">
                 <Button
-                  onClick={handleAddAnswer}
                   variant="outline"
-                  className="mx-auto flex w-full items-center justify-center gap-2 py-6"
+                  onClick={() => {
+                    handleCloseOrCancel()
+                    onOpenChange(false)
+                  }}
                 >
-                  <Plus className="size-4" />
-                  Thêm đáp án
+                  Hủy
                 </Button>
-              )}
-            </div>
-          </div>
-        </DialogHeader>
-        <DialogFooter>
-          <div className="flex justify-end gap-2">
-            <Button variant="outline" onClick={() => onOpenChange(false)}>
-              Hủy
-            </Button>
-            <Button onClick={handleSubmit}>Thêm câu hỏi</Button>
-          </div>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+                <Button
+                  disabled={isQuestionCreatePending || isQuestionUpdatePending}
+                  type="submit"
+                >
+                  {(isQuestionCreatePending || isQuestionUpdatePending) && (
+                    <Loader2 className="mr-2 size-4 animate-spin" />
+                  )}
+                  {isEdit ? 'Cập nhật' : 'Thêm câu hỏi'}
+                </Button>
+              </div>
+            </form>
+          </Form>
+        </DialogContent>
+      </Dialog>
+      <Dialog open={modalOpen} onOpenChange={closeImageModal}>
+        <DialogContent className="h-[200px] w-full">
+          <Image
+            src={image || ''}
+            alt="Modal Preview"
+            layout="fill"
+            className="h-[200px] w-full rounded-lg object-contain"
+          />
+        </DialogContent>
+      </Dialog>
+    </>
   )
 }
 

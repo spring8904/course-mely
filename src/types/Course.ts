@@ -1,5 +1,9 @@
 import { IUser } from '@/types/User'
 
+import { BadgeProps } from '@/components/ui/badge'
+
+import { ICategory } from './Category'
+
 export enum CourseStatus {
   Draft = 'draft',
   Pending = 'pending',
@@ -7,10 +11,21 @@ export enum CourseStatus {
   Reject = 'reject',
 }
 
+export const CourseStatusMap: Record<
+  CourseStatus,
+  { label: string; badge: BadgeProps['variant'] }
+> = {
+  [CourseStatus.Draft]: { label: 'Bản nháp', badge: 'secondary' },
+  [CourseStatus.Pending]: { label: 'Chờ duyệt', badge: 'info' },
+  [CourseStatus.Approved]: { label: 'Đã duyệt', badge: 'success' },
+  [CourseStatus.Reject]: { label: 'Từ chối', badge: 'error' },
+}
+
 export interface ICourse {
   id?: number
   user_id?: number
   category_id?: number
+  category?: ICategory
   code?: string
   name: string
   slug?: string
@@ -37,6 +52,7 @@ export interface ICourse {
   created_at?: Date | null
   updated_at?: Date | null
 }
+
 export type ICourses = ICourse[]
 
 export interface IChapter {
@@ -53,6 +69,7 @@ export type LessonType = 'video' | 'document' | 'quiz' | 'coding'
 
 export interface ILesson {
   id?: number
+  slug?: string
   chapterId?: number
   title: string
   duration?: number | null
@@ -61,6 +78,7 @@ export interface ILesson {
   isFreePreview?: 0 | 1
   order?: number | null
   type: LessonType
+  lessonable_id?: number
   createdAt?: Date | null
   updatedAt?: Date | null
 }

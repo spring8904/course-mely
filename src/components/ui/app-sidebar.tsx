@@ -1,5 +1,6 @@
 'use client'
 
+import { useAuthStore } from '@/stores/useAuthStore'
 import {
   AudioWaveform,
   BadgeEuro,
@@ -60,7 +61,7 @@ const data = {
       items: [
         {
           title: 'Khoá học của bạn',
-          url: '#',
+          url: '/instructor/courses',
         },
         {
           title: 'Quản lý học viên',
@@ -74,28 +75,30 @@ const data = {
     },
     {
       title: 'Trò chuyện',
-      url: '#',
+      url: '/instructor/chat',
       icon: UsersRound,
     },
     {
       title: 'Bài viết',
-      url: '#',
+      url: '/instructor/posts',
       icon: MessageSquareText,
     },
     {
       title: 'Ví của bạn',
-      url: '#',
+      url: '/instructor/wallet',
       icon: Wallet,
     },
     {
       title: 'Giao dịch của tôi',
-      url: '#',
+      url: '/instructor/transaction',
       icon: BadgeEuro,
     },
   ],
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { user } = useAuthStore()
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -105,7 +108,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavMain items={data.navMain} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={user || ''} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

@@ -8,7 +8,6 @@ const WalletView = () => {
       <h2 className="mb-4 text-xl font-bold">Nạp tiền vào tài khoản</h2>
       <div className="grid grid-cols-12 gap-4 rounded-lg bg-white p-6 shadow-lg">
         <div className="col-span-4 flex flex-col gap-4">
-          {/* <!-- User Info --> */}
           <div className="mr-4 flex w-full rounded-lg border p-4">
             <Image
               alt="User avatar"
@@ -20,8 +19,7 @@ const WalletView = () => {
             <div>
               <span className="block font-bold">Tran nguyen</span>
               <span className="flex items-center text-gray-500">
-                Số dư: <AiFillDollarCircle className="mx-1 text-yellow-500" />
-                100
+                Số dư: 100
               </span>
             </div>
           </div>
@@ -57,7 +55,6 @@ const WalletView = () => {
             </span>
           </div>
         </div>
-        {/* <!-- Deposit Form --> */}
         <div className="col-span-8 rounded-lg border p-4">
           <h3 className="mb-4 font-bold">
             Nạp tiền vào tài khoản của bạn để có thể thanh toán các dịch vụ của
@@ -115,7 +112,7 @@ const WalletView = () => {
           </div>
           <div className="relative mb-4">
             <label className="mb-2 block" htmlFor="amount">
-              Nhập số tiền bạn muốn nạp
+              Nhập số tiền
             </label>
             <input
               className="w-full rounded-lg border px-4 py-2 pr-16"
@@ -127,11 +124,8 @@ const WalletView = () => {
               VNĐ
             </span>
           </div>
-          <div className="mb-4">
-            <span className="block font-bold">Tổng tiền: 0 VNĐ</span>
-          </div>
           <button className="rounded-lg bg-red-500 px-4 py-2 text-white">
-            Nạp tiền
+            Gửi yêu cầu rút tiền
           </button>
         </div>
       </div>

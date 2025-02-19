@@ -1,7 +1,10 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { MoveLeft } from 'lucide-react'
+
+import { useGetLessonCoding } from '@/hooks/instructor/lesson/useLesson'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -24,26 +27,50 @@ import TinyEditor from '@/components/shared/tiny-editor'
 
 import SolutionTab from './solution-tab'
 
-const CourseCodingView = () => {
+const CourseCodingView = ({
+  slug,
+  coding,
+}: {
+  slug: string
+  coding: string
+}) => {
+  const router = useRouter()
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [selectedLanguage, setSelectedLanguage] = useState<string>('')
   const [content, setContent] = useState('')
+  const { data: lessonCoding, isLoading } = useGetLessonCoding(slug, coding)
 
   useEffect(() => {
-    // setIsDialogOpen(true)
-  }, [])
+    if (!isLoading && !lessonCoding) {
+      router.push('/not-found')
+    } else if (lessonCoding) {
+      setSelectedLanguage(lessonCoding.data.language || '')
+      setContent(lessonCoding.data.content || '')
+    }
+  }, [lessonCoding, isLoading, router])
 
   const handleLanguageChange = (value: string) => {
     setSelectedLanguage(value)
+  }
+
+  if (isLoading) {
+    return <div>Loading...</div>
+  }
+
+  console.log(lessonCoding)
+  const handleBack = () => {
+    router.back()
   }
 
   return (
     <div className="relative min-h-screen">
       <header className="fixed inset-x-0 top-0 z-10 flex justify-between bg-white p-4 shadow-md">
         <div className="flex items-center gap-4">
-          <MoveLeft size={18} />
+          <MoveLeft className="cursor-pointer" onClick={handleBack} size={18} />
           <span>Quay lại chương trình giảng dạy</span>
-          <span className="text-xl font-bold">Coding</span>
+          <span className="text-xl font-bold">
+            {lessonCoding?.data.title || 'Bài tập Coding'}
+          </span>
         </div>
         <Button>Lưu</Button>
       </header>
@@ -96,7 +123,13 @@ const CourseCodingView = () => {
               </p>
               <div className="mt-4">
                 <Label>Tiêu đề bài tập</Label>
-                <Input placeholder="Nhập tiêu đề bài tập" />
+                <Input
+                  placeholder="Nhập tiêu đề bài tập"
+                  value={lessonCoding?.data.title || ''}
+                  onChange={(e) => {
+                    // You can implement the change handler if needed
+                  }}
+                />
               </div>
               <div className="mt-4">
                 <Label>Chọn ngôn ngữ</Label>
