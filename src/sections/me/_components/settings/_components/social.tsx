@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2 } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 
-import { ProfileBioFormValues, profileBioSchema } from '@/types/Profile'
+import { ProfileBioFormValues, profileBioSchema } from '@/validations/profile'
 import { useGetProfile, useUpdateBioProfile } from '@/hooks/profile/useProfile'
 
 const SocialView = () => {

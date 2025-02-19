@@ -1,7 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'react-toastify'
 
-import { ProfileBioFormValues, UpdateProfilePayload } from '@/types/Profile'
+import {
+  ProfileBioFormValues,
+  UpdateProfilePayload,
+} from '@/validations/profile'
 import QUERY_KEY from '@/constants/query-key'
 import { profileApi } from '@/services/profile/profile-api'
 
