@@ -1,20 +1,31 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { MoveLeft } from 'lucide-react'
+import { useForm } from 'react-hook-form'
 
-import { useGetLessonCoding } from '@/hooks/instructor/lesson/useLesson'
+import {
+  UpdateCodingLessonPayload,
+  updateCodingLessonSchema,
+} from '@/validations/course'
+import { LANGUAGE_CONFIG } from '@/constants/language'
+import {
+  useGetLessonCoding,
+  useUpdateCodingLesson,
+} from '@/hooks/instructor/lesson/useLesson'
 
 import { Button } from '@/components/ui/button'
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import {
   Select,
   SelectContent,
@@ -23,155 +34,162 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import TinyEditor from '@/components/shared/tiny-editor'
 
 import SolutionTab from './solution-tab'
 
 const CourseCodingView = ({
   slug,
-  coding,
+  codingId,
 }: {
   slug: string
-  coding: string
+  codingId: string
 }) => {
   const router = useRouter()
-  const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const [selectedLanguage, setSelectedLanguage] = useState<string>('')
-  const [content, setContent] = useState('')
-  const { data: lessonCoding, isLoading } = useGetLessonCoding(slug, coding)
+  const { data: lessonCoding, isLoading } = useGetLessonCoding(slug, codingId)
+
+  const form = useForm<UpdateCodingLessonPayload>({
+    resolver: zodResolver(updateCodingLessonSchema),
+  })
+
+  const updateCodingLesson = useUpdateCodingLesson()
+
+  const onSubmit = (values: UpdateCodingLessonPayload) => {
+    console.log(values)
+  }
 
   useEffect(() => {
-    if (!isLoading && !lessonCoding) {
-      router.push('/not-found')
-    } else if (lessonCoding) {
-      setSelectedLanguage(lessonCoding.data.language || '')
-      setContent(lessonCoding.data.content || '')
+    if (lessonCoding?.data) {
+      form.reset(lessonCoding.data)
     }
-  }, [lessonCoding, isLoading, router])
+  }, [form, lessonCoding])
 
-  const handleLanguageChange = (value: string) => {
-    setSelectedLanguage(value)
+  const handleBack = () => {
+    router.back()
+  }
+
+  const handleUpdateLanguage = (language: string) => {
+    updateCodingLesson.mutate({
+      chapterSlug: slug,
+      codingId: codingId,
+      data: {
+        language,
+        title: lessonCoding?.data.title,
+        result_code: lessonCoding?.data.result_code,
+        solution_code: lessonCoding?.data.solution_code,
+      },
+    })
   }
 
   if (isLoading) {
     return <div>Loading...</div>
   }
 
-  console.log(lessonCoding)
-  const handleBack = () => {
-    router.back()
-  }
-
   return (
     <div className="relative min-h-screen">
-      <header className="fixed inset-x-0 top-0 z-10 flex justify-between bg-white p-4 shadow-md">
-        <div className="flex items-center gap-4">
-          <MoveLeft className="cursor-pointer" onClick={handleBack} size={18} />
-          <span>Quay lại chương trình giảng dạy</span>
-          <span className="text-xl font-bold">
-            {lessonCoding?.data.title || 'Bài tập Coding'}
-          </span>
-        </div>
-        <Button>Lưu</Button>
-      </header>
-
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="max-w-lg">
-          <DialogHeader>
-            <DialogTitle>
-              Hãy chọn một ngôn ngữ lập trình cho bài tập?
-            </DialogTitle>
-          </DialogHeader>
-
-          <div className="mb-4">
-            <Label>Chọn ngôn ngữ</Label>
-            <Select
-              value={selectedLanguage}
-              onValueChange={handleLanguageChange}
-            >
-              <SelectTrigger className="mt-2 w-full rounded-lg border p-2">
-                <SelectValue placeholder="Chọn ngôn ngữ" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="javascript">JavaScript</SelectItem>
-                <SelectItem value="python">Python</SelectItem>
-                <SelectItem value="java">Java</SelectItem>
-                <SelectItem value="c++">C++</SelectItem>
-                <SelectItem value="ruby">Ruby</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="flex justify-end gap-4">
-            <Button variant="secondary">Huỷ</Button>
-            <Button>Bắt đầu tạo</Button>
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      <Tabs defaultValue="solution" className="h-screen py-[68px] [&>*]:mt-0">
-        <TabsContent value="plan">
-          <main className="flex flex-col p-4">
-            <div className="container mx-auto max-w-4xl p-4">
-              <h2 className="text-2xl font-bold">Bài tập Coding</h2>
-              <p className="mt-4">
-                Bài tập mã hóa cho phép người học thực hành một phần công việc
-                thực tế có mục tiêu và nhận được phản hồi ngay lập tức. Chúng
-                tôi khuyên bạn nên làm theo các bước sau: Lên kế hoạch cho bài
-                tập, xác định giải pháp và hướng dẫn người học. Điều này sẽ đảm
-                bảo bạn định hình được vấn đề và cung cấp hướng dẫn cần thiết
-                với giải pháp trong đầu.
-              </p>
-              <div className="mt-4">
-                <Label>Tiêu đề bài tập</Label>
-                <Input
-                  placeholder="Nhập tiêu đề bài tập"
-                  value={lessonCoding?.data.title || ''}
-                  onChange={(e) => {
-                    // You can implement the change handler if needed
-                  }}
-                />
-              </div>
-              <div className="mt-4">
-                <Label>Chọn ngôn ngữ</Label>
-                <Select
-                  value={selectedLanguage}
-                  onValueChange={handleLanguageChange}
-                >
-                  <SelectTrigger className="mt-2 w-full rounded-lg border p-2">
-                    <SelectValue placeholder="Chọn ngôn ngữ" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="javascript">JavaScript</SelectItem>
-                    <SelectItem value="python">Python</SelectItem>
-                    <SelectItem value="java">Java</SelectItem>
-                    <SelectItem value="c++">C++</SelectItem>
-                    <SelectItem value="ruby">Ruby</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
+          <header className="fixed inset-x-0 top-0 z-10 flex justify-between bg-white p-4 shadow-md">
+            <div className="flex items-center gap-4">
+              <MoveLeft
+                className="cursor-pointer"
+                onClick={handleBack}
+                size={18}
+              />
+              <span>Quay lại chương trình giảng dạy</span>
+              <span className="text-xl font-bold">
+                {lessonCoding?.data.title || 'Bài tập Coding'}
+              </span>
             </div>
-          </main>
-        </TabsContent>
-        <TabsContent value="solution" className="h-full">
-          <SolutionTab />
-        </TabsContent>
-        <TabsContent value="guide">
-          <TinyEditor
-            value={content}
-            onEditorChange={(value: any) => {
-              setContent(value)
-              console.log(value)
-            }}
-          />
-        </TabsContent>
-        <footer className="fixed inset-x-0 bottom-0 z-10 flex justify-center border-t bg-white p-4">
-          <TabsList className="flex gap-4">
-            <TabsTrigger value="plan">Kế hoạch tập luyện</TabsTrigger>
-            <TabsTrigger value="solution">Giải pháp</TabsTrigger>
-            <TabsTrigger value="guide">Hướng dẫn</TabsTrigger>
-          </TabsList>
-        </footer>
-      </Tabs>
+            <Button disabled={updateCodingLesson.isPending} type="submit">
+              Lưu
+            </Button>
+          </header>
+
+          <Tabs defaultValue="plan" className="h-screen py-[68px] [&>*]:mt-0">
+            <TabsContent value="plan">
+              <main className="flex flex-col p-4">
+                <div className="container mx-auto max-w-4xl space-y-4 p-4">
+                  <h2 className="text-2xl font-bold">Bài tập Coding</h2>
+                  <p>
+                    Bài tập mã hóa cho phép người học thực hành một phần công
+                    việc thực tế có mục tiêu và nhận được phản hồi ngay lập tức.
+                    Chúng tôi khuyên bạn nên làm theo các bước sau: Lên kế hoạch
+                    cho bài tập, xác định giải pháp và hướng dẫn người học. Điều
+                    này sẽ đảm bảo bạn định hình được vấn đề và cung cấp hướng
+                    dẫn cần thiết với giải pháp trong đầu.
+                  </p>
+                  <FormField
+                    control={form.control}
+                    name="title"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Tiêu đề bài tập</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Nhập tiêu đề bài tập"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="language"
+                    render={() => (
+                      <FormItem>
+                        <FormLabel>Chọn ngôn ngữ</FormLabel>
+                        <Select
+                          onValueChange={handleUpdateLanguage}
+                          defaultValue={lessonCoding?.data.language}
+                          disabled={updateCodingLesson.isPending}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Chọn ngôn ngữ" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {Object.entries(LANGUAGE_CONFIG).map(
+                              ([key, value]) => (
+                                <SelectItem key={key} value={key}>
+                                  {value.displayName}
+                                </SelectItem>
+                              )
+                            )}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </main>
+            </TabsContent>
+            <TabsContent value="solution" className="h-full">
+              <SolutionTab form={form} />
+            </TabsContent>
+            <TabsContent value="guide">
+              {/* <TinyEditor
+                value={content}
+                onEditorChange={(value: any) => {
+                  setContent(value)
+                  console.log(value)
+                }}
+              /> */}
+            </TabsContent>
+            <footer className="fixed inset-x-0 bottom-0 z-10 flex justify-center border-t bg-white p-4">
+              <TabsList className="flex gap-4">
+                <TabsTrigger value="plan">Kế hoạch tập luyện</TabsTrigger>
+                <TabsTrigger value="solution">Giải pháp</TabsTrigger>
+                <TabsTrigger value="guide">Hướng dẫn</TabsTrigger>
+              </TabsList>
+            </footer>
+          </Tabs>
+        </form>
+      </Form>
     </div>
   )
 }

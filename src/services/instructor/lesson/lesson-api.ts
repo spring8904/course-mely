@@ -1,8 +1,8 @@
+import { UpdateCodingLessonPayload } from '@/validations/course'
 import {
   CreateLessonPayload,
   LessonCodingPayload,
   LessonQuizPayload,
-  StoreQuestionPayload,
   UpdateTitleLessonPayload,
 } from '@/validations/lesson'
 import api from '@/configs/api'
@@ -13,8 +13,8 @@ export const instructorLessonApi = {
   getLessonOverview: async (slug: string) => {
     return await api.get(`${prefix}/${slug}`)
   },
-  getLessonCoding: async (lessonId: string, coding: string) => {
-    return await api.get(`${prefix}/${lessonId}/${coding}/coding-exercise`)
+  getLessonCoding: async (lessonSlug: string, codingId: string) => {
+    return await api.get(`${prefix}/${lessonSlug}/${codingId}/coding-exercise`)
   },
   createLesson: (payload: CreateLessonPayload) => {
     return api.post(prefix, payload, {
@@ -68,5 +68,15 @@ export const instructorLessonApi = {
   },
   deleteLesson: (chapterId: number, id: number) => {
     return api.delete(`${prefix}/${chapterId}/${id}`)
+  },
+  updateCodingLesson: (
+    lessonSlug: string,
+    codingId: string | number,
+    payload: UpdateCodingLessonPayload
+  ) => {
+    return api.put(
+      `${prefix}/${lessonSlug}/${codingId}/coding-exercise`,
+      payload
+    )
   },
 }

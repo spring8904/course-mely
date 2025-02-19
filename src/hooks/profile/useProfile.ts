@@ -19,7 +19,7 @@ export const useUpdateProfile = () => {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: (data: UpdateProfilePayload) => profileApi.updateProfile(data),
-    onSuccess: async (res) => {
+    onSuccess: async (res: any) => {
       await queryClient.invalidateQueries({
         queryKey: [QUERY_KEY.PROFILE],
       })
@@ -37,7 +37,7 @@ export const useUpdateBioProfile = () => {
     mutationFn: async (data: ProfileBioFormValues) =>
       profileApi.updateBioProfile(data),
 
-    onSuccess: async (res) => {
+    onSuccess: async (res: any) => {
       await queryClient.invalidateQueries({ queryKey: [QUERY_KEY.PROFILE] })
       toast.success(res?.message)
     },

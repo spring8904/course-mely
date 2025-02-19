@@ -1,7 +1,4 @@
-'use client'
-
-import React from 'react'
-import { useSearchParams } from 'next/navigation'
+import { redirect } from 'next/navigation'
 
 import CourseCodingView from '@/sections/instructor/_components/courses/course-coding-view'
 
@@ -10,14 +7,18 @@ interface Props {
     slug: string
     coding: string
   }
+  searchParams?: { [key: string]: string | string[] | undefined }
 }
 
-const CourseExercisePage = ({ params }: Props) => {
-  const searchParams = useSearchParams()
+const CourseExercisePage = ({ params, searchParams }: Props) => {
   const { slug } = params
-  const coding = searchParams.get('coding')
+  const codingId = searchParams?.coding as string
 
-  return <CourseCodingView slug={slug} coding={coding} />
+  if (!codingId) {
+    redirect('/not-found')
+  }
+
+  return <CourseCodingView slug={slug} codingId={codingId} />
 }
 
 export default CourseExercisePage
