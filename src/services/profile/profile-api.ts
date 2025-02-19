@@ -1,4 +1,7 @@
-import { ProfileBioFormValues, UpdateProfilePayload } from '@/types/Profile'
+import {
+  ProfileBioFormValues,
+  UpdateProfilePayload,
+} from '@/validations/profile'
 import api from '@/configs/api'
 
 const prefix = '/user/profile'

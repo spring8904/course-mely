@@ -5,10 +5,11 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2 } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 
-import { updateProfile, UpdateProfilePayload } from '@/types/Profile'
+import { updateProfile, UpdateProfilePayload } from '@/validations/profile'
 import { useGetProfile, useUpdateProfile } from '@/hooks/profile/useProfile'
 
 import SocialView from '@/sections/me/_components/settings/_components/social'
+import PassWordView from './_components/password'
 
 const MeSetting = () => {
   const [activeTab, setActiveTab] = useState('Profile')
@@ -216,60 +217,7 @@ const MeSetting = () => {
                 </div>
               )}
 
-              {activeTab === 'Password' && (
-                <div className="widget-content-inner">
-                  <form action="#" className="shop-checkout">
-                    <fieldset className="tf-field">
-                      <input
-                        className="tf-input style-1"
-                        id="field4"
-                        type="password"
-                        placeholder=""
-                        name="password"
-                        tabIndex={2}
-                        defaultValue=""
-                        aria-required="true"
-                      />
-                      <label className="tf-field-label fs-15" htmlFor="field4">
-                        Current Password
-                      </label>
-                    </fieldset>
-                    <fieldset className="tf-field">
-                      <input
-                        className="tf-input style-1"
-                        id="field4"
-                        type="password"
-                        placeholder=""
-                        name="password"
-                        tabIndex={2}
-                        defaultValue=""
-                        aria-required="true"
-                      />
-                      <label className="tf-field-label fs-15" htmlFor="field4">
-                        New Password
-                      </label>
-                    </fieldset>
-                    <fieldset className="tf-field">
-                      <input
-                        className="tf-input style-1"
-                        id="field4"
-                        type="password"
-                        placeholder=""
-                        name="password"
-                        tabIndex={2}
-                        defaultValue=""
-                        aria-required="true"
-                      />
-                      <label className="tf-field-label fs-15" htmlFor="field4">
-                        Re-Type New Password
-                      </label>
-                    </fieldset>
-                  </form>
-                  <a href="#" type="submit" className="tf-btn">
-                    Update Password <i className="icon-arrow-top-right"></i>
-                  </a>
-                </div>
-              )}
+              {activeTab === 'Password' && <PassWordView />}
               {activeTab === 'Social' && <SocialView />}
             </div>
           </div>

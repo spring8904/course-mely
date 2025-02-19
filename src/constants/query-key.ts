@@ -1,5 +1,7 @@
 const QUERY_KEY = {
   AUTH: 'auth',
+  PROFILE: 'profile',
+  CHANGE_PASSWORD: 'change-password',
   COURSES_DISCOUNTED: 'discounted-courses',
   COURSES_FREE: 'free-courses',
   INSTRUCTOR_COURSE: 'instructor-course',
