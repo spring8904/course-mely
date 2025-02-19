@@ -4,7 +4,11 @@ import { create } from 'zustand'
 import { IUser } from '@/types'
 import { Role } from '@/constants/role'
 import { StorageKeys } from '@/constants/storage-keys'
-import { getUserFromLocalStorage } from '@/lib/common'
+import {
+  getLocalStorage,
+  removeLocalStorage,
+  setLocalStorage,
+} from '@/lib/common'
 
 interface UserState {
   user: IUser | null
@@ -18,16 +22,16 @@ interface UserState {
 }
 
 export const useAuthStore = create<UserState>((set) => ({
-  user: getUserFromLocalStorage(),
+  user: getLocalStorage(StorageKeys.USER),
   token: Cookies.get(StorageKeys.ACCESS_TOKEN) || null,
   role: (Cookies.get(StorageKeys.ROLE) as Role) || null,
   isAuthenticated: !!Cookies.get(StorageKeys.ACCESS_TOKEN),
 
   setUser: (user) => {
     if (user) {
-      localStorage.setItem(StorageKeys.USER, JSON.stringify(user))
+      setLocalStorage(StorageKeys.USER, user)
     } else {
-      localStorage.removeItem(StorageKeys.USER)
+      removeLocalStorage(StorageKeys.USER)
     }
     set({ user })
   },
@@ -52,7 +56,7 @@ export const useAuthStore = create<UserState>((set) => ({
 
   logout: () => {
     Cookies.remove(StorageKeys.ACCESS_TOKEN)
-    localStorage.removeItem(StorageKeys.USER)
+    removeLocalStorage(StorageKeys.USER)
     Cookies.remove(StorageKeys.ROLE)
     set({ user: null, token: null, role: null, isAuthenticated: false })
   },

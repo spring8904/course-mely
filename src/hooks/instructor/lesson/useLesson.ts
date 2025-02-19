@@ -1,12 +1,47 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'react-toastify'
 
 import {
   CreateLessonPayload,
+  LessonCodingPayload,
+  LessonQuizPayload,
+  StoreQuestionPayload,
   UpdateTitleLessonPayload,
 } from '@/validations/lesson'
 import QUERY_KEY from '@/constants/query-key'
 import { instructorLessonApi } from '@/services/instructor/lesson/lesson-api'
+
+export const useGetLessonCoding = (lessonId: string, coding: string) => {
+  return useQuery({
+    queryKey: [QUERY_KEY.INSTRUCTOR_LESSON_CODING],
+    queryFn: () => instructorLessonApi.getLessonCoding(lessonId, coding),
+    enabled: !!coding,
+  })
+}
+
+export const useCreateLessonVideo = () => {
+  return useMutation({
+    mutationFn: ({
+      chapterId,
+      payload,
+    }: {
+      chapterId: string
+      payload: FormData
+    }) => instructorLessonApi.createLessonVideo(chapterId, payload),
+  })
+}
+
+export const useCreateLessonDocument = () => {
+  return useMutation({
+    mutationFn: ({
+      chapterId,
+      payload,
+    }: {
+      chapterId: string
+      payload: FormData
+    }) => instructorLessonApi.createLessonDocument(chapterId, payload),
+  })
+}
 
 export const useCreateLesson = () => {
   const queryClient = useQueryClient()
@@ -24,6 +59,30 @@ export const useCreateLesson = () => {
     onError: (error) => {
       toast.error(error.message)
     },
+  })
+}
+
+export const useCreateLessonCoding = () => {
+  return useMutation({
+    mutationFn: ({
+      chapterId,
+      payload,
+    }: {
+      chapterId: string
+      payload: LessonCodingPayload
+    }) => instructorLessonApi.createLessonCoding(chapterId, payload),
+  })
+}
+
+export const useCreateLessonQuiz = () => {
+  return useMutation({
+    mutationFn: ({
+      chapterId,
+      payload,
+    }: {
+      chapterId: string
+      payload: LessonQuizPayload
+    }) => instructorLessonApi.createLessonQuiz(chapterId, payload),
   })
 }
 

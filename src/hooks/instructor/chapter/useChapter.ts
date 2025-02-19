@@ -15,9 +15,14 @@ export const useCreateChapter = () => {
     mutationFn: (data: CreateChapterPayload) =>
       instructorChapterApi.createChapter(data),
     onSuccess: async (res: any) => {
-      await queryClient.invalidateQueries({
-        queryKey: [QUERY_KEY.INSTRUCTOR_COURSE],
-      })
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_KEY.INSTRUCTOR_COURSE],
+        }),
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_KEY.VALIDATE_COURSE],
+        }),
+      ])
       toast.success(res.message)
     },
     onError: (error) => {
@@ -41,9 +46,14 @@ export const useUpdateChapter = () => {
     }) => instructorChapterApi.updateChapter(slug, id, data),
 
     onSuccess: async (res: any) => {
-      await queryClient.invalidateQueries({
-        queryKey: [QUERY_KEY.INSTRUCTOR_COURSE],
-      })
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_KEY.INSTRUCTOR_COURSE],
+        }),
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_KEY.VALIDATE_COURSE],
+        }),
+      ])
       toast.success(res.message)
     },
     onError: (error) => {
@@ -59,9 +69,14 @@ export const useDeleteChapter = () => {
     mutationFn: ({ slug, id }: { slug: string; id: number }) =>
       instructorChapterApi.deleteChapter(slug, id),
     onSuccess: async (res: any) => {
-      await queryClient.invalidateQueries({
-        queryKey: [QUERY_KEY.INSTRUCTOR_COURSE],
-      })
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_KEY.INSTRUCTOR_COURSE],
+        }),
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_KEY.VALIDATE_COURSE],
+        }),
+      ])
       toast.success(res.message)
     },
     onError: (error) => {

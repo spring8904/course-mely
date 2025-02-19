@@ -4,6 +4,7 @@ export const createChapterSchema = z.object({
   slug: z.string().min(1),
   title: z
     .string()
+    .trim()
     .min(3, 'Tiêu đề phải có ít nhất 3 ký tự')
     .max(255, 'Tiêu đề không được vượt quá 255 ký tự'),
 })
@@ -11,6 +12,7 @@ export const createChapterSchema = z.object({
 export const updateChaterSchema = z.object({
   title: z
     .string()
+    .trim()
     .min(3, 'Tiêu đề phải có ít nhất 3 ký tự')
     .max(255, 'Tiêu đề không được vượt quá 255 ký tự'),
 })

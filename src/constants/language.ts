@@ -10,6 +10,14 @@ export const LANGUAGE_VERSIONS = {
   css: 'CSS3',
 }
 
+export const SUPPORTED_LANGUAGES = [
+  { value: 'JavaScript', key: 'javascript' },
+  { value: 'Python', key: 'python' },
+  { value: 'PHP', key: 'php' },
+  { value: 'Java', key: 'java' },
+  { value: 'Typescript', key: 'typescript' },
+]
+
 export const CODE_SNIPPETS = {
   javascript: `\nfunction greet(name) {\n\tconsole.log("Hello, " + name + "!");\n}\n\ngreet("Alex");\n`,
   typescript: `\ntype Params = {\n\tname: string;\n}\n\nfunction greet(data: Params) {\n\tconsole.log("Hello, " + data.name + "!");\n}\n\ngreet({ name: "Alex" });\n`,

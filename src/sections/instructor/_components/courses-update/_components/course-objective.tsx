@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { CirclePlus, Loader2, Trash } from 'lucide-react'
 import { useForm } from 'react-hook-form'
@@ -7,7 +7,6 @@ import { useImmer } from 'use-immer'
 import {
   UpdateCourseObjectivePayload,
   updateCourseObjectiveSchema,
-  updateCourseSchema,
 } from '@/validations/course'
 import { useUpdateCourseObjective } from '@/hooks/instructor/course/useCourse'
 
@@ -66,7 +65,7 @@ const CourseObjective = ({ courseObjective }: any) => {
         Array.isArray(data.qa) ? data.qa : [{ question: '', answers: '' }]
       )
     }
-  }, [courseObjective, form])
+  }, [courseObjective, form, setFaqs])
 
   const handleAddBenefit = () => {
     if (benefits.length < 10) {
