@@ -1,15 +1,19 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import dynamic from 'next/dynamic'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useAuthStore } from '@/stores/useAuthStore'
 import { useWishListStore } from '@/stores/useWishListStore'
+import { Loader2, Search } from 'lucide-react'
 import Swal from 'sweetalert2'
 
+import { ICourse, IInstructorProfile } from '@/types'
 import { useLogOut } from '@/hooks/auth/useLogOut'
 import { useGetCategories } from '@/hooks/category/useCategory'
+import { useDebounce } from '@/hooks/debounce/useDebounce'
+import { useSearch } from '@/hooks/search/userSearch'
 import { useGetWishLists } from '@/hooks/wish-list/useWishList'
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
@@ -21,14 +25,25 @@ const MobileMenu = dynamic(() => import('./MobileMenu'), {
 
 const Header = () => {
   const [query, setQuery] = useState('')
-  const [results, setResults] = useState<any[]>([])
+  const [categories, setCategories] = useState<any[]>([])
+  const [inputWidth, setInputWidth] = useState(0)
   const { user, isAuthenticated } = useAuthStore()
   const { isPending, mutate } = useLogOut()
-  const [categories, setCategories] = useState<any[]>([])
   const { data: wishListData } = useGetWishLists()
   const setWishList = useWishListStore((state) => state.setWishList)
   useGetWishLists()
   const { data: categoryData } = useGetCategories()
+  const debouncedQuery = useDebounce(query, 300)
+  const { data: searchResults, isLoading: searchLoading } =
+    useSearch(debouncedQuery)
+
+  const inputRef = useRef<HTMLInputElement | null>(null)
+
+  useEffect(() => {
+    if (inputRef.current) {
+      setInputWidth(inputRef.current.offsetWidth)
+    }
+  }, [])
 
   useEffect(() => {
     if (wishListData) {
@@ -43,27 +58,8 @@ const Header = () => {
     }
   }, [categoryData])
 
-  const data: any = [
-    { type: 'course', name: 'Next.js Basics' },
-    { type: 'course', name: 'React Advanced' },
-    { type: 'article', name: 'Introduction to JavaScript' },
-    { type: 'article', name: 'Understanding APIs' },
-    { type: 'instructor', name: 'John Doe' },
-    { type: 'instructor', name: 'Jane Smith' },
-  ]
-
-  const handleSearch = (e: any) => {
-    const value = e.target.value
-    setQuery(value)
-
-    if (value.trim() === '') {
-      setResults([])
-    } else {
-      const filteredResults = data.filter((item: any) =>
-        item.name.toLowerCase().includes(value.toLowerCase())
-      )
-      setResults(filteredResults)
-    }
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setQuery(e.target.value)
   }
 
   const handleLogout = () => {
@@ -387,14 +383,16 @@ const Header = () => {
         </div>
         <MobileMenu />
       </header>
+
       <div
         className="offcanvas offcanvas-top offcanvas-search"
         id="canvasSearch"
       >
         <i
-          className="flaticon-close-1 btn-close"
+          className="flaticon-close-1 btn-close cursor-pointer"
           data-bs-dismiss="offcanvas"
           aria-label="Close"
+          onClick={() => setQuery('')}
         ></i>
         <div className="tf-container">
           <div className="row">
@@ -406,7 +404,7 @@ const Header = () => {
                   </div>
                   <fieldset>
                     <input
-                      className=""
+                      ref={inputRef}
                       type="text"
                       placeholder="Tìm kiếm khoá học, bài viết, người hướng dẫn..."
                       name="text"
@@ -425,14 +423,92 @@ const Header = () => {
                     </button>
                   </div>
                 </form>
-                {results.length > 0 && (
-                  <ul>
-                    {results.map((result: any, index) => (
-                      <li key={index}>
-                        <strong>{result?.type}:</strong> {result?.name}
-                      </li>
-                    ))}
-                  </ul>
+                {debouncedQuery.trim() !== '' && (
+                  <div
+                    className="popover-content mt-2 px-6 py-3"
+                    style={{ width: inputWidth }}
+                  >
+                    <div className="flex items-center space-x-2">
+                      {searchLoading ? (
+                        <Loader2 className="size-4 animate-spin" />
+                      ) : (
+                        <Search size={16} />
+                      )}
+                      <p className="text-base">
+                        {searchLoading || searchResults
+                          ? `Kết quả cho "${debouncedQuery}"`
+                          : `Không có kết quả cho "${debouncedQuery}"`}
+                      </p>
+                    </div>
+
+                    {searchResults?.courses?.length > 0 && (
+                      <>
+                        <div className="flex items-center justify-between border-b border-solid border-gray-200 pb-3 pt-6">
+                          <h3 className="text-xl uppercase">Khoá học</h3>
+                        </div>
+                        <ul>
+                          {searchResults?.courses?.map((course: ICourse) => (
+                            <li key={course?.id} className="py-2">
+                              <Link href={`/courses/${course?.slug}`}>
+                                <div
+                                  className="flex w-fit items-center space-x-3"
+                                  data-bs-dismiss="offcanvas"
+                                  onClick={() => setQuery('')}
+                                >
+                                  <Avatar>
+                                    <AvatarImage
+                                      src={course?.thumbnail}
+                                      alt={course?.name}
+                                    />
+                                    <AvatarFallback>
+                                      {course?.name?.charAt(0).toUpperCase()}
+                                    </AvatarFallback>
+                                  </Avatar>
+                                  <p className="text-base">{course?.name}</p>
+                                </div>
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      </>
+                    )}
+
+                    {searchResults?.instructors?.length > 0 && (
+                      <>
+                        <div className="flex items-center justify-between border-b border-solid border-gray-200 pb-3 pt-6">
+                          <h3 className="text-xl uppercase">Người hướng dẫn</h3>
+                        </div>
+                        <ul>
+                          {searchResults?.instructors?.map(
+                            (instructor: IInstructorProfile) => (
+                              <li key={instructor?.id}>
+                                <div
+                                  className="flex w-fit items-center space-x-3"
+                                  data-bs-dismiss="offcanvas"
+                                  onClick={() => setQuery('')}
+                                >
+                                  <Avatar>
+                                    <AvatarImage
+                                      src={instructor?.avatar ?? ''}
+                                      alt={instructor?.name}
+                                    />
+                                    <AvatarFallback>
+                                      {instructor?.name
+                                        ?.charAt(0)
+                                        .toUpperCase()}
+                                    </AvatarFallback>
+                                  </Avatar>
+                                  <p className="text-base">
+                                    {instructor?.name}
+                                  </p>
+                                </div>
+                              </li>
+                            )
+                          )}
+                        </ul>
+                      </>
+                    )}
+                  </div>
                 )}
               </div>
             </div>

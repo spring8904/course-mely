@@ -14,6 +14,7 @@ const QUERY_KEY = {
   BLOGS: 'blogs',
   BLOG_DETAILS: 'blog-details',
   WISH_LIST: 'wish-list',
+  SEARCH: 'search',
 }
 
 export default QUERY_KEY

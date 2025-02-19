@@ -23,8 +23,8 @@ export interface ICourse {
   level?: string | null
   duration?: number | null
   total_student?: number
-  requirements?: string[]
-  benefits?: string[]
+  requirements?: string | string[]
+  benefits?: string | string[]
   qa?: { question: string; answer: string }[]
   is_popular?: 0 | 1
   status: CourseStatus

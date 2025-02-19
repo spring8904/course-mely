@@ -122,7 +122,9 @@ const CourseDetailView = ({ slug }: { slug: string }) => {
 
   useEffect(() => {
     if (courseDetails?.benefits) {
-      const parsedBenefits = JSON.parse(`${courseDetails.benefits}`)
+      const parsedBenefits = JSON.parse(
+        JSON.parse(courseDetails.benefits as string)
+      )
 
       if (parsedBenefits.length > 5) {
         setBenefitsColumn1(
@@ -139,7 +141,9 @@ const CourseDetailView = ({ slug }: { slug: string }) => {
 
   useEffect(() => {
     if (courseDetails?.requirements) {
-      const parsedRequirements = JSON.parse(`${courseDetails.requirements}`)
+      const parsedRequirements = JSON.parse(
+        JSON.parse(courseDetails.requirements as string)
+      )
 
       if (parsedRequirements.length > 5) {
         setRequirementsColumn1(
@@ -268,12 +272,13 @@ const CourseDetailView = ({ slug }: { slug: string }) => {
                   </h2>
                   <div className="learn-inner">
                     <ul className="learn-list">
-                      {benefitsColumn1?.map((benefit, index) => (
-                        <li key={index} className="item">
-                          <i className="flaticon-check" />
-                          {benefit}
-                        </li>
-                      ))}
+                      {benefitsColumn1?.length > 0 &&
+                        benefitsColumn1?.map((benefit, index) => (
+                          <li key={index} className="item">
+                            <i className="flaticon-check" />
+                            {benefit}
+                          </li>
+                        ))}
                     </ul>
                     <ul className="learn-list">
                       {benefitsColumn2?.map((benefit, index) => (

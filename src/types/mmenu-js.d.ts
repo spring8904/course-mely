@@ -1,6 +1,6 @@
 declare module 'mmenu-js' {
   class Mmenu {
-    constructor(element: HTMLElement)
+    constructor(element: string | HTMLElement, options?: any)
   }
 
   export default Mmenu
