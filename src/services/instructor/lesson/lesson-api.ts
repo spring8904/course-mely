@@ -2,6 +2,7 @@ import {
   CreateLessonPayload,
   LessonCodingPayload,
   LessonQuizPayload,
+  StoreQuestionPayload,
   UpdateTitleLessonPayload,
 } from '@/validations/lesson'
 import api from '@/configs/api'

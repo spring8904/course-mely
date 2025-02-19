@@ -5,6 +5,7 @@ import {
   CreateLessonPayload,
   LessonCodingPayload,
   LessonQuizPayload,
+  StoreQuestionPayload,
   UpdateTitleLessonPayload,
 } from '@/validations/lesson'
 import QUERY_KEY from '@/constants/query-key'

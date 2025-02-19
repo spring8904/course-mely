@@ -52,6 +52,7 @@ export interface ICourse {
   created_at?: Date | null
   updated_at?: Date | null
 }
+
 export type ICourses = ICourse[]
 
 export interface IChapter {
@@ -77,6 +78,7 @@ export interface ILesson {
   isFreePreview?: 0 | 1
   order?: number | null
   type: LessonType
+  lessonable_id?: number
   createdAt?: Date | null
   updatedAt?: Date | null
 }

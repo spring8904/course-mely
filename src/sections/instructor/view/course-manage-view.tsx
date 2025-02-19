@@ -127,7 +127,7 @@ const CourseManageView = () => {
               className="size-16 rounded-lg object-cover"
               height={128}
               width={128}
-              src={course.thumbnail}
+              src={course?.thumbnail ?? ''}
             />
             <div className="flex-1 space-y-1">
               <h3 className="font-semibold">{course.name}</h3>

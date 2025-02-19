@@ -17,6 +17,8 @@ const QUERY_KEY = {
   BLOG_DETAILS: 'blog-details',
   WISH_LIST: 'wish-list',
   VALIDATE_COURSE: 'validate-course',
+  INSTRUCTOR_QUIZ: 'instructor-quiz',
+  INSTRUCTOR_QUESTION: 'instructor-question',
 }
 
 export default QUERY_KEY
