@@ -55,11 +55,6 @@ const BecomeAnInstructor = () => {
   })
 
   const onSubmit = (values: RegisterInstructorInput) => {
-    console.log('Submitting...')
-    console.group('Register Instructor')
-    console.log(values)
-    console.groupEnd()
-
     registerInstructor(values)
   }
 

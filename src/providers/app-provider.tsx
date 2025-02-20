@@ -23,7 +23,7 @@ const AppProvider = ({ children }: Props) => {
   return (
     <QueryProvider>
       {children}
-      <ToastContainer newestOnTop className="pl-8" />
+      <ToastContainer newestOnTop />
     </QueryProvider>
   )
 }

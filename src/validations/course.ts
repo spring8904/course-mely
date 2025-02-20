@@ -143,22 +143,32 @@ export const updateCourseObjectiveSchema = z.object({
 })
 
 export const updateCodingLessonSchema = z.object({
-  title: z.string().min(3, 'Tiêu đề phải có ít nhất 3 ký tự'),
+  title: z.string().trim().min(3, 'Tiêu đề phải có ít nhất 3 ký tự'),
   language: z.string({
     message: 'Vui lòng chọn ngôn ngữ lập trình',
   }),
-  hints: z.string().array().optional().nullable(),
-  sample_code: z.string().optional().nullable(),
+  hints: z
+    .string()
+    .trim()
+    .array()
+    .max(10, {
+      message: 'Số lượng gợi ý tối đa là 10',
+    })
+    .optional()
+    .nullable(),
+  sample_code: z.string().trim().optional(),
   result_code: z
     .string({
-      required_error: 'Vui lòng nhập mã giải',
+      required_error: 'Vui lòng nhập mã giải và chạy',
+      invalid_type_error: 'Vui lòng nhập mã giải và chạy',
     })
-    .nullable(),
+    .trim(),
   solution_code: z
     .string({
       required_error: 'Vui lòng nhập hướng dẫn',
+      invalid_type_error: 'Vui lòng nhập hướng dẫn',
     })
-    .nullable(),
+    .trim(),
 })
 
 export type UpdateCodingLessonPayload = z.infer<typeof updateCodingLessonSchema>

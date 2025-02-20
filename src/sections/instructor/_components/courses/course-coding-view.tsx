@@ -3,7 +3,7 @@
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { MoveLeft } from 'lucide-react'
+import { Loader2, MoveLeft } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 
 import {
@@ -35,6 +35,7 @@ import {
 } from '@/components/ui/select'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
+import GuideTab from './guide-tab'
 import SolutionTab from './solution-tab'
 
 const CourseCodingView = ({
@@ -49,12 +50,38 @@ const CourseCodingView = ({
 
   const form = useForm<UpdateCodingLessonPayload>({
     resolver: zodResolver(updateCodingLessonSchema),
+    defaultValues: {
+      title: '',
+      language: '',
+      sample_code: '',
+      result_code: '',
+      solution_code: '',
+      hints: [''],
+    },
   })
 
   const updateCodingLesson = useUpdateCodingLesson()
 
   const onSubmit = (values: UpdateCodingLessonPayload) => {
-    console.log(values)
+    const filteredHints = values.hints?.filter((hint) => hint !== '') || []
+
+    const payload = {
+      ...values,
+      hints: filteredHints,
+    }
+
+    updateCodingLesson.mutate(
+      {
+        chapterSlug: slug,
+        codingId: codingId,
+        data: payload,
+      },
+      {
+        onSuccess: () => {
+          router.back()
+        },
+      }
+    )
   }
 
   useEffect(() => {
@@ -101,84 +128,77 @@ const CourseCodingView = ({
               </span>
             </div>
             <Button disabled={updateCodingLesson.isPending} type="submit">
-              Lưu
+              {updateCodingLesson.isPending && (
+                <Loader2 className="animate-spin" />
+              )}{' '}
+              Cập nhật
             </Button>
           </header>
 
           <Tabs defaultValue="plan" className="h-screen py-[68px] [&>*]:mt-0">
-            <TabsContent value="plan">
-              <main className="flex flex-col p-4">
-                <div className="container mx-auto max-w-4xl space-y-4 p-4">
-                  <h2 className="text-2xl font-bold">Bài tập Coding</h2>
-                  <p>
-                    Bài tập mã hóa cho phép người học thực hành một phần công
-                    việc thực tế có mục tiêu và nhận được phản hồi ngay lập tức.
-                    Chúng tôi khuyên bạn nên làm theo các bước sau: Lên kế hoạch
-                    cho bài tập, xác định giải pháp và hướng dẫn người học. Điều
-                    này sẽ đảm bảo bạn định hình được vấn đề và cung cấp hướng
-                    dẫn cần thiết với giải pháp trong đầu.
-                  </p>
-                  <FormField
-                    control={form.control}
-                    name="title"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Tiêu đề bài tập</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="Nhập tiêu đề bài tập"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+            <TabsContent value="plan" className="h-full">
+              <div className="container mx-auto max-w-4xl space-y-4 p-8">
+                <h2 className="text-2xl font-bold">Bài tập Coding</h2>
+                <p>
+                  Bài tập mã hóa cho phép người học thực hành một phần công việc
+                  thực tế có mục tiêu và nhận được phản hồi ngay lập tức. Chúng
+                  tôi khuyên bạn nên làm theo các bước sau: Lên kế hoạch cho bài
+                  tập, xác định giải pháp và hướng dẫn người học. Điều này sẽ
+                  đảm bảo bạn định hình được vấn đề và cung cấp hướng dẫn cần
+                  thiết với giải pháp trong đầu.
+                </p>
 
-                  <FormField
-                    control={form.control}
-                    name="language"
-                    render={() => (
-                      <FormItem>
-                        <FormLabel>Chọn ngôn ngữ</FormLabel>
-                        <Select
-                          onValueChange={handleUpdateLanguage}
-                          defaultValue={lessonCoding?.data.language}
-                          disabled={updateCodingLesson.isPending}
-                        >
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Chọn ngôn ngữ" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {Object.entries(LANGUAGE_CONFIG).map(
-                              ([key, value]) => (
-                                <SelectItem key={key} value={key}>
-                                  {value.displayName}
-                                </SelectItem>
-                              )
-                            )}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-              </main>
+                <FormField
+                  control={form.control}
+                  name="title"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Tiêu đề bài tập</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Nhập tiêu đề bài tập" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="language"
+                  render={() => (
+                    <FormItem>
+                      <FormLabel>Chọn ngôn ngữ</FormLabel>
+                      <Select
+                        onValueChange={handleUpdateLanguage}
+                        defaultValue={lessonCoding?.data.language}
+                        disabled={updateCodingLesson.isPending}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Chọn ngôn ngữ" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {Object.entries(LANGUAGE_CONFIG).map(
+                            ([key, value]) => (
+                              <SelectItem key={key} value={key}>
+                                {value.displayName}
+                              </SelectItem>
+                            )
+                          )}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
             </TabsContent>
             <TabsContent value="solution" className="h-full">
               <SolutionTab form={form} />
             </TabsContent>
-            <TabsContent value="guide">
-              {/* <TinyEditor
-                value={content}
-                onEditorChange={(value: any) => {
-                  setContent(value)
-                  console.log(value)
-                }}
-              /> */}
+            <TabsContent value="guide" className="h-full">
+              <GuideTab form={form} />
             </TabsContent>
             <footer className="fixed inset-x-0 bottom-0 z-10 flex justify-center border-t bg-white p-4">
               <TabsList className="flex gap-4">

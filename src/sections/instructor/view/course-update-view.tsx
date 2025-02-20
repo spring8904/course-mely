@@ -144,7 +144,7 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
       </div>
       <div className="mt-4">
         <div className="grid grid-cols-12 gap-8">
-          <div className="col-span-4">
+          <div className="col-span-4 xl:col-span-3">
             <div>
               {groups.map((group) => (
                 <div key={group.id} className="mb-8">
@@ -156,7 +156,7 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
                         onClick={() => {
                           handleTabClick(group.id, tab.id)
                         }}
-                        className={`flex cursor-pointer items-center justify-between rounded p-2 transition-all ${
+                        className={`flex cursor-pointer items-center justify-between gap-2 rounded p-2 transition-all ${
                           activeGroup === group.id &&
                           activeTabs[group.id] === tab.id
                             ? 'border-l-4 border-orange-500 bg-orange-50'
@@ -269,7 +269,7 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
                 </SheetContent>
               </Sheet>
             </div>
-            <div className="mt-4 flex gap-2">
+            <div className="mt-4 flex flex-wrap gap-2">
               <Link href="/instructor/courses/">
                 <Button variant="outline">Khoá học của tôi</Button>
               </Link>
@@ -287,7 +287,7 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
               </Button>
             </div>
           </div>
-          <div className="col-span-8 rounded border bg-white p-4 shadow-lg">
+          <div className="col-span-8 rounded border bg-white p-4 shadow-lg xl:col-span-9">
             {activeGroup === 'planning' && (
               <>
                 {activeTabs.planning === 'course_objectives' && (

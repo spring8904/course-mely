@@ -1,12 +1,18 @@
 'use client'
 
-import { useState } from 'react'
 import { Info } from 'lucide-react'
 import { UseFormReturn } from 'react-hook-form'
 
 import { UpdateCodingLessonPayload } from '@/validations/course'
 import { Language, LANGUAGE_CONFIG } from '@/constants/language'
 
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
 import {
   ResizableHandle,
   ResizablePanel,
@@ -31,30 +37,38 @@ const SolutionTab = ({ form }: Props) => {
     },
   }
 
-  const [resultCode, setResultCode] = useState(form.getValues('result_code'))
+  const resultCode = form.watch('result_code')
 
   return (
-    <ResizablePanelGroup direction="horizontal" className="mt-0">
+    <ResizablePanelGroup direction="horizontal">
       <ResizablePanel minSize={35} defaultSize={65}>
-        <div className="flex h-full flex-col text-white">
-          <div className="flex h-14 items-center gap-2 border-b border-gray-500 bg-[#0d0d0d] px-4 py-2 text-xl font-bold">
-            Giải pháp
-            <Info size={18} />
-          </div>
+        <FormField
+          control={form.control}
+          name="result_code"
+          render={({ field }) => (
+            <FormItem className="flex h-full flex-col space-y-0 text-white">
+              <FormLabel className="flex h-14 items-center gap-2 border-b border-gray-500 bg-[#0d0d0d] px-4 py-2 text-lg font-bold">
+                Hướng dẫn
+                <Info size={18} />
+                <FormMessage />
+              </FormLabel>
 
-          <div className="flex-1">
-            <MonacoEditor
-              files={files}
-              onCompile={(code) => {
-                form.setValue('result_code', code)
-                setResultCode(code)
-              }}
-            />
-          </div>
-        </div>
+              <div className="flex-1">
+                <FormControl>
+                  <MonacoEditor
+                    files={files}
+                    onCompile={(code) => {
+                      field.onChange(code)
+                    }}
+                  />
+                </FormControl>
+              </div>
+            </FormItem>
+          )}
+        />
       </ResizablePanel>
-
       <ResizableHandle />
+
       <ResizablePanel minSize={30}>
         <div className="flex h-full flex-col text-white">
           <div className="flex h-14 items-center gap-2 border-b border-gray-500 bg-[#0d0d0d] px-4 py-2 text-xl font-bold">
