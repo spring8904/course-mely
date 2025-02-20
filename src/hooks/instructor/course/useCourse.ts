@@ -171,3 +171,22 @@ export const useValidateCourse = (slug?: string) => {
     enabled: !!slug,
   })
 }
+
+export const useSubmitCourse = () => {
+  const queryClient = useQueryClient()
+  const router = useRouter()
+
+  return useMutation({
+    mutationFn: (slug?: string) => instructorCourseApi.submitCourse(slug!),
+    onSuccess: async (res: any) => {
+      router.replace('/instructor/courses')
+      toast.success(res.message)
+      await queryClient.invalidateQueries({
+        queryKey: [QUERY_KEY.INSTRUCTOR_COURSE],
+      })
+    },
+    onError: (error) => {
+      toast.error(error.message)
+    },
+  })
+}

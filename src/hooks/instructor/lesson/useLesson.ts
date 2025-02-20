@@ -5,7 +5,6 @@ import {
   CreateLessonPayload,
   LessonCodingPayload,
   LessonQuizPayload,
-  StoreQuestionPayload,
   UpdateTitleLessonPayload,
 } from '@/validations/lesson'
 import QUERY_KEY from '@/constants/query-key'
@@ -19,7 +18,17 @@ export const useGetLessonCoding = (lessonId: string, coding: string) => {
   })
 }
 
+export const useGetLessonVideo = (chapterId: string, lessonId: string) => {
+  return useQuery({
+    queryKey: [QUERY_KEY.INSTRUCTOR_LESSON_VIDEO],
+    queryFn: () => instructorLessonApi.getLessonVideo(chapterId, lessonId),
+    enabled: !!lessonId,
+  })
+}
+
 export const useCreateLessonVideo = () => {
+  const queryClient = useQueryClient()
+
   return useMutation({
     mutationFn: ({
       chapterId,
@@ -28,10 +37,48 @@ export const useCreateLessonVideo = () => {
       chapterId: string
       payload: FormData
     }) => instructorLessonApi.createLessonVideo(chapterId, payload),
+    onSuccess: async () => {
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_KEY.INSTRUCTOR_COURSE],
+        }),
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_KEY.VALIDATE_COURSE],
+        }),
+      ])
+    },
+  })
+}
+
+export const useUpdateLessonVideo = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({
+      chapterId,
+      lessonId,
+      payload,
+    }: {
+      chapterId: string
+      lessonId: string
+      payload: FormData
+    }) => instructorLessonApi.updateLessonVideo(chapterId, lessonId, payload),
+    onSuccess: async () => {
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_KEY.INSTRUCTOR_COURSE],
+        }),
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_KEY.VALIDATE_COURSE],
+        }),
+      ])
+    },
   })
 }
 
 export const useCreateLessonDocument = () => {
+  const queryClient = useQueryClient()
+
   return useMutation({
     mutationFn: ({
       chapterId,
@@ -40,6 +87,16 @@ export const useCreateLessonDocument = () => {
       chapterId: string
       payload: FormData
     }) => instructorLessonApi.createLessonDocument(chapterId, payload),
+    onSuccess: async () => {
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_KEY.INSTRUCTOR_COURSE],
+        }),
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_KEY.VALIDATE_COURSE],
+        }),
+      ])
+    },
   })
 }
 
@@ -54,6 +111,9 @@ export const useCreateLesson = () => {
         queryKey: [QUERY_KEY.INSTRUCTOR_COURSE],
       })
 
+      await queryClient.invalidateQueries({
+        queryKey: [QUERY_KEY.VALIDATE_COURSE],
+      })
       toast.success(res.message)
     },
     onError: (error) => {
@@ -63,6 +123,8 @@ export const useCreateLesson = () => {
 }
 
 export const useCreateLessonCoding = () => {
+  const queryClient = useQueryClient()
+
   return useMutation({
     mutationFn: ({
       chapterId,
@@ -71,10 +133,17 @@ export const useCreateLessonCoding = () => {
       chapterId: string
       payload: LessonCodingPayload
     }) => instructorLessonApi.createLessonCoding(chapterId, payload),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: [QUERY_KEY.INSTRUCTOR_COURSE_VALIDATE],
+      })
+    },
   })
 }
 
 export const useCreateLessonQuiz = () => {
+  const queryClient = useQueryClient()
+
   return useMutation({
     mutationFn: ({
       chapterId,
@@ -83,6 +152,17 @@ export const useCreateLessonQuiz = () => {
       chapterId: string
       payload: LessonQuizPayload
     }) => instructorLessonApi.createLessonQuiz(chapterId, payload),
+
+    onSuccess: async () => {
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_KEY.INSTRUCTOR_COURSE],
+        }),
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_KEY.VALIDATE_COURSE],
+        }),
+      ])
+    },
   })
 }
 
@@ -129,6 +209,10 @@ export const useUpdateOrderLesson = () => {
         queryKey: [QUERY_KEY.INSTRUCTOR_COURSE],
       })
 
+      await queryClient.invalidateQueries({
+        queryKey: [QUERY_KEY.VALIDATE_COURSE],
+      })
+
       toast.success(res.message)
     },
     onError: (error) => {
@@ -144,9 +228,14 @@ export const useDeleteLesson = () => {
     mutationFn: ({ chapterId, id }: { chapterId: number; id: number }) =>
       instructorLessonApi.deleteLesson(chapterId, id),
     onSuccess: async (res: any) => {
-      await queryClient.invalidateQueries({
-        queryKey: [QUERY_KEY.INSTRUCTOR_COURSE],
-      })
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_KEY.INSTRUCTOR_COURSE],
+        }),
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_KEY.VALIDATE_COURSE],
+        }),
+      ])
       toast.success(res.message)
     },
     onError: (error) => {
