@@ -1,4 +1,17 @@
+import Cookies from 'js-cookie'
 import Echo from 'laravel-echo'
+import Pusher from 'pusher-js'
+
+import { StorageKeys } from '@/constants/storage-keys'
+
+;(window as any).Pusher = Pusher
+
+const token = Cookies.get(StorageKeys.ACCESS_TOKEN)
+if (!token) {
+  console.error('❌ Access token is missing. Please authenticate first.')
+} else {
+  console.log('🔑 Access token:', token)
+}
 
 const echo = new Echo({
   broadcaster: 'pusher',
@@ -9,7 +22,7 @@ const echo = new Echo({
   authEndpoint: `${process.env.NEXT_PUBLIC_API_URL}broadcasting/auth`,
   auth: {
     headers: {
-      Authorization: `Bearer 127|TxtnSazuBneKANfvRFNKVFGkWIRuRbANGlIYeeoP60502ffd`,
+      Authorization: `Bearer ${token}`,
     },
   },
 })
@@ -20,6 +33,10 @@ echo.connector.pusher.connection.bind('connected', () => {
 
 echo.connector.pusher.connection.bind('error', (err: any) => {
   console.error('❌ Lỗi kết nối với Pusher:', err)
+})
+
+echo.connector.pusher.connection.bind('subscription_error', (err: any) => {
+  console.error('❌ Pusher subscription error:', err)
 })
 
 export default echo

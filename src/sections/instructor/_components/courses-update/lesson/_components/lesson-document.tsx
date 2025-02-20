@@ -196,7 +196,7 @@ const LessonDocument = ({
     <>
       <div className="mb-4 flex justify-between">
         <h2 className="font-semibold">
-          {courseStatus === 'draft' || courseStatus === 'reject'
+          {courseStatus === 'draft' || courseStatus === 'rejected'
             ? lessonId
               ? 'Cập nhật'
               : 'Thêm'

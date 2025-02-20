@@ -127,14 +127,14 @@ const LessonQuiz = ({
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <div className="mb-4 flex justify-between">
             <h2 className="font-semibold">
-              {courseStatus === 'draft' || courseStatus === 'reject'
+              {courseStatus === 'draft' || courseStatus === 'rejected'
                 ? isEdit
                   ? 'Cập nhật'
                   : 'Thêm'
                 : 'Thông tin'}{' '}
               bài ôn tập trắc nghiệm
             </h2>
-            {(courseStatus === 'draft' || courseStatus === 'reject') && (
+            {(courseStatus === 'draft' || courseStatus === 'rejected') && (
               <div className="flex items-center justify-end">
                 <Button
                   onClick={handleClose}
