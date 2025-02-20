@@ -19,6 +19,9 @@ export const instructorLessonApi = {
   getLessonVideo: async (chapterId: string, lessonId: string) => {
     return await api.get(`${prefix}/${chapterId}/${lessonId}/show-lesson`)
   },
+  getLessonDocument: async (chapterId: string, lessonId: string) => {
+    return await api.get(`${prefix}/${chapterId}/${lessonId}/lesson-document`)
+  },
   createLesson: (payload: CreateLessonPayload) => {
     return api.post(prefix, payload, {
       headers: {
@@ -76,6 +79,21 @@ export const instructorLessonApi = {
   ) => {
     return api.post(
       `${prefix}/${chapterId}/${lessonId}/update-lesson-video`,
+      payload,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    )
+  },
+  updateLessonDocument: (
+    chapterId: string,
+    lessonId: string,
+    payload: FormData
+  ) => {
+    return api.post(
+      `${prefix}/${chapterId}/${lessonId}/update-lesson-document`,
       payload,
       {
         headers: {
