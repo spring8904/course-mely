@@ -259,7 +259,7 @@ const DraggableContent = ({
                                     className="bg-[#FFF7ED] p-2 text-xs text-primary shadow hover:text-white"
                                     disabled={
                                       courseStatus !== 'draft' &&
-                                      courseStatus !== 'reject'
+                                      courseStatus !== 'rejected'
                                     }
                                   >
                                     Mẫu Import
@@ -297,7 +297,7 @@ const DraggableContent = ({
                                     className="rounded-lg border bg-[#FFF7ED] p-2 text-xs text-primary shadow hover:text-white"
                                     disabled={
                                       courseStatus !== 'draft' &&
-                                      courseStatus !== 'reject'
+                                      courseStatus !== 'rejected'
                                     }
                                   >
                                     Thêm câu hỏi
@@ -374,7 +374,9 @@ const DraggableContent = ({
               </Link>
 
               <Button
-                disabled={courseStatus !== 'draft'}
+                disabled={
+                  courseStatus !== 'draft' && courseStatus !== 'rejected'
+                }
                 onClick={() => {
                   setAddNewLesson((prev) => !prev)
                   setSelectedLesson(undefined)

@@ -242,7 +242,7 @@ const AddQuestionDialog = ({
               <DialogHeader>
                 <div className="flex items-center justify-between pr-7">
                   <DialogTitle>
-                    {courseStatus === 'draft' || courseStatus === 'reject'
+                    {courseStatus === 'draft' || courseStatus === 'rejected'
                       ? isEdit
                         ? 'Sửa'
                         : 'Tạo'

@@ -8,7 +8,6 @@ import { toast } from 'react-toastify'
 import QUERY_KEY from '@/constants/query-key'
 import { notificationApi } from '@/services/notification/notification-api'
 
-// Define notification structure
 type Notification = {
   id: string
   message: string
