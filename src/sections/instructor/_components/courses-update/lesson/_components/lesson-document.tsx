@@ -1,6 +1,5 @@
-import React, { useCallback, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useQueryClient } from '@tanstack/react-query'
 import { Loader2 } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
@@ -9,8 +8,11 @@ import {
   LessonDocumentPayload,
   lessonDocumentSchema,
 } from '@/validations/lesson'
-import QUERY_KEY from '@/constants/query-key'
-import { useCreateLessonDocument } from '@/hooks/instructor/lesson/useLesson'
+import {
+  useCreateLessonDocument,
+  useGetLessonDocument,
+  useUpdateLessonDocument,
+} from '@/hooks/instructor/lesson/useLesson'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -22,33 +24,81 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import ModalLoading from '@/components/common/ModalLoading'
 import TinyEditor from '@/components/shared/tiny-editor'
+import DialogDocumentPreview from '@/sections/instructor/_components/courses-update/lesson/_components/document/dialog-document-preview'
 
 type Props = {
-  chapterId?: string
+  chapterId?: string | number
   onHide: () => void
+  courseStatus?: string
+  lessonId?: string | number
 }
 
-const LessonDocument = ({ chapterId, onHide }: Props) => {
-  const queryClient = useQueryClient()
-
+const LessonDocument = ({
+  chapterId,
+  courseStatus,
+  lessonId,
+  onHide,
+}: Props) => {
+  const [isOpenDocumentPreview, setIsOpenDocumentPreview] = useState(false)
+  const [documentFile, setDocumentFile] = useState<string | null>(null) // [document]
   const fileInputRef = useRef<HTMLInputElement | null>(null)
-  const [fileType, setFileType] = useState<'document_file' | 'document_url'>('')
+  const [fileType, setFileType] = useState<'document_file' | 'document_url'>(
+    null as any
+  )
   const [selectedFile, setSelectedFile] = useState<any>(null)
 
+  const { data: lessonDocumentData } = useGetLessonDocument(
+    chapterId as string,
+    lessonId as string
+  )
   const { mutate: createLessonDocument, isPending: isLessonDocumentCreating } =
     useCreateLessonDocument()
+  const { mutate: updateLessonDocument, isPending: isLessonDocumentupdating } =
+    useUpdateLessonDocument()
 
   const form = useForm<LessonDocumentPayload>({
     resolver: zodResolver(lessonDocumentSchema),
     defaultValues: {
       title: '',
       content: '',
-      file_type: 'upload',
+      file_type: undefined,
       document_file: null as any,
       document_url: '',
+      isEdit: false,
     },
   })
+
+  useEffect(() => {
+    if (lessonDocumentData && lessonId) {
+      const { title, content, lessonable } = lessonDocumentData.data
+      form.reset({
+        title,
+        content,
+      })
+
+      if (lessonable.document_file) {
+        form.setValue('document_file', lessonable.document_file)
+      } else {
+        form.setValue(
+          'document_url',
+          lessonable.document ? lessonable.document.document_url : ''
+        )
+      }
+      form.setValue('isEdit', true)
+      if (lessonable?.file_path) {
+        setDocumentFile(lessonable.file_path)
+      }
+    }
+  }, [lessonDocumentData, form])
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
@@ -67,25 +117,28 @@ const LessonDocument = ({ chapterId, onHide }: Props) => {
     setSelectedFile(null)
   }, [form])
 
-  const handleFileTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setFileType(e.target.value as 'document_file' | 'document_url')
-    setSelectedFile(null)
-    form.setValue('document_file', null as any)
-  }
-
   const handleClose = () => {
     onHide()
   }
 
   const onSubmit = (data: LessonDocumentPayload) => {
-    if (fileType === 'document_file' && !data.document_file) {
-      return alert('Vui lòng tải lên tệp dữ liệu.')
+    if (!lessonId) {
+      if (fileType === 'document_file' && !data.document_file) {
+        return alert('Vui lòng tải lên tệp dữ liệu.')
+      }
+      if (
+        fileType === 'document_url' &&
+        (!data.document_url || data.document_url.trim() === '')
+      ) {
+        return alert('Vui lòng nhập URL tài liệu.')
+      }
     }
+
     if (isLessonDocumentCreating) return
 
     const formData = new FormData()
     formData.append('title', data.title)
-    formData.append('content', data.content)
+    formData.append('content', data.content || '')
     if (fileType === 'document_file') {
       formData.append('document_file', selectedFile)
     } else {
@@ -93,32 +146,68 @@ const LessonDocument = ({ chapterId, onHide }: Props) => {
     }
     formData.append('chapter_id', String(chapterId))
 
-    createLessonDocument(
-      {
-        chapterId: chapterId as string,
-        payload: formData,
-      },
-      {
-        onSuccess: async (res: any) => {
-          await queryClient.invalidateQueries({
-            queryKey: [QUERY_KEY.INSTRUCTOR_COURSE],
-          })
+    if (lessonId) {
+      formData.append('_method', 'PUT')
+    }
 
-          form.reset()
-          onHide()
-          toast.success(res.message)
+    if (lessonId) {
+      updateLessonDocument(
+        {
+          chapterId: chapterId as string,
+          lessonId: lessonId as string,
+          payload: formData,
         },
-        onError: () => {
-          toast.error('Có lỗi xảy ra khi tạo bài học')
+        {
+          onSuccess: async (res: any) => {
+            form.reset()
+            onHide()
+            toast.success(res.message)
+          },
+          onError: () => {
+            toast.error('Có lỗi xảy ra khi cập nhật bài học')
+          },
+        }
+      )
+    } else {
+      createLessonDocument(
+        {
+          chapterId: chapterId as string,
+          payload: formData,
         },
-      }
-    )
+        {
+          onSuccess: async (res: any) => {
+            form.reset()
+            onHide()
+            toast.success(res.message)
+          },
+          onError: () => {
+            toast.error('Có lỗi xảy ra khi tạo bài học')
+          },
+        }
+      )
+    }
+  }
+
+  if (isLessonDocumentCreating || isLessonDocumentupdating) {
+    return <ModalLoading />
   }
 
   return (
     <>
-      <div className="mb-4">
-        <h2 className="font-semibold">Thêm tài liệu</h2>
+      <div className="mb-4 flex justify-between">
+        <h2 className="font-semibold">
+          {courseStatus === 'draft' || courseStatus === 'reject'
+            ? lessonId
+              ? 'Cập nhật'
+              : 'Thêm'
+            : 'Thông tin'}{' '}
+          tài liệu
+        </h2>
+        {documentFile && (
+          <Button onClick={() => setIsOpenDocumentPreview(true)}>
+            Xem tài liệu
+          </Button>
+        )}
       </div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -146,6 +235,7 @@ const LessonDocument = ({ chapterId, onHide }: Props) => {
                   <FormLabel>Nội dung bài giảng</FormLabel>
                   <FormControl>
                     <TinyEditor
+                      value={field.value}
                       onEditorChange={(value: string) => {
                         form.setValue('content', value)
                       }}
@@ -164,16 +254,30 @@ const LessonDocument = ({ chapterId, onHide }: Props) => {
                 <FormItem>
                   <FormLabel>Bạn có thể tải file tài liệu ở đây</FormLabel>
                   <FormControl>
-                    <select
-                      {...field}
-                      value={fileType}
-                      onChange={handleFileTypeChange}
-                      className="w-full rounded-lg border border-gray-300 p-2"
+                    <Select
+                      value={field.value}
+                      onValueChange={(value) => {
+                        setFileType(value as 'document_file' | 'document_url')
+                        form.setValue(
+                          'file_type',
+                          value as 'document_file' | 'document_url'
+                        )
+                        setSelectedFile(null)
+                        form.setValue('document_file', null as any)
+                      }}
                     >
-                      <option value="">Chọn loại tài liệu</option>
-                      <option value="document_file">Tải lên tệp</option>
-                      <option value="document_url">URL tài liệu</option>
-                    </select>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Chọn loại tài liệu" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="document_file">
+                          Tải lên tệp
+                        </SelectItem>
+                        <SelectItem value="document_url">
+                          URL tài liệu
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -196,7 +300,7 @@ const LessonDocument = ({ chapterId, onHide }: Props) => {
                 <input
                   ref={fileInputRef}
                   type="file"
-                  accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt"
+                  accept=".pdf,.doc,.docx,"
                   style={{ display: 'none' }}
                   onChange={handleFileChange}
                 />
@@ -254,11 +358,16 @@ const LessonDocument = ({ chapterId, onHide }: Props) => {
               {isLessonDocumentCreating && (
                 <Loader2 className="mr-2 size-4 animate-spin" />
               )}
-              Thêm bài học
+              {lessonId ? 'Lưu tài liệu' : 'Thêm   tài liệu'}
             </Button>
           </div>
         </form>
       </Form>
+      <DialogDocumentPreview
+        isOpen={isOpenDocumentPreview}
+        setIsOpen={setIsOpenDocumentPreview}
+        documentFile={`http://localhost:8000/storage/${documentFile}`}
+      />
     </>
   )
 }

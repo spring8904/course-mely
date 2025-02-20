@@ -23,6 +23,7 @@ const QUERY_KEY = {
   INSTRUCTOR_QUIZ: 'instructor-quiz',
   INSTRUCTOR_QUESTION: 'instructor-question',
   INSTRUCTOR_LESSON_VIDEO: 'instructor-lesson-video',
+  INSTRUCTOR_LESSON_DOCUMENT: 'instructor-lesson-document',
 }
 
 export default QUERY_KEY

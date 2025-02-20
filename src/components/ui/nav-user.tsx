@@ -7,7 +7,6 @@ import {
   ChevronsUpDown,
   CreditCard,
   LogOut,
-  Sparkles,
 } from 'lucide-react'
 import Swal from 'sweetalert2'
 
@@ -65,11 +64,11 @@ export function NavUser({
   }
 
   const handleProfileClick = () => {
-    setModalOpen(true) // Open the modal when clicked
+    setModalOpen(true)
   }
 
   const handleModalClose = () => {
-    setModalOpen(false) // Close the modal
+    setModalOpen(false)
   }
 
   return (
