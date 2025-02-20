@@ -54,7 +54,7 @@ export interface DraggableContentProps {
 const DraggableContent = ({
   chapter,
   slug,
-  onHide,
+  // onHide,
   courseStatus,
 }: DraggableContentProps) => {
   const router = useRouter()
@@ -130,18 +130,18 @@ const DraggableContent = ({
     }
   }
 
-  const handleCourseStatus = () => {
-    if (courseStatus !== 'draft') {
-      Swal.fire({
-        title: 'Khoá học của bạn đang chờ duyệt hoặc đã được duyệt.',
-        text: 'Bạn không thể thay đổi nội dung bài học.',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Xây dựng',
-        cancelButtonText: 'Hủy',
-      })
-    }
-  }
+  // const handleCourseStatus = () => {
+  //   if (courseStatus !== 'draft') {
+  //     Swal.fire({
+  //       title: 'Khoá học của bạn đang chờ duyệt hoặc đã được duyệt.',
+  //       text: 'Bạn không thể thay đổi nội dung bài học.',
+  //       icon: 'warning',
+  //       showCancelButton: true,
+  //       confirmButtonText: 'Xây dựng',
+  //       cancelButtonText: 'Hủy',
+  //     })
+  //   }
+  // }
 
   return (
     <>
@@ -224,11 +224,11 @@ const DraggableContent = ({
                                 <div className="flex items-center gap-2">
                                   <span
                                     className="flex size-8 items-center justify-center rounded-md border border-[#131316]"
-                                    onClick={(e) => {
+                                    onClick={() => {
                                       setLessonEdit(lesson.id as number)
                                       if (lesson.type === 'coding') {
                                         router.push(
-                                          `/course/${lesson.slug}/coding-exercise?coding=${lesson.id}`
+                                          `/course/${lesson.slug}/coding-exercise?coding=${lesson.lessonable_id}`
                                         )
                                       }
                                     }}

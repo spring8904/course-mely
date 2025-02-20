@@ -51,7 +51,7 @@ export const useAuthStore = create<UserState>((set) => ({
     } else {
       Cookies.remove(StorageKeys.ROLE)
     }
-    set({ role, isAuthenticated: !!role })
+    set({ role })
   },
 
   logout: () => {

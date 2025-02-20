@@ -121,7 +121,7 @@ const CourseManageView = () => {
       cell: ({ row }) => {
         const course = row.original
         return (
-          <div className="flex items-center gap-4">
+          <div className="flex min-w-80 items-center gap-4">
             <Image
               alt={course.name ?? ''}
               className="size-16 rounded-lg object-cover"
@@ -130,7 +130,7 @@ const CourseManageView = () => {
               src={course?.thumbnail ?? ''}
             />
             <div className="flex-1 space-y-1">
-              <h3 className="font-semibold">{course.name}</h3>
+              <h3 className="line-clamp-2 font-semibold">{course.name}</h3>
               <h4 className="text-xs text-muted-foreground">
                 {course.category?.name}
               </h4>
@@ -179,7 +179,7 @@ const CourseManageView = () => {
       ),
       cell: ({ row }) => {
         const course = CourseStatusMap[row.original.status as CourseStatus]
-        return <Badge variant={course.badge}>{course.label}</Badge>
+        return <Badge variant={course?.badge}>{course?.label}</Badge>
       },
     },
     {

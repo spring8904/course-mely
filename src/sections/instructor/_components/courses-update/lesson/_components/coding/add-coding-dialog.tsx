@@ -1,4 +1,3 @@
-import React from 'react'
 import { useRouter } from 'next/navigation'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useQueryClient } from '@tanstack/react-query'
@@ -6,12 +5,8 @@ import { Loader2 } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 
-import {
-  LessonCodingPayload,
-  lessonCodingSchema,
-  LessonQuizPayload,
-} from '@/validations/lesson'
-import { SUPPORTED_LANGUAGES } from '@/constants/language'
+import { LessonCodingPayload, lessonCodingSchema } from '@/validations/lesson'
+import { LANGUAGE_CONFIG } from '@/constants/language'
 import QUERY_KEY from '@/constants/query-key'
 import { useCreateLessonCoding } from '@/hooks/instructor/lesson/useLesson'
 
@@ -20,7 +15,6 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
@@ -76,7 +70,7 @@ const AddCodingDialog = ({ chapterId, open, onOpenChange }: Props) => {
           toast.success(res.message)
           onOpenChange(false)
           router.push(
-            `/course/${res?.data.slug}/coding-exercise?coding=${res?.data.id}`
+            `/course/${res?.data.slug}/coding-exercise?coding=${res?.data.lessonable_id}`
           )
 
           await queryClient.invalidateQueries({
@@ -125,9 +119,8 @@ const AddCodingDialog = ({ chapterId, open, onOpenChange }: Props) => {
                     <FormLabel>Nội dung bài giảng</FormLabel>
                     <FormControl>
                       <TinyEditor
-                        onEditorChange={(value: string) => {
-                          form.setValue('content', value)
-                        }}
+                        value={field.value}
+                        onEditorChange={field.onChange}
                         minimalist
                       />
                     </FormControl>
@@ -145,18 +138,20 @@ const AddCodingDialog = ({ chapterId, open, onOpenChange }: Props) => {
                     <FormLabel>Chọn ngôn ngữ lập trình</FormLabel>
                     <FormControl>
                       <Select
-                        onValueChange={(value) => field.onChange(value)}
+                        onValueChange={field.onChange}
                         defaultValue={field.value}
                       >
                         <SelectTrigger className="w-full">
                           <SelectValue placeholder="Chọn ngôn ngữ lập trình" />
                         </SelectTrigger>
                         <SelectContent>
-                          {SUPPORTED_LANGUAGES.map((language) => (
-                            <SelectItem key={language.key} value={language.key}>
-                              {language.value}
-                            </SelectItem>
-                          ))}
+                          {Object.entries(LANGUAGE_CONFIG).map(
+                            ([key, value]) => (
+                              <SelectItem key={key} value={key}>
+                                {value.displayName}
+                              </SelectItem>
+                            )
+                          )}
                         </SelectContent>
                       </Select>
                     </FormControl>

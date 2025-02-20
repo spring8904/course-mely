@@ -1,3 +1,4 @@
+import { UpdateCodingLessonPayload } from '@/validations/course'
 import {
   CreateLessonPayload,
   LessonCodingPayload,
@@ -12,8 +13,8 @@ export const instructorLessonApi = {
   getLessonOverview: async (slug: string) => {
     return await api.get(`${prefix}/${slug}`)
   },
-  getLessonCoding: async (lessonId: string, coding: string) => {
-    return await api.get(`${prefix}/${lessonId}/${coding}/coding-exercise`)
+  getLessonCoding: async (lessonSlug: string, codingId: string) => {
+    return await api.get(`${prefix}/${lessonSlug}/${codingId}/coding-exercise`)
   },
   getLessonVideo: async (chapterId: string, lessonId: string) => {
     return await api.get(`${prefix}/${chapterId}/${lessonId}/show-lesson`)
@@ -103,5 +104,15 @@ export const instructorLessonApi = {
   },
   deleteLesson: (chapterId: number, id: number) => {
     return api.delete(`${prefix}/${chapterId}/${id}`)
+  },
+  updateCodingLesson: (
+    lessonSlug: string,
+    codingId: string | number,
+    payload: UpdateCodingLessonPayload
+  ) => {
+    return api.put(
+      `${prefix}/${lessonSlug}/${codingId}/coding-exercise`,
+      payload
+    )
   },
 }

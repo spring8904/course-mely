@@ -70,7 +70,6 @@ export const useUpdatePost = () => {
 
   return useMutation({
     mutationFn: ({ slug, data }: { slug: string; data: UpdatePostPayload }) => {
-      console.log(data)
       const formData = new FormData()
       formData.append('_method', 'PUT')
 

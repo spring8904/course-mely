@@ -10,14 +10,6 @@ export const LANGUAGE_VERSIONS = {
   css: 'CSS3',
 }
 
-export const SUPPORTED_LANGUAGES = [
-  { value: 'JavaScript', key: 'javascript' },
-  { value: 'Python', key: 'python' },
-  { value: 'PHP', key: 'php' },
-  { value: 'Java', key: 'java' },
-  { value: 'Typescript', key: 'typescript' },
-]
-
 export const CODE_SNIPPETS = {
   javascript: `\nfunction greet(name) {\n\tconsole.log("Hello, " + name + "!");\n}\n\ngreet("Alex");\n`,
   typescript: `\ntype Params = {\n\tname: string;\n}\n\nfunction greet(data: Params) {\n\tconsole.log("Hello, " + data.name + "!");\n}\n\ngreet({ name: "Alex" });\n`,
@@ -29,4 +21,52 @@ export const CODE_SNIPPETS = {
   react: `import React from 'react';\n\nfunction App() {\n\treturn (\n\t\t<div>Hello, React!</div>\n\t);\n}\n\nexport default App;\n`,
   html: `<!DOCTYPE html>\n<html lang="en">\n<head>\n\t<meta charset="UTF-8">\n\t<title>Hello World</title>\n</head>\n<body>\n\t<h1>Hello, HTML!</h1>\n</body>\n</html>\n`,
   css: `body {\n\tfont-family: Arial, sans-serif;\n\tbackground-color: #f0f0f0;\n}\n\nh1 {\n\tcolor: #333;\n}\n`,
+}
+
+export enum Language {
+  JAVASCRIPT = 'javascript',
+  TYPESCRIPT = 'typescript',
+  PYTHON = 'python',
+  JAVA = 'java',
+  PHP = 'php',
+}
+
+export const LANGUAGE_CONFIG: {
+  [key in Language]: {
+    displayName: string
+    fileExtension: string
+    sampleFileName: string
+    version: string
+  }
+} = {
+  [Language.JAVASCRIPT]: {
+    displayName: 'JavaScript',
+    fileExtension: 'js',
+    sampleFileName: 'script.js',
+    version: '18.15.0',
+  },
+  [Language.TYPESCRIPT]: {
+    displayName: 'TypeScript',
+    fileExtension: 'ts',
+    sampleFileName: 'app.ts',
+    version: '5.0.3',
+  },
+  [Language.PYTHON]: {
+    displayName: 'Python',
+    fileExtension: 'py',
+    sampleFileName: 'main.py',
+    version: '3.10.0',
+  },
+  [Language.JAVA]: {
+    displayName: 'Java',
+    fileExtension: 'java',
+    sampleFileName: 'Main.java',
+    version: '15.0.2',
+  },
+  [Language.PHP]: {
+    displayName: 'PHP',
+    fileExtension: 'php',
+    sampleFileName: 'index.php',
+    version: '8.2.3',
+  },
 }

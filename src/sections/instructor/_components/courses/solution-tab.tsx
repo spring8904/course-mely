@@ -1,11 +1,18 @@
 'use client'
 
-import { useRef } from 'react'
-import files from '@/sample/files'
-import { ArrowUp, Info, MoveHorizontal, RotateCcw } from 'lucide-react'
-import { ImperativePanelHandle } from 'react-resizable-panels'
+import { Info } from 'lucide-react'
+import { UseFormReturn } from 'react-hook-form'
 
-import { Button } from '@/components/ui/button'
+import { UpdateCodingLessonPayload } from '@/validations/course'
+import { Language, LANGUAGE_CONFIG } from '@/constants/language'
+
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
 import {
   ResizableHandle,
   ResizablePanel,
@@ -13,101 +20,66 @@ import {
 } from '@/components/ui/resizable'
 import MonacoEditor from '@/components/shared/monaco-editor'
 
-const SolutionTab = () => {
-  const solutionPanelRef = useRef<ImperativePanelHandle>(null)
-  const evaluationPanelRef = useRef<ImperativePanelHandle>(null)
-  const resultPanelRef = useRef<ImperativePanelHandle>(null)
+interface Props {
+  form: UseFormReturn<UpdateCodingLessonPayload, any, undefined>
+}
 
-  const handleResize = ({
-    ref,
-    size,
-  }: {
-    ref: { current: ImperativePanelHandle | null }
-    size: number
-  }) => {
-    ref.current?.resize(size)
+const SolutionTab = ({ form }: Props) => {
+  const { sampleFileName, version } =
+    LANGUAGE_CONFIG[form.getValues('language') as Language]
+
+  const files = {
+    [sampleFileName]: {
+      name: sampleFileName,
+      language: form.getValues('language'),
+      value: form.getValues('sample_code') || '',
+      version,
+    },
   }
 
+  const resultCode = form.watch('result_code')
+
   return (
-    <ResizablePanelGroup direction="vertical" className="mt-0">
-      <ResizablePanel minSize={10}>
-        <ResizablePanelGroup direction="horizontal" className="mt-0">
-          <ResizablePanel minSize={35} ref={solutionPanelRef}>
-            <SolutionPanel
-              handleResize={() => {
-                handleResize({ ref: solutionPanelRef, size: 70 })
-              }}
-            />
-          </ResizablePanel>
+    <ResizablePanelGroup direction="horizontal">
+      <ResizablePanel minSize={35} defaultSize={65}>
+        <FormField
+          control={form.control}
+          name="result_code"
+          render={({ field }) => (
+            <FormItem className="flex h-full flex-col space-y-0 text-white">
+              <FormLabel className="flex h-14 items-center gap-2 border-b border-gray-500 bg-[#0d0d0d] px-4 py-2 text-lg font-bold">
+                Hướng dẫn
+                <Info size={18} />
+                <FormMessage />
+              </FormLabel>
 
-          <ResizableHandle />
-          <ResizablePanel minSize={30} ref={evaluationPanelRef}>
-            <EvaluationPanel
-              handleResize={() => {
-                handleResize({ ref: evaluationPanelRef, size: 65 })
-              }}
-            />
-          </ResizablePanel>
-        </ResizablePanelGroup>
+              <div className="flex-1">
+                <FormControl>
+                  <MonacoEditor
+                    files={files}
+                    onCompile={(code) => {
+                      field.onChange(code)
+                    }}
+                  />
+                </FormControl>
+              </div>
+            </FormItem>
+          )}
+        />
       </ResizablePanel>
-
       <ResizableHandle />
-      <ResizablePanel defaultSize={10} minSize={10} ref={resultPanelRef}>
-        <div className="flex items-center justify-between border-b border-gray-500 bg-[#0d0d0d] px-4 py-2 text-gray-200">
-          <div className="flex items-center gap-2 text-lg font-bold">
-            Result
+
+      <ResizablePanel minSize={30}>
+        <div className="flex h-full flex-col text-white">
+          <div className="flex h-14 items-center gap-2 border-b border-gray-500 bg-[#0d0d0d] px-4 py-2 text-xl font-bold">
+            Kết quả
+            <Info size={18} />
           </div>
 
-          <div className="flex items-center gap-2">
-            <ArrowUp
-              size={18}
-              onClick={() => handleResize({ ref: resultPanelRef, size: 80 })}
-            />
-          </div>
+          <div className="flex-1 bg-[#1e1e1e] px-6 py-4">{resultCode}</div>
         </div>
       </ResizablePanel>
     </ResizablePanelGroup>
   )
 }
 export default SolutionTab
-
-type PanelProps = {
-  handleResize: () => void
-}
-
-const SolutionPanel = ({ handleResize }: PanelProps) => {
-  return (
-    <div className="flex h-full flex-col text-white">
-      <div className="flex h-14 items-center justify-between border-b border-gray-500 bg-[#0d0d0d] px-4 py-2">
-        <div className="flex items-center gap-2 text-xl font-bold">
-          Giải pháp
-          <Info size={18} />
-        </div>
-
-        <div className="flex items-center gap-2">
-          <Button className="border border-white bg-transparent text-white hover:bg-white/10">
-            View example
-          </Button>
-          <RotateCcw size={18} />
-          <MoveHorizontal size={18} onClick={handleResize} />
-        </div>
-      </div>
-
-      <div className="flex-1">
-        <MonacoEditor
-          files={files}
-          onChange={(value, fileName) => {
-            console.group('onChange')
-            console.log(fileName)
-            console.log(value)
-            console.groupEnd()
-          }}
-        />
-      </div>
-    </div>
-  )
-}
-
-const EvaluationPanel = ({ handleResize }: PanelProps) => {
-  return <SolutionPanel handleResize={handleResize} />
-}
