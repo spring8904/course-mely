@@ -16,6 +16,9 @@ export const instructorLessonApi = {
   getLessonCoding: async (lessonSlug: string, codingId: string) => {
     return await api.get(`${prefix}/${lessonSlug}/${codingId}/coding-exercise`)
   },
+  getLessonVideo: async (chapterId: string, lessonId: string) => {
+    return await api.get(`${prefix}/${chapterId}/${lessonId}/show-lesson`)
+  },
   createLesson: (payload: CreateLessonPayload) => {
     return api.post(prefix, payload, {
       headers: {
@@ -62,6 +65,21 @@ export const instructorLessonApi = {
       {
         headers: {
           'Content-Type': 'application/json',
+        },
+      }
+    )
+  },
+  updateLessonVideo: (
+    chapterId: string,
+    lessonId: string,
+    payload: FormData
+  ) => {
+    return api.post(
+      `${prefix}/${chapterId}/${lessonId}/update-lesson-video`,
+      payload,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
         },
       }
     )

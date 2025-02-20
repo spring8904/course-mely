@@ -24,15 +24,18 @@ import CreateChapter from './chapter/create-chapter'
 type Props = {
   chapters: IChapter[]
   slug: string
+  courseStatus?: string
 }
 
-const CourseChapterTab = ({ chapters, slug }: Props) => {
+const CourseChapterTab = ({ chapters, slug, courseStatus }: Props) => {
   const [addNewChapter, setAddNewChapter] = useState(false)
   const [chapterEdit, setChapterEdit] = useState<number | null>(null)
   const [editTitle, setEditTitle] = useState<string>('')
 
   const { mutate: updateChapter } = useUpdateChapter()
   const { mutate: deleteChapter } = useDeleteChapter()
+
+  console.log(courseStatus)
 
   const handleUpdateChapter = (id: number) => {
     if (!editTitle.trim()) {
@@ -147,16 +150,18 @@ const CourseChapterTab = ({ chapters, slug }: Props) => {
                               >
                                 <SquarePen size={14} />
                               </span>
-
-                              <span
-                                className="flex size-8 items-center justify-center rounded-md border border-[#131316]"
-                                onClick={(e) => {
-                                  e.stopPropagation()
-                                  handleDeleteChapter(chapter.id as number)
-                                }}
-                              >
-                                <Trash2 size={14} />
-                              </span>
+                              {(courseStatus === 'draft' ||
+                                courseStatus === 'reject') && (
+                                <span
+                                  className="flex size-8 items-center justify-center rounded-md border border-[#131316]"
+                                  onClick={(e) => {
+                                    e.stopPropagation()
+                                    handleDeleteChapter(chapter.id as number)
+                                  }}
+                                >
+                                  <Trash2 size={14} />
+                                </span>
+                              )}
                             </div>
                           </>
                         )}
@@ -166,7 +171,11 @@ const CourseChapterTab = ({ chapters, slug }: Props) => {
                       </div>
                     </div>
                   </AccordionTrigger>
-                  <DraggableContent chapter={chapter} slug={slug} />
+                  <DraggableContent
+                    courseStatus={courseStatus}
+                    chapter={chapter}
+                    slug={slug}
+                  />
                 </AccordionItem>
               </Accordion>
             </div>
@@ -176,7 +185,11 @@ const CourseChapterTab = ({ chapters, slug }: Props) => {
           <CreateChapter onHide={() => setAddNewChapter(false)} />
         ) : (
           <>
-            <Button onClick={() => setAddNewChapter(true)} className="mt-4">
+            <Button
+              disabled={courseStatus !== 'draft'}
+              onClick={() => setAddNewChapter(true)}
+              className="mt-4"
+            >
               <SquarePen size={18} />
               Thêm chương mới
             </Button>

@@ -38,6 +38,7 @@ type Props = {
   isEdit?: boolean
   questionId?: string
   quizId: string
+  courseStatus?: string
 }
 
 const colors = [
@@ -54,6 +55,7 @@ const AddQuestionDialog = ({
   quizId,
   onOpenChange,
   questionId,
+  courseStatus,
 }: Props) => {
   const [image, setImage] = useState<string | null>(null)
   const [modalOpen, setModalOpen] = useState(false)
@@ -240,8 +242,14 @@ const AddQuestionDialog = ({
               <DialogHeader>
                 <div className="flex items-center justify-between pr-7">
                   <DialogTitle>
-                    {isEdit ? 'Sửa' : 'Tạo '} câu hỏi trắc nghiệm
+                    {courseStatus === 'draft' || courseStatus === 'reject'
+                      ? isEdit
+                        ? 'Sửa'
+                        : 'Tạo'
+                      : 'Thông tin'}{' '}
+                    câu hỏi trắc nghiệm
                   </DialogTitle>
+
                   <DialogTitle>
                     {image ? (
                       <div className="relative">
@@ -420,43 +428,50 @@ const AddQuestionDialog = ({
                         ))}
                       </div>
                       <FormMessage />
-                      <div className="mt-4">
-                        {field.value.length < 5 && (
-                          <Button
-                            type="button"
-                            onClick={() => handleAddAnswer()}
-                            variant="outline"
-                            className="mx-auto flex items-center gap-2"
-                          >
-                            <Plus className="size-4" />
-                            Thêm đáp án
-                          </Button>
-                        )}
-                      </div>
+                      {(courseStatus === 'draft' ||
+                        courseStatus === 'refject') && (
+                        <div className="mt-4">
+                          {field.value.length < 5 && (
+                            <Button
+                              type="button"
+                              onClick={() => handleAddAnswer()}
+                              variant="outline"
+                              className="mx-auto flex items-center gap-2"
+                            >
+                              <Plus className="size-4" />
+                              Thêm đáp án
+                            </Button>
+                          )}
+                        </div>
+                      )}
                     </FormItem>
                   )}
                 />
               </div>
-              <div className="flex justify-end gap-2">
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    handleCloseOrCancel()
-                    onOpenChange(false)
-                  }}
-                >
-                  Hủy
-                </Button>
-                <Button
-                  disabled={isQuestionCreatePending || isQuestionUpdatePending}
-                  type="submit"
-                >
-                  {(isQuestionCreatePending || isQuestionUpdatePending) && (
-                    <Loader2 className="mr-2 size-4 animate-spin" />
-                  )}
-                  {isEdit ? 'Cập nhật' : 'Thêm câu hỏi'}
-                </Button>
-              </div>
+              {(courseStatus === 'draft' || courseStatus === 'refject') && (
+                <div className="flex justify-end gap-2">
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      handleCloseOrCancel()
+                      onOpenChange(false)
+                    }}
+                  >
+                    Hủy
+                  </Button>
+                  <Button
+                    disabled={
+                      isQuestionCreatePending || isQuestionUpdatePending
+                    }
+                    type="submit"
+                  >
+                    {(isQuestionCreatePending || isQuestionUpdatePending) && (
+                      <Loader2 className="mr-2 size-4 animate-spin" />
+                    )}
+                    {isEdit ? 'Cập nhật' : 'Thêm câu hỏi'}
+                  </Button>
+                </div>
+              )}
             </form>
           </Form>
         </DialogContent>

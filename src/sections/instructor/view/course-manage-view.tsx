@@ -16,7 +16,7 @@ import {
 } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 
-import { CourseStatusMap, ICourse } from '@/types'
+import { CourseStatus, CourseStatusMap, ICourse } from '@/types'
 import { ICategory } from '@/types/Category'
 import { CreateCoursePayload, createCourseSchema } from '@/validations/course'
 import { formatCurrency, formatDateTime } from '@/lib/common'
@@ -178,21 +178,8 @@ const CourseManageView = () => {
         <DataTableColumnHeader column={column} title="Trạng thái" />
       ),
       cell: ({ row }) => {
-        // const course = CourseStatusMap[row.original.status]
-
-        // return <Badge variant={course.badge}>{course.label}</Badge>
-
-        return Object.values(CourseStatusMap)
-          .reverse()
-          .map((status, index) => {
-            if (row.index === index) {
-              return (
-                <Badge key={index} variant={status.badge}>
-                  {status.label}
-                </Badge>
-              )
-            }
-          })
+        const course = CourseStatusMap[row.original.status as CourseStatus]
+        return <Badge variant={course.badge}>{course.label}</Badge>
       },
     },
     {

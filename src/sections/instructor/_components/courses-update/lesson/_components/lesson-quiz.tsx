@@ -21,6 +21,7 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import ModalLoading from '@/components/common/ModalLoading'
 import TinyEditor from '@/components/shared/tiny-editor'
 import AddQuestionDialog from '@/sections/instructor/_components/courses-update/lesson/_components/quiz/add-question-dialog'
 
@@ -29,9 +30,16 @@ type Props = {
   onHide: () => void
   isEdit?: boolean
   quizId?: string
+  courseStatus?: string
 }
 
-const LessonQuiz = ({ chapterId, onHide, isEdit, quizId }: Props) => {
+const LessonQuiz = ({
+  chapterId,
+  onHide,
+  isEdit,
+  quizId,
+  courseStatus,
+}: Props) => {
   const queryClient = useQueryClient()
 
   const [editQuestion, setEditQuestion] = useState(false)
@@ -110,7 +118,7 @@ const LessonQuiz = ({ chapterId, onHide, isEdit, quizId }: Props) => {
   }
 
   if (isQuestionLoading) {
-    return <Loader2 />
+    return <ModalLoading />
   }
 
   return (
@@ -119,24 +127,31 @@ const LessonQuiz = ({ chapterId, onHide, isEdit, quizId }: Props) => {
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <div className="mb-4 flex justify-between">
             <h2 className="font-semibold">
-              {isEdit ? 'Cập nhật' : 'Thêm'} bài ôn tập trắc nghiệm
+              {courseStatus === 'draft' || courseStatus === 'reject'
+                ? isEdit
+                  ? 'Cập nhật'
+                  : 'Thêm'
+                : 'Thông tin'}{' '}
+              bài ôn tập trắc nghiệm
             </h2>
-            <div className="flex items-center justify-end">
-              <Button
-                onClick={handleClose}
-                className="mr-3"
-                variant="secondary"
-                type="button"
-              >
-                Huỷ
-              </Button>
-              <Button type="submit" disabled={isLessonQuizCreatePending}>
-                {isLessonQuizCreatePending && (
-                  <Loader2 className="mr-2 size-4 animate-spin" />
-                )}
-                {isEdit ? 'Cập nhật' : 'Thêm bài học'}
-              </Button>
-            </div>
+            {(courseStatus === 'draft' || courseStatus === 'reject') && (
+              <div className="flex items-center justify-end">
+                <Button
+                  onClick={handleClose}
+                  className="mr-3"
+                  variant="secondary"
+                  type="button"
+                >
+                  Huỷ
+                </Button>
+                <Button type="submit" disabled={isLessonQuizCreatePending}>
+                  {isLessonQuizCreatePending && (
+                    <Loader2 className="mr-2 size-4 animate-spin" />
+                  )}
+                  {isEdit ? 'Cập nhật' : 'Thêm bài học'}
+                </Button>
+              </div>
+            )}
           </div>
 
           <div>
@@ -184,23 +199,25 @@ const LessonQuiz = ({ chapterId, onHide, isEdit, quizId }: Props) => {
                 <p className="text-sm">
                   {index + 1}. {question.question}
                 </p>
-                <div className="flex gap-2">
-                  <div
-                    onClick={() => {
-                      setEditQuestion(true)
-                      setEditQuestionId(question.id)
-                    }}
-                    className="cursor-pointer rounded border bg-[#fff3] p-2 shadow hover:bg-[#ffffff54]"
-                  >
-                    <Pencil size={12} />
+                {(courseStatus === 'draft' || courseStatus === 'reject') && (
+                  <div className="flex gap-2">
+                    <div
+                      onClick={() => {
+                        setEditQuestion(true)
+                        setEditQuestionId(question.id)
+                      }}
+                      className="cursor-pointer rounded border bg-[#fff3] p-2 shadow hover:bg-[#ffffff54]"
+                    >
+                      <Pencil size={12} />
+                    </div>
+                    <div
+                      onClick={() => handleDeleteQuestion(question.id)}
+                      className="cursor-pointer rounded border bg-[#fff3] p-2 shadow hover:bg-[#ffffff54]"
+                    >
+                      <Trash size={12} />
+                    </div>
                   </div>
-                  <div
-                    onClick={() => handleDeleteQuestion(question.id)}
-                    className="cursor-pointer rounded border bg-[#fff3] p-2 shadow hover:bg-[#ffffff54]"
-                  >
-                    <Trash size={12} />
-                  </div>
-                </div>
+                )}
               </div>
               <div className="flex flex-col gap-2 text-xs">
                 {question.answers.map((answer: any, index: number) => (
@@ -223,6 +240,7 @@ const LessonQuiz = ({ chapterId, onHide, isEdit, quizId }: Props) => {
 
       {editQuestion && (
         <AddQuestionDialog
+          courseStatus={courseStatus as string}
           quizId={quizId as string}
           isOpen={editQuestion}
           isEdit={editQuestion}
