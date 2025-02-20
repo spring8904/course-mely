@@ -37,6 +37,7 @@ import {
 import { Button, buttonVariants } from '@/components/ui/button'
 import DraggableHandle from '@/sections/instructor/_components/courses-update/_components/draggable-handle'
 import DraggableItem from '@/sections/instructor/_components/courses-update/lesson/_components/draggable-item'
+import LessonDocument from '@/sections/instructor/_components/courses-update/lesson/_components/lesson-document'
 import LessonQuiz from '@/sections/instructor/_components/courses-update/lesson/_components/lesson-quiz'
 import LessonVideo from '@/sections/instructor/_components/courses-update/lesson/_components/lesson-video'
 import AddQuestionDialog from '@/sections/instructor/_components/courses-update/lesson/_components/quiz/add-question-dialog'
@@ -325,7 +326,16 @@ const DraggableContent = ({
                                   />
                                 )
                               case 'document':
-                                return 'Tài liệu'
+                                return (
+                                  <LessonDocument
+                                    courseStatus={courseStatus as string}
+                                    lessonId={lesson?.id}
+                                    chapterId={
+                                      chapter ? String(chapter.id) : ''
+                                    }
+                                    onHide={() => setLessonEdit(null)}
+                                  />
+                                )
                               case 'quiz':
                                 return (
                                   <LessonQuiz

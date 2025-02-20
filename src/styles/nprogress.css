@@ -1,0 +1,13 @@
+#nprogress .spinner {
+    display: none !important;
+}
+
+#nprogress .bar {
+    background: linear-gradient(90deg, #ff9a8b, #ff6a88, #ff99ac, #fbc2eb);
+    height: 4px;
+    box-shadow: 0 0 10px #ff6a88, 0 0 5px #ff99ac;
+}
+
+#nprogress .peg {
+    box-shadow: 0 0 10px #ff6a88, 0 0 5px #ff99ac;
+}
