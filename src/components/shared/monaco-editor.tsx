@@ -25,6 +25,9 @@ type Props = {
   onChange?: (value?: string, fileName?: string) => void
   onCompile?: (value: any) => void
   theme?: 'light' | 'vs-dark'
+  disabled?: boolean
+  readOnly?: boolean
+  [key: string]: any
 }
 
 const MonacoEditor = ({
@@ -32,6 +35,8 @@ const MonacoEditor = ({
   onChange,
   onCompile,
   theme = 'vs-dark',
+  disabled,
+  readOnly,
   ...rest
 }: Props) => {
   const firstFileName = Object.keys(files)[0]
@@ -109,6 +114,9 @@ const MonacoEditor = ({
           defaultValue={file.value}
           onMount={(editor) => (editorRef.current = editor)}
           onValidate={(markers) => setMarkers(markers)}
+          options={{
+            readOnly,
+          }}
           {...rest}
         />
       </div>
@@ -118,7 +126,7 @@ const MonacoEditor = ({
         className="absolute bottom-6 left-6"
         type="button"
         onClick={handleCompileCode}
-        disabled={compileCode.isPending || markers?.length > 0}
+        disabled={compileCode.isPending || markers?.length > 0 || disabled}
       >
         {compileCode.isPending ? (
           <Loader2 className="animate-spin" />
