@@ -186,7 +186,7 @@ const CourseChapterTab = ({ chapters, slug, courseStatus }: Props) => {
         ) : (
           <>
             <Button
-              disabled={courseStatus !== 'draft'}
+              disabled={courseStatus !== 'draft' && courseStatus !== 'rejected'}
               onClick={() => setAddNewChapter(true)}
               className="mt-4"
             >
