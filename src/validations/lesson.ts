@@ -18,17 +18,39 @@ export const updateTitleLessonSchema = z.object({
     .max(255, 'Tiêu đề không được vượt quá 255 ký tự'),
 })
 
-export const lessonVideoSchema = z.object({
-  title: z
-    .string()
-    .min(3, 'Tiêu đề phải có ít nhất 3 ký tự')
-    .max(255, 'Tiêu đề không được vượt quá 255 ký tự'),
-  video_file: z.any().refine((file) => file instanceof File, {
-    message: 'Video là bắt buộc',
-  }),
-  content: z.string().max(255, 'Nội dung không được vượt quá 255 ký tự'),
-  is_free_preview: z.boolean().optional(),
-})
+export const lessonVideoSchema = z
+  .object({
+    title: z
+      .string()
+      .min(3, 'Tiêu đề phải có ít nhất 3 ký tự')
+      .max(255, 'Tiêu đề không được vượt quá 255 ký tự'),
+    video_file: z.any(),
+    content: z.string().max(255, 'Nội dung không được vượt quá 255 ký tự'),
+    is_free_preview: z
+      .union([z.boolean(), z.number()])
+      .transform((val) => Boolean(val))
+      .optional(),
+    isEdit: z.boolean().optional(),
+  })
+  .superRefine((data, ctx) => {
+    if (!data.isEdit && !(data.video_file instanceof File)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['video_file'],
+        message: 'File video là bắt buộc khi thêm mới',
+      })
+    } else if (data.video_file && !(data.video_file instanceof File)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['video_file'],
+        message: 'File video không hợp lệ',
+      })
+    }
+
+    if (data.isEdit && data.is_free_preview !== undefined) {
+      return
+    }
+  })
 
 export const lessonDocumentSchema = z.object({
   title: z

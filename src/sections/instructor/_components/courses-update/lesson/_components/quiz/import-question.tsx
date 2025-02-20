@@ -25,6 +25,8 @@ const ImportQuestion: React.FC<ImportQuestionProps> = ({
   setIsOpenImportQuestion,
   isOpenImportQuestion,
 }) => {
+  console.log(quizId)
+
   const [file, setFile] = useState<File | null>(null)
   const { mutate: importMutation, isPending } = useImportQuestion()
 
@@ -57,6 +59,7 @@ const ImportQuestion: React.FC<ImportQuestionProps> = ({
       {
         onSuccess: () => {
           setIsOpenImportQuestion(false)
+          setFile(null)
         },
       }
     )

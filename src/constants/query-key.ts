@@ -22,6 +22,7 @@ const QUERY_KEY = {
   VALIDATE_COURSE: 'validate-course',
   INSTRUCTOR_QUIZ: 'instructor-quiz',
   INSTRUCTOR_QUESTION: 'instructor-question',
+  INSTRUCTOR_LESSON_VIDEO: 'instructor-lesson-video',
 }
 
 export default QUERY_KEY
