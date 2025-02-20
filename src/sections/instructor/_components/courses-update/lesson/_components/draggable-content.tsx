@@ -220,7 +220,7 @@ const DraggableContent = ({
                                 </div>
                               </div>
                               {(courseStatus === 'draft' ||
-                                courseStatus === 'reject') && (
+                                courseStatus === 'rejected') && (
                                 <div className="flex items-center gap-2">
                                   <span
                                     className="flex size-8 items-center justify-center rounded-md border border-[#131316]"
@@ -278,7 +278,7 @@ const DraggableContent = ({
                                     className="bg-[#FFF7ED] p-2 text-xs text-primary shadow hover:text-white"
                                     disabled={
                                       courseStatus !== 'draft' &&
-                                      courseStatus !== 'reject'
+                                      courseStatus !== 'rejected'
                                     }
                                   >
                                     Import câu hỏi

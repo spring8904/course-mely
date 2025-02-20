@@ -151,7 +151,7 @@ const CourseChapterTab = ({ chapters, slug, courseStatus }: Props) => {
                                 <SquarePen size={14} />
                               </span>
                               {(courseStatus === 'draft' ||
-                                courseStatus === 'reject') && (
+                                courseStatus === 'rejected') && (
                                 <span
                                   className="flex size-8 items-center justify-center rounded-md border border-[#131316]"
                                   onClick={(e) => {

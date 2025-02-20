@@ -24,6 +24,7 @@ const QUERY_KEY = {
   INSTRUCTOR_QUESTION: 'instructor-question',
   INSTRUCTOR_LESSON_VIDEO: 'instructor-lesson-video',
   INSTRUCTOR_LESSON_DOCUMENT: 'instructor-lesson-document',
+  USER_NOTIFICATION: 'user-notification',
 }
 
 export default QUERY_KEY

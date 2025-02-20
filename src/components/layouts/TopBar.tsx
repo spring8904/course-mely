@@ -1,11 +1,16 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import Image from 'next/image'
 import { useAuthStore } from '@/stores/useAuthStore'
-import { Bell, CheckCircle } from 'lucide-react'
-import Pusher from 'pusher-js'
+import { Bell, CheckCircle, Loader2 } from 'lucide-react'
+import { toast } from 'react-toastify'
 
 import echo from '@/lib/echo'
+import {
+  useGetNotifications,
+  useMarkAsRead,
+} from '@/hooks/notification/useNotification'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -16,93 +21,61 @@ import {
 import { Separator } from '@/components/ui/separator'
 import { SidebarTrigger } from '@/components/ui/sidebar'
 import InputSearch from '@/components/common/InputSearch'
+import ModalLoading from '@/components/common/ModalLoading'
 
 const TopBar = () => {
-  const { user, token } = useAuthStore()
+  const { user } = useAuthStore()
+
+  const [searchTerm, setSearchTerm] = useState('')
   const [notifications, setNotifications] = useState<
-    { id: number; message: string; read: boolean }[]
+    { id: string; message: string; read_at: string | null }[]
   >([])
 
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
+    useGetNotifications()
+  const { mutate: markAsRead, isPending: isPendingMarkAsRead } = useMarkAsRead()
+
   useEffect(() => {
-    const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_KEY!, {
-      cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER!,
-      authEndpoint: `${process.env.NEXT_PUBLIC_API_URL}broadcasting/auth`,
-      auth: {
-        headers: { Authorization: `Bearer ${token}` },
-      },
-    })
-
-    const channel = echo.channel('notifications')
-
-    console.log(channel)
-    console.log('📡 Đang lắng nghe kênh:', channel.name)
-
-    channel.listen('.NewNotification', (data: { message: string }) => {
-      console.log('🔔 Nhận thông báo:', data)
-      setNotifications((prev) => [
-        ...prev,
-        { id: Date.now(), message: data.message, read: false },
-      ])
-    })
-
-    return () => {
-      console.log('🛑 Dừng lắng nghe kênh:', channel.name)
-      channel.stopListening('notifications')
+    if (!isLoading && data) {
+      setNotifications(data?.pages.flatMap((page) => page.notifications) || [])
     }
+  }, [user?.id, data])
 
-    // const channel = pusher.subscribe('notifications')
+  useEffect(() => {
+    if (!user?.id) return
 
-    // const channel =
-    //   echo.channel('notifications') /
-    //   channel.bind('pusher:subscription_succeeded', () => {
-    //     console.log(
-    //       '%c✅ Pusher kết nối thành công!',
-    //       'color: green; font-weight: bold;'
-    //     )
-    //   })
-    //
-    // channel.bind('pusher:subscription_error', (status: any) => {
-    //   console.error('❌ Lỗi kết nối Pusher:', status)
-    // })
+    echo
+      .private(`App.Models.User.${user?.id}`)
+      .notification((notification: any) => {
+        console.log('🔔 New notification:', notification)
+        toast.info(notification.message)
+        setNotifications((prev) => [
+          { id: notification.id, message: notification.message, read_at: null },
+          ...prev,
+        ])
+      })
+  }, [user?.id])
 
-    // channel.bind(
-    //   'App\\Events\\NewNotification',
-    //   (data: { message: string }) => {
-    //     console.log(
-    //       '%c🔔 Nhận thông báo mới:',
-    //       'color: blue; font-weight: bold;',
-    //       data
-    //     )
-    //     setNotifications((prev) => [
-    //       ...prev,
-    //       { id: Date.now(), message: data.message, read: false },
-    //     ])
-    //   }
-    // )
-    //
-    // channel.bind(
-    //   'App\\Events\\NewNotification',
-    //   (data: { id: number; message: string }) => {
-    //     setNotifications((prev) => [
-    //       ...prev,
-    //       { id: data.id, message: data.message, read: false },
-    //     ])
-    //   }
-    // )
-    //
-    // return () => {
-    //   pusher.unsubscribe('notifications')
-    //   pusher.disconnect()
-    // }
-  }, [])
-
-  const markAsRead = (id: number) => {
+  const handleMarkAsRead = (id: string) => {
+    markAsRead(id)
     setNotifications((prev) =>
-      prev.map((n) => (n.id === id ? { ...n, read: true } : n))
+      prev.map((n) =>
+        n.id === id ? { ...n, read_at: new Date().toISOString() } : n
+      )
     )
   }
 
-  const hasUnread = notifications.some((n) => !n.read)
+  const filteredNotifications = notifications
+    .filter((noti: any) =>
+      noti?.data?.message.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    .slice(0, 5)
+
+  const hasUnread = notifications.some((n) => !n.read_at)
+
+  if (isPendingMarkAsRead) {
+    return <ModalLoading />
+  }
 
   return (
     <header className="sticky top-0 z-50 flex h-16 shrink-0 items-center justify-between border-b bg-white px-4">
@@ -129,25 +102,68 @@ const TopBar = () => {
               )}
             </Button>
           </PopoverTrigger>
-          <PopoverContent align="start" side="bottom" className="mr-6 w-64 p-2">
-            <h4 className="text-sm font-medium">Thông báo</h4>
+          <PopoverContent
+            align="start"
+            side="bottom"
+            className="w-100 mr-6 p-2"
+          >
+            <div className="flex justify-between gap-2">
+              <h4 className="text-sm font-medium">Thông báo</h4>
+              <input
+                type="text"
+                placeholder="Tìm kiếm..."
+                className="w-60 rounded border px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
             <Separator className="my-2" />
-            {notifications.length > 0 ? (
-              <div className="flex flex-col gap-2">
-                {notifications.map((noti, index) => (
+            {isLoading ? (
+              <Loader2 />
+            ) : filteredNotifications.length > 0 ? (
+              <div className="flex w-full flex-col gap-3">
+                {filteredNotifications.map((noti: any) => (
                   <div
-                    key={index}
-                    className={`flex cursor-pointer items-center justify-between rounded p-2 ${
-                      noti.read ? 'bg-gray-100' : 'bg-blue-50'
+                    key={noti.id}
+                    className={`flex cursor-pointer items-center gap-4 rounded p-2 ${
+                      noti.read_at ? 'bg-gray-100' : 'bg-blue-50'
                     }`}
-                    onClick={() => markAsRead(noti.id)}
+                    onClick={() => handleMarkAsRead(noti.id)}
                   >
-                    <span className="text-sm">{noti.message}</span>
-                    {!noti.read ? (
-                      <CheckCircle className="size-4 text-green-500" />
-                    ) : null}
+                    <div className="flex size-8 items-center justify-center rounded-full bg-gray-300">
+                      {noti?.data.course_thumbnail ? (
+                        <Image
+                          src={noti?.data.course_thumbnail}
+                          alt="thumbnail"
+                          className="size-full rounded-full object-cover"
+                          width={32}
+                          height={32}
+                        />
+                      ) : (
+                        <span className="text-sm font-bold text-white">
+                          {noti?.data.sender?.charAt(0) ?? 'N'}
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="flex flex-1 items-center justify-between">
+                      <span className="text-sm">{noti?.data.message}</span>
+                      {!noti.read_at && (
+                        <CheckCircle className="size-4 text-green-500" />
+                      )}
+                    </div>
                   </div>
                 ))}
+
+                {hasNextPage && (
+                  <button
+                    className="mt-2 w-full text-center font-bold text-primary"
+                    onClick={() => fetchNextPage()}
+                    disabled={!hasNextPage || isFetchingNextPage}
+                  >
+                    {isFetchingNextPage ? 'Đang tải...' : 'Xem thêm'}
+                  </button>
+                )}
               </div>
             ) : (
               <p className="text-sm text-gray-500">Không có thông báo mới</p>
