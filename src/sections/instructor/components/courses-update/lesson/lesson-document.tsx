@@ -33,7 +33,7 @@ import {
 } from '@/components/ui/select'
 import ModalLoading from '@/components/common/ModalLoading'
 import TinyEditor from '@/components/shared/tiny-editor'
-import DialogDocumentPreview from '@/sections/instructor/_components/courses-update/lesson/_components/document/dialog-document-preview'
+import DialogDocumentPreview from '@/sections/instructor/components/courses-update/lesson/document/dialog-document-preview'
 
 type Props = {
   chapterId?: string | number
@@ -98,7 +98,7 @@ const LessonDocument = ({
         setDocumentFile(lessonable.file_path)
       }
     }
-  }, [lessonDocumentData, form])
+  }, [lessonDocumentData, form, lessonId])
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]

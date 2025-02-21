@@ -35,14 +35,14 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion'
 import { Button, buttonVariants } from '@/components/ui/button'
-import DraggableHandle from '@/sections/instructor/_components/courses-update/_components/draggable-handle'
-import DraggableItem from '@/sections/instructor/_components/courses-update/lesson/_components/draggable-item'
-import LessonDocument from '@/sections/instructor/_components/courses-update/lesson/_components/lesson-document'
-import LessonQuiz from '@/sections/instructor/_components/courses-update/lesson/_components/lesson-quiz'
-import LessonVideo from '@/sections/instructor/_components/courses-update/lesson/_components/lesson-video'
-import AddQuestionDialog from '@/sections/instructor/_components/courses-update/lesson/_components/quiz/add-question-dialog'
-import ImportQuestion from '@/sections/instructor/_components/courses-update/lesson/_components/quiz/import-question'
-import CreateLesson from '@/sections/instructor/_components/courses-update/lesson/create-lesson'
+import DraggableHandle from '@/components/shared/draggable-handle'
+import DraggableItem from '@/components/shared/draggable-item'
+import CreateLesson from '@/sections/instructor/components/courses-update/lesson/create-lesson'
+import LessonDocument from '@/sections/instructor/components/courses-update/lesson/lesson-document'
+import LessonQuiz from '@/sections/instructor/components/courses-update/lesson/lesson-quiz'
+import LessonVideo from '@/sections/instructor/components/courses-update/lesson/lesson-video'
+import AddQuestionDialog from '@/sections/instructor/components/courses-update/lesson/quiz/add-question-dialog'
+import ImportQuestion from '@/sections/instructor/components/courses-update/lesson/quiz/import-question'
 
 export interface DraggableContentProps {
   chapter: IChapter
@@ -51,7 +51,7 @@ export interface DraggableContentProps {
   courseStatus?: string
 }
 
-const DraggableContent = ({
+const DraggableLesson = ({
   chapter,
   slug,
   // onHide,
@@ -438,4 +438,4 @@ const DraggableContent = ({
   )
 }
 
-export default DraggableContent
+export default DraggableLesson

@@ -33,7 +33,7 @@ const BlogDetailSharePost = ({ initialBlogDetail }: BlogDetailPostProps) => {
         </ul>
       </div>
       <ul className="tags-list">
-        {initialBlogDetail?.tags.map((tag, index) => (
+        {initialBlogDetail?.tags.map((tag: any, index: number) => (
           <li key={index}>
             <a href="#" className="tags-item">
               {tag.name}

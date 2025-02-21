@@ -1,4 +1,4 @@
-import { PostAddView } from '@/sections/instructor/post/view'
+import PostAddView from '@/sections/instructor/view/post-add-view'
 
 const PostPage = () => {
   return <PostAddView />

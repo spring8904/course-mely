@@ -116,7 +116,7 @@ const AddQuestionDialog = ({
       }))
       form.setValue('options', options, { shouldValidate: true })
     }
-  }, [form.watch('answer_type')])
+  }, [form])
 
   const handleChangeOption = (optionIndex: number, value: string) => {
     const options = form.getValues('options')

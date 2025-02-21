@@ -22,11 +22,11 @@ import {
 } from '@/components/ui/accordion'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import DraggableHandle from '@/sections/instructor/_components/courses-update/_components/draggable-handle'
-import DraggableContent from '@/sections/instructor/_components/courses-update/lesson/_components/draggable-content'
+import DraggableHandle from '@/components/shared/draggable-handle'
+import DraggableLesson from '@/sections/instructor/components/courses-update/lesson/draggable-lesson'
 
+import DraggableItem from '../../../../components/shared/draggable-item'
 import CreateChapter from './chapter/create-chapter'
-import DraggableItem from './lesson/_components/draggable-item'
 
 type Props = {
   chapters: IChapter[]
@@ -210,7 +210,7 @@ const CourseChapterTab = ({
                       </div>
                     </AccordionTrigger>
                     <AccordionContent className="mt-3 rounded-lg p-4">
-                      <DraggableContent
+                      <DraggableLesson
                         courseStatus={courseStatus}
                         chapter={chapter}
                         slug={slug}

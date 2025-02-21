@@ -1,4 +1,4 @@
-import { PostUpdateView } from '@/sections/instructor/post/view'
+import PostUpdateView from '@/sections/instructor/view/post-update-view'
 
 type Props = {
   params: { slug: string }

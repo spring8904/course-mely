@@ -15,7 +15,7 @@ export const profileApi = {
     const formData = new FormData()
 
     Object.keys(data).forEach((key) => {
-      formData.append(key, data[key])
+      formData.append(key, (data as Record<string, string>)[key])
     })
 
     formData.append('_method', 'PUT')

@@ -23,7 +23,7 @@ import {
 import { Input } from '@/components/ui/input'
 import ModalLoading from '@/components/common/ModalLoading'
 import TinyEditor from '@/components/shared/tiny-editor'
-import AddQuestionDialog from '@/sections/instructor/_components/courses-update/lesson/_components/quiz/add-question-dialog'
+import AddQuestionDialog from '@/sections/instructor/components/courses-update/lesson/quiz/add-question-dialog'
 
 type Props = {
   chapterId?: string
@@ -44,7 +44,7 @@ const LessonQuiz = ({
 
   const [editQuestion, setEditQuestion] = useState(false)
 
-  const [questions, setQuestions] = useState<any[]>([])
+  const [, setQuestions] = useState<any[]>([])
   const [editQuestionId, setEditQuestionId] = useState<string | null>(null)
 
   const { data: questionData, isLoading: isQuestionLoading } = useGetQuiz(

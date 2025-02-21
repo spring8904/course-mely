@@ -2,6 +2,7 @@ import Image from 'next/image'
 import { Star } from 'lucide-react'
 
 import { ICourse } from '@/types'
+import { formatCurrency } from '@/lib/common'
 import { cn } from '@/lib/utils'
 
 import { Card, CardContent } from '@/components/ui/card'
@@ -47,11 +48,13 @@ const CourseCard = ({ course }: CourseCardProps) => {
 
         <div className="mt-6 flex gap-4 text-base font-semibold text-primary">
           <span
-            className={cn(course.priceSale && 'text-[#4D5756] line-through')}
+            className={cn(course.price_sale && 'text-[#4D5756] line-through')}
           >
-            {course.price} đ
+            {course.price && formatCurrency(course.price)}
           </span>
-          {course.priceSale && <span>{course.priceSale} đ</span>}
+          {course.price_sale && (
+            <span>{formatCurrency(course.price_sale)} đ</span>
+          )}
         </div>
       </CardContent>
     </Card>

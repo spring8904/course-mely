@@ -87,7 +87,7 @@ const CourseOverView = ({ courseOverView }: any) => {
         intro: data.intro || '',
       })
     }
-  }, [courseOverView])
+  }, [courseOverView, form])
 
   const onSubmit = (data: UpdateCourseOverViewPayload) => {
     updateCourseOverView({ slug: courseOverView.slug, data })

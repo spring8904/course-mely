@@ -9,6 +9,7 @@ import { updateProfile, UpdateProfilePayload } from '@/validations/profile'
 import { useGetProfile, useUpdateProfile } from '@/hooks/profile/useProfile'
 
 import SocialView from '@/sections/me/_components/settings/_components/social'
+
 import PassWordView from './_components/password'
 
 const MeSetting = () => {

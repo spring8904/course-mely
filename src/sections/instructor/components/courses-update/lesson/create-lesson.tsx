@@ -2,10 +2,10 @@ import React, { useState } from 'react'
 
 import { LessonType } from '@/types'
 
-import AddCodingDialog from '@/sections/instructor/_components/courses-update/lesson/_components/coding/add-coding-dialog'
-import LessonDocument from '@/sections/instructor/_components/courses-update/lesson/_components/lesson-document'
-import LessonQuiz from '@/sections/instructor/_components/courses-update/lesson/_components/lesson-quiz'
-import LessonVideo from '@/sections/instructor/_components/courses-update/lesson/_components/lesson-video'
+import AddCodingDialog from '@/sections/instructor/components/courses-update/lesson/coding/add-coding-dialog'
+import LessonDocument from '@/sections/instructor/components/courses-update/lesson/lesson-document'
+import LessonQuiz from '@/sections/instructor/components/courses-update/lesson/lesson-quiz'
+import LessonVideo from '@/sections/instructor/components/courses-update/lesson/lesson-video'
 
 type Props = {
   chapterId?: string

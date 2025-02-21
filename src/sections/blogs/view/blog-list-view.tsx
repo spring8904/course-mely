@@ -1,7 +1,6 @@
 'use client'
 
 import React from 'react'
-import { Loader2 } from 'lucide-react'
 
 import { useGetBlogs } from '@/hooks/blog/useBlog'
 
@@ -10,7 +9,7 @@ import BlogListItem from '../_components/blog-list/item'
 import BlogListSideBar from '../_components/blog-list/sidebar'
 
 const BlogListView = () => {
-  const { data: blogs, isLoading } = useGetBlogs()
+  const { data: blogs } = useGetBlogs()
   // if (isLoading) {
   //   return (
   //     <div className="mt-20">

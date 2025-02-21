@@ -13,7 +13,7 @@ import BlogDetailSharePost from '../_components/blog-detail/share-post'
 import BlogDetailSimilarPosts from '../_components/blog-detail/similar-posts'
 
 const BlogDetailView = ({ slug }: { slug: string }) => {
-  const { data: blogdetail, isLoading: isLoadingBlogDetail } =
+  const { data: blogDetail, isLoading: isLoadingBlogDetail } =
     useGetBlogBySlug(slug)
   if (isLoadingBlogDetail) {
     return (
@@ -30,14 +30,14 @@ const BlogDetailView = ({ slug }: { slug: string }) => {
           <div className="image-head">
             <img
               className="w-100 lazyload"
-              src={blogdetail.data?.thumbnail}
-              alt={blogdetail.data?.title}
+              src={blogDetail?.data?.thumbnail}
+              alt={blogDetail?.data?.title}
             />
           </div>
           <div className="blog-single-wrap">
-            <BlogDetailPost initialBlogDetail={blogdetail?.data} />
-            <BlogDetailSharePost initialBlogDetail={blogdetail?.data} />
-            <BlogDetailProfileItem initialBlogDetail={blogdetail?.data} />
+            <BlogDetailPost initialBlogDetail={blogDetail?.data} />
+            <BlogDetailSharePost initialBlogDetail={blogDetail?.data} />
+            <BlogDetailProfileItem initialBlogDetail={blogDetail?.data} />
             <div className="post-control flex flex-wrap items-center justify-between gap-[20px]">
               <div className="prev wow fadeInLeft">
                 <a href="#" className="fw-5 h6 flex items-center">

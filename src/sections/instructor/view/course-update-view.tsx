@@ -38,11 +38,11 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet'
-import CourseObjective from '@/sections/instructor/_components/courses-update/_components/course-objective'
-import CourseOverView from '@/sections/instructor/_components/courses-update/_components/course-over-view'
-import CourseStructure from '@/sections/instructor/_components/courses-update/_components/course-structure'
-import FilmEditing from '@/sections/instructor/_components/courses-update/_components/film'
-import CourseChapterTab from '@/sections/instructor/_components/courses-update/course-chapter-tab'
+import CourseChapterTab from '@/sections/instructor/components/courses-update/course-chapter-tab'
+import CourseObjective from '@/sections/instructor/components/courses-update/course-objective'
+import CourseOverView from '@/sections/instructor/components/courses-update/course-over-view'
+import CourseStructure from '@/sections/instructor/components/courses-update/course-structure'
+import FilmEditing from '@/sections/instructor/components/courses-update/film'
 
 type GroupId = 'planning' | 'content'
 

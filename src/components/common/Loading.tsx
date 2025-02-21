@@ -4,7 +4,7 @@ import { motion } from 'motion/react'
 
 const Loading = () => {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-opacity-50">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/50">
       <motion.div
         className="relative flex size-16 items-center justify-center rounded-lg p-6"
         animate={{ rotate: 360 }}

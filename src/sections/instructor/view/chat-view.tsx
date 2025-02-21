@@ -226,7 +226,7 @@ const ChatView = () => {
           blob: file,
         }
       })
-      .filter((preview): preview is FilePreview => preview !== null)
+      .filter((preview) => preview !== null)
 
     setFilePreviews((prev) => [...prev, ...newPreviews])
     e.target.value = ''
@@ -321,7 +321,7 @@ const ChatView = () => {
         URL.revokeObjectURL(preview.url)
       })
     }
-  }, [])
+  }, [chats, filePreviews])
 
   return (
     <div className="flex h-[650px] bg-white">
@@ -761,7 +761,7 @@ const ChatView = () => {
                 <Button
                   size="icon"
                   variant="ghost"
-                  className="absolute right-2 top-1/2 size-9 -translate-y-1/2 rounded-full bg-orange-500 text-white hover:bg-background hover:bg-orange-600 hover:text-white"
+                  className="absolute right-2 top-1/2 size-9 -translate-y-1/2 rounded-full bg-orange-500 text-white hover:bg-orange-600"
                   onClick={() => sendMessage()}
                 >
                   <Send className="size-5" />

@@ -9,7 +9,7 @@ import {
 import { useChangePassword } from '@/hooks/change-password/useChangePassword'
 
 const PassWordView = () => {
-  const { mutate, isPending } = useChangePassword()
+  const { mutate } = useChangePassword()
   const {
     register,
     handleSubmit,

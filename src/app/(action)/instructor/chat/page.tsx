@@ -1,4 +1,4 @@
-import ChatView from '@/sections/instructor/chat/view/chat-view'
+import ChatView from '@/sections/instructor/view/chat-view'
 
 const ChatPage = () => {
   return (

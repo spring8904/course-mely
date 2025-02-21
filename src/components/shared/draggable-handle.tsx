@@ -2,7 +2,7 @@ import React, { useContext } from 'react'
 import { GripVertical } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
-import { SortableItemContext } from '@/sections/instructor/_components/courses-update/lesson/_components/draggable-item'
+import { SortableItemContext } from '@/components/shared/draggable-item'
 
 const DraggableHandle = () => {
   const { attributes, listeners, ref, disabled } =
