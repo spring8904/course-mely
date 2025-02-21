@@ -1,7 +1,7 @@
 'use client'
 
 import { Info } from 'lucide-react'
-import { UseFormReturn } from 'react-hook-form'
+import { useFormContext, useWatch } from 'react-hook-form'
 
 import { UpdateCodingLessonPayload } from '@/validations/course'
 import { Language, LANGUAGE_CONFIG } from '@/constants/language'
@@ -20,11 +20,9 @@ import {
 } from '@/components/ui/resizable'
 import MonacoEditor from '@/components/shared/monaco-editor'
 
-interface Props {
-  form: UseFormReturn<UpdateCodingLessonPayload, any, undefined>
-}
+const SolutionTab = () => {
+  const form = useFormContext<UpdateCodingLessonPayload>()
 
-const SolutionTab = ({ form }: Props) => {
   const { sampleFileName, version } =
     LANGUAGE_CONFIG[form.getValues('language') as Language]
 
@@ -37,7 +35,7 @@ const SolutionTab = ({ form }: Props) => {
     },
   }
 
-  const resultCode = form.watch('result_code')
+  const resultCode = useWatch({ name: 'result_code' })
 
   return (
     <ResizablePanelGroup direction="horizontal">
@@ -60,6 +58,8 @@ const SolutionTab = ({ form }: Props) => {
                     onCompile={(code) => {
                       field.onChange(code)
                     }}
+                    disabled={field.disabled}
+                    readOnly={field.disabled}
                   />
                 </FormControl>
               </div>

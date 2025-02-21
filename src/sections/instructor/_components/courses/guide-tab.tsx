@@ -1,10 +1,11 @@
 'use client'
 
 import { Info, Trash } from 'lucide-react'
-import { UseFormReturn } from 'react-hook-form'
+import { useFieldArray, useFormContext } from 'react-hook-form'
 
 import { UpdateCodingLessonPayload } from '@/validations/course'
 
+import { Button } from '@/components/ui/button'
 import {
   FormControl,
   FormDescription,
@@ -21,23 +22,21 @@ import {
 } from '@/components/ui/resizable'
 import TinyEditor from '@/components/shared/tiny-editor'
 
-interface Props {
-  form: UseFormReturn<UpdateCodingLessonPayload>
-}
+const GuideTab = () => {
+  const {
+    control,
+    formState: { disabled },
+  } = useFormContext<UpdateCodingLessonPayload>()
 
-const GuideTab = ({ form }: Props) => {
-  const hints = form.watch('hints') || ['']
-
-  const handleRemoveHint = (index: number) => {
-    const newHints = hints.filter((_, i) => i !== index)
-    form.setValue('hints', newHints)
-  }
+  const { fields, append, remove } = useFieldArray({
+    name: 'hints',
+  })
 
   return (
     <ResizablePanelGroup direction="horizontal">
       <ResizablePanel minSize={30}>
         <FormField
-          control={form.control}
+          control={control}
           name="solution_code"
           render={({ field }) => (
             <FormItem className="flex h-full flex-col space-y-0">
@@ -62,6 +61,7 @@ const GuideTab = ({ form }: Props) => {
                         height: '100%',
                         resize: false,
                       }}
+                      disabled={field.disabled}
                     />
                   </FormControl>
                 </div>
@@ -74,63 +74,67 @@ const GuideTab = ({ form }: Props) => {
       <ResizableHandle />
 
       <ResizablePanel minSize={30}>
-        <FormField
-          control={form.control}
-          name="hints"
-          render={({ field }) => (
-            <FormItem className="flex h-full flex-col space-y-0">
-              <FormLabel className="flex h-14 items-center gap-2 border-b px-4 py-2 text-lg font-bold">
-                Gợi ý
-                <Info size={18} />
-              </FormLabel>
+        <div className="flex h-full flex-col space-y-0">
+          <div className="flex h-14 items-center gap-2 border-b px-4 py-2 text-lg font-bold">
+            Gợi ý
+            <Info size={18} />
+          </div>
 
-              <div className="flex-1 space-y-2 overflow-y-auto p-4 scrollbar-thin">
-                <FormDescription className="text-base">
-                  Các gợi ý sẽ được mở khóa sau lần thực hiện thất bại thứ hai
-                  để học viên có thể nhận được nhiều hỗ trợ hơn ngoài các bài
-                  giảng và bài kiểm tra liên quan.
-                </FormDescription>
+          <div className="flex-1 space-y-3 overflow-y-auto p-4 scrollbar-thin">
+            <p className="text-base text-muted-foreground">
+              Các gợi ý sẽ được mở khóa sau lần thực hiện thất bại thứ hai để
+              học viên có thể nhận được nhiều hỗ trợ hơn ngoài các bài giảng và
+              bài kiểm tra liên quan.
+            </p>
 
-                <FormControl className="space-y-3">
-                  <div>
-                    {hints.map((hint, index) => (
-                      <div key={index} className="relative">
+            {fields.map((field, index) => (
+              <FormField
+                key={field.id}
+                control={control}
+                name={`hints.${index}`}
+                render={({ field }) => (
+                  <FormItem>
+                    <div className="relative">
+                      <FormControl>
                         <Input
                           placeholder={`Nhập gợi ý thứ ${index + 1}`}
-                          value={hint}
+                          {...field}
                           onChange={(e) => {
-                            const newHints = [...hints]
-                            newHints[index] = e.target.value
-
+                            field.onChange(e)
                             if (
-                              index === newHints.length - 1 &&
-                              e.target.value.trim() !== '' &&
-                              index < 9
+                              index === fields.length - 1 &&
+                              fields.length < 10
                             ) {
-                              newHints.push('')
+                              append('')
                             }
-
-                            field.onChange(newHints)
                           }}
                         />
-                        {hints.length > 1 && (
-                          <button
-                            type="button"
-                            className="absolute right-2 top-1/2 -translate-y-1/2 text-red-500"
-                            onClick={() => handleRemoveHint(index)}
-                          >
-                            <Trash size={16} />
-                          </button>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </FormControl>
-                <FormMessage />
-              </div>
-            </FormItem>
-          )}
-        />
+                      </FormControl>
+                      <button
+                        type="button"
+                        className="absolute right-2 top-1/2 -translate-y-1/2 text-red-500"
+                        onClick={() => remove(index)}
+                      >
+                        <Trash size={16} />
+                      </button>
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            ))}
+
+            <Button
+              type="button"
+              disabled={fields.length >= 10 || disabled}
+              onClick={() => {
+                append('')
+              }}
+            >
+              Thêm gợi ý
+            </Button>
+          </div>
+        </div>
       </ResizablePanel>
     </ResizablePanelGroup>
   )

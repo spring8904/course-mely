@@ -150,13 +150,12 @@ export const updateCodingLessonSchema = z.object({
   hints: z
     .string()
     .trim()
+    .min(3, 'Gợi ý phải có ít nhất 3 ký tự')
     .array()
     .max(10, {
       message: 'Số lượng gợi ý tối đa là 10',
-    })
-    .optional()
-    .nullable(),
-  sample_code: z.string().trim().optional(),
+    }),
+  sample_code: z.string().optional(),
   result_code: z
     .string({
       required_error: 'Vui lòng nhập mã giải và chạy',

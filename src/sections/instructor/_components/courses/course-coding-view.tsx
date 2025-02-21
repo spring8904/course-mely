@@ -1,6 +1,5 @@
 'use client'
 
-import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2, MoveLeft } from 'lucide-react'
@@ -47,6 +46,9 @@ const CourseCodingView = ({
 }) => {
   const router = useRouter()
   const { data: lessonCoding, isLoading } = useGetLessonCoding(slug, codingId)
+  const updateCodingLesson = useUpdateCodingLesson()
+
+  const disabled = updateCodingLesson.isPending
 
   const form = useForm<UpdateCodingLessonPayload>({
     resolver: zodResolver(updateCodingLessonSchema),
@@ -56,25 +58,18 @@ const CourseCodingView = ({
       sample_code: '',
       result_code: '',
       solution_code: '',
-      hints: [''],
+      hints: [],
     },
+    values: lessonCoding?.data,
+    disabled,
   })
 
-  const updateCodingLesson = useUpdateCodingLesson()
-
   const onSubmit = (values: UpdateCodingLessonPayload) => {
-    const filteredHints = values.hints?.filter((hint) => hint !== '') || []
-
-    const payload = {
-      ...values,
-      hints: filteredHints,
-    }
-
     updateCodingLesson.mutate(
       {
         chapterSlug: slug,
         codingId: codingId,
-        data: payload,
+        data: values,
       },
       {
         onSuccess: () => {
@@ -83,12 +78,6 @@ const CourseCodingView = ({
       }
     )
   }
-
-  useEffect(() => {
-    if (lessonCoding?.data) {
-      form.reset(lessonCoding.data)
-    }
-  }, [form, lessonCoding])
 
   const handleBack = () => {
     router.back()
@@ -101,8 +90,9 @@ const CourseCodingView = ({
       data: {
         language,
         title: lessonCoding?.data.title,
-        result_code: lessonCoding?.data.result_code,
-        solution_code: lessonCoding?.data.solution_code,
+        hints: [],
+        solution_code: '',
+        result_code: '',
       },
     })
   }
@@ -127,7 +117,7 @@ const CourseCodingView = ({
                 {lessonCoding?.data.title || 'Bài tập Coding'}
               </span>
             </div>
-            <Button disabled={updateCodingLesson.isPending} type="submit">
+            <Button type="submit" disabled={disabled}>
               {updateCodingLesson.isPending && (
                 <Loader2 className="animate-spin" />
               )}{' '}
@@ -139,7 +129,7 @@ const CourseCodingView = ({
             <TabsContent value="plan" className="h-full">
               <div className="container mx-auto max-w-4xl space-y-4 p-8">
                 <h2 className="text-2xl font-bold">Bài tập Coding</h2>
-                <p>
+                <p className="text-base text-muted-foreground">
                   Bài tập mã hóa cho phép người học thực hành một phần công việc
                   thực tế có mục tiêu và nhận được phản hồi ngay lập tức. Chúng
                   tôi khuyên bạn nên làm theo các bước sau: Lên kế hoạch cho bài
@@ -165,13 +155,13 @@ const CourseCodingView = ({
                 <FormField
                   control={form.control}
                   name="language"
-                  render={() => (
+                  render={({ field }) => (
                     <FormItem>
                       <FormLabel>Chọn ngôn ngữ</FormLabel>
                       <Select
                         onValueChange={handleUpdateLanguage}
                         defaultValue={lessonCoding?.data.language}
-                        disabled={updateCodingLesson.isPending}
+                        disabled={field.disabled}
                       >
                         <FormControl>
                           <SelectTrigger>
@@ -195,10 +185,10 @@ const CourseCodingView = ({
               </div>
             </TabsContent>
             <TabsContent value="solution" className="h-full">
-              <SolutionTab form={form} />
+              <SolutionTab />
             </TabsContent>
             <TabsContent value="guide" className="h-full">
-              <GuideTab form={form} />
+              <GuideTab />
             </TabsContent>
             <footer className="fixed inset-x-0 bottom-0 z-10 flex justify-center border-t bg-white p-4">
               <TabsList className="flex gap-4">

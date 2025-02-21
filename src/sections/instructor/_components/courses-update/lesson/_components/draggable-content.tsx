@@ -70,7 +70,8 @@ const DraggableContent = ({
   const [isOpenImportQuestion, setIsOpenImportQuestion] = useState(false)
   const [quizId, setQuizId] = useState<string | undefined>(undefined)
 
-  const { mutate } = useUpdateOrderLesson()
+  const { mutate: updateLessonOrder, isPending: isUpdateOrder } =
+    useUpdateOrderLesson()
   const { mutate: deleteLesson } = useDeleteLesson()
 
   const handleDragEnd = ({ active, over }: DragEndEvent) => {
@@ -88,7 +89,7 @@ const DraggableContent = ({
           order: index + 1,
         }))
 
-      mutate({ slug, lessons: payload })
+      updateLessonOrder({ slug, lessons: payload })
     }
   }
 
@@ -146,288 +147,283 @@ const DraggableContent = ({
   return (
     <>
       <DndContext onDragEnd={handleDragEnd}>
-        <AccordionContent className="mt-3 rounded-lg p-4">
-          <SortableContext
-            items={lessonList.map((lesson) => lesson.id as UniqueIdentifier)}
-          >
-            {lessonList.map((lesson) => {
-              typeIndexMap[lesson.type]++
-              return (
-                <DraggableItem key={lesson.id} id={lesson.id}>
-                  <Accordion
-                    type="single"
-                    collapsible
-                    key={lesson.id}
-                    className="mb-3"
+        <SortableContext
+          items={lessonList.map((lesson) => lesson.id as UniqueIdentifier)}
+        >
+          {lessonList.map((lesson) => {
+            typeIndexMap[lesson.type]++
+            return (
+              <DraggableItem
+                key={lesson.id}
+                id={lesson.id}
+                disabled={isUpdateOrder}
+              >
+                <Accordion
+                  type="single"
+                  collapsible
+                  key={lesson.id}
+                  className="mb-3"
+                >
+                  <AccordionItem
+                    onClick={(e) => e.stopPropagation()}
+                    value={`lesson-${lesson.id}`}
                   >
-                    <AccordionItem
-                      onClick={(e) => e.stopPropagation()}
-                      value={`lesson-${lesson.id}`}
+                    <AccordionTrigger
+                      onClick={(e) => {
+                        if (!lessonEdit || lessonEdit !== lesson.id) {
+                          e.stopPropagation()
+                          setLessonEdit(lesson.id as number)
+                        }
+                      }}
+                      className="rounded-lg"
                     >
-                      <AccordionTrigger
-                        onClick={(e) => {
-                          if (!lessonEdit || lessonEdit !== lesson.id) {
-                            e.stopPropagation()
-                            setLessonEdit(lesson.id as number)
-                          }
-                        }}
-                        className="rounded-lg"
-                      >
-                        <div className="flex w-full items-center gap-3 text-sm font-semibold">
-                          <div className="flex w-full items-center gap-4">
-                            <>
-                              <div className="flex items-center gap-2">
+                      <div className="flex w-full items-center gap-3 text-sm font-semibold">
+                        <div className="flex w-full items-center gap-4">
+                          <>
+                            <div className="flex items-center gap-2">
+                              {(() => {
+                                switch (lesson?.type) {
+                                  case 'video':
+                                    return (
+                                      <CirclePlay className="size-4 shrink-0" />
+                                    )
+                                  case 'document':
+                                    return (
+                                      <ScrollText className="size-4 shrink-0" />
+                                    )
+                                  case 'quiz':
+                                    return (
+                                      <CircleHelp className="size-4 shrink-0" />
+                                    )
+                                  case 'coding':
+                                    return (
+                                      <FileCode2 className="size-4 shrink-0" />
+                                    )
+                                  default:
+                                    return (
+                                      <SquarePen className="size-4 shrink-0" />
+                                    )
+                                }
+                              })()}
+                              <div>
                                 {(() => {
                                   switch (lesson?.type) {
                                     case 'video':
-                                      return (
-                                        <CirclePlay className="size-4 shrink-0" />
-                                      )
+                                      return 'Bài giảng'
                                     case 'document':
-                                      return (
-                                        <ScrollText className="size-4 shrink-0" />
-                                      )
+                                      return 'Tài liệu'
                                     case 'quiz':
-                                      return (
-                                        <CircleHelp className="size-4 shrink-0" />
-                                      )
+                                      return 'Câu hỏi'
                                     case 'coding':
-                                      return (
-                                        <FileCode2 className="size-4 shrink-0" />
-                                      )
+                                      return 'Bài tập'
                                     default:
-                                      return (
-                                        <SquarePen className="size-4 shrink-0" />
-                                      )
+                                      return 'Bài giảng'
                                   }
-                                })()}
-                                <div>
-                                  {(() => {
-                                    switch (lesson?.type) {
-                                      case 'video':
-                                        return 'Bài giảng'
-                                      case 'document':
-                                        return 'Tài liệu'
-                                      case 'quiz':
-                                        return 'Câu hỏi'
-                                      case 'coding':
-                                        return 'Bài tập'
-                                      default:
-                                        return 'Bài giảng'
-                                    }
-                                  })()}{' '}
-                                  {typeIndexMap[lesson?.type]}: {lesson.title}
-                                </div>
+                                })()}{' '}
+                                {typeIndexMap[lesson?.type]}: {lesson.title}
                               </div>
-                              {(courseStatus === 'draft' ||
-                                courseStatus === 'rejected') && (
-                                <div className="flex items-center gap-2">
-                                  <span
-                                    className="flex size-8 items-center justify-center rounded-md border border-[#131316]"
-                                    onClick={() => {
-                                      setLessonEdit(lesson.id as number)
-                                      if (lesson.type === 'coding') {
-                                        router.push(
-                                          `/course/${lesson.slug}/coding-exercise?coding=${lesson.lessonable_id}`
-                                        )
-                                      }
-                                    }}
-                                  >
-                                    <SquarePen size={14} />
-                                  </span>
-                                  <span
-                                    className="flex size-8 items-center justify-center rounded-md border border-[#131316]"
-                                    onClick={(e) => {
-                                      e.stopPropagation()
-                                      handleDeleteLesson(lesson.id as number)
-                                    }}
-                                  >
-                                    <Trash2 size={14} />
-                                  </span>
-                                </div>
-                              )}
-                            </>
-                            <div className="ml-auto mr-4 flex items-center gap-2">
-                              {lesson.type === 'quiz' && (
-                                <div className="flex gap-2">
-                                  <Button
-                                    onClick={(e) => {
-                                      e.stopPropagation()
-                                      handleDownloadQuizForm()
-                                    }}
-                                    variant="default"
-                                    className="bg-[#FFF7ED] p-2 text-xs text-primary shadow hover:text-white"
-                                    disabled={
-                                      courseStatus !== 'draft' &&
-                                      courseStatus !== 'rejected'
-                                    }
-                                  >
-                                    Mẫu Import
-                                    <FileDown className="size-2" />
-                                  </Button>
-                                  <Button
-                                    onClick={(e) => {
-                                      e.stopPropagation()
-                                      setIsOpenImportQuestion(true)
-                                      setQuizId(
-                                        lesson?.lessonable_id as
-                                          | string
-                                          | undefined
-                                      )
-                                    }}
-                                    className="bg-[#FFF7ED] p-2 text-xs text-primary shadow hover:text-white"
-                                    disabled={
-                                      courseStatus !== 'draft' &&
-                                      courseStatus !== 'rejected'
-                                    }
-                                  >
-                                    Import câu hỏi
-                                    <FileUp className="size-2" />
-                                  </Button>
-                                  <Button
-                                    onClick={(e) => {
-                                      e.stopPropagation()
-                                      setIsOpenAddQuestion(true)
-                                      setQuizId(
-                                        lesson?.lessonable_id as
-                                          | string
-                                          | undefined
-                                      )
-                                    }}
-                                    className="rounded-lg border bg-[#FFF7ED] p-2 text-xs text-primary shadow hover:text-white"
-                                    disabled={
-                                      courseStatus !== 'draft' &&
-                                      courseStatus !== 'rejected'
-                                    }
-                                  >
-                                    Thêm câu hỏi
-                                  </Button>
-                                </div>
-                              )}
-                              <DraggableHandle />
                             </div>
+                            {(courseStatus === 'draft' ||
+                              courseStatus === 'rejected') && (
+                              <div className="flex items-center gap-2">
+                                <span
+                                  className="flex size-8 items-center justify-center rounded-md border border-[#131316]"
+                                  onClick={() => {
+                                    setLessonEdit(lesson.id as number)
+                                    if (lesson.type === 'coding') {
+                                      router.push(
+                                        `/course/${lesson.slug}/coding-exercise?coding=${lesson.lessonable_id}`
+                                      )
+                                    }
+                                  }}
+                                >
+                                  <SquarePen size={14} />
+                                </span>
+                                <span
+                                  className="flex size-8 items-center justify-center rounded-md border border-[#131316]"
+                                  onClick={(e) => {
+                                    e.stopPropagation()
+                                    handleDeleteLesson(lesson.id as number)
+                                  }}
+                                >
+                                  <Trash2 size={14} />
+                                </span>
+                              </div>
+                            )}
+                          </>
+                          <div className="ml-auto mr-4 flex items-center gap-2">
+                            {lesson.type === 'quiz' && (
+                              <div className="flex gap-2">
+                                <Button
+                                  onClick={(e) => {
+                                    e.stopPropagation()
+                                    handleDownloadQuizForm()
+                                  }}
+                                  variant="default"
+                                  className="bg-[#FFF7ED] p-2 text-xs text-primary shadow hover:text-white"
+                                  disabled={
+                                    courseStatus !== 'draft' &&
+                                    courseStatus !== 'rejected'
+                                  }
+                                >
+                                  Mẫu Import
+                                  <FileDown className="size-2" />
+                                </Button>
+                                <Button
+                                  onClick={(e) => {
+                                    e.stopPropagation()
+                                    setIsOpenImportQuestion(true)
+                                    setQuizId(
+                                      lesson?.lessonable_id as
+                                        | string
+                                        | undefined
+                                    )
+                                  }}
+                                  className="bg-[#FFF7ED] p-2 text-xs text-primary shadow hover:text-white"
+                                  disabled={
+                                    courseStatus !== 'draft' &&
+                                    courseStatus !== 'rejected'
+                                  }
+                                >
+                                  Import câu hỏi
+                                  <FileUp className="size-2" />
+                                </Button>
+                                <Button
+                                  onClick={(e) => {
+                                    e.stopPropagation()
+                                    setIsOpenAddQuestion(true)
+                                    setQuizId(
+                                      lesson?.lessonable_id as
+                                        | string
+                                        | undefined
+                                    )
+                                  }}
+                                  className="rounded-lg border bg-[#FFF7ED] p-2 text-xs text-primary shadow hover:text-white"
+                                  disabled={
+                                    courseStatus !== 'draft' &&
+                                    courseStatus !== 'rejected'
+                                  }
+                                >
+                                  Thêm câu hỏi
+                                </Button>
+                              </div>
+                            )}
+                            <DraggableHandle />
                           </div>
                         </div>
-                      </AccordionTrigger>
-                      {lessonEdit === lesson.id && (
-                        <AccordionContent className="mt-2 space-y-3 rounded-lg p-4">
-                          {(() => {
-                            switch (lesson?.type) {
-                              case 'video':
-                                return (
-                                  <LessonVideo
-                                    courseStatus={courseStatus as string}
-                                    isEdit={lessonEdit === lesson.id}
-                                    chapterId={
-                                      chapter ? String(chapter.id) : ''
-                                    }
-                                    onHide={() => setLessonEdit(null)}
-                                    lessonId={lesson?.id}
-                                  />
-                                )
-                              case 'document':
-                                return (
-                                  <LessonDocument
-                                    courseStatus={courseStatus as string}
-                                    lessonId={lesson?.id}
-                                    chapterId={
-                                      chapter ? String(chapter.id) : ''
-                                    }
-                                    onHide={() => setLessonEdit(null)}
-                                  />
-                                )
-                              case 'quiz':
-                                return (
-                                  <LessonQuiz
-                                    courseStatus={courseStatus as string}
-                                    isEdit={lessonEdit === lesson.id}
-                                    chapterId={
-                                      chapter ? String(chapter.id) : ''
-                                    }
-                                    onHide={() => setLessonEdit(null)}
-                                    quizId={
-                                      lesson.lessonable_id as string | undefined
-                                    }
-                                  />
-                                )
-                              case 'coding':
-                                return 'Bài tập'
-                              default:
-                                return 'Bài giảng'
-                            }
-                          })()}{' '}
-                        </AccordionContent>
-                      )}
-                    </AccordionItem>
-                  </Accordion>
-                </DraggableItem>
-              )
-            })}
-          </SortableContext>
-          <div className="mt-3">
-            <div className="flex items-center gap-2">
-              <Link
-                href={`/course/${slug}/coding-exercise`}
-                className={cn(buttonVariants({ variant: 'outline' }))}
-              >
-                Coding
-              </Link>
+                      </div>
+                    </AccordionTrigger>
+                    {lessonEdit === lesson.id && (
+                      <AccordionContent className="mt-2 space-y-3 rounded-lg p-4">
+                        {(() => {
+                          switch (lesson?.type) {
+                            case 'video':
+                              return (
+                                <LessonVideo
+                                  courseStatus={courseStatus as string}
+                                  isEdit={lessonEdit === lesson.id}
+                                  chapterId={chapter ? String(chapter.id) : ''}
+                                  onHide={() => setLessonEdit(null)}
+                                  lessonId={lesson?.id}
+                                />
+                              )
+                            case 'document':
+                              return (
+                                <LessonDocument
+                                  courseStatus={courseStatus as string}
+                                  lessonId={lesson?.id}
+                                  chapterId={chapter ? String(chapter.id) : ''}
+                                  onHide={() => setLessonEdit(null)}
+                                />
+                              )
+                            case 'quiz':
+                              return (
+                                <LessonQuiz
+                                  courseStatus={courseStatus as string}
+                                  isEdit={lessonEdit === lesson.id}
+                                  chapterId={chapter ? String(chapter.id) : ''}
+                                  onHide={() => setLessonEdit(null)}
+                                  quizId={
+                                    lesson.lessonable_id as string | undefined
+                                  }
+                                />
+                              )
+                            case 'coding':
+                              return 'Bài tập'
+                            default:
+                              return 'Bài giảng'
+                          }
+                        })()}{' '}
+                      </AccordionContent>
+                    )}
+                  </AccordionItem>
+                </Accordion>
+              </DraggableItem>
+            )
+          })}
+        </SortableContext>
+        <div className="mt-3">
+          <div className="flex items-center gap-2">
+            <Link
+              href={`/course/${slug}/coding-exercise`}
+              className={cn(buttonVariants({ variant: 'outline' }))}
+            >
+              Coding
+            </Link>
 
-              <Button
-                disabled={
-                  courseStatus !== 'draft' && courseStatus !== 'rejected'
-                }
-                onClick={() => {
-                  setAddNewLesson((prev) => !prev)
+            <Button
+              disabled={courseStatus !== 'draft' && courseStatus !== 'rejected'}
+              onClick={() => {
+                setAddNewLesson((prev) => !prev)
+                setSelectedLesson(undefined)
+              }}
+              variant={addNewLesson ? 'secondary' : 'default'}
+            >
+              <motion.div
+                animate={{ rotate: addNewLesson ? 180 : 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                {addNewLesson ? <CircleX /> : <CirclePlus />}
+              </motion.div>
+              {addNewLesson ? 'Đóng' : 'Thêm bài học'}
+            </Button>
+          </div>
+
+          {addNewLesson &&
+            (selectedLesson ? (
+              <CreateLesson
+                onHide={() => setSelectedLesson(undefined)}
+                type={selectedLesson!}
+                chapterId={String(chapter.id!)}
+                onSuccess={() => {
+                  setAddNewLesson(false)
                   setSelectedLesson(undefined)
                 }}
-                variant={addNewLesson ? 'secondary' : 'default'}
-              >
-                <motion.div
-                  animate={{ rotate: addNewLesson ? 180 : 0 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  {addNewLesson ? <CircleX /> : <CirclePlus />}
-                </motion.div>
-                {addNewLesson ? 'Đóng' : 'Thêm bài học'}
-              </Button>
-            </div>
-
-            {addNewLesson &&
-              (selectedLesson ? (
-                <CreateLesson
-                  onHide={() => setSelectedLesson(undefined)}
-                  type={selectedLesson!}
-                  chapterId={String(chapter.id!)}
-                  onSuccess={() => {
-                    setAddNewLesson(false)
-                    setSelectedLesson(undefined)
-                  }}
-                  courseStatus={courseStatus}
-                />
-              ) : (
-                <div className="mt-4 flex justify-evenly rounded-lg border border-dashed p-2">
-                  <Button onClick={() => setSelectedLesson('video')}>
-                    <Video />
-                    Bài giảng
-                  </Button>
-                  <Button onClick={() => setSelectedLesson('document')}>
-                    <ScrollText />
-                    Tài liệu
-                  </Button>
-                  <Button onClick={() => setSelectedLesson('quiz')}>
-                    <CircleHelp />
-                    Câu hỏi
-                  </Button>
-                  <Button onClick={() => setSelectedLesson('coding')}>
-                    <FileCode2 />
-                    Bài tập
-                  </Button>
-                </div>
-              ))}
-          </div>
-        </AccordionContent>
+                courseStatus={courseStatus}
+              />
+            ) : (
+              <div className="mt-4 flex justify-evenly rounded-lg border border-dashed p-2">
+                <Button onClick={() => setSelectedLesson('video')}>
+                  <Video />
+                  Bài giảng
+                </Button>
+                <Button onClick={() => setSelectedLesson('document')}>
+                  <ScrollText />
+                  Tài liệu
+                </Button>
+                <Button onClick={() => setSelectedLesson('quiz')}>
+                  <CircleHelp />
+                  Câu hỏi
+                </Button>
+                <Button onClick={() => setSelectedLesson('coding')}>
+                  <FileCode2 />
+                  Bài tập
+                </Button>
+              </div>
+            ))}
+        </div>
       </DndContext>
+
       <AddQuestionDialog
         isOpen={isOpenAddQuestion}
         onOpenChange={setIsOpenAddQuestion}
