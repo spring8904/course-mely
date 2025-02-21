@@ -27,6 +27,7 @@ type Props = {
   theme?: 'light' | 'vs-dark'
   disabled?: boolean
   readOnly?: boolean
+  runCode?: boolean
   [key: string]: any
 }
 
@@ -37,6 +38,7 @@ const MonacoEditor = ({
   theme = 'vs-dark',
   disabled,
   readOnly,
+  runCode = false,
   ...rest
 }: Props) => {
   const firstFileName = Object.keys(files)[0]
@@ -121,21 +123,23 @@ const MonacoEditor = ({
         />
       </div>
 
-      <Button
-        variant="secondary"
-        className="absolute bottom-6 left-6"
-        type="button"
-        onClick={handleCompileCode}
-        disabled={compileCode.isPending || markers?.length > 0 || disabled}
-      >
-        {compileCode.isPending ? (
-          <Loader2 className="animate-spin" />
-        ) : (
-          <>
-            <CirclePlay /> Chạy mã
-          </>
-        )}
-      </Button>
+      {runCode && (
+        <Button
+          variant="secondary"
+          className="absolute bottom-6 left-6"
+          type="button"
+          onClick={handleCompileCode}
+          disabled={compileCode.isPending || markers?.length > 0 || disabled}
+        >
+          {compileCode.isPending ? (
+            <Loader2 className="animate-spin" />
+          ) : (
+            <>
+              <CirclePlay /> Chạy mã
+            </>
+          )}
+        </Button>
+      )}
     </div>
   )
 }
