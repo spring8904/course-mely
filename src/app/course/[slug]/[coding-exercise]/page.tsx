@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation'
 
-import CourseCodingView from '@/sections/instructor/_components/courses/course-coding-view'
+import CourseCodingView from '@/sections/instructor/components/coding-exercise/course-coding-view'
 
 interface Props {
   params: {

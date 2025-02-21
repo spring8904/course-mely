@@ -158,14 +158,14 @@ export const updateCodingLessonSchema = z.object({
   sample_code: z.string().optional(),
   result_code: z
     .string({
-      required_error: 'Vui lòng nhập mã giải và chạy',
-      invalid_type_error: 'Vui lòng nhập mã giải và chạy',
+      required_error: 'Vui lòng nhập chạy mã',
+      invalid_type_error: 'Vui lòng nhập chạy mã',
     })
     .trim(),
   solution_code: z
     .string({
-      required_error: 'Vui lòng nhập hướng dẫn',
-      invalid_type_error: 'Vui lòng nhập hướng dẫn',
+      required_error: 'Vui lòng nhập giải pháp',
+      invalid_type_error: 'Vui lòng nhập giải pháp',
     })
     .trim(),
 })

@@ -1,6 +1,6 @@
 import React from 'react'
 
-import LearningLessonView from '@/sections/lessons/view/learning-lesson-view'
+import LearningLessonView from '@/sections/instructor/view/learning-lesson-view'
 
 const LearningPage = () => {
   return <LearningLessonView />

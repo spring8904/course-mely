@@ -9,15 +9,15 @@ interface User {
 
 export function UserProfileModal({
   user,
-  isOpen,
-  onClose,
+  open,
+  onOpenChange,
 }: {
   user: User
-  isOpen: boolean
-  onClose: () => void
+  open: boolean
+  onOpenChange: (open: boolean) => void
 }) {
   return (
-    <Dialog open={isOpen}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="w-96 rounded-lg bg-white p-4 shadow-lg">
         <DialogTitle className="text-xl font-semibold">
           Thông tin cá nhân

@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import Link from 'next/link'
 import { Document, Page } from 'react-pdf'
 
@@ -21,8 +20,8 @@ const DialogDocumentPreview: React.FC<DocumentDialogProps> = ({
   setIsOpen,
   documentFile,
 }) => {
-  const [fileType, setFileType] = useState<string | null>(null)
-  const [docxContent, setDocxContent] = useState<string>('')
+  const fileType = null
+  const docxContent = ''
 
   // useEffect(() => {
   //   if (documentFile) {

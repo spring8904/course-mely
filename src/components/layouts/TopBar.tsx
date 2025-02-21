@@ -40,7 +40,7 @@ const TopBar = () => {
     if (!isLoading && data) {
       setNotifications(data?.pages.flatMap((page) => page.notifications) || [])
     }
-  }, [user?.id, data])
+  }, [user?.id, data, isLoading])
 
   useEffect(() => {
     if (!user?.id) return

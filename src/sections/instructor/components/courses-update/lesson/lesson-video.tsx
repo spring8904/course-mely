@@ -25,7 +25,7 @@ import { Input } from '@/components/ui/input'
 import { Switch } from '@/components/ui/switch'
 import ModalLoading from '@/components/common/ModalLoading'
 import TinyEditor from '@/components/shared/tiny-editor'
-import DialogVideoPreview from '@/sections/instructor/_components/courses-update/lesson/_components/video/dialog-video-preview'
+import DialogVideoPreview from '@/sections/instructor/components/courses-update/lesson/video/dialog-video-preview'
 
 type Props = {
   chapterId?: string
@@ -95,7 +95,7 @@ const LessonVideo = ({
         setMuxPlaybackId(lessonable.mux_playback_id)
       }
     }
-  }, [isEdit, lessonVideoData, form.reset])
+  }, [isEdit, lessonVideoData, form.reset, form])
 
   const handleClose = () => {
     onHide()

@@ -61,7 +61,6 @@ const CourseCodingView = ({
       hints: [],
     },
     values: lessonCoding?.data,
-    disabled,
   })
 
   const onSubmit = (values: UpdateCodingLessonPayload) => {
@@ -81,20 +80,6 @@ const CourseCodingView = ({
 
   const handleBack = () => {
     router.back()
-  }
-
-  const handleUpdateLanguage = (language: string) => {
-    updateCodingLesson.mutate({
-      chapterSlug: slug,
-      codingId: codingId,
-      data: {
-        language,
-        title: lessonCoding?.data.title,
-        hints: [],
-        solution_code: '',
-        result_code: '',
-      },
-    })
   }
 
   if (isLoading) {
@@ -159,8 +144,8 @@ const CourseCodingView = ({
                     <FormItem>
                       <FormLabel>Chọn ngôn ngữ</FormLabel>
                       <Select
-                        onValueChange={handleUpdateLanguage}
-                        defaultValue={lessonCoding?.data.language}
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
                         disabled={field.disabled}
                       >
                         <FormControl>

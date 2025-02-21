@@ -14,7 +14,7 @@ export const useChangePassword = () => {
   return useMutation({
     mutationFn: (data: ChangePasswordPayload) =>
       changePasswordApi.changePassword(data),
-    onSuccess: async (res) => {
+    onSuccess: async (res: any) => {
       await queryClient.invalidateQueries({
         queryKey: [QUERY_KEY.CHANGE_PASSWORD],
       })
