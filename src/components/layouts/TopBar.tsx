@@ -7,6 +7,7 @@ import { Bell, CheckCircle, Loader2 } from 'lucide-react'
 import { toast } from 'react-toastify'
 
 import echo from '@/lib/echo'
+import { cn } from '@/lib/utils'
 import {
   useGetNotifications,
   useMarkAsRead,
@@ -92,13 +93,17 @@ const TopBar = () => {
               variant="ghost"
               className="relative rounded-full border-2 p-2 shadow"
             >
-              <div
-                className={`transition-transform ${hasUnread ? 'animate-shake' : ''}`}
-              >
-                <Bell className="animate-bell size-6 text-gray-700" />
-              </div>
+              <Bell
+                className={cn(
+                  'size-6 text-gray-700',
+                  hasUnread && 'animate-bell'
+                )}
+              />
               {hasUnread && (
-                <span className="absolute -right-1 -top-1 size-3 animate-ping rounded-full bg-red-500"></span>
+                <span className="absolute -top-1 right-[-2px] flex size-3">
+                  <span className="absolute size-full animate-ping rounded-full bg-red-400/75"></span>
+                  <span className="relative size-3 rounded-full bg-red-500"></span>
+                </span>
               )}
             </Button>
           </PopoverTrigger>

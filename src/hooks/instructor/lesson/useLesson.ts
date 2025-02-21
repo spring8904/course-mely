@@ -246,13 +246,14 @@ export const useUpdateOrderLesson = () => {
       return instructorLessonApi.updateOrderLesson(slug, { lessons })
     },
     onSuccess: async (res: any) => {
-      await queryClient.invalidateQueries({
-        queryKey: [QUERY_KEY.INSTRUCTOR_COURSE],
-      })
-
-      await queryClient.invalidateQueries({
-        queryKey: [QUERY_KEY.VALIDATE_COURSE],
-      })
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_KEY.INSTRUCTOR_COURSE],
+        }),
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_KEY.VALIDATE_COURSE],
+        }),
+      ])
 
       toast.success(res.message)
     },

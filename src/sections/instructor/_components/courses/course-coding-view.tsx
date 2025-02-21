@@ -48,6 +48,8 @@ const CourseCodingView = ({
   const { data: lessonCoding, isLoading } = useGetLessonCoding(slug, codingId)
   const updateCodingLesson = useUpdateCodingLesson()
 
+  const disabled = updateCodingLesson.isPending
+
   const form = useForm<UpdateCodingLessonPayload>({
     resolver: zodResolver(updateCodingLessonSchema),
     defaultValues: {
@@ -59,7 +61,7 @@ const CourseCodingView = ({
       hints: [],
     },
     values: lessonCoding?.data,
-    disabled: updateCodingLesson.isPending,
+    disabled,
   })
 
   const onSubmit = (values: UpdateCodingLessonPayload) => {
@@ -115,7 +117,7 @@ const CourseCodingView = ({
                 {lessonCoding?.data.title || 'Bài tập Coding'}
               </span>
             </div>
-            <Button type="submit" disabled={form.formState.disabled}>
+            <Button type="submit" disabled={disabled}>
               {updateCodingLesson.isPending && (
                 <Loader2 className="animate-spin" />
               )}{' '}

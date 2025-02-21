@@ -22,4 +22,10 @@ export const instructorChapterApi = {
   deleteChapter: (slug: string, id: number) => {
     return api.delete(`${prefix}/${slug}/${id}`)
   },
+  updateChapterOrder: async (
+    slug: string,
+    payload: { chapters: { id: number; order: number }[] }
+  ) => {
+    return await api.put(`${prefix}/${slug}/update-order`, payload)
+  },
 }
