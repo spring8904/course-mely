@@ -81,13 +81,8 @@ const SocialView = () => {
         ))}
 
         <button type="submit" className="tf-btn" disabled={isPending}>
-          {isPending ? (
-            <Loader2 className="size-4 animate-spin" />
-          ) : (
-            <>
-              Update Social <i className="icon-arrow-top-right"></i>
-            </>
-          )}
+          {isPending && <Loader2 className="size-4 animate-spin" />}Cập nhật
+          mạng xã hội<i className="icon-arrow-top-right"></i>
         </button>
       </form>
     </div>

@@ -5,10 +5,20 @@ export const updateProfile = z.object({
     .string()
     .trim()
     .min(5, 'Tên của bạn tối thiếu 5 ký tự!')
-    .max(20, 'Tên của bạn không được vượt quá 20 ký tự!'),
-  phone: z.string().trim().min(10, 'Số điện thoại tối thiểu 10 số!'),
+    .max(30, 'Tên của bạn không được vượt quá 30 ký tự!'),
+  phone: z
+    .string()
+    .trim()
+    .min(10, 'Số điện thoại tối thiểu 10 số!')
+    .max(15, 'Số diện thoại không được vượt quá 15 số'),
   address: z.string().optional(),
   about_me: z.string().optional(),
+  avatar: z
+    .any()
+    .refine((file) => file instanceof File || file === undefined, {
+      message: 'Avatar phải là một file ảnh!',
+    })
+    .optional(),
 })
 
 export const profileBioSchema = z.object({
