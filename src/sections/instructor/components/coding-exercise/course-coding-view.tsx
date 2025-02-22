@@ -1,5 +1,6 @@
 'use client'
 
+import React from 'react'
 import { useRouter } from 'next/navigation'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2, MoveLeft } from 'lucide-react'
@@ -33,6 +34,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import ModalLoading from '@/components/common/ModalLoading'
 
 import GuideTab from './guide-tab'
 import SolutionTab from './solution-tab'
@@ -59,23 +61,22 @@ const CourseCodingView = ({
       result_code: '',
       solution_code: '',
       hints: [],
+      instruct: '',
+      content: '',
     },
     values: lessonCoding?.data,
   })
 
+  console.log(form.formState.errors)
+
   const onSubmit = (values: UpdateCodingLessonPayload) => {
-    updateCodingLesson.mutate(
-      {
-        chapterSlug: slug,
-        codingId: codingId,
-        data: values,
-      },
-      {
-        onSuccess: () => {
-          router.back()
-        },
-      }
-    )
+    console.log('Updating with values:', values)
+
+    updateCodingLesson.mutate({
+      chapterSlug: slug,
+      codingId: codingId,
+      data: values,
+    })
   }
 
   const handleBack = () => {
@@ -83,7 +84,7 @@ const CourseCodingView = ({
   }
 
   if (isLoading) {
-    return <div>Loading...</div>
+    return <ModalLoading />
   }
 
   return (
@@ -136,7 +137,6 @@ const CourseCodingView = ({
                     </FormItem>
                   )}
                 />
-
                 <FormField
                   control={form.control}
                   name="language"
@@ -144,9 +144,9 @@ const CourseCodingView = ({
                     <FormItem>
                       <FormLabel>Chọn ngôn ngữ</FormLabel>
                       <Select
+                        key={field.value}
                         onValueChange={field.onChange}
-                        defaultValue={field.value}
-                        disabled={field.disabled}
+                        value={field.value}
                       >
                         <FormControl>
                           <SelectTrigger>

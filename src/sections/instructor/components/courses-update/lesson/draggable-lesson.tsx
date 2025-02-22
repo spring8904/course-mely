@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { DndContext, DragEndEvent, UniqueIdentifier } from '@dnd-kit/core'
 import { arrayMove, SortableContext } from '@dnd-kit/sortable'
@@ -21,7 +20,6 @@ import { toast } from 'react-toastify'
 import Swal from 'sweetalert2'
 
 import { IChapter, ILesson, LessonType } from '@/types'
-import { cn } from '@/lib/utils'
 import { instructorCourseApi } from '@/services/instructor/course/course-api'
 import {
   useDeleteLesson,
@@ -34,7 +32,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion'
-import { Button, buttonVariants } from '@/components/ui/button'
+import { Button } from '@/components/ui/button'
 import DraggableHandle from '@/components/shared/draggable-handle'
 import DraggableItem from '@/components/shared/draggable-item'
 import CreateLesson from '@/sections/instructor/components/courses-update/lesson/create-lesson'
@@ -364,13 +362,6 @@ const DraggableLesson = ({
         </SortableContext>
         <div className="mt-3">
           <div className="flex items-center gap-2">
-            <Link
-              href={`/course/${slug}/coding-exercise`}
-              className={cn(buttonVariants({ variant: 'outline' }))}
-            >
-              Coding
-            </Link>
-
             <Button
               disabled={courseStatus !== 'draft' && courseStatus !== 'rejected'}
               onClick={() => {

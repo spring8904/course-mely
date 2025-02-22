@@ -19,7 +19,7 @@ const echo = new Echo({
   cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER!,
   forceTLS: true,
   encrypted: true,
-  authEndpoint: `${process.env.NEXT_PUBLIC_API_URL}broadcasting/auth`,
+  authEndpoint: `${process.env.NEXT_PUBLIC_API_URL}/broadcasting/auth`,
   auth: {
     headers: {
       Authorization: `Bearer ${token}`,

@@ -31,6 +31,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion'
+import { Badge } from '@/components/ui/badge'
 import {
   Sheet,
   SheetContent,
@@ -38,6 +39,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet'
+import ModalLoading from '@/components/common/ModalLoading'
 import CourseChapterTab from '@/sections/instructor/components/courses-update/course-chapter-tab'
 import CourseObjective from '@/sections/instructor/components/courses-update/course-objective'
 import CourseOverView from '@/sections/instructor/components/courses-update/course-over-view'
@@ -70,6 +72,21 @@ const groups = [
     ],
   },
 ]
+
+const getStatusBadge = (status: string) => {
+  switch (status) {
+    case 'draft':
+      return <Badge className="bg-gray-200 text-gray-800">Bản nháp</Badge>
+    case 'pending':
+      return <Badge className="bg-yellow-200 text-yellow-800">Chờ xử lý</Badge>
+    case 'approved':
+      return <Badge className="bg-green-200 text-green-800">Đã duyệt</Badge>
+    case 'rejected':
+      return <Badge className="bg-red-200 text-red-800">Đã từ chối</Badge>
+    default:
+      return <Badge className="bg-gray-200 text-gray-800">Unknown</Badge>
+  }
+}
 
 const CourseUpdateView = ({ slug }: { slug: string }) => {
   const { user } = useAuthStore()
@@ -135,12 +152,17 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
     })
   }
 
+  if (isSubmitCoursePending) {
+    return <ModalLoading />
+  }
+
   return (
     <div className="px-5 py-6">
       <div className="flex justify-between">
         <h3 className="text-xl font-bold">
           Cập nhật nội dung khoá học: {courseOverviewData?.data.name}
         </h3>
+        {getStatusBadge(courseOverviewData?.data.status)}
       </div>
       <div className="mt-4">
         <div className="grid grid-cols-12 gap-8">
@@ -228,7 +250,7 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
                     collapsible
                     className="space-y-4 py-4"
                   >
-                    {Object.entries(validateData?.data.completion_status).map(
+                    {Object?.entries(validateData?.data.completion_status).map(
                       ([key, value]) => {
                         const typedValue = value as {
                           status: boolean
@@ -275,15 +297,21 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
               </Link>
               <Button
                 disabled={
-                  ['pending', 'approved'].includes(courseStatus) ||
+                  courseStatus === 'pending' ||
+                  courseStatus === 'approved' ||
                   isSubmitCoursePending ||
                   progress < 100
                 }
                 onClick={courseHandleSubmit}
+                className={
+                  courseStatus === 'approved' ? 'bg-green-500 text-white' : ''
+                }
               >
-                {courseStatus === 'rejected'
-                  ? 'Gửi lại thông tin khoá học'
-                  : 'Gửi yêu cầu kiểm duyệt'}
+                {courseStatus === 'approved'
+                  ? 'Đã được kiểm duyệt'
+                  : courseStatus === 'rejected'
+                    ? 'Gửi lại thông tin khoá học'
+                    : 'Gửi yêu cầu kiểm duyệt'}
               </Button>
             </div>
           </div>

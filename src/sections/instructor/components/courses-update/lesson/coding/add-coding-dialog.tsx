@@ -34,7 +34,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import TinyEditor from '@/components/shared/tiny-editor'
 
 type Props = {
   open: boolean
@@ -53,7 +52,6 @@ const AddCodingDialog = ({ chapterId, open, onOpenChange }: Props) => {
     resolver: zodResolver(lessonCodingSchema),
     defaultValues: {
       title: '',
-      content: '',
       language: undefined,
     },
   })
@@ -67,11 +65,12 @@ const AddCodingDialog = ({ chapterId, open, onOpenChange }: Props) => {
       {
         onSuccess: async (res: any) => {
           form.reset()
-          toast.success(res.message)
           onOpenChange(false)
+
           router.push(
             `/course/${res?.data.slug}/coding-exercise?coding=${res?.data.lessonable_id}`
           )
+          toast.success(res.message)
 
           await queryClient.invalidateQueries({
             queryKey: [QUERY_KEY.INSTRUCTOR_COURSE],
@@ -104,25 +103,6 @@ const AddCodingDialog = ({ chapterId, open, onOpenChange }: Props) => {
                     <FormLabel>Tiêu đề bài giảng</FormLabel>
                     <FormControl>
                       <Input placeholder="Nhập tiêu đề bài giảng" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-            <div className="my-2">
-              <FormField
-                control={form.control}
-                name="content"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Nội dung bài giảng</FormLabel>
-                    <FormControl>
-                      <TinyEditor
-                        value={field.value}
-                        onEditorChange={field.onChange}
-                        minimalist
-                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

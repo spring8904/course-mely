@@ -60,6 +60,7 @@ const LessonQuiz = ({
       title: '',
       content: '',
     },
+    values: questionData?.data,
   })
 
   useEffect(() => {
@@ -178,6 +179,7 @@ const LessonQuiz = ({
                   <FormLabel>Nội dung bài giảng</FormLabel>
                   <FormControl>
                     <TinyEditor
+                      key={field.value}
                       value={field.value}
                       onEditorChange={field.onChange}
                       minimalist

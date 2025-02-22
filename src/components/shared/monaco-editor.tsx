@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import dynamic from 'next/dynamic'
+import confetti from 'canvas-confetti'
 import { CirclePlay, Loader2 } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
@@ -71,6 +72,12 @@ const MonacoEditor = ({
       {
         onSuccess: (res) => {
           onCompile?.(res.run.output)
+
+          confetti({
+            particleCount: 100,
+            spread: 100,
+            origin: { y: 0.9 },
+          })
         },
       }
     )

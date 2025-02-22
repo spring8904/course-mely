@@ -47,6 +47,7 @@
     "@tinymce/tinymce-react": "^5.1.1",
     "@types/nprogress": "^0.2.3",
     "axios": "^1.7.9",
+    "canvas-confetti": "^1.9.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.0.4",
@@ -73,6 +74,7 @@
     "pusher-js": "^8.4.0",
     "react": "^18",
     "react-circular-progressbar": "^2.1.0",
+    "react-confetti": "^6.2.2",
     "react-datepicker": "^8.0.0",
     "react-day-picker": "^8.10.1",
     "react-dom": "^18",
@@ -97,6 +99,7 @@
   },
   "devDependencies": {
     "@ianvs/prettier-plugin-sort-imports": "^4.4.1",
+    "@types/canvas-confetti": "^1.9.0",
     "@types/js-cookie": "^3.0.6",
     "@types/node": "^20",
     "@types/react": "^18",

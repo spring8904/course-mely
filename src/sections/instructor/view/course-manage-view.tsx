@@ -171,6 +171,7 @@ const CourseManageView = () => {
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Học viên" />
       ),
+      cell: () => <div className="font-medium">Chưa có</div>,
     },
     {
       accessorKey: 'status',
@@ -247,7 +248,9 @@ const CourseManageView = () => {
               Tạo khoá học mới
             </Button>
           </div>
-          <DataTable columns={columns} data={courses?.data} />
+          {courses?.data && (
+            <DataTable columns={columns} data={courses?.data} />
+          )}
         </div>
       </div>
 

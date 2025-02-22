@@ -45,6 +45,11 @@ const CourseObjective = ({ courseObjective }: any) => {
     },
   })
 
+  const isReadOnly = !(
+    courseObjective?.status === 'draft' ||
+    courseObjective?.status === 'rejected'
+  )
+
   useEffect(() => {
     if (courseObjective) {
       const data = courseObjective
@@ -151,20 +156,23 @@ const CourseObjective = ({ courseObjective }: any) => {
                 cận Học viên hơn.
               </p>
             </div>
-            <div>
-              <Button variant="destructive">Nhập lại</Button>
-              <Button
-                type="submit"
-                className="ms-2 bg-primary"
-                disabled={updateCourseObjectivePending}
-              >
-                {updateCourseObjectivePending ? (
-                  <Loader2 className="animate-spin" />
-                ) : (
-                  'Lưu thông tin'
-                )}
-              </Button>
-            </div>
+            {(courseObjective?.status === 'draft' ||
+              courseObjective?.status === 'rejected') && (
+              <div>
+                <Button variant="destructive">Nhập lại</Button>
+                <Button
+                  type="submit"
+                  className="ms-2 bg-primary"
+                  disabled={updateCourseObjectivePending}
+                >
+                  {updateCourseObjectivePending ? (
+                    <Loader2 className="animate-spin" />
+                  ) : (
+                    'Lưu thông tin'
+                  )}
+                </Button>
+              </div>
+            )}
           </div>
           <div className="mt-4">
             <div>
@@ -193,33 +201,39 @@ const CourseObjective = ({ courseObjective }: any) => {
                                 setBenefits(newBenefits)
                                 form.setValue('benefits', newBenefits)
                               }}
+                              readOnly={isReadOnly}
                             />
-                            {index >= 4 && (
-                              <button
-                                type="button"
-                                className="absolute right-2 top-1/2 -translate-y-1/2 text-red-500"
-                                onClick={() => handleRemoveBenefit(index)}
-                              >
-                                <Trash size={16} />
-                              </button>
-                            )}
+                            {index >= 4 &&
+                              (courseObjective?.status === 'draft' ||
+                                courseObjective?.status === 'rejected') && (
+                                <button
+                                  type="button"
+                                  className="absolute right-2 top-1/2 -translate-y-1/2 text-red-500"
+                                  onClick={() => handleRemoveBenefit(index)}
+                                >
+                                  <Trash size={16} />
+                                </button>
+                              )}
                           </div>
                         ))}
-                        <div className="mt-3">
-                          <Button
-                            type="button"
-                            disabled={benefits.length >= 10}
-                            onClick={handleAddBenefit}
-                          >
-                            <CirclePlus size={18} />
-                            Thêm lợi ích vào khóa học của bạn
-                          </Button>
-                          {benefits.length >= 10 && (
-                            <p className="mt-2 text-sm text-red-500">
-                              Bạn đã đạt tối đa 10 lợi ích.
-                            </p>
-                          )}
-                        </div>
+                        {(courseObjective?.status === 'draft' ||
+                          courseObjective?.status === 'rejected') && (
+                          <div className="mt-3">
+                            <Button
+                              type="button"
+                              disabled={benefits.length >= 10}
+                              onClick={handleAddBenefit}
+                            >
+                              <CirclePlus size={18} />
+                              Thêm lợi ích vào khóa học của bạn
+                            </Button>
+                            {benefits.length >= 10 && (
+                              <p className="mt-2 text-sm text-red-500">
+                                Bạn đã đạt tối đa 10 lợi ích.
+                              </p>
+                            )}
+                          </div>
+                        )}
                       </div>
                     </FormControl>
                     <FormMessage />
@@ -253,33 +267,39 @@ const CourseObjective = ({ courseObjective }: any) => {
                                 setRequirements(newRequirements)
                                 form.setValue('requirements', newRequirements)
                               }}
+                              readOnly={isReadOnly}
                             />
-                            {index >= 1 && (
-                              <button
-                                type="button"
-                                className="absolute right-2 top-1/2 -translate-y-1/2 text-red-500"
-                                onClick={() => handleRemoveRequirement(index)}
-                              >
-                                <Trash size={16} />
-                              </button>
-                            )}
+                            {index >= 1 &&
+                              (courseObjective?.status === 'draft' ||
+                                courseObjective?.status === 'rejected') && (
+                                <button
+                                  type="button"
+                                  className="absolute right-2 top-1/2 -translate-y-1/2 text-red-500"
+                                  onClick={() => handleRemoveRequirement(index)}
+                                >
+                                  <Trash size={16} />
+                                </button>
+                              )}
                           </div>
                         ))}
-                        <div className="mt-3">
-                          <Button
-                            type="button"
-                            disabled={requirements.length >= 10}
-                            onClick={handleAddRequirement}
-                          >
-                            <CirclePlus size={18} />
-                            Thêm yêu cầu vào khóa học của bạn
-                          </Button>
-                          {requirements.length >= 10 && (
-                            <p className="mt-2 text-sm text-red-500">
-                              Bạn đã đạt tối đa 10 yêu cầu.
-                            </p>
-                          )}
-                        </div>
+                        {(courseObjective?.status === 'draft' ||
+                          courseObjective?.status === 'rejected') && (
+                          <div className="mt-3">
+                            <Button
+                              type="button"
+                              disabled={requirements.length >= 10}
+                              onClick={handleAddRequirement}
+                            >
+                              <CirclePlus size={18} />
+                              Thêm yêu cầu vào khóa học của bạn
+                            </Button>
+                            {requirements.length >= 10 && (
+                              <p className="mt-2 text-sm text-red-500">
+                                Bạn đã đạt tối đa 10 yêu cầu.
+                              </p>
+                            )}
+                          </div>
+                        )}
                       </div>
                     </FormControl>
                     <FormMessage />
@@ -314,6 +334,7 @@ const CourseObjective = ({ courseObjective }: any) => {
                                 })
                                 field.onChange(qa)
                               }}
+                              readOnly={isReadOnly}
                             />
                             <div className="relative">
                               <Input
@@ -327,33 +348,38 @@ const CourseObjective = ({ courseObjective }: any) => {
                                   field.onChange(qa)
                                 }}
                               />
-                              {index >= 1 && (
-                                <button
-                                  type="button"
-                                  className="absolute right-2 top-1/2 -translate-y-1/2 text-red-500"
-                                  onClick={() => handleRemoveQA(index)}
-                                >
-                                  <Trash size={16} />
-                                </button>
-                              )}
+                              {index >= 1 &&
+                                (courseObjective?.status === 'draft' ||
+                                  courseObjective?.status === 'rejected') && (
+                                  <button
+                                    type="button"
+                                    className="absolute right-2 top-1/2 -translate-y-1/2 text-red-500"
+                                    onClick={() => handleRemoveQA(index)}
+                                  >
+                                    <Trash size={16} />
+                                  </button>
+                                )}
                             </div>
                           </div>
                         ))}
-                        <div className="mt-3">
-                          <Button
-                            type="button"
-                            disabled={qa.length >= 10}
-                            onClick={handleAddQA}
-                          >
-                            <CirclePlus size={18} />
-                            Thêm câu hỏi và câu trả lời
-                          </Button>
-                          {qa.length >= 10 && (
-                            <p className="mt-2 text-sm text-red-500">
-                              Bạn đã đạt tối đa 10 câu hỏi.
-                            </p>
-                          )}
-                        </div>
+                        {(courseObjective?.status === 'draft' ||
+                          courseObjective?.status === 'rejected') && (
+                          <div className="mt-3">
+                            <Button
+                              type="button"
+                              disabled={qa.length >= 10}
+                              onClick={handleAddQA}
+                            >
+                              <CirclePlus size={18} />
+                              Thêm câu hỏi và câu trả lời
+                            </Button>
+                            {qa.length >= 10 && (
+                              <p className="mt-2 text-sm text-red-500">
+                                Bạn đã đạt tối đa 10 câu hỏi.
+                              </p>
+                            )}
+                          </div>
+                        )}
                       </div>
                     </FormControl>
                     <FormMessage />

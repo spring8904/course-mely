@@ -44,16 +44,17 @@ const SolutionTab = () => {
           render={({ field }) => (
             <FormItem className="flex h-full flex-col space-y-0 text-white">
               <FormLabel className="flex h-14 items-center gap-2 border-b border-gray-500 bg-[#0d0d0d] px-4 py-2 text-lg font-bold">
-                Giải pháp
-                <FormMessage />
+                <span className="mt-2"> Giải pháp</span>
+                <FormMessage className="mt-2" />
               </FormLabel>
-
               <div className="flex-1">
                 <FormControl>
                   <MonacoEditor
                     files={files}
                     onCompile={(code) => {
-                      form.setValue('result_code', code)
+                      form.setValue('result_code', code, {
+                        shouldValidate: true,
+                      })
                     }}
                     readOnly={field.disabled}
                     runCode
@@ -76,8 +77,8 @@ const SolutionTab = () => {
               render={({ field }) => (
                 <FormItem className="flex h-full flex-col space-y-0 text-white">
                   <FormLabel className="flex h-14 items-center gap-2 border-b border-gray-500 bg-[#0d0d0d] px-4 py-2 text-lg font-bold">
-                    File của học viên
-                    <FormMessage />
+                    <span className="mt-2"> File của học viên</span>
+                    <FormMessage className="mt-2" />
                   </FormLabel>
 
                   <div className="flex-1">

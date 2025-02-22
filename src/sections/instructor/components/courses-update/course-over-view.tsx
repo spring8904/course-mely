@@ -45,6 +45,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import ModalLoading from '@/components/common/ModalLoading'
 
 const CourseOverView = ({ courseOverView }: any) => {
   const avatarCourseRef = useRef<HTMLInputElement | null>(null)
@@ -70,6 +71,10 @@ const CourseOverView = ({ courseOverView }: any) => {
     },
   })
 
+  const isReadOnly = !(
+    courseOverView?.status === 'draft' || courseOverView?.status === 'rejected'
+  )
+
   useEffect(() => {
     if (courseOverView) {
       const data = courseOverView
@@ -93,6 +98,10 @@ const CourseOverView = ({ courseOverView }: any) => {
     updateCourseOverView({ slug: courseOverView.slug, data })
   }
 
+  if (updateCourseOverViewPending) {
+    return <ModalLoading />
+  }
+
   return (
     <>
       <Form {...form}>
@@ -105,20 +114,23 @@ const CourseOverView = ({ courseOverView }: any) => {
                 cận Học viên hơn.
               </p>
             </div>
-            <div>
-              <Button variant="destructive">Nhập lại</Button>
-              <Button
-                type="submit"
-                className="ms-2 bg-primary"
-                disabled={updateCourseOverViewPending}
-              >
-                {updateCourseOverViewPending ? (
-                  <Loader2 className="animate-spin" />
-                ) : (
-                  'Lưu thông tin'
-                )}
-              </Button>
-            </div>
+            {(courseOverView?.status === 'draft' ||
+              courseOverView?.status === 'rejected') && (
+              <div>
+                <Button variant="destructive">Nhập lại</Button>
+                <Button
+                  type="submit"
+                  className="ms-2 bg-primary"
+                  disabled={updateCourseOverViewPending}
+                >
+                  {updateCourseOverViewPending ? (
+                    <Loader2 className="animate-spin" />
+                  ) : (
+                    'Lưu thông tin'
+                  )}
+                </Button>
+              </div>
+            )}
           </div>
           <div className="mt-4">
             <div>
@@ -132,6 +144,7 @@ const CourseOverView = ({ courseOverView }: any) => {
                       <Input
                         placeholder="Nhập tiêu đề cho khoá học"
                         {...field}
+                        readOnly={isReadOnly}
                       />
                     </FormControl>
                     <FormMessage />
@@ -157,6 +170,7 @@ const CourseOverView = ({ courseOverView }: any) => {
                         onChange={field.onChange}
                         className="custom-quill mt-2"
                         theme="snow"
+                        readOnly={isReadOnly}
                       />
                     </FormControl>
                     <FormMessage />
@@ -184,6 +198,7 @@ const CourseOverView = ({ courseOverView }: any) => {
                               rawValue ? parseInt(rawValue, 10) : 0
                             )
                           }}
+                          readOnly={isReadOnly}
                         />
                       </FormControl>
                       <FormMessage />
@@ -207,6 +222,7 @@ const CourseOverView = ({ courseOverView }: any) => {
                               rawValue ? parseInt(rawValue, 10) : 0
                             )
                           }}
+                          readOnly={isReadOnly}
                         />
                       </FormControl>
                       <FormMessage />
@@ -236,6 +252,7 @@ const CourseOverView = ({ courseOverView }: any) => {
                                   'justify-between',
                                   !field.value && 'text-muted-foreground'
                                 )}
+                                disabled={isReadOnly}
                               >
                                 {field.value
                                   ? (categoryData?.data.find(
@@ -266,6 +283,7 @@ const CourseOverView = ({ courseOverView }: any) => {
                                         onSelect={() =>
                                           field.onChange(category.id)
                                         }
+                                        disabled={isReadOnly}
                                       >
                                         {category.name}
                                         <Check
@@ -300,6 +318,7 @@ const CourseOverView = ({ courseOverView }: any) => {
                             key={field.value}
                             onValueChange={field.onChange}
                             value={field.value}
+                            disabled={isReadOnly}
                           >
                             <SelectTrigger>
                               <SelectValue placeholder="Chọn cấp độ" />
@@ -331,6 +350,7 @@ const CourseOverView = ({ courseOverView }: any) => {
                             key={field.value}
                             value={field.value}
                             onValueChange={field.onChange}
+                            disabled={isReadOnly}
                           >
                             <SelectTrigger>
                               <SelectValue placeholder="Trạng thái khoá học" />
@@ -385,6 +405,7 @@ const CourseOverView = ({ courseOverView }: any) => {
                               }
                               field.onChange(null)
                             }}
+                            disabled={isReadOnly}
                             className="absolute right-0 top-0 p-2 text-white opacity-80 transition-opacity duration-200 ease-in-out hover:opacity-100"
                           >
                             <Trash2 />
@@ -394,6 +415,7 @@ const CourseOverView = ({ courseOverView }: any) => {
                           <p>Tải hình ảnh khoá học lên tại đây</p>
                           <div className="mt-3">
                             <Input
+                              disabled={isReadOnly}
                               ref={avatarCourseRef}
                               id="thumbnail"
                               type="file"
@@ -403,7 +425,7 @@ const CourseOverView = ({ courseOverView }: any) => {
                                   field.onChange(file)
                                 }
                               }}
-                              accept="image/png, image/jpeg, image/jpg"
+                              accept="image/png, image/jpeg, image/jpg, img/webp"
                             />
                           </div>
                         </div>
@@ -427,6 +449,7 @@ const CourseOverView = ({ courseOverView }: any) => {
                                 field.onChange(file)
                               }
                             }}
+                            disabled={isReadOnly}
                             accept="image/png, image/jpeg, image/jpg"
                           />
                         </div>
@@ -474,6 +497,7 @@ const CourseOverView = ({ courseOverView }: any) => {
                               }
                               field.onChange(null)
                             }}
+                            disabled={isReadOnly}
                             className="absolute right-0 top-0 p-2 text-white opacity-80 transition-opacity duration-200 ease-in-out hover:opacity-100"
                           >
                             <Trash2 />
@@ -493,6 +517,7 @@ const CourseOverView = ({ courseOverView }: any) => {
                                   field.onChange(file)
                                 }
                               }}
+                              disabled={isReadOnly}
                               accept="video/mp4, video/webm, video/ogg"
                             />
                           </div>
@@ -518,6 +543,7 @@ const CourseOverView = ({ courseOverView }: any) => {
                                 field.onChange(file)
                               }
                             }}
+                            disabled={isReadOnly}
                             accept="video/mp4, video/webm, video/ogg"
                           />
                         </div>
@@ -541,6 +567,7 @@ const CourseOverView = ({ courseOverView }: any) => {
                         key={field.value}
                         onValueChange={(value) => field.onChange(Number(value))}
                         value={String(field.value)}
+                        disabled={isReadOnly}
                       >
                         <SelectTrigger>
                           <SelectValue placeholder="Miễn phí hay không?" />

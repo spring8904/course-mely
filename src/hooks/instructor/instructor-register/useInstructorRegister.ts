@@ -13,12 +13,14 @@ export const useInstructorRegister = () => {
   return useMutation({
     mutationFn: (data: RegisterInstructorInput) =>
       instructorRegisterApi.register(data),
-    onSuccess: async () => {
+    onSuccess: async (res: any) => {
       await queryClient.invalidateQueries({
         queryKey: [QUERY_KEY.AUTH],
       })
 
       router.push('/')
+
+      toast.success(res.message)
     },
     onError: (error) => {
       toast.error(error.message)
