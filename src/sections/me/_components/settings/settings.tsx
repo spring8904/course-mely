@@ -64,19 +64,19 @@ const MeSetting = () => {
                 className={`item-title ${activeTab === 'Profile' ? 'active' : ''}`}
                 onClick={() => setActiveTab('Profile')}
               >
-                Profile
+                Hồ sơ
               </li>
               <li
                 className={`item-title ${activeTab === 'Password' ? 'active' : ''}`}
                 onClick={() => setActiveTab('Password')}
               >
-                Password
+                Mật khẩu
               </li>
               <li
                 className={`item-title ${activeTab === 'Social' ? 'active' : ''}`}
                 onClick={() => setActiveTab('Social')}
               >
-                Social
+                Mạng xã hội
               </li>
             </ul>
             {/* Tab Content */}
@@ -120,17 +120,16 @@ const MeSetting = () => {
                           className="tf-input style-1"
                           id="field1"
                           type="text"
-                          placeholder="Nhập tên của bạn"
+                          placeholder="Nhập họ tên của bạn"
                           tabIndex={2}
                           {...register('name')}
-                          // defaultValue="name"
                           aria-required="true"
                         />
                         <label
                           className="tf-field-label fs-15"
                           htmlFor="field1"
                         >
-                          Your Name
+                          Họ tên
                         </label>
                         {errors.name && (
                           <span className="text-danger">
@@ -151,7 +150,7 @@ const MeSetting = () => {
                           className="tf-field-label fs-15"
                           htmlFor="field2"
                         >
-                          Phone Number
+                          Số điện thoại
                         </label>
                         {errors.phone && (
                           <span className="text-danger">
@@ -165,14 +164,13 @@ const MeSetting = () => {
                         className="tf-input style-1"
                         id="field4"
                         type="text"
-                        placeholder=""
+                        placeholder="Nhập địa chỉ của bạn"
                         tabIndex={2}
-                        defaultValue=""
                         aria-required="true"
                         {...register('address')}
                       />
                       <label className="tf-field-label fs-15" htmlFor="field4">
-                        Address
+                        Địa chỉ
                       </label>
                       {errors.address && (
                         <span className="text-danger">
@@ -183,7 +181,7 @@ const MeSetting = () => {
                     <fieldset className="tf-field mt-4">
                       <textarea
                         className="tf-input style-1"
-                        rows={4}
+                        rows={5}
                         placeholder="Hãy giới thiệu về bạn"
                         tabIndex={2}
                         defaultValue="Hãy giới thiệu về bản thân của bạn"
@@ -193,7 +191,7 @@ const MeSetting = () => {
                         className="tf-field-label type-textarea fs-15"
                         htmlFor=""
                       >
-                        About Me
+                        Giới thiệu
                       </label>
                       {errors.about_me && (
                         <span className="text-danger">
@@ -206,13 +204,8 @@ const MeSetting = () => {
                       className="tf-btn"
                       disabled={isPending}
                     >
-                      {isPending ? (
-                        <Loader2 className="size-4 animate-spin" />
-                      ) : (
-                        <>
-                          Update Profile <i className="icon-arrow-top-right" />
-                        </>
-                      )}
+                      {isPending && <Loader2 className="animate-spin" />}
+                      Cập nhật hồ sơ <i className="icon-arrow-top-right" />
                     </button>
                   </form>
                 </div>
