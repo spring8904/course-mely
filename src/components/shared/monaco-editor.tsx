@@ -49,16 +49,11 @@ const MonacoEditor = ({
   const [markers, setMarkers] = useState<any>()
   const file = files[fileName]
 
-  const [sourceCode, setSourceCode] = useState(file.value)
   const editorRef = useRef<any>(null)
 
   useEffect(() => {
     editorRef.current?.focus()
   }, [file.name])
-
-  useEffect(() => {
-    setSourceCode(file.value)
-  }, [file.value])
 
   const handleCompileCode = () => {
     if (markers?.length > 0) return
@@ -67,7 +62,7 @@ const MonacoEditor = ({
       {
         language: file.language,
         version: file.version,
-        files: [{ content: sourceCode }],
+        files: [{ content: file.value }],
       },
       {
         onSuccess: (res) => {
@@ -113,9 +108,6 @@ const MonacoEditor = ({
         <Editor
           theme={theme}
           onChange={(value) => {
-            if (value !== undefined) {
-              setSourceCode(value)
-            }
             onChange?.(value, file.name)
           }}
           path={file.name}
@@ -141,10 +133,9 @@ const MonacoEditor = ({
           {compileCode.isPending ? (
             <Loader2 className="animate-spin" />
           ) : (
-            <>
-              <CirclePlay /> Chạy mã
-            </>
+            <CirclePlay />
           )}
+          Chạy mã
         </Button>
       )}
     </div>

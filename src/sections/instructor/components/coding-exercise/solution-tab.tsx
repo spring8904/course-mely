@@ -1,7 +1,7 @@
 'use client'
 
-import { Info } from 'lucide-react'
-import { useFormContext } from 'react-hook-form'
+import { useEffect } from 'react'
+import { useFormContext, useWatch } from 'react-hook-form'
 
 import { UpdateCodingLessonPayload } from '@/validations/course'
 import { Language, LANGUAGE_CONFIG } from '@/constants/language'
@@ -23,17 +23,33 @@ import MonacoEditor from '@/components/shared/monaco-editor'
 const SolutionTab = () => {
   const form = useFormContext<UpdateCodingLessonPayload>()
 
+  const language = useWatch({ name: 'language' })
+
   const { sampleFileName, version, codeSnippet } =
-    LANGUAGE_CONFIG[form.getValues('language') as Language]
+    LANGUAGE_CONFIG[language as Language]
 
   const files = {
     [sampleFileName]: {
       name: sampleFileName,
-      language: form.getValues('language'),
+      language,
       value: codeSnippet,
       version,
     },
   }
+
+  const studentFiles = {
+    [sampleFileName + ' ']: {
+      name: sampleFileName + ' ',
+      language,
+      value: codeSnippet,
+      version,
+    },
+  }
+
+  useEffect(() => {
+    form.setValue('solution_code', codeSnippet)
+    form.setValue('sample_code', codeSnippet)
+  }, [codeSnippet, form, language])
 
   return (
     <ResizablePanelGroup direction="horizontal">
@@ -44,7 +60,7 @@ const SolutionTab = () => {
           render={({ field }) => (
             <FormItem className="flex h-full flex-col space-y-0 text-white">
               <FormLabel className="flex h-14 items-center gap-2 border-b border-gray-500 bg-[#0d0d0d] px-4 py-2 text-lg font-bold">
-                <span className="mt-2"> Giải pháp</span>
+                <span className="mt-2">Giải pháp</span>
                 <FormMessage className="mt-2" />
               </FormLabel>
               <div className="flex-1">
@@ -52,9 +68,8 @@ const SolutionTab = () => {
                   <MonacoEditor
                     files={files}
                     onCompile={(code) => {
-                      form.setValue('result_code', code, {
-                        shouldValidate: true,
-                      })
+                      form.setValue('result_code', code)
+                      form.trigger('result_code')
                     }}
                     readOnly={field.disabled}
                     runCode
@@ -84,7 +99,7 @@ const SolutionTab = () => {
                   <div className="flex-1">
                     <FormControl>
                       <MonacoEditor
-                        files={files}
+                        files={studentFiles}
                         readOnly={field.disabled}
                         {...field}
                       />
@@ -94,7 +109,7 @@ const SolutionTab = () => {
               )}
             />
           </ResizablePanel>
-          <ResizableHandle />
+          <ResizableHandle withHandle />
 
           <ResizablePanel minSize={10}>
             <FormField
@@ -104,7 +119,6 @@ const SolutionTab = () => {
                 <FormItem className="flex h-full flex-col space-y-0 text-white">
                   <FormLabel className="flex h-14 items-center gap-2 border-b border-gray-500 bg-[#0d0d0d] px-4 py-2 text-lg font-bold">
                     Kết quả
-                    <Info size={18} />
                     <FormMessage />
                   </FormLabel>
 
