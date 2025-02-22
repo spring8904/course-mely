@@ -36,7 +36,7 @@ const GuideTab = () => {
 
   return (
     <ResizablePanelGroup direction="horizontal">
-      <ResizablePanel minSize={30}>
+      <ResizablePanel minSize={30} className="flex flex-col">
         <div
           className={`flex h-14 items-center gap-2 border-b px-4 py-2 text-lg font-bold ${errors?.solution_code?.message && 'text-red-500'}`}
         >
@@ -46,35 +46,33 @@ const GuideTab = () => {
           control={control}
           name="content"
           render={({ field }) => (
-            <FormItem className="flex h-full flex-col">
-              <div className="flex flex-col p-4">
-                <FormDescription className="mb-2 text-base">
-                  Cung nội dung bài học chi tiết, bao gồm các hướng dẫn, ví dụ
-                  minh hoạ và lý thuyết liên quan.
-                </FormDescription>
+            <FormItem className="flex flex-1 flex-col p-4">
+              <FormDescription className="text-base">
+                Cung nội dung bài học chi tiết, bao gồm các hướng dẫn, ví dụ
+                minh hoạ và lý thuyết liên quan.
+              </FormDescription>
 
-                <div className="flex-1">
-                  <FormControl>
-                    <TinyEditor
-                      value={field.value}
-                      onEditorChange={field.onChange}
-                      init={{
-                        height: 400,
-                        resize: false,
-                      }}
-                      disabled={field.disabled}
-                    />
-                  </FormControl>
-                </div>
-                <FormMessage className="mt-2" />
+              <div className="flex-1">
+                <FormControl>
+                  <TinyEditor
+                    value={field.value}
+                    onEditorChange={field.onChange}
+                    init={{
+                      height: '100%',
+                      resize: false,
+                    }}
+                    disabled={field.disabled}
+                  />
+                </FormControl>
               </div>
+              <FormMessage className="mt-2" />
             </FormItem>
           )}
         />
       </ResizablePanel>
       <ResizableHandle withHandle />
 
-      <ResizablePanel minSize={30}>
+      <ResizablePanel minSize={30} className="flex flex-col">
         <div className="flex h-14 items-center gap-4 border-b px-4 py-2 text-lg font-bold">
           <button
             type="button"
@@ -99,18 +97,18 @@ const GuideTab = () => {
             Hướng dẫn
           </button>
         </div>
-        <div className="flex h-full flex-col space-y-0">
+        <div className="flex flex-1 flex-col space-y-3 overflow-y-auto p-4 scrollbar-thin">
           {activeTab === 'hints' && (
-            <div className="flex-1 space-y-3 overflow-y-auto p-4 scrollbar-thin">
+            <>
               <p className="text-base text-muted-foreground">
                 Các gợi ý sẽ được mở khóa sau lần thực hiện thất bại thứ hai để
                 học viên có thể nhận được nhiều hỗ trợ hơn ngoài các bài giảng
                 và bài kiểm tra liên quan.
               </p>
 
-              {fields.map((field2, index) => (
+              {fields.map((field, index) => (
                 <FormField
-                  key={field2.id}
+                  key={field.id}
                   control={control}
                   name={`hints.${index}`}
                   render={({ field }) => (
@@ -160,7 +158,7 @@ const GuideTab = () => {
               >
                 Thêm gợi ý
               </Button>
-            </div>
+            </>
           )}
 
           {activeTab === 'guide' && (
@@ -168,28 +166,26 @@ const GuideTab = () => {
               control={control}
               name="instruct"
               render={({ field }) => (
-                <FormItem className="flex h-full flex-col space-y-0">
-                  <div className="flex flex-col space-y-2 p-4">
-                    <FormDescription className="text-base">
-                      Cung cấp hướng dẫn để người học biết họ đang giải quyết
-                      vấn đề gì.
-                    </FormDescription>
+                <FormItem className="flex flex-1 flex-col">
+                  <FormDescription className="text-base">
+                    Cung cấp hướng dẫn để người học biết họ đang giải quyết vấn
+                    đề gì.
+                  </FormDescription>
 
-                    <div className="flex-1">
-                      <FormControl>
-                        <TinyEditor
-                          value={field.value || ''}
-                          onEditorChange={field.onChange}
-                          init={{
-                            height: 400,
-                            resize: false,
-                          }}
-                          disabled={field.disabled}
-                        />
-                      </FormControl>
-                    </div>
-                    <FormMessage />
+                  <div className="flex-1">
+                    <FormControl>
+                      <TinyEditor
+                        value={field.value || ''}
+                        onEditorChange={field.onChange}
+                        init={{
+                          height: '100%',
+                          resize: false,
+                        }}
+                        disabled={field.disabled}
+                      />
+                    </FormControl>
                   </div>
+                  <FormMessage />
                 </FormItem>
               )}
             />

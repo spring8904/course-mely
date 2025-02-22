@@ -67,11 +67,7 @@ const CourseCodingView = ({
     values: lessonCoding?.data,
   })
 
-  console.log(form.formState.errors)
-
   const onSubmit = (values: UpdateCodingLessonPayload) => {
-    console.log('Updating with values:', values)
-
     updateCodingLesson.mutate({
       chapterSlug: slug,
       codingId: codingId,
@@ -115,7 +111,7 @@ const CourseCodingView = ({
             <TabsContent value="plan" className="h-full">
               <div className="container mx-auto max-w-4xl space-y-4 p-8">
                 <h2 className="text-2xl font-bold">Bài tập Coding</h2>
-                <p className="text-base text-muted-foreground">
+                <p className="text-muted-foreground">
                   Bài tập mã hóa cho phép người học thực hành một phần công việc
                   thực tế có mục tiêu và nhận được phản hồi ngay lập tức. Chúng
                   tôi khuyên bạn nên làm theo các bước sau: Lên kế hoạch cho bài
