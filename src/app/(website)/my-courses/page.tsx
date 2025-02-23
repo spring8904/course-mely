@@ -2,8 +2,10 @@
 
 import React from 'react'
 
+import MyCourseView from '@/sections/my-courses/view/my-course-view'
+
 const AllCoursesPage = () => {
-  return <div>courses content goes here</div>
+  return <MyCourseView />
 }
 
 export default AllCoursesPage

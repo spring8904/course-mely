@@ -14,6 +14,7 @@ import {
 import { ILesson } from '@/types'
 import { lessonTypeIcons } from '@/configs'
 import { useGetCourseDetails } from '@/hooks/course/useCourse'
+import { useGetLesson } from '@/hooks/learning-path/useLearningPath'
 
 import {
   Accordion,
@@ -34,16 +35,32 @@ import { LessonContent } from '@/sections/lessons/_components/lesson-content'
 
 type Props = {
   courseSlug: string
+  lessonId: string
 }
 
-const LearningLessonView = ({ courseSlug }: Props) => {
+const LearningLessonView = ({ courseSlug, lessonId }: Props) => {
   const [selectedLesson, setSelectedLesson] = useState<ILesson | null>(null)
   const { data: courseDetail, isLoading } = useGetCourseDetails(courseSlug)
 
+  const { data: lessonData, isLoading: lessonLoading } = useGetLesson(
+    courseSlug,
+    lessonId
+  )
+
+  console.log(lessonData)
+  console.log(courseSlug)
+  console.log(lessonId)
+
   useEffect(() => {
-    if (courseDetail?.chapters?.length) {
-      const firstLesson = courseDetail?.chapters[0]?.lessons?.[0] || null
-      setSelectedLesson(firstLesson)
+    // if (lessonData) {
+    //   setSelectedLesson(lessonData?.data?.lesson)
+    // }
+    // if (courseDetail?.chapters?.length) {
+    //   const firstLesson = courseDetail?.chapters[0]?.lessons?.[0] || null
+    //   setSelectedLesson(firstLesson)
+    // }
+    if (lessonData && courseSlug && lessonId) {
+      setSelectedLesson(lessonData?.data?.lesson)
     }
   }, [courseDetail])
 
@@ -91,7 +108,7 @@ const LearningLessonView = ({ courseSlug }: Props) => {
           <div className="border-l p-4 font-semibold">
             <h2 className="text-lg font-bold">Nội dung khoá học</h2>
           </div>
-          {courseDetail?.chapters?.map((chapter, chapterIndex) => (
+          {courseDetail?.chapters?.map((chapter: any, chapterIndex: number) => (
             <Accordion type="single" collapsible key={chapterIndex}>
               <AccordionItem
                 value={`item-${chapter?.id}`}
@@ -111,7 +128,6 @@ const LearningLessonView = ({ courseSlug }: Props) => {
                   <div className="overflow-y-auto">
                     {chapter?.lessons?.map((lesson, lessonIndex) => {
                       const isSelected = lesson?.id === selectedLesson?.id
-
                       return (
                         <div
                           className={`flex items-center space-x-3 border-b px-2 py-3 transition-colors duration-300 ${isSelected ? 'cursor-default bg-orange-100' : 'hover:cursor-pointer hover:bg-gray-200'} `}
@@ -141,17 +157,34 @@ const LearningLessonView = ({ courseSlug }: Props) => {
       <div className="sticky inset-x-0 bottom-0 z-50 bg-[#f0f0f0] py-3">
         <div className="container mx-auto flex h-full items-center justify-center gap-4">
           <Link
-            href={''}
-            className="rounded-md border-2 border-transparent px-3 py-2 hover:border-primary"
+            href={
+              lessonData?.data.previous_lesson
+                ? `/learning/${courseSlug}/lesson/${lessonData?.data.previous_lesson.id}`
+                : ''
+            }
+            className={`rounded-md border-2 border-transparent px-3 py-2 ${
+              lessonData?.data.previous_lesson
+                ? 'hover:border-primary'
+                : 'cursor-not-allowed opacity-50'
+            }`}
           >
             <p className="flex items-center font-bold uppercase text-primary">
               <ChevronLeft />
               <span>Bài trước</span>
             </p>
           </Link>
+
           <Link
-            href={''}
-            className="rounded-md border-2 border-primary bg-transparent px-3 py-2 text-primary transition-colors duration-200 ease-in-out hover:bg-primary hover:text-white"
+            href={
+              lessonData?.data.next_lesson
+                ? `/learning/${courseSlug}/lesson/${lessonData?.data.next_lesson.id}`
+                : ''
+            }
+            className={`rounded-md border-2 border-primary bg-transparent px-3 py-2 text-primary transition-colors duration-200 ease-in-out ${
+              lessonData?.data.next_lesson
+                ? 'hover:bg-primary hover:text-white'
+                : 'cursor-not-allowed opacity-50'
+            }`}
           >
             <p className="flex items-center font-bold uppercase">
               <span>Bài tiếp theo</span>
