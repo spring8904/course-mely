@@ -31,7 +31,6 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion'
-import { Badge } from '@/components/ui/badge'
 import {
   Sheet,
   SheetContent,
@@ -40,6 +39,7 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet'
 import ModalLoading from '@/components/common/ModalLoading'
+import CourseStatusBadge from '@/components/shared/course-status-badge'
 import CourseChapterTab from '@/sections/instructor/components/courses-update/course-chapter-tab'
 import CourseObjective from '@/sections/instructor/components/courses-update/course-objective'
 import CourseOverView from '@/sections/instructor/components/courses-update/course-over-view'
@@ -72,21 +72,6 @@ const groups = [
     ],
   },
 ]
-
-const getStatusBadge = (status: string) => {
-  switch (status) {
-    case 'draft':
-      return <Badge className="bg-gray-200 text-gray-800">Bản nháp</Badge>
-    case 'pending':
-      return <Badge className="bg-yellow-200 text-yellow-800">Chờ xử lý</Badge>
-    case 'approved':
-      return <Badge className="bg-green-200 text-green-800">Đã duyệt</Badge>
-    case 'rejected':
-      return <Badge className="bg-red-200 text-red-800">Đã từ chối</Badge>
-    default:
-      return <Badge className="bg-gray-200 text-gray-800">Unknown</Badge>
-  }
-}
 
 const CourseUpdateView = ({ slug }: { slug: string }) => {
   const { user } = useAuthStore()
@@ -158,11 +143,11 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
 
   return (
     <div className="px-5 py-6">
-      <div className="flex justify-between">
+      <div className="flex items-center justify-between">
         <h3 className="text-xl font-bold">
           Cập nhật nội dung khoá học: {courseOverviewData?.data.name}
         </h3>
-        {getStatusBadge(courseOverviewData?.data.status)}
+        <CourseStatusBadge status={courseOverviewData?.data.status} />
       </div>
       <div className="mt-4">
         <div className="grid grid-cols-12 gap-8">

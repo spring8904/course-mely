@@ -13,8 +13,6 @@ import {
   Wallet,
 } from 'lucide-react'
 
-import { NavMain } from '@/components/ui/nav-main'
-import { NavUser } from '@/components/ui/nav-user'
 import {
   Sidebar,
   SidebarContent,
@@ -22,7 +20,9 @@ import {
   SidebarHeader,
   SidebarRail,
 } from '@/components/ui/sidebar'
-import { TeamSwitcher } from '@/components/ui/team-switcher'
+import { NavMain } from '@/components/shared/nav-main'
+import { NavUser } from '@/components/shared/nav-user'
+import { TeamSwitcher } from '@/components/shared/team-switcher'
 
 const data = {
   user: {
