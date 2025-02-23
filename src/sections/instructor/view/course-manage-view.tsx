@@ -5,41 +5,21 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { ColumnDef } from '@tanstack/react-table'
-import {
-  Check,
-  ChevronDown,
-  Eye,
-  Loader2,
-  MoreVertical,
-  SquarePen,
-  Trash2,
-} from 'lucide-react'
+import { Eye, Loader2, MoreVertical, SquarePen, Trash2 } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 
-import { CourseStatus, CourseStatusMap, ICourse } from '@/types'
+import { ICourse } from '@/types'
 import { ICategory } from '@/types/Category'
 import { CreateCoursePayload, createCourseSchema } from '@/validations/course'
 import { formatCurrency, formatDateTime } from '@/lib/common'
-import { cn } from '@/lib/utils'
 import { useGetCategories } from '@/hooks/category/useCategory'
 import {
   useCreateCourse,
   useGetCourses,
 } from '@/hooks/instructor/course/useCourse'
 
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from '@/components/ui/command'
-import { DataTable } from '@/components/ui/data-table'
-import { DataTableColumnHeader } from '@/components/ui/data-table-column-header'
 import {
   Dialog,
   DialogContent,
@@ -62,11 +42,10 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover'
+import CourseStatusBadge from '@/components/shared/course-status-badge'
+import { DataTable } from '@/components/shared/data-table'
+import { DataTableColumnHeader } from '@/components/shared/data-table-column-header'
+import FormCombobox from '@/components/shared/form-combobox'
 
 const CourseManageView = () => {
   const [openDialog, setOpenDialog] = useState(false)
@@ -80,12 +59,7 @@ const CourseManageView = () => {
 
   const form = useForm<CreateCoursePayload>({
     resolver: zodResolver(createCourseSchema),
-    defaultValues: {
-      name: '',
-    },
   })
-
-  const isLoading = isCoursesLoading || isCategoriesLoading
 
   const columns: ColumnDef<ICourse>[] = [
     {
@@ -171,14 +145,9 @@ const CourseManageView = () => {
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Học viên" />
       ),
-      cell: ({ row }) => {
-        const totalStudent = row.getValue<number>('total_student')
-        return (
-          <div className="font-medium">
-            {totalStudent ? totalStudent : 'Chưa có'}
-          </div>
-        )
-      },
+      cell: ({ row }) => (
+        <div className="font-medium">{row.getValue('total_student') || 0}</div>
+      ),
     },
     {
       accessorKey: 'status',
@@ -186,8 +155,7 @@ const CourseManageView = () => {
         <DataTableColumnHeader column={column} title="Trạng thái" />
       ),
       cell: ({ row }) => {
-        const course = CourseStatusMap[row.original.status as CourseStatus]
-        return <Badge variant={course?.badge}>{course?.label}</Badge>
+        return <CourseStatusBadge status={row.original.status} />
       },
     },
     {
@@ -223,6 +191,11 @@ const CourseManageView = () => {
     },
   ]
 
+  const categoryOptions = categories?.data.map((category: ICategory) => ({
+    label: category.name,
+    value: category.id,
+  }))
+
   const onSubmit = (values: CreateCoursePayload) => {
     if (isCourseCreating) return
 
@@ -231,14 +204,6 @@ const CourseManageView = () => {
         setOpenDialog(false)
       },
     })
-  }
-
-  if (isLoading) {
-    return (
-      <div className="mt-20">
-        <Loader2 className="mx-auto size-8 animate-spin" />
-      </div>
-    )
   }
 
   return (
@@ -255,9 +220,12 @@ const CourseManageView = () => {
               Tạo khoá học mới
             </Button>
           </div>
-          {courses?.data && (
-            <DataTable columns={columns} data={courses?.data} />
-          )}
+
+          <DataTable
+            columns={columns}
+            data={courses?.data || []}
+            isLoading={isCoursesLoading}
+          />
         </div>
       </div>
 
@@ -271,6 +239,7 @@ const CourseManageView = () => {
               Bạn có thể thêm tiêu đề và chọn danh mục cho khoá học của mình.
             </DialogDescription>
           </DialogHeader>
+
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <FormField
@@ -289,71 +258,13 @@ const CourseManageView = () => {
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
+              <FormCombobox
+                form={form}
                 name="category_id"
-                render={({ field }) => (
-                  <FormItem className="flex flex-col">
-                    <FormLabel>Danh mục khóa học</FormLabel>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <FormControl>
-                          <Button
-                            variant="outline"
-                            role="combobox"
-                            className={cn(
-                              'justify-between',
-                              !field.value && 'text-muted-foreground'
-                            )}
-                          >
-                            {field.value
-                              ? categories?.data.find(
-                                  (category: ICategory) =>
-                                    category.id === field.value
-                                )?.name
-                              : 'Chọn danh mục cho khóa học'}
-                            <ChevronDown className="opacity-50" />
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
-                        <Command>
-                          <CommandInput
-                            placeholder="Tìm kiếm danh mục"
-                            className="h-9"
-                          />
-                          <CommandList>
-                            <CommandEmpty>
-                              Không có kết quả nào phù hợp
-                            </CommandEmpty>
-                            <CommandGroup>
-                              {categories?.data.map((category: ICategory) => (
-                                <CommandItem
-                                  value={category.name}
-                                  key={category.id}
-                                  onSelect={() => {
-                                    field.onChange(category.id)
-                                  }}
-                                >
-                                  {category.name}
-                                  <Check
-                                    className={cn(
-                                      'ml-auto',
-                                      category.id === field.value
-                                        ? 'opacity-100'
-                                        : 'opacity-0'
-                                    )}
-                                  />
-                                </CommandItem>
-                              ))}
-                            </CommandGroup>
-                          </CommandList>
-                        </Command>
-                      </PopoverContent>
-                    </Popover>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                label="Danh mục khóa học"
+                options={categoryOptions}
+                isLoading={isCategoriesLoading}
+                placeholder="Chọn danh mục cho khóa học"
               />
               <div className="mt-3 flex justify-end">
                 <Button

@@ -64,14 +64,22 @@ const CourseCodingView = ({
       instruct: '',
       content: '',
     },
-    values: lessonCoding?.data,
+    values: {
+      ...lessonCoding?.data,
+      hints: lessonCoding?.data.hints?.map((hint: string) => ({ hint })),
+    },
   })
 
   const onSubmit = (values: UpdateCodingLessonPayload) => {
+    const data = {
+      ...values,
+      hints: values.hints?.map((item) => item.hint),
+    }
+
     updateCodingLesson.mutate({
       chapterSlug: slug,
-      codingId: codingId,
-      data: values,
+      codingId,
+      data,
     })
   }
 
@@ -102,7 +110,7 @@ const CourseCodingView = ({
             <Button type="submit" disabled={disabled}>
               {updateCodingLesson.isPending && (
                 <Loader2 className="animate-spin" />
-              )}{' '}
+              )}
               Cập nhật
             </Button>
           </header>

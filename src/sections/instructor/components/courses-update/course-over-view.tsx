@@ -106,7 +106,7 @@ const CourseOverView = ({ courseOverView }: any) => {
     <>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col justify-between gap-4 lg:flex-row">
             <div>
               <h3 className="text-xl font-bold">Thông tin khoá học</h3>
               <p className="mt-2 text-sm text-muted-foreground">
@@ -116,18 +116,17 @@ const CourseOverView = ({ courseOverView }: any) => {
             </div>
             {(courseOverView?.status === 'draft' ||
               courseOverView?.status === 'rejected') && (
-              <div>
-                <Button variant="destructive">Nhập lại</Button>
+              <div className="flex items-center justify-end gap-2 lg:flex-col lg:items-end">
+                <Button variant="secondary">Nhập lại</Button>
                 <Button
+                  className="lg:order-first"
                   type="submit"
-                  className="ms-2 bg-primary"
                   disabled={updateCourseOverViewPending}
                 >
-                  {updateCourseOverViewPending ? (
+                  {updateCourseOverViewPending && (
                     <Loader2 className="animate-spin" />
-                  ) : (
-                    'Lưu thông tin'
                   )}
+                  Lưu thông tin
                 </Button>
               </div>
             )}

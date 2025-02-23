@@ -4,7 +4,9 @@ import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
+import { Plus, Trash } from 'lucide-react'
+import { useFieldArray, useForm } from 'react-hook-form'
+import Swal from 'sweetalert2'
 
 import {
   RegisterInstructorInput,
@@ -12,6 +14,8 @@ import {
 } from '@/validations/instructor'
 import { questions } from '@/constants/common'
 import { cn } from '@/lib/utils'
+import { useInstructorRegister } from '@/hooks/instructor/instructor-register/useInstructorRegister'
+import { useGetQaSystems } from '@/hooks/qa-system/useQaSystem'
 
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -23,17 +27,13 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
 import { Progress } from '@/components/ui/progress'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import ModalOption from '@/sections/become-an-instructor/_components/modal-option'
 
 import 'swiper/css'
 import 'swiper/css/autoplay'
-
-import Swal from 'sweetalert2'
-
-import { useInstructorRegister } from '@/hooks/instructor/instructor-register/useInstructorRegister'
-import { useGetQaSystems } from '@/hooks/qa-system/useQaSystem'
 
 const BecomeAnInstructor = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -51,7 +51,13 @@ const BecomeAnInstructor = () => {
         options: question.options,
         selected_options: [],
       })),
+      certificates: [],
     },
+  })
+
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name: 'certificates',
   })
 
   const onSubmit = (values: RegisterInstructorInput) => {
@@ -66,12 +72,7 @@ const BecomeAnInstructor = () => {
     <>
       <ModalOption isOpen={isModalOpen} setIsOpen={setIsModalOpen} />
 
-      <div
-        className={cn(
-          'fixed left-0 top-0 z-50 w-full bg-white',
-          step > qaSystems?.data.length && 'hidden'
-        )}
-      >
+      <div className={cn('fixed left-0 top-0 z-50 w-full bg-white')}>
         <div className="container mx-auto px-8">
           <div className="flex h-20 w-full items-center space-x-6">
             <Link href="/">
@@ -84,7 +85,7 @@ const BecomeAnInstructor = () => {
             </Link>
 
             <div className="flex h-full flex-1 items-center border-l border-gray-200 px-6 text-lg">
-              Bước {step}/{qaSystems?.data.length}
+              Bước {step}/{qaSystems?.data.length + 1}
             </div>
 
             <Link
@@ -98,9 +99,9 @@ const BecomeAnInstructor = () => {
 
         <Progress
           value={
-            step === qaSystems?.data.length
+            step === qaSystems?.data.length + 1
               ? 100
-              : (step / qaSystems?.data.length) * 100
+              : (step / (qaSystems?.data.length + 1)) * 100
           }
           className="h-1 bg-gray-300"
         />
@@ -108,12 +109,7 @@ const BecomeAnInstructor = () => {
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
-          <div
-            className={cn(
-              'container mx-auto my-20 p-8 pb-16',
-              step > qaSystems?.data.length && 'hidden'
-            )}
-          >
+          <div className="container mx-auto my-20 p-8 pb-16">
             <h1 className="bold text-3xl">Chia sẻ kiến thức của bạn</h1>
 
             <p className="mb-16 mt-8 max-w-3xl">
@@ -126,7 +122,10 @@ const BecomeAnInstructor = () => {
 
             {qaSystems?.data.map((question: any, questionIndex: number) => (
               <div
-                className={cn('w-1/2', step - 1 !== questionIndex && 'hidden')}
+                className={cn(
+                  'max-w-3xl',
+                  step !== questionIndex + 1 && 'hidden'
+                )}
                 key={question.id}
               >
                 {question.answer_type === 'single' ? (
@@ -226,15 +225,87 @@ const BecomeAnInstructor = () => {
                 )}
               </div>
             ))}
+
+            <div
+              className={cn(
+                'max-w-3xl',
+                step !== qaSystems?.data.length + 1 && 'hidden'
+              )}
+            >
+              <FormField
+                control={form.control}
+                name="certificates"
+                render={() => (
+                  <FormItem className="space-y-4">
+                    <FormLabel className="text-lg font-semibold">
+                      Thêm chứng chỉ{' '}
+                      <span className="text-sm text-muted-foreground">
+                        (Không bắt buộc)
+                      </span>
+                    </FormLabel>
+                    {fields.map((field, index) => (
+                      <FormField
+                        key={field.id}
+                        control={form.control}
+                        name={`certificates.${index}.file`}
+                        render={({
+                          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                          field: { value, onChange, ...fieldProps },
+                        }) => (
+                          <FormItem>
+                            <div className="relative">
+                              <FormControl>
+                                <Input
+                                  {...fieldProps}
+                                  type="file"
+                                  onChange={(e) => {
+                                    onChange(
+                                      e.target.files && e.target.files[0]
+                                    )
+                                  }}
+                                  accept="image/*, application/pdf"
+                                  className="pr-10"
+                                />
+                              </FormControl>
+
+                              <Button
+                                variant="ghost"
+                                type="button"
+                                size="icon"
+                                className="absolute right-0 top-0 text-red-500 hover:bg-transparent hover:text-red-500/70"
+                                onClick={() => {
+                                  remove(index)
+                                }}
+                                disabled={fieldProps.disabled}
+                              >
+                                <Trash />
+                              </Button>
+                            </div>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    ))}
+
+                    <Button
+                      className="block"
+                      type="button"
+                      variant="secondary"
+                      onClick={() => append({ file: undefined })}
+                    >
+                      <Plus />
+                    </Button>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
           </div>
         </form>
       </Form>
 
       <div
-        className={cn(
-          'fixed bottom-0 left-0 z-50 w-full bg-white',
-          step > qaSystems?.data.length && 'hidden'
-        )}
+        className="fixed bottom-0 left-0 z-50 w-full bg-white"
         style={{
           boxShadow:
             '0 -4px 6px -1px rgb(0 0 0 / 0.1), 0 -2px 4px -2px rgb(0 0 0 / 0.1)',
@@ -253,9 +324,9 @@ const BecomeAnInstructor = () => {
             )}
 
             <Button
-              type={step === qaSystems?.data.length ? 'submit' : 'button'}
+              type="button"
               onClick={() => {
-                if (step === qaSystems?.data.length) {
+                if (step === qaSystems?.data.length + 1) {
                   Swal.fire({
                     title: 'Xác nhận đăng ký',
                     text: 'Bạn có chắc muốn đăng ký làm người hướng dẫn?',
@@ -272,12 +343,13 @@ const BecomeAnInstructor = () => {
                 }
               }}
               disabled={
-                step > qaSystems?.data.length ||
-                form.getValues('qa_systems')[step - 1].selected_options
-                  .length === 0
+                step !== qaSystems?.data.length + 1
+                  ? form.getValues('qa_systems')[step - 1].selected_options
+                      .length === 0
+                  : false
               }
             >
-              {step === qaSystems?.data.length
+              {step === qaSystems?.data.length + 1
                 ? 'Đăng ký giảng viên'
                 : 'Tiếp tục'}
             </Button>

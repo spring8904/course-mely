@@ -4,9 +4,9 @@ import React from 'react'
 
 import { ISidebarData } from '@/types'
 
-import { AppSidebar } from '@/components/ui/app-sidebar'
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
 import TopBar from '@/components/layouts/TopBar'
+import { AppSidebar } from '@/components/shared/app-sidebar'
 import ProgressBar from '@/components/shared/ProgressBar'
 
 interface LayoutProps {
