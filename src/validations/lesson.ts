@@ -18,36 +18,110 @@ export const updateTitleLessonSchema = z.object({
     .max(255, 'Tiêu đề không được vượt quá 255 ký tự'),
 })
 
-export const lessonVideoSchema = z.object({
-  title: z
-    .string()
-    .min(3, 'Tiêu đề phải có ít nhất 3 ký tự')
-    .max(255, 'Tiêu đề không được vượt quá 255 ký tự'),
-  video_file: z.any().refine((file) => file instanceof File, {
-    message: 'Video là bắt buộc',
-  }),
-  content: z.string().max(255, 'Nội dung không được vượt quá 255 ký tự'),
-  is_free_preview: z.boolean().optional(),
-})
+export const lessonVideoSchema = z
+  .object({
+    title: z
+      .string()
+      .min(3, 'Tiêu đề phải có ít nhất 3 ký tự')
+      .max(255, 'Tiêu đề không được vượt quá 255 ký tự'),
+    video_file: z.any(),
+    content: z.string().max(255, 'Nội dung không được vượt quá 255 ký tự'),
+    is_free_preview: z
+      .union([z.boolean(), z.number()])
+      .transform((val) => Boolean(val))
+      .optional(),
+    isEdit: z.boolean().optional(),
+  })
+  .superRefine((data, ctx) => {
+    if (!data.isEdit && !(data.video_file instanceof File)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['video_file'],
+        message: 'File video là bắt buộc khi thêm mới',
+      })
+    } else if (data.video_file && !(data.video_file instanceof File)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['video_file'],
+        message: 'File video không hợp lệ',
+      })
+    }
 
-export const lessonDocumentSchema = z.object({
-  title: z
-    .string()
-    .min(3, 'Tiêu đề phải có ít nhất 3 ký tự')
-    .max(255, 'Tiêu đề không được vượt quá 255 ký tự'),
-  file_type: z.enum(['url', 'upload']),
-  document_file: z
-    .any()
-    .refine((file) => file instanceof File || file === null, {
-      message: 'Tập tin là bắt buộc và phải là một file hợp lệ',
-    })
-    .optional(),
-  document_url: z.string().optional(),
-  content: z
-    .string()
-    .min(1, 'Nội dung là bắt buộc')
-    .max(255, 'Nội dung không được vượt quá 255 ký tự'),
-})
+    if (data.isEdit && data.is_free_preview !== undefined) {
+      return
+    }
+  })
+
+export const lessonDocumentSchema = z
+  .object({
+    title: z
+      .string()
+      .min(3, 'Tiêu đề phải có ít nhất 3 ký tự')
+      .max(255, 'Tiêu đề không được vượt quá 255 ký tự'),
+    file_type: z.enum(['document_file', 'document_url']).optional(),
+    document_file: z
+      .any()
+      .refine((file) => file instanceof File || file === null, {
+        message: 'Tập tin là bắt buộc và phải là một file hợp lệ',
+      })
+      .optional(),
+    document_url: z.string().optional(),
+    content: z
+      .string()
+      .min(1, 'Nội dung là bắt buộc')
+      .max(255, 'Nội dung không được vượt quá 255 ký tự')
+      .optional(),
+    isEdit: z.boolean().optional(),
+  })
+  .superRefine((data, ctx) => {
+    if (!data.isEdit) {
+      if (!data.file_type) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['file_type'],
+          message: 'Vui lòng chọn loại tài liệu',
+        })
+      }
+
+      if (data.file_type === 'document_file' && !data.document_file) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['document_file'],
+          message: 'Bạn phải tải lên một tập tin',
+        })
+      }
+
+      if (
+        data.file_type === 'document_url' &&
+        (!data.document_url || data.document_url.trim() === '')
+      ) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['document_url'],
+          message: 'URL tài liệu là bắt buộc khi chọn URL',
+        })
+      }
+    } else {
+      if (data.file_type === 'document_file' && !data.document_file) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['document_file'],
+          message: 'Bạn phải tải lên một tập tin',
+        })
+      }
+
+      if (
+        data.file_type === 'document_url' &&
+        (!data.document_url || data.document_url.trim() === '')
+      ) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['document_url'],
+          message: 'URL tài liệu là bắt buộc khi chọn URL',
+        })
+      }
+    }
+  })
 
 export const lessonQuizSchema = z.object({
   title: z
@@ -65,10 +139,6 @@ export const lessonCodingSchema = z.object({
     .string()
     .min(3, 'Tiêu đề phải có ít nhất 3 ký tự')
     .max(255, 'Tiêu đề không được vượt quá 255 ký tự'),
-  content: z
-    .string()
-    .min(1, 'Nội dung là bắt buộc')
-    .max(255, 'Nội dung không được với 255 ký tự'),
   language: z.enum(['javascript', 'python', 'java', 'php', 'typescript'], {
     message: 'Vui lòng chọn một ngôn ngữ lập trình',
   }),

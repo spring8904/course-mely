@@ -49,7 +49,7 @@ export function NavMain({
                   tooltip={item.title}
                 >
                   {item.icon && <item.icon />}
-                  <Link href={item.url}>
+                  <Link prefetch href={item.url}>
                     <span>{item.title}</span>
                   </Link>
                   {item.items && item.items.length > 0 && (

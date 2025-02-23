@@ -84,3 +84,34 @@ export const useDeleteChapter = () => {
     },
   })
 }
+
+export const useUpdateChapterOrder = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({
+      slug,
+      chapters,
+    }: {
+      slug: string
+      chapters: { id: number; order: number }[]
+    }) => {
+      return instructorChapterApi.updateChapterOrder(slug, { chapters })
+    },
+    onSuccess: async (res: any) => {
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_KEY.INSTRUCTOR_COURSE],
+        }),
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_KEY.VALIDATE_COURSE],
+        }),
+      ])
+
+      toast.success(res.message)
+    },
+    onError: (error) => {
+      toast.error(error.message)
+    },
+  })
+}

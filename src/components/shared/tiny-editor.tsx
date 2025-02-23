@@ -30,6 +30,7 @@ type Props = {
   value?: string
   onEditorChange?: (a: string, editor: any) => void
   minimalist?: boolean
+  [key: string]: any
 }
 
 const TinyEditor = ({

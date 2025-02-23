@@ -8,7 +8,7 @@ export enum CourseStatus {
   Draft = 'draft',
   Pending = 'pending',
   Approved = 'approved',
-  Reject = 'reject',
+  Reject = 'rejected',
 }
 
 export const CourseStatusMap: Record<

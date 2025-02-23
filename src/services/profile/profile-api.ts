@@ -13,9 +13,12 @@ export const profileApi = {
 
   updateProfile: async (data: UpdateProfilePayload) => {
     const formData = new FormData()
-
-    Object.keys(data).forEach((key) => {
-      formData.append(key, data[key])
+    Object.entries(data).forEach(([key, value]) => {
+      if (key === 'avatar' && value instanceof File) {
+        formData.append('avatar', value)
+      } else if (typeof value === 'string' || typeof value === 'number') {
+        formData.append(key, value.toString())
+      }
     })
 
     formData.append('_method', 'PUT')

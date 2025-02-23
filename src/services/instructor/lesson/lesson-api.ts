@@ -1,8 +1,8 @@
+import { UpdateCodingLessonPayload } from '@/validations/course'
 import {
   CreateLessonPayload,
   LessonCodingPayload,
   LessonQuizPayload,
-  StoreQuestionPayload,
   UpdateTitleLessonPayload,
 } from '@/validations/lesson'
 import api from '@/configs/api'
@@ -13,8 +13,14 @@ export const instructorLessonApi = {
   getLessonOverview: async (slug: string) => {
     return await api.get(`${prefix}/${slug}`)
   },
-  getLessonCoding: async (lessonId: string, coding: string) => {
-    return await api.get(`${prefix}/${lessonId}/${coding}/coding-exercise`)
+  getLessonCoding: async (lessonSlug: string, codingId: string) => {
+    return await api.get(`${prefix}/${lessonSlug}/${codingId}/coding-exercise`)
+  },
+  getLessonVideo: async (chapterId: string, lessonId: string) => {
+    return await api.get(`${prefix}/${chapterId}/${lessonId}/show-lesson`)
+  },
+  getLessonDocument: async (chapterId: string, lessonId: string) => {
+    return await api.get(`${prefix}/${chapterId}/${lessonId}/lesson-document`)
   },
   createLesson: (payload: CreateLessonPayload) => {
     return api.post(prefix, payload, {
@@ -66,7 +72,47 @@ export const instructorLessonApi = {
       }
     )
   },
+  updateLessonVideo: (
+    chapterId: string,
+    lessonId: string,
+    payload: FormData
+  ) => {
+    return api.post(
+      `${prefix}/${chapterId}/${lessonId}/update-lesson-video`,
+      payload,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    )
+  },
+  updateLessonDocument: (
+    chapterId: string,
+    lessonId: string,
+    payload: FormData
+  ) => {
+    return api.post(
+      `${prefix}/${chapterId}/${lessonId}/update-lesson-document`,
+      payload,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    )
+  },
   deleteLesson: (chapterId: number, id: number) => {
     return api.delete(`${prefix}/${chapterId}/${id}`)
+  },
+  updateCodingLesson: (
+    lessonSlug: string,
+    codingId: string | number,
+    payload: UpdateCodingLessonPayload
+  ) => {
+    return api.put(
+      `${prefix}/${lessonSlug}/${codingId}/coding-exercise`,
+      payload
+    )
   },
 }

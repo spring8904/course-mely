@@ -1,4 +1,4 @@
-import PostManageView from '@/sections/instructor/post/view/post-manage-view'
+import PostManageView from '@/sections/instructor/view/post-manage-view'
 
 const PostManagePage = () => {
   return <PostManageView />

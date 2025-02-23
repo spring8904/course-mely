@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -9,7 +8,7 @@ interface BlogListItemProps {
 }
 
 const BlogListItem = ({ initialBlogs }: BlogListItemProps) => {
-  const [posts, setPosts] = useState<any>(initialBlogs?.data)
+  const posts = initialBlogs?.data
 
   return (
     <>

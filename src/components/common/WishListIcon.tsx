@@ -11,7 +11,7 @@ const WishListIcon = () => {
     >
       <i className="flaticon-heart fs-22" />
       {wishList.length > 0 && (
-        <span className="absolute -right-[4px] -top-1 flex size-4 items-center justify-center rounded-full bg-red-500 text-xs text-white">
+        <span className="absolute -top-1 right-[-4px] flex size-4 items-center justify-center rounded-full bg-red-500 text-xs text-white">
           {wishList.length}
         </span>
       )}

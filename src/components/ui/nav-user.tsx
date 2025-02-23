@@ -7,7 +7,6 @@ import {
   ChevronsUpDown,
   CreditCard,
   LogOut,
-  Sparkles,
 } from 'lucide-react'
 import Swal from 'sweetalert2'
 
@@ -29,7 +28,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@/components/ui/sidebar'
-import { UserProfileModal } from '@/sections/instructor/_components/user-profile/user-profile'
+import { UserProfileModal } from '@/sections/instructor/components/user-profile/user-profile'
 
 export function NavUser({
   user,
@@ -40,7 +39,7 @@ export function NavUser({
     avatar: string
   }
 }) {
-  const [isModalOpen, setModalOpen] = useState(false)
+  const [openModal, setOpenModal] = useState(false)
 
   const { isMobile } = useSidebar()
   const { isPending, mutate } = useLogOut()
@@ -62,14 +61,6 @@ export function NavUser({
         mutate()
       }
     })
-  }
-
-  const handleProfileClick = () => {
-    setModalOpen(true) // Open the modal when clicked
-  }
-
-  const handleModalClose = () => {
-    setModalOpen(false) // Close the modal
   }
 
   return (
@@ -112,7 +103,7 @@ export function NavUser({
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem onClick={handleProfileClick}>
+              <DropdownMenuItem onClick={() => setOpenModal(true)}>
                 <BadgeCheck />
                 Thông tin cá nhân
               </DropdownMenuItem>
@@ -135,8 +126,8 @@ export function NavUser({
       </SidebarMenuItem>
       <UserProfileModal
         user={user}
-        isOpen={isModalOpen}
-        onClose={handleModalClose}
+        open={openModal}
+        onOpenChange={setOpenModal}
       />
     </SidebarMenu>
   )

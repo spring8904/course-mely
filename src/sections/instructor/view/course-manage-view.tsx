@@ -16,7 +16,7 @@ import {
 } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 
-import { CourseStatusMap, ICourse } from '@/types'
+import { CourseStatus, CourseStatusMap, ICourse } from '@/types'
 import { ICategory } from '@/types/Category'
 import { CreateCoursePayload, createCourseSchema } from '@/validations/course'
 import { formatCurrency, formatDateTime } from '@/lib/common'
@@ -121,7 +121,7 @@ const CourseManageView = () => {
       cell: ({ row }) => {
         const course = row.original
         return (
-          <div className="flex items-center gap-4">
+          <div className="flex min-w-80 items-center gap-4">
             <Image
               alt={course.name ?? ''}
               className="size-16 rounded-lg object-cover"
@@ -130,7 +130,7 @@ const CourseManageView = () => {
               src={course?.thumbnail ?? ''}
             />
             <div className="flex-1 space-y-1">
-              <h3 className="font-semibold">{course.name}</h3>
+              <h3 className="line-clamp-2 font-semibold">{course.name}</h3>
               <h4 className="text-xs text-muted-foreground">
                 {course.category?.name}
               </h4>
@@ -171,6 +171,7 @@ const CourseManageView = () => {
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Học viên" />
       ),
+      cell: () => <div className="font-medium">Chưa có</div>,
     },
     {
       accessorKey: 'status',
@@ -178,21 +179,8 @@ const CourseManageView = () => {
         <DataTableColumnHeader column={column} title="Trạng thái" />
       ),
       cell: ({ row }) => {
-        // const course = CourseStatusMap[row.original.status]
-
-        // return <Badge variant={course.badge}>{course.label}</Badge>
-
-        return Object.values(CourseStatusMap)
-          .reverse()
-          .map((status, index) => {
-            if (row.index === index) {
-              return (
-                <Badge key={index} variant={status.badge}>
-                  {status.label}
-                </Badge>
-              )
-            }
-          })
+        const course = CourseStatusMap[row.original.status as CourseStatus]
+        return <Badge variant={course?.badge}>{course?.label}</Badge>
       },
     },
     {
@@ -260,7 +248,9 @@ const CourseManageView = () => {
               Tạo khoá học mới
             </Button>
           </div>
-          <DataTable columns={columns} data={courses?.data} />
+          {courses?.data && (
+            <DataTable columns={columns} data={courses?.data} />
+          )}
         </div>
       </div>
 

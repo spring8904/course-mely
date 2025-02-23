@@ -27,17 +27,18 @@ export const updateCourseOverViewSchema = z
       .max(255, 'Tiêu đề không được vượt quá 255 ký tự'),
     description: z
       .string()
-      .optional()
+      .trim()
+      .min(1, 'Vui lòng nhập mô tả khoá học')
       .refine(
         (val) => {
           if (val) {
             const wordCount = val.trim().split(/\s+/).length
-            return wordCount >= 150
+            return wordCount <= 150
           }
           return true
         },
         {
-          message: 'Mô tả phải có ít nhất 150 từ',
+          message: 'Mô tả phải có không được vượt quá 150 từ',
         }
       ),
     thumbnail: z
@@ -131,7 +132,9 @@ export const updateCourseObjectiveSchema = z.object({
   benefits: z
     .array(z.string())
     .min(4, { message: 'Bạn cần ít nhất 4 lợi ích' }),
-  requirements: z.array(z.string()).optional(),
+  requirements: z.array(z.string()).min(4, {
+    message: 'Bạn cần ít nhất 4 yêu cầu',
+  }),
   qa: z
     .array(
       z.object({
@@ -141,6 +144,41 @@ export const updateCourseObjectiveSchema = z.object({
     )
     .optional(),
 })
+
+export const updateCodingLessonSchema = z.object({
+  title: z.string().trim().min(3, 'Tiêu đề phải có ít nhất 3 ký tự'),
+  language: z.string({
+    message: 'Vui lòng chọn ngôn ngữ lập trình',
+  }),
+  instruct: z.string().nullable().optional(),
+  content: z
+    .string({
+      required_error: 'Vui lòng nhập nội dung bài học',
+      invalid_type_error: 'Vui lòng nhập nội dung bài học',
+    })
+    .trim(),
+  hints: z
+    .array(z.string().trim().min(3, 'Gợi ý phải có ít nhất 3 ký tự'))
+    .max(10, {
+      message: 'Số lượng gợi ý tối đa là 10',
+    })
+    .optional(),
+  sample_code: z.string().optional(),
+  result_code: z
+    .string({
+      required_error: 'Vui lòng chạy mã',
+      invalid_type_error: 'Vui lòng chạy mã',
+    })
+    .trim(),
+  solution_code: z
+    .string({
+      required_error: 'Vui lòng nhập giải pháp',
+      invalid_type_error: 'Vui lòng nhập giải pháp',
+    })
+    .trim(),
+})
+
+export type UpdateCodingLessonPayload = z.infer<typeof updateCodingLessonSchema>
 
 export type CreateCoursePayload = z.infer<typeof createCourseSchema>
 export type UpdateCourseOverViewPayload = z.infer<

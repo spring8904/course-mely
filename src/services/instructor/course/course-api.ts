@@ -37,4 +37,7 @@ export const instructorCourseApi = {
   validateCourse: (slug: string) => {
     return api.get(`${prefix}/${slug}/validate-course`)
   },
+  submitCourse: (slug: string) => {
+    return api.post(`${prefix}/${slug}/submit-course`)
+  },
 }

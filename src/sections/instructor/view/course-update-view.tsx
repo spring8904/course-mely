@@ -13,11 +13,13 @@ import { buildStyles, CircularProgressbar } from 'react-circular-progressbar'
 
 import {
   useGetCourseOverview,
+  useSubmitCourse,
   useValidateCourse,
 } from '@/hooks/instructor/course/useCourse'
 
 import 'react-circular-progressbar/dist/styles.css'
 
+import Link from 'next/link'
 import { Accordion } from '@radix-ui/react-accordion'
 import Swal from 'sweetalert2'
 
@@ -29,6 +31,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion'
+import { Badge } from '@/components/ui/badge'
 import {
   Sheet,
   SheetContent,
@@ -36,11 +39,12 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet'
-import CourseObjective from '@/sections/instructor/_components/courses-update/_components/course-objective'
-import CourseOverView from '@/sections/instructor/_components/courses-update/_components/course-over-view'
-import CourseStructure from '@/sections/instructor/_components/courses-update/_components/course-structure'
-import FilmEditing from '@/sections/instructor/_components/courses-update/_components/film'
-import CourseChapterTab from '@/sections/instructor/_components/courses-update/course-chapter-tab'
+import ModalLoading from '@/components/common/ModalLoading'
+import CourseChapterTab from '@/sections/instructor/components/courses-update/course-chapter-tab'
+import CourseObjective from '@/sections/instructor/components/courses-update/course-objective'
+import CourseOverView from '@/sections/instructor/components/courses-update/course-over-view'
+import CourseStructure from '@/sections/instructor/components/courses-update/course-structure'
+import FilmEditing from '@/sections/instructor/components/courses-update/film'
 
 type GroupId = 'planning' | 'content'
 
@@ -69,6 +73,21 @@ const groups = [
   },
 ]
 
+const getStatusBadge = (status: string) => {
+  switch (status) {
+    case 'draft':
+      return <Badge className="bg-gray-200 text-gray-800">Bản nháp</Badge>
+    case 'pending':
+      return <Badge className="bg-yellow-200 text-yellow-800">Chờ xử lý</Badge>
+    case 'approved':
+      return <Badge className="bg-green-200 text-green-800">Đã duyệt</Badge>
+    case 'rejected':
+      return <Badge className="bg-red-200 text-red-800">Đã từ chối</Badge>
+    default:
+      return <Badge className="bg-gray-200 text-gray-800">Unknown</Badge>
+  }
+}
+
 const CourseUpdateView = ({ slug }: { slug: string }) => {
   const { user } = useAuthStore()
   const router = useRouter()
@@ -80,11 +99,14 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
   })
 
   const [courseStatus, setCourseStatus] = useState<string>('draft')
+  const [progress, setProgress] = useState<number>(0)
 
   const { data: courseOverviewData, isLoading: isCourseOverviewLoading } =
     useGetCourseOverview(slug)
   const { data: validateData, isLoading: isValidateLoading } =
     useValidateCourse(slug)
+  const { mutate: submitCourse, isPending: isSubmitCoursePending } =
+    useSubmitCourse()
 
   useEffect(() => {
     if (
@@ -94,7 +116,8 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
       router.push('/forbidden')
     }
     setCourseStatus(courseOverviewData?.data.status)
-  }, [user, courseOverviewData, isCourseOverviewLoading, router])
+    setProgress(validateData?.data.progress || 0)
+  }, [user, courseOverviewData, isCourseOverviewLoading, router, validateData])
 
   if (isCourseOverviewLoading || isValidateLoading) {
     return (
@@ -113,6 +136,8 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
   }
 
   const courseHandleSubmit = () => {
+    if (isSubmitCoursePending) return
+
     Swal.fire({
       title: 'Xác nhận gửi yêu cầu kiểm duyệt',
       text: 'Bạn có chắc chắn muốn gửi yêu cầu kiểm duyệt khoá học này?',
@@ -122,8 +147,13 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
       cancelButtonText: 'Hủy',
     }).then(async (result) => {
       if (result.isConfirmed) {
+        submitCourse(slug)
       }
     })
+  }
+
+  if (isSubmitCoursePending) {
+    return <ModalLoading />
   }
 
   return (
@@ -132,10 +162,11 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
         <h3 className="text-xl font-bold">
           Cập nhật nội dung khoá học: {courseOverviewData?.data.name}
         </h3>
+        {getStatusBadge(courseOverviewData?.data.status)}
       </div>
       <div className="mt-4">
         <div className="grid grid-cols-12 gap-8">
-          <div className="col-span-4">
+          <div className="col-span-4 xl:col-span-3">
             <div>
               {groups.map((group) => (
                 <div key={group.id} className="mb-8">
@@ -147,7 +178,7 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
                         onClick={() => {
                           handleTabClick(group.id, tab.id)
                         }}
-                        className={`flex cursor-pointer items-center justify-between rounded p-2 transition-all ${
+                        className={`flex cursor-pointer items-center justify-between gap-2 rounded p-2 transition-all ${
                           activeGroup === group.id &&
                           activeTabs[group.id] === tab.id
                             ? 'border-l-4 border-orange-500 bg-orange-50'
@@ -186,8 +217,8 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
                 <h1 className="mb-4 text-base font-bold">Điều kiện</h1>
                 <div className="font-bold" style={{ width: 50, height: 50 }}>
                   <CircularProgressbar
-                    value={validateData?.data.progress}
-                    text={formatPercentage(validateData?.data.progress)}
+                    value={validateData?.data.progress || 0}
+                    text={formatPercentage(validateData?.data.progress || 0)}
                     strokeWidth={3}
                     styles={buildStyles({
                       pathColor: `#FA802B`,
@@ -199,7 +230,12 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
               </div>
               <Sheet>
                 <SheetTrigger asChild>
-                  <Button type="button"> Xem chi tiết</Button>
+                  <Button
+                    disabled={progress === 100 || isSubmitCoursePending}
+                    type="button"
+                  >
+                    Xem chi tiết
+                  </Button>
                 </SheetTrigger>
                 <SheetContent
                   aria-describedby={undefined}
@@ -214,17 +250,17 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
                     collapsible
                     className="space-y-4 py-4"
                   >
-                    {Object.entries(validateData?.data.completion_status).map(
+                    {Object?.entries(validateData?.data.completion_status).map(
                       ([key, value]) => {
                         const typedValue = value as {
                           status: boolean
                           errors: string[]
                         }
 
-                        if (typedValue.status === false)
+                        if (!typedValue.status) {
                           return (
                             <AccordionItem key={key} value={key}>
-                              <AccordionTrigger>
+                              <AccordionTrigger className="rounded-lg">
                                 {(() => {
                                   switch (key) {
                                     case 'course_objectives':
@@ -241,30 +277,45 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
                               {typedValue.errors.map((error, index) => (
                                 <AccordionContent
                                   key={index}
-                                  className="text-sm text-red-500"
+                                  className="rounded-lg text-sm text-red-500"
                                 >
                                   {error}
                                 </AccordionContent>
                               ))}
                             </AccordionItem>
                           )
+                        }
                       }
                     )}
                   </Accordion>
                 </SheetContent>
               </Sheet>
             </div>
-            <Button
-              disabled={['pending', 'approved'].includes(courseStatus)}
-              className="mt-4"
-              onClick={courseHandleSubmit}
-            >
-              {courseStatus === 'rejected'
-                ? 'Gửi lại thông tin khoá học'
-                : 'Gửi yêu cầu kiểm duyệt'}
-            </Button>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <Link href="/instructor/courses/">
+                <Button variant="outline">Khoá học của tôi</Button>
+              </Link>
+              <Button
+                disabled={
+                  courseStatus === 'pending' ||
+                  courseStatus === 'approved' ||
+                  isSubmitCoursePending ||
+                  progress < 100
+                }
+                onClick={courseHandleSubmit}
+                className={
+                  courseStatus === 'approved' ? 'bg-green-500 text-white' : ''
+                }
+              >
+                {courseStatus === 'approved'
+                  ? 'Đã được kiểm duyệt'
+                  : courseStatus === 'rejected'
+                    ? 'Gửi lại thông tin khoá học'
+                    : 'Gửi yêu cầu kiểm duyệt'}
+              </Button>
+            </div>
           </div>
-          <div className="col-span-8 rounded border bg-white p-4 shadow-lg">
+          <div className="col-span-8 rounded border bg-white p-4 shadow-lg xl:col-span-9">
             {activeGroup === 'planning' && (
               <>
                 {activeTabs.planning === 'course_objectives' && (
@@ -282,6 +333,7 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
                 )}
                 {activeTabs.content === 'course_curriculum' && (
                   <CourseChapterTab
+                    courseStatus={courseStatus as string}
                     slug={slug}
                     chapters={courseOverviewData?.data.chapters}
                   />
