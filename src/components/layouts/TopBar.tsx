@@ -36,25 +36,71 @@ const TopBar = () => {
     useGetNotifications()
   const { mutate: markAsRead, isPending: isPendingMarkAsRead } = useMarkAsRead()
 
-  useEffect(() => {
-    if (!isLoading && data) {
-      setNotifications(data?.pages.flatMap((page) => page.notifications) || [])
-    }
-  }, [user?.id, data, isLoading])
+  // useEffect(() => {
+  //   if (!isLoading && data) {
+  //     setNotifications(data?.pages.flatMap((page) => page.notifications) || [])
+  //   }
+  // }, [data, isLoading])
 
   useEffect(() => {
     if (!user?.id) return
 
-    echo
-      .private(`App.Models.User.${user?.id}`)
-      .notification((notification: any) => {
-        console.log('🔔 New notification:', notification)
-        toast.info(notification.message)
-        setNotifications((prev) => [
+    const privateChannel = echo.private(`App.Models.User.${user.id}`)
+
+    privateChannel.notification((notification: any) => {
+      console.log('🔔 New notification:', notification)
+      toast.info(notification.message)
+      // setNotifications((prev) => [
+      //   { id: notification.id, message: notification.message, read_at: null },
+      //   ...prev,
+      // ])
+
+      setNotifications((prev) => {
+        if (prev.some((noti) => noti.id === notification.id)) {
+          console.log('Duplicate notification detected:', notification.id)
+          return prev
+        }
+        return [
           { id: notification.id, message: notification.message, read_at: null },
           ...prev,
-        ])
+        ]
       })
+    })
+
+    return () => {
+      privateChannel.stopListening('.notification')
+      echo.leaveChannel(`App.Models.User.${user.id}`)
+    }
+  }, [user?.id])
+
+  useEffect(() => {
+    if (!user?.id) return
+
+    // Tạo channel cho giảng viên (instructor)
+    const privateChannel = echo.private(`instructor.${user.id}`)
+
+    privateChannel.notification((notification: any) => {
+      console.log('🔔 Notification for Instructor:', notification)
+      toast.info(notification.message) // Hiển thị thông báo realtime cho giảng viên
+
+      // Thêm thông báo mới vào danh sách (tránh trùng lặp)
+      setNotifications((prev) => {
+        if (prev.some((noti) => noti.id === notification.id)) {
+          console.log('Duplicate notification detected:', notification.id)
+          return prev // Nếu đã tồn tại thông báo, không thêm
+        }
+        return [
+          { id: notification.id, message: notification.message, read_at: null },
+          ...prev,
+        ]
+      })
+    })
+
+    // Clean up khi component bị unmount
+    return () => {
+      privateChannel.stopListening('.notification') // Dừng lắng nghe sự kiện
+      echo.leave(`instructor.${user.id}`) // Rời khỏi kênh
+    }
   }, [user?.id])
 
   const handleMarkAsRead = (id: string) => {

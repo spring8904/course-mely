@@ -57,3 +57,24 @@ export const formatPercentage = (value: number): string => {
     style: 'percent',
   }).format(value / 100)
 }
+
+export const formatDuration = (
+  seconds: number,
+  type: 'text' | 'colon' = 'text'
+) => {
+  const hours = Math.floor(seconds / 3600)
+  const minutes = Math.floor((seconds % 3600) / 60)
+  const secs = seconds % 60
+
+  if (type === 'colon') {
+    return `${hours.toString().padStart(2, '0')}:${minutes
+      .toString()
+      .padStart(2, '0')}:${secs.toString().padStart(2, '0')}`
+  }
+
+  let result = ''
+  if (hours > 0) result += `${hours} giờ `
+  if (minutes > 0) result += `${minutes} phút `
+
+  return result.trim()
+}

@@ -15,9 +15,7 @@ export const getInstructorsCourseBySlug = async (
   return response.data
 }
 
-export const getCourseDetailsBySlug = async (
-  slug: string
-): Promise<ICourse> => {
+export const getCourseDetailsBySlug = async (slug: string): Promise<any> => {
   const { data } = await api.get(`${prefix}/${slug}`)
   return data
 }
