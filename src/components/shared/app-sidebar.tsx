@@ -1,5 +1,7 @@
 'use client'
 
+import Image from 'next/image'
+import Link from 'next/link'
 import { useAuthStore } from '@/stores/useAuthStore'
 import {
   AudioWaveform,
@@ -18,11 +20,13 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
   SidebarRail,
 } from '@/components/ui/sidebar'
 import { NavMain } from '@/components/shared/nav-main'
 import { NavUser } from '@/components/shared/nav-user'
-import { TeamSwitcher } from '@/components/shared/team-switcher'
 
 const data = {
   user: {
@@ -50,7 +54,7 @@ const data = {
   navMain: [
     {
       title: 'Thống kê',
-      url: '/student',
+      url: '/instructor',
       icon: ChartPie,
       isActive: true,
     },
@@ -102,7 +106,24 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <TeamSwitcher teams={data.teams} />
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <Link href="/">
+              <SidebarMenuButton
+                size="lg"
+                className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              >
+                <Image
+                  src="/images/Logo.png"
+                  alt="CourseMeLy logo"
+                  width={40}
+                  height={40}
+                />
+                <h2 className="text-xl font-extrabold">CourseMeLy</h2>
+              </SidebarMenuButton>
+            </Link>
+          </SidebarMenuItem>
+        </SidebarMenu>
       </SidebarHeader>
       <SidebarContent className="mt-6 *:text-base">
         <NavMain items={data.navMain} />

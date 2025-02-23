@@ -47,13 +47,10 @@ const SolutionTab = () => {
   }
 
   useEffect(() => {
-    if (!form.getValues('solution_code')) {
-      form.setValue('solution_code', codeSnippet)
-    }
-    if (!form.getValues('sample_code')) {
-      form.setValue('sample_code', codeSnippet)
-    }
-  }, [codeSnippet, form, language])
+    form.setValue('solution_code', codeSnippet)
+    form.setValue('sample_code', codeSnippet)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [language])
 
   return (
     <ResizablePanelGroup direction="horizontal">
@@ -64,8 +61,8 @@ const SolutionTab = () => {
           render={({ field }) => (
             <FormItem className="flex h-full flex-col space-y-0 text-white">
               <FormLabel className="flex h-14 items-center gap-2 border-b border-gray-500 bg-[#0d0d0d] px-4 py-2 text-lg font-bold">
-                <span className="mt-2">Giải pháp</span>
-                <FormMessage className="mt-2" />
+                <span>Giải pháp</span>
+                <FormMessage />
               </FormLabel>
               <div className="flex-1">
                 <FormControl>
@@ -97,8 +94,8 @@ const SolutionTab = () => {
               render={({ field }) => (
                 <FormItem className="flex h-full flex-col space-y-0 text-white">
                   <FormLabel className="flex h-14 items-center gap-2 border-b border-gray-500 bg-[#0d0d0d] px-4 py-2 text-lg font-bold">
-                    <span className="mt-2"> File của học viên</span>
-                    <FormMessage className="mt-2" />
+                    <span> File của học viên</span>
+                    <FormMessage />
                   </FormLabel>
 
                   <div className="flex-1">

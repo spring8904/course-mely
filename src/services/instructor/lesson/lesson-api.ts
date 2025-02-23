@@ -108,7 +108,7 @@ export const instructorLessonApi = {
   updateCodingLesson: (
     lessonSlug: string,
     codingId: string | number,
-    payload: UpdateCodingLessonPayload
+    payload: Omit<UpdateCodingLessonPayload, 'hints'> & { hints?: string[] }
   ) => {
     return api.put(
       `${prefix}/${lessonSlug}/${codingId}/coding-exercise`,

@@ -158,7 +158,11 @@ export const updateCodingLessonSchema = z.object({
     })
     .trim(),
   hints: z
-    .array(z.string().trim().min(3, 'Gợi ý phải có ít nhất 3 ký tự'))
+    .array(
+      z.object({
+        hint: z.string().trim().min(3, 'Gợi ý phải có ít nhất 3 ký tự'),
+      })
+    )
     .max(10, {
       message: 'Số lượng gợi ý tối đa là 10',
     })

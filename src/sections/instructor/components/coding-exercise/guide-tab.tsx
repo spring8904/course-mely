@@ -5,6 +5,7 @@ import { Trash } from 'lucide-react'
 import { useFieldArray, useFormContext } from 'react-hook-form'
 
 import { UpdateCodingLessonPayload } from '@/validations/course'
+import { cn } from '@/lib/utils'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -38,7 +39,10 @@ const GuideTab = () => {
     <ResizablePanelGroup direction="horizontal">
       <ResizablePanel minSize={30} className="flex flex-col">
         <div
-          className={`flex h-14 items-center gap-2 border-b px-4 py-2 text-lg font-bold ${errors?.solution_code?.message && 'text-red-500'}`}
+          className={cn(
+            'flex h-14 items-center gap-2 border-b px-4 py-2 text-lg font-bold',
+            errors?.content?.message && 'text-destructive'
+          )}
         >
           Nội dung bài học
         </div>
@@ -97,7 +101,7 @@ const GuideTab = () => {
             Hướng dẫn
           </button>
         </div>
-        <div className="flex flex-1 flex-col space-y-3 overflow-y-auto p-4 scrollbar-thin">
+        <div className="space-y-3 overflow-y-auto p-4 scrollbar-thin">
           {activeTab === 'hints' && (
             <>
               <p className="text-base text-muted-foreground">
@@ -110,7 +114,7 @@ const GuideTab = () => {
                 <FormField
                   key={field.id}
                   control={control}
-                  name={`hints.${index}`}
+                  name={`hints.${index}.hint`}
                   render={({ field }) => (
                     <FormItem>
                       <div className="relative">
@@ -118,32 +122,20 @@ const GuideTab = () => {
                           <Input
                             placeholder={`Nhập gợi ý thứ ${index + 1}`}
                             {...field}
-                            onChange={(e) => {
-                              field.onChange(e)
-
-                              // Kiểm tra nếu nhập vào ô cuối cùng và chưa đủ 10 thì thêm gợi ý mới
-                              if (
-                                e.target.value.trim() !== '' &&
-                                index === fields.length - 1 &&
-                                fields.length < 10
-                              ) {
-                                append('')
-                              }
-                            }}
                           />
                         </FormControl>
 
-                        {fields.length > 1 && (
-                          <button
-                            type="button"
-                            className="absolute right-2 top-1/2 -translate-y-1/2 text-red-500"
-                            onClick={() => {
-                              remove(index)
-                            }}
-                          >
-                            <Trash size={16} />
-                          </button>
-                        )}
+                        <Button
+                          variant="ghost"
+                          type="button"
+                          size="icon"
+                          className="absolute right-0 top-0 text-red-500 hover:bg-transparent hover:text-red-500/70"
+                          onClick={() => {
+                            remove(index)
+                          }}
+                        >
+                          <Trash />
+                        </Button>
                       </div>
                       <FormMessage />
                     </FormItem>
@@ -154,7 +146,11 @@ const GuideTab = () => {
               <Button
                 type="button"
                 disabled={fields.length >= 10 || disabled}
-                onClick={() => append('')}
+                onClick={() =>
+                  append({
+                    hint: '',
+                  })
+                }
               >
                 Thêm gợi ý
               </Button>

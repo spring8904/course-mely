@@ -43,37 +43,46 @@ export function NavMain({
             className="group/collapsible"
           >
             <SidebarMenuItem>
-              <CollapsibleTrigger asChild>
+              {!item.items?.length ? (
                 <SidebarMenuButton
-                  className="mb-4 flex cursor-pointer items-center space-x-2 rounded-lg p-4 text-base font-medium hover:bg-[#F69983] hover:text-white"
+                  className="h-10 text-base font-medium"
+                  asChild
                   tooltip={item.title}
                 >
-                  {item.icon && <item.icon />}
                   <Link prefetch href={item.url}>
+                    {item.icon && <item.icon />}
                     <span>{item.title}</span>
                   </Link>
-                  {item.items && item.items.length > 0 && (
-                    <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
-                  )}
                 </SidebarMenuButton>
-              </CollapsibleTrigger>
-              {item.items && item.items.length > 0 && (
-                <CollapsibleContent>
-                  <SidebarMenuSub>
-                    {item.items.map((subItem) => (
-                      <SidebarMenuSubItem key={subItem.title}>
-                        <SidebarMenuSubButton
-                          className="mb-4 flex cursor-pointer items-center space-x-2 rounded-lg p-4 text-base font-medium hover:bg-[#F69983] hover:text-white"
-                          asChild
-                        >
-                          <Link href={subItem.url}>
-                            <span>{subItem.title}</span>
-                          </Link>
-                        </SidebarMenuSubButton>
-                      </SidebarMenuSubItem>
-                    ))}
-                  </SidebarMenuSub>
-                </CollapsibleContent>
+              ) : (
+                <>
+                  <CollapsibleTrigger asChild>
+                    <SidebarMenuButton
+                      className="h-10 text-base font-medium"
+                      tooltip={item.title}
+                    >
+                      {item.icon && <item.icon />}
+                      <span>{item.title}</span>
+                      <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                    </SidebarMenuButton>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent>
+                    <SidebarMenuSub>
+                      {item.items.map((subItem) => (
+                        <SidebarMenuSubItem key={subItem.title}>
+                          <SidebarMenuSubButton
+                            className="h-10 text-base font-medium"
+                            asChild
+                          >
+                            <Link href={subItem.url}>
+                              <span>{subItem.title}</span>
+                            </Link>
+                          </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
+                      ))}
+                    </SidebarMenuSub>
+                  </CollapsibleContent>
+                </>
               )}
             </SidebarMenuItem>
           </Collapsible>

@@ -297,7 +297,7 @@ export const useUpdateCodingLesson = () => {
     }: {
       chapterSlug: string
       codingId: string | number
-      data: UpdateCodingLessonPayload
+      data: Omit<UpdateCodingLessonPayload, 'hints'> & { hints?: string[] }
     }) => instructorLessonApi.updateCodingLesson(chapterSlug, codingId, data),
     onSuccess: async (res: any) => {
       await queryClient.invalidateQueries({

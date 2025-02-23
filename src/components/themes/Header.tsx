@@ -10,6 +10,7 @@ import { Loader2, Search } from 'lucide-react'
 import Swal from 'sweetalert2'
 
 import { ICourse, IInstructorProfile } from '@/types'
+import { Role } from '@/constants/role'
 import { useLogOut } from '@/hooks/auth/useLogOut'
 import { useGetCategories } from '@/hooks/category/useCategory'
 import { useDebounce } from '@/hooks/debounce/useDebounce'
@@ -27,7 +28,7 @@ const Header = () => {
   const [query, setQuery] = useState('')
   const [categories, setCategories] = useState<any[]>([])
   const [inputWidth, setInputWidth] = useState(0)
-  const { user, isAuthenticated } = useAuthStore()
+  const { user, isAuthenticated, role } = useAuthStore()
   const { isPending, mutate } = useLogOut()
   const { data: wishListData } = useGetWishLists()
   const setWishList = useWishListStore((state) => state.setWishList)
@@ -233,12 +234,21 @@ const Header = () => {
                         </Link>
                       </li>
                       <li>
-                        <Link
-                          href="/become-an-instructor"
-                          className="dropdown-item !block !w-full !rounded-lg !bg-transparent !px-4 !py-2 !text-sm !font-medium !transition-colors !duration-200 hover:!bg-[#FFEFEA] hover:!text-[#E27447]"
-                        >
-                          Giảng dạy trên CourseMeLy
-                        </Link>
+                        {role === Role.INSTRUCTOR ? (
+                          <Link
+                            href="/instructor"
+                            className="dropdown-item !block !w-full !rounded-lg !bg-transparent !px-4 !py-2 !text-sm !font-medium !transition-colors !duration-200 hover:!bg-[#FFEFEA] hover:!text-[#E27447]"
+                          >
+                            Trang người hướng dẫn
+                          </Link>
+                        ) : (
+                          <Link
+                            href="/become-an-instructor"
+                            className="dropdown-item !block !w-full !rounded-lg !bg-transparent !px-4 !py-2 !text-sm !font-medium !transition-colors !duration-200 hover:!bg-[#FFEFEA] hover:!text-[#E27447]"
+                          >
+                            Trở thành người hướng dẫn
+                          </Link>
+                        )}
                       </li>
 
                       <li

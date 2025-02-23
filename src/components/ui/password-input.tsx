@@ -1,16 +1,16 @@
 'use client'
 
-import { forwardRef, useState } from 'react'
-import { FaRegEye, FaRegEyeSlash } from 'react-icons/fa'
+import * as React from 'react'
+import { EyeIcon, EyeOffIcon } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
 
 import { Button } from '@/components/ui/button'
-import { Input, InputProps } from '@/components/ui/input'
+import { Input, type InputProps } from '@/components/ui/input'
 
-const PasswordInput = forwardRef<HTMLInputElement, InputProps>(
+const PasswordInput = React.forwardRef<HTMLInputElement, InputProps>(
   ({ className, ...props }, ref) => {
-    const [showPassword, setShowPassword] = useState(false)
+    const [showPassword, setShowPassword] = React.useState(false)
     const disabled =
       props.value === '' || props.value === undefined || props.disabled
 
@@ -25,16 +25,12 @@ const PasswordInput = forwardRef<HTMLInputElement, InputProps>(
         <Button
           type="button"
           variant="ghost"
-          size="sm"
-          className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+          size="icon"
+          className="absolute right-0 top-0 hover:bg-transparent"
           onClick={() => setShowPassword((prev) => !prev)}
           disabled={disabled}
         >
-          {showPassword && !disabled ? (
-            <FaRegEye className="size-4" aria-hidden="true" />
-          ) : (
-            <FaRegEyeSlash className="size-4" aria-hidden="true" />
-          )}
+          {showPassword ? <EyeIcon /> : <EyeOffIcon />}
           <span className="sr-only">
             {showPassword ? 'Hide password' : 'Show password'}
           </span>
