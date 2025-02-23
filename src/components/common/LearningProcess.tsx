@@ -2,7 +2,7 @@ import React from 'react'
 
 const LearningProcess = ({ value }: { value: number }) => {
   const radius = 18
-  const strokeWidth = 4
+  const strokeWidth = 2
   const circumference = 2 * Math.PI * radius
   const offset = circumference - (value / 100) * circumference
 

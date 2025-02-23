@@ -47,8 +47,12 @@ const SolutionTab = () => {
   }
 
   useEffect(() => {
-    form.setValue('solution_code', codeSnippet)
-    form.setValue('sample_code', codeSnippet)
+    if (!form.getValues('solution_code')) {
+      form.setValue('solution_code', codeSnippet)
+    }
+    if (!form.getValues('sample_code')) {
+      form.setValue('sample_code', codeSnippet)
+    }
   }, [codeSnippet, form, language])
 
   return (
@@ -72,6 +76,7 @@ const SolutionTab = () => {
                       form.trigger('result_code')
                     }}
                     readOnly={field.disabled}
+                    activeFileGroup={'solution'}
                     runCode
                     {...field}
                   />
@@ -101,6 +106,7 @@ const SolutionTab = () => {
                       <MonacoEditor
                         files={studentFiles}
                         readOnly={field.disabled}
+                        activeFileGroup={'student'}
                         {...field}
                       />
                     </FormControl>

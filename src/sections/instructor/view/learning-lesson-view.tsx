@@ -1,16 +1,20 @@
-// 'use client'
+'use client'
 
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import MuxPlayer from '@mux/mux-player-react/lazy'
 import {
   ChevronLeft,
-  CirclePlay,
+  ChevronRight,
+  Loader2,
   MessageCircleMore,
-  Plus,
-  StickyNote,
+  Notebook,
 } from 'lucide-react'
+
+import { ILesson } from '@/types'
+import { lessonTypeIcons } from '@/configs'
+import { useGetCourseDetails } from '@/hooks/course/useCourse'
+import { useGetLesson } from '@/hooks/learning-path/useLearningPath'
 
 import {
   Accordion,
@@ -27,108 +31,171 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet'
 import LearningProcess from '@/components/common/LearningProcess'
-import { chapterData, lessonData } from '@/sections/courses/data/data'
+import { LessonContent } from '@/sections/lessons/_components/lesson-content'
 
-const LearningLessonView = () => {
+type Props = {
+  courseSlug: string
+  lessonId: string
+}
+
+const LearningLessonView = ({ courseSlug, lessonId }: Props) => {
+  const [selectedLesson, setSelectedLesson] = useState<ILesson | null>(null)
+  const { data: courseDetail, isLoading } = useGetCourseDetails(courseSlug)
+
+  const { data: lessonData, isLoading: lessonLoading } = useGetLesson(
+    courseSlug,
+    lessonId
+  )
+
+  console.log(lessonData)
+  console.log(courseSlug)
+  console.log(lessonId)
+
+  useEffect(() => {
+    // if (lessonData) {
+    //   setSelectedLesson(lessonData?.data?.lesson)
+    // }
+    // if (courseDetail?.chapters?.length) {
+    //   const firstLesson = courseDetail?.chapters[0]?.lessons?.[0] || null
+    //   setSelectedLesson(firstLesson)
+    // }
+    if (lessonData && courseSlug && lessonId) {
+      setSelectedLesson(lessonData?.data?.lesson)
+    }
+  }, [courseDetail])
+
+  if (isLoading)
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <Loader2 className="mx-auto size-10 animate-spin" />
+      </div>
+    )
+
   return (
-    <div className="relative min-h-screen">
-      <div className="fixed inset-x-0 top-0 z-10 h-[70px] bg-[#292f3b]">
-        <div className="container mx-auto flex h-full items-center justify-between p-6">
+    <div className="relative flex min-h-screen flex-col">
+      <div className="sticky inset-x-0 top-0 z-10 bg-[#292f3b]">
+        <div className="container mx-auto flex h-full items-center justify-between px-4 py-2">
           <div className="flex items-center gap-4">
             <Link href={'/'}>
               <ChevronLeft className="text-white" />
             </Link>
-            <Image src="/images/Logo.png" alt="logo" width={54} height={54} />
-            <Link href={''} className="text-white">
-              Khoá học ReactJS cơ bản cho người mới bắt đầu
-            </Link>
+            <Image src="/images/Logo.png" alt="logo" width={36} height={36} />
+            <p className="font-bold text-white">{courseDetail?.name}</p>
           </div>
           <div className="flex items-center gap-6">
-            <div className="flex items-center gap-2">
-              <LearningProcess value={50} />
-              <span className="text-base font-normal text-white">
-                50/100 bài học
+            <div className="flex items-center gap-1">
+              <LearningProcess value={0} />
+              <span className="text-sm text-white">
+                <span className="font-bold">
+                  0/{courseDetail?.lessons_count}
+                </span>{' '}
+                bài học
               </span>
             </div>
-            <div className="flex items-center gap-2">
-              <StickyNote className="text-white" />
-              <span className="text-base font-normal text-white">Ghi chú</span>
+            <div className="flex cursor-pointer items-center gap-1 opacity-75 hover:opacity-100">
+              <Notebook size={18} className="text-white" />
+              <span className="text-sm font-normal text-white">Ghi chú</span>
             </div>
           </div>
         </div>
       </div>
-      <div className="grid grid-cols-12 py-[70px]">
-        <div className="col-span-9">
-          <MuxPlayer
-            loading="viewport"
-            playbackId="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
-            metadata={{
-              video_id: 'video-id-123456',
-              video_title: 'Bick Buck Bunny',
-              viewer_user_id: 'user-id-bc-789',
-            }}
-            className="w-full object-cover"
-          />
-          <div className="mx-[36px] mt-3 flex justify-between">
-            <div>
-              <h2 className="text-2xl font-semibold">
-                ReactJS là gì? Tại sao nên học ReactJS?
-              </h2>
-              <span className="text-[12px] text-gray-600">
-                Cập nhật 27/12/2024
-              </span>
-            </div>
-            <div className="flex h-[40px] items-center gap-2 rounded-lg bg-[#ebebeb] p-4 text-black">
-              <Plus />
-              <span>Thêm ghi chú</span>
-            </div>
-          </div>
+      <div className="grid grow grid-cols-12">
+        <div className="col-span-9 min-h-screen overflow-hidden">
+          {selectedLesson && <LessonContent lesson={selectedLesson} />}
         </div>
-        <div className="col-span-3">
-          <div className="p-4 font-semibold shadow-md">
-            <h2>Nội dung khoá học</h2>
+
+        <div className="col-span-3 max-h-screen overflow-y-auto">
+          <div className="border-l p-4 font-semibold">
+            <h2 className="text-lg font-bold">Nội dung khoá học</h2>
           </div>
-          {chapterData?.map((chapter, chapterIndex) => (
+          {courseDetail?.chapters?.map((chapter: any, chapterIndex: number) => (
             <Accordion type="single" collapsible key={chapterIndex}>
               <AccordionItem
-                value={`item-${chapter.id}`}
+                value={`item-${chapter?.id}`}
                 className="border-b last:border-0"
               >
-                <AccordionTrigger>{chapter.title}</AccordionTrigger>
-                <AccordionContent className="m-0">
-                  {lessonData
-                    ?.filter((lesson) => lesson.chapterId === chapter.id)
-                    .map((lesson, lessonIndex) => (
-                      <div
-                        className="mb-5 flex items-center gap-2 border-b border-dashed pb-5 text-sm font-medium last:mb-0 last:border-b-0 last:pb-0"
-                        key={lessonIndex}
-                      >
-                        <CirclePlay />
-                        {lesson.content}
-                        <span className="ml-auto shrink-0 text-xs font-semibold">
-                          0 phút
-                        </span>
-                      </div>
-                    ))}
+                <AccordionTrigger className="hover:bg-gray-200">
+                  <div>
+                    <h3 className="text-lg font-bold">
+                      {chapterIndex + 1}. {chapter?.title}
+                    </h3>
+                    <p className="mt-1 text-xs font-light">
+                      0/{chapter?.lessons_count} | 00:00
+                    </p>
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent className="m-0 p-0">
+                  <div className="overflow-y-auto">
+                    {chapter?.lessons?.map((lesson, lessonIndex) => {
+                      const isSelected = lesson?.id === selectedLesson?.id
+                      return (
+                        <div
+                          className={`flex items-center space-x-3 border-b px-2 py-3 transition-colors duration-300 ${isSelected ? 'cursor-default bg-orange-100' : 'hover:cursor-pointer hover:bg-gray-200'} `}
+                          key={lessonIndex}
+                          onClick={() => setSelectedLesson(lesson)}
+                        >
+                          <div>
+                            <p>{lessonTypeIcons[lesson?.type]}</p>
+                          </div>
+                          <div>
+                            <p>
+                              {chapterIndex + 1}.{lessonIndex + 1}{' '}
+                              {lesson?.title}
+                            </p>
+                            <p className="mt-1 text-xs font-light">00:00</p>
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
                 </AccordionContent>
               </AccordionItem>
             </Accordion>
           ))}
         </div>
       </div>
-      <div className="fixed inset-x-0 bottom-0 bg-[#292f3b] py-4">
+      <div className="sticky inset-x-0 bottom-0 z-50 bg-[#f0f0f0] py-3">
         <div className="container mx-auto flex h-full items-center justify-center gap-4">
-          <Link href={''} className="rounded-md bg-[#F69983] p-2 text-white">
-            Bài trước
+          <Link
+            href={
+              lessonData?.data.previous_lesson
+                ? `/learning/${courseSlug}/lesson/${lessonData?.data.previous_lesson.id}`
+                : ''
+            }
+            className={`rounded-md border-2 border-transparent px-3 py-2 ${
+              lessonData?.data.previous_lesson
+                ? 'hover:border-primary'
+                : 'cursor-not-allowed opacity-50'
+            }`}
+          >
+            <p className="flex items-center font-bold uppercase text-primary">
+              <ChevronLeft />
+              <span>Bài trước</span>
+            </p>
           </Link>
-          <Link href={''} className="rounded-md bg-[#FF6652] p-2 text-white">
-            Bài tiếp theo
+
+          <Link
+            href={
+              lessonData?.data.next_lesson
+                ? `/learning/${courseSlug}/lesson/${lessonData?.data.next_lesson.id}`
+                : ''
+            }
+            className={`rounded-md border-2 border-primary bg-transparent px-3 py-2 text-primary transition-colors duration-200 ease-in-out ${
+              lessonData?.data.next_lesson
+                ? 'hover:bg-primary hover:text-white'
+                : 'cursor-not-allowed opacity-50'
+            }`}
+          >
+            <p className="flex items-center font-bold uppercase">
+              <span>Bài tiếp theo</span>
+              <ChevronRight />
+            </p>
           </Link>
-          <div className="absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer rounded-lg bg-[#FF6652] px-4 py-2 text-white">
+          <div className="absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer rounded-lg bg-primary px-4 py-2 text-white">
             <Sheet>
-              <SheetTrigger className="flex items-center gap-2">
+              <SheetTrigger className="flex items-center gap-2 font-bold">
                 <MessageCircleMore />
-                Hỏi đáp
+                <p>Hỏi đáp</p>
               </SheetTrigger>
               <SheetContent>
                 <SheetHeader>

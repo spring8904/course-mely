@@ -84,12 +84,11 @@ const BuyCourseModal = ({ course, isOpen, onClose }: BuyCourseModalProps) => {
       const basePrice = course.price_sale > 0 ? course.price_sale : course.price
 
       if (validCode.type === 'percent') {
-        discount = (basePrice * validCode.value) / 100 // Giảm theo %
+        discount = (basePrice * validCode.value) / 100
       } else if (validCode.type === 'fixed') {
-        discount = validCode.value // Giảm số tiền cố định
+        discount = validCode.value
       }
 
-      // Đảm bảo số tiền thanh toán không âm
       const newFinalPrice = Math.max(basePrice - discount, 0)
 
       setDiscountAmount(discount)

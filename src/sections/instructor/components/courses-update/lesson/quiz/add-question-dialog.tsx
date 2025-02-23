@@ -448,30 +448,28 @@ const AddQuestionDialog = ({
                   )}
                 />
               </div>
-              {(courseStatus === 'draft' || courseStatus === 'refject') && (
-                <div className="flex justify-end gap-2">
-                  <Button
-                    variant="outline"
-                    onClick={() => {
-                      handleCloseOrCancel()
-                      onOpenChange(false)
-                    }}
-                  >
-                    Hủy
-                  </Button>
-                  <Button
-                    disabled={
-                      isQuestionCreatePending || isQuestionUpdatePending
-                    }
-                    type="submit"
-                  >
-                    {(isQuestionCreatePending || isQuestionUpdatePending) && (
-                      <Loader2 className="mr-2 size-4 animate-spin" />
-                    )}
-                    {isEdit ? 'Cập nhật' : 'Thêm câu hỏi'}
-                  </Button>
-                </div>
-              )}
+              {/*{(courseStatus === 'draft' || courseStatus === 'refjected') && (*/}
+              <div className="flex justify-end gap-2">
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    handleCloseOrCancel()
+                    onOpenChange(false)
+                  }}
+                >
+                  Hủy
+                </Button>
+                <Button
+                  disabled={isQuestionCreatePending || isQuestionUpdatePending}
+                  type="submit"
+                >
+                  {(isQuestionCreatePending || isQuestionUpdatePending) && (
+                    <Loader2 className="mr-2 size-4 animate-spin" />
+                  )}
+                  {isEdit ? 'Cập nhật' : 'Thêm câu hỏi'}
+                </Button>
+              </div>
+              {/*)}*/}
             </form>
           </Form>
         </DialogContent>

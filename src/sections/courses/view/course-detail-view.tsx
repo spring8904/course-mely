@@ -836,7 +836,7 @@ const CourseDetailView = ({ slug }: { slug: string }) => {
                       )}
                     </div>
                     <button
-                      disabled={courseDetails.user_id === user?.id}
+                      disabled={courseDetails?.user_id === user?.id}
                       onClick={() => {
                         if (courseDetails?.is_free === 1) {
                           import('sweetalert2').then((Swal) => {
@@ -853,7 +853,7 @@ const CourseDetailView = ({ slug }: { slug: string }) => {
                                 if (result.isConfirmed) {
                                   enrollFreeCourse(courseDetails?.id, {
                                     onSuccess: (res: any) => {
-                                      toast.success(res.message)
+                                      toast.info(res.message)
                                       router.push('/my-courses')
                                     },
                                   })
@@ -867,7 +867,7 @@ const CourseDetailView = ({ slug }: { slug: string }) => {
                       type="button"
                       className="tf-btn add-to-cart cursor-pointer"
                     >
-                      {courseDetails.user_id === user?.id
+                      {courseDetails?.user_id === user?.id
                         ? 'Đây là khoá học của bạn'
                         : courseDetails.is_free === 1
                           ? 'Tham gia ngay'

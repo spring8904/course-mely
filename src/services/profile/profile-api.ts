@@ -4,7 +4,7 @@ import {
 } from '@/validations/profile'
 import api from '@/configs/api'
 
-const prefix = '/user/profile'
+const prefix = '/users/profile'
 
 export const profileApi = {
   getProfile: async () => {

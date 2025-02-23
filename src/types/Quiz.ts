@@ -1,6 +1,6 @@
 export enum AnswerType {
   MultipleChoice = 'multiple-choice',
-  OneChoice = 'one_choice',
+  OneChoice = 'single_choice',
 }
 
 export interface IQuiz {
@@ -8,19 +8,20 @@ export interface IQuiz {
   lessonId?: number
   question: string
   image?: string | null
-  answerType: AnswerType
+  answer_type: AnswerType
+  answers: IQuizAnswer[]
   description?: string | null
-  createdAt?: Date | null
-  updatedAt?: Date | null
+  created_at: string
+  updated_at: string
 }
 
 export interface IQuizAnswer {
   id?: number
-  quizId?: number
+  question_id?: number
   answer: string
-  isCorrect?: 0 | 1
-  createdAt?: Date | null
-  updatedAt?: Date | null
+  is_correct?: 0 | 1
+  created_at: string
+  updated_at: string
 }
 
 export interface IUserQuizSubmission {

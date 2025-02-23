@@ -1,9 +1,14 @@
+import React from 'react'
 import {
   BookText,
+  CircleHelp,
+  CirclePlay,
   Compass,
+  FileCode2,
   GraduationCap,
   History,
   PencilLine,
+  ScrollText,
   ShieldCheck,
   UserRoundCog,
   Wallet,
@@ -145,3 +150,10 @@ export const sidebarUserOptions: ISidebarData[] = [
     icon: <ShieldCheck size={18} />,
   },
 ]
+
+export const lessonTypeIcons = {
+  video: <CirclePlay size={16} />,
+  document: <ScrollText size={16} />,
+  quiz: <CircleHelp size={16} />,
+  coding: <FileCode2 size={16} />,
+}

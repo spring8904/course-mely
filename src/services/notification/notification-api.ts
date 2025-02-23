@@ -1,6 +1,6 @@
 import api from '@/configs/api'
 
-const prefix = '/user/notifications'
+const prefix = '/users/notifications'
 
 export const notificationApi = {
   getNotifications: async (page = 1) => {

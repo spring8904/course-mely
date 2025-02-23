@@ -5,6 +5,8 @@ import { Loader2 } from 'lucide-react'
 
 import { useGetMyCourses } from '@/hooks/user/useUser'
 
+import { Button } from '@/components/ui/button'
+
 const MyCourseView = () => {
   const { data: myCourseList, isLoading: myCourseListLoading } =
     useGetMyCourses()
@@ -75,6 +77,11 @@ const MyCourseView = () => {
                     <a href="#" className="author">
                       {course.user.name || ''}
                     </a>
+                  </div>
+                  <div className="mt-4">
+                    <Link href={`/learning/${course.id}`}>
+                      <Button>Tiếp tục học</Button>
+                    </Link>
                   </div>
                 </div>
               </div>

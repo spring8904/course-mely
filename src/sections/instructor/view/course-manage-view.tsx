@@ -171,7 +171,14 @@ const CourseManageView = () => {
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Học viên" />
       ),
-      cell: () => <div className="font-medium">Chưa có</div>,
+      cell: ({ row }) => {
+        const totalStudent = row.getValue<number>('total_student')
+        return (
+          <div className="font-medium">
+            {totalStudent ? totalStudent : 'Chưa có'}
+          </div>
+        )
+      },
     },
     {
       accessorKey: 'status',

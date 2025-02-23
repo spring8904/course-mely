@@ -26,6 +26,7 @@ const QUERY_KEY = {
   INSTRUCTOR_LESSON_DOCUMENT: 'instructor-lesson-document',
   USER_NOTIFICATION: 'user-notification',
   USER_GET_MY_COURSES: 'user-get-my-courses',
+  LEARNING_PATH_LESSON: 'learning-path-lesson',
 }
 
 export default QUERY_KEY
