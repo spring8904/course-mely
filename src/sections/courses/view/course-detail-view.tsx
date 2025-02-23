@@ -2,15 +2,9 @@
 
 import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
-import {
-  CircleHelp,
-  CirclePlay,
-  CircleX,
-  FileCode2,
-  Loader2,
-  ScrollText,
-} from 'lucide-react'
+import { CirclePlay, CircleX, Loader2 } from 'lucide-react'
 
+import { lessonTypeIcons } from '@/configs'
 import { formatCurrency } from '@/lib/common'
 import { useGetCourseDetails } from '@/hooks/course/useCourse'
 
@@ -91,13 +85,6 @@ const courses = [
     price: '$79.99',
   },
 ]
-
-const lessonTypeIcons = {
-  video: <CirclePlay size={16} />,
-  document: <ScrollText size={16} />,
-  quiz: <CircleHelp size={16} />,
-  coding: <FileCode2 size={16} />,
-}
 
 const CourseDetailView = ({ slug }: { slug: string }) => {
   const [lastUpdated, setLastUpdated] = useState<string>('')

@@ -61,11 +61,14 @@ export interface IChapter {
   title: string
   order?: number | null
   lessons?: ILesson[]
+  lessons_count?: number
   createdAt?: Date | null
   updatedAt?: Date | null
 }
 
 export type LessonType = 'video' | 'document' | 'quiz' | 'coding'
+
+type LessonableType = Record<string, unknown>
 
 export interface ILesson {
   id?: number
@@ -79,8 +82,9 @@ export interface ILesson {
   order?: number | null
   type: LessonType
   lessonable_id?: number
-  createdAt?: Date | null
-  updatedAt?: Date | null
+  lessonable?: LessonableType
+  created_at: string
+  updated_at: string
 }
 
 export interface ICourseUser {
