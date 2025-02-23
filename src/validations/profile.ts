@@ -5,12 +5,14 @@ export const updateProfile = z.object({
     .string()
     .trim()
     .min(5, 'Tên của bạn tối thiếu 5 ký tự!')
-    .max(30, 'Tên của bạn không được vượt quá 30 ký tự!'),
+    .max(30, 'Tên của bạn không được vượt quá 30 ký tự!')
+    .optional(),
   phone: z
     .string()
     .trim()
     .min(10, 'Số điện thoại tối thiểu 10 số!')
-    .max(15, 'Số diện thoại không được vượt quá 15 số'),
+    .max(15, 'Số diện thoại không được vượt quá 15 số')
+    .optional(),
   address: z.string().optional(),
   about_me: z.string().optional(),
   avatar: z

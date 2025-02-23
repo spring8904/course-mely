@@ -40,16 +40,25 @@ const MonacoEditor = ({
   disabled,
   readOnly,
   runCode = false,
+  activeFileGroup = 'solution',
   ...rest
-}: Props) => {
+}: Props & { activeFileGroup?: string }) => {
   const firstFileName = Object.keys(files)[0]
   const compileCode = useCompileCode()
 
   const [fileName, setFileName] = useState<string>(firstFileName)
-  const [markers, setMarkers] = useState<any>()
   const file = files[fileName]
 
+  const [currentCode, setCurrentCode] = useState<string>(() => {
+    return files[firstFileName]?.value || ''
+  })
+
+  const [markers, setMarkers] = useState<any>()
   const editorRef = useRef<any>(null)
+
+  useEffect(() => {
+    setCurrentCode(files[fileName]?.value || '')
+  }, [fileName, files])
 
   useEffect(() => {
     editorRef.current?.focus()
@@ -62,7 +71,7 @@ const MonacoEditor = ({
       {
         language: file.language,
         version: file.version,
-        files: [{ content: file.value }],
+        files: [{ content: currentCode }],
       },
       {
         onSuccess: (res) => {
@@ -73,6 +82,11 @@ const MonacoEditor = ({
             spread: 100,
             origin: { y: 0.9 },
           })
+
+          console.log(
+            `File group run: ${activeFileGroup}`,
+            `Output: ${res.run.output}`
+          )
         },
       }
     )
@@ -107,8 +121,10 @@ const MonacoEditor = ({
       <div className="flex-1 bg-[#1e1e1e] pt-5">
         <Editor
           theme={theme}
+          value={currentCode}
           onChange={(value) => {
-            onChange?.(value, file.name)
+            setCurrentCode(value || '') // Cập nhật state khi người dùng chỉnh sửa
+            onChange?.(value, fileName) // Callback cho cha nếu cần
           }}
           path={file.name}
           defaultLanguage={file.language}
