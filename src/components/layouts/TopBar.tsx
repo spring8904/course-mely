@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { useAuthStore } from '@/stores/useAuthStore'
+import { useQueryClient } from '@tanstack/react-query'
 import { Bell, CheckCircle, Loader2 } from 'lucide-react'
 import { toast } from 'react-toastify'
 
@@ -59,21 +60,26 @@ const TopBar = () => {
   //     })
   // }, [user?.id])
   console.log('Active Channels:', echo.connector.channels)
+
+  useEffect(() => {
+    if (!isLoading && data) {
+      setNotifications(data?.pages.flatMap((page) => page.notifications) || [])
+    }
+  }, [user?.id, data, isLoading])
+
   useEffect(() => {
     if (!user?.id) return
 
-    // Tạo channel cho giảng viên (instructor)
     const privateChannel = echo.private(`instructor.${user?.id}`)
 
     privateChannel.notification((notification: any) => {
       console.log('🔔 Notification for Instructor:', notification)
-      toast.info(notification.message) // Hiển thị thông báo realtime cho giảng viên
+      toast.info(notification.message)
 
-      // Thêm thông báo mới vào danh sách (tránh trùng lặp)
       setNotifications((prev) => {
         if (prev.some((noti) => noti.id === notification.id)) {
           console.log('Duplicate notification detected:', notification.id)
-          return prev // Nếu đã tồn tại thông báo, không thêm
+          return prev
         }
         return [
           { id: notification.id, message: notification.message, read_at: null },
@@ -82,10 +88,9 @@ const TopBar = () => {
       })
     })
 
-    // Clean up khi component bị unmount
     return () => {
-      // privateChannel.stopListening('.notification') // Dừng lắng nghe sự kiện
-      echo.leave(`instructor.${user.id}`) // Rời khỏi kênh
+      // privateChannel.stopListening('.notification')
+      echo.leave(`instructor.${user.id}`)
     }
   }, [user?.id])
 

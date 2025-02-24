@@ -41,9 +41,8 @@ const LessonQuiz = ({
   courseStatus,
 }: Props) => {
   const queryClient = useQueryClient()
-
+  console.log(courseStatus)
   const [editQuestion, setEditQuestion] = useState(false)
-
   const [, setQuestions] = useState<any[]>([])
   const [editQuestionId, setEditQuestionId] = useState<string | null>(null)
 

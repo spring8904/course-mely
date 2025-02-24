@@ -212,17 +212,21 @@ export const lessonCodingSchema = z.object({
 
 export const storeQuestionSchema = z
   .object({
-    question: z.string().min(1, 'Câu hỏi không được để trống'),
+    question: z.string().nonempty('Câu hỏi không được để trống'),
     description: z.string().optional(),
     answer_type: z.enum(['single_choice', 'multiple_choice']),
     options: z
       .array(
         z.object({
-          answer: z.string().min(1, 'Đáp án không được để trống'),
+          answer: z.string().nonempty('Đáp án không được để trống'),
           is_correct: z.boolean(),
         })
       )
-      .min(2, 'Phải có ít nhất 2 đáp án'),
+      .min(2, 'Phải có ít nhất 2 đáp án')
+      .refine(
+        (options) => options.some((option) => option.is_correct),
+        'Phải có ít nhất một đáp án đúng'
+      ),
     image: z.any().optional(),
   })
   .superRefine((question, ctx) => {

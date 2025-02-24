@@ -63,6 +63,10 @@ const AddQuestionDialog = ({
   const { data: questionData, isLoading: isQuestionLoading } = useGetQuestion(
     questionId as string
   )
+
+  console.log(courseStatus)
+  console.log(quizId)
+
   const { mutate: createQuestion, isPending: isQuestionCreatePending } =
     useCreateQuestion()
   const { mutate: updateQuestion, isPending: isQuestionUpdatePending } =
@@ -454,7 +458,7 @@ const AddQuestionDialog = ({
                   variant="outline"
                   onClick={() => {
                     handleCloseOrCancel()
-                    onOpenChange(false)
+                    // onOpenChange(false)
                   }}
                 >
                   Hủy
