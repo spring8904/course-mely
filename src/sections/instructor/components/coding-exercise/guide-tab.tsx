@@ -26,7 +26,7 @@ import {
   SortableDragHandle,
   SortableItem,
 } from '@/components/ui/sortable'
-import TinyEditor from '@/components/shared/tiny-editor'
+import QuillEditor from '@/components/shared/quill-editor'
 
 const GuideTab = () => {
   const [activeTab, setActiveTab] = useState<'guide' | 'hints'>('hints')
@@ -45,7 +45,7 @@ const GuideTab = () => {
       <ResizablePanel minSize={30} className="flex flex-col">
         <div
           className={cn(
-            'flex h-14 items-center gap-2 border-b px-4 py-2 text-lg font-bold',
+            'flex h-14 shrink-0 items-center gap-2 border-b px-4 py-2 text-lg font-bold',
             errors?.content?.message && 'text-destructive'
           )}
         >
@@ -55,25 +55,15 @@ const GuideTab = () => {
           control={control}
           name="content"
           render={({ field }) => (
-            <FormItem className="flex flex-1 flex-col p-4">
+            <FormItem className="flex h-0 flex-1 flex-col p-4">
               <FormDescription className="text-base">
                 Cung nội dung bài học chi tiết, bao gồm các hướng dẫn, ví dụ
                 minh hoạ và lý thuyết liên quan.
               </FormDescription>
 
-              <div className="flex-1">
-                <FormControl>
-                  <TinyEditor
-                    value={field.value}
-                    onEditorChange={field.onChange}
-                    init={{
-                      height: '100%',
-                      resize: false,
-                    }}
-                    disabled={field.disabled}
-                  />
-                </FormControl>
-              </div>
+              <FormControl>
+                <QuillEditor fullToolbar className="quill-h-full" {...field} />
+              </FormControl>
               <FormMessage className="mt-2" />
             </FormItem>
           )}
@@ -82,7 +72,7 @@ const GuideTab = () => {
       <ResizableHandle withHandle />
 
       <ResizablePanel minSize={30} className="flex flex-col">
-        <div className="flex h-14 items-center gap-4 border-b px-4 py-2 text-lg font-bold">
+        <div className="flex h-14 shrink-0 items-center gap-4 border-b px-4 py-2 text-lg font-bold">
           <button
             type="button"
             onClick={() => setActiveTab('hints')}
@@ -106,111 +96,104 @@ const GuideTab = () => {
             Hướng dẫn
           </button>
         </div>
-        <div className="space-y-3 overflow-y-auto p-4 scrollbar-thin">
-          {activeTab === 'hints' && (
-            <>
-              <p className="text-base text-muted-foreground">
-                Các gợi ý sẽ được mở khóa sau lần thực hiện thất bại thứ hai để
-                học viên có thể nhận được nhiều hỗ trợ hơn ngoài các bài giảng
-                và bài kiểm tra liên quan.
-              </p>
+        {activeTab === 'hints' && (
+          <div className="space-y-3 overflow-y-auto p-4 scrollbar-thin">
+            <p className="text-base text-muted-foreground">
+              Các gợi ý sẽ được mở khóa sau lần thực hiện thất bại thứ hai để
+              học viên có thể nhận được nhiều hỗ trợ hơn ngoài các bài giảng và
+              bài kiểm tra liên quan.
+            </p>
 
-              <div className="flex w-full flex-col gap-3">
-                <Sortable
-                  value={fields}
-                  onMove={({ activeIndex, overIndex }) =>
-                    move(activeIndex, overIndex)
-                  }
-                  overlay={
-                    <div className="grid grid-cols-[1fr,auto,auto] items-center gap-2">
-                      <div className="h-9 w-full rounded-sm bg-black/5" />
-                      <div className="size-9 shrink-0 rounded-sm bg-black/5" />
-                      <div className="size-9 shrink-0 rounded-sm bg-black/5" />
-                    </div>
-                  }
-                >
-                  {fields.map((field, index) => (
-                    <SortableItem key={field.id} value={field.id} asChild>
-                      <div className="grid grid-cols-[1fr,auto,auto] items-center gap-2">
-                        <FormField
-                          control={control}
-                          name={`hints.${index}.hint`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormControl>
-                                <Input
-                                  placeholder={`Nhập gợi ý thứ ${index + 1}`}
-                                  {...field}
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <SortableDragHandle>
-                          <GripVertical />
-                        </SortableDragHandle>
-                        <Button
-                          variant="outline"
-                          type="button"
-                          size="icon"
-                          className="text-destructive hover:text-destructive/80"
-                          onClick={() => {
-                            remove(index)
-                          }}
-                        >
-                          <Trash />
-                        </Button>
-                      </div>
-                    </SortableItem>
-                  ))}
-                </Sortable>
-              </div>
-
-              <Button
-                type="button"
-                disabled={fields.length >= 10 || disabled}
-                onClick={() =>
-                  append({
-                    hint: '',
-                  })
+            <div className="flex w-full flex-col gap-3">
+              <Sortable
+                value={fields}
+                onMove={({ activeIndex, overIndex }) =>
+                  move(activeIndex, overIndex)
+                }
+                overlay={
+                  <div className="grid grid-cols-[1fr,auto,auto] items-center gap-2">
+                    <div className="h-9 w-full rounded-sm bg-black/5" />
+                    <div className="size-9 shrink-0 rounded-sm bg-black/5" />
+                    <div className="size-9 shrink-0 rounded-sm bg-black/5" />
+                  </div>
                 }
               >
-                Thêm gợi ý
-              </Button>
-            </>
-          )}
-
-          {activeTab === 'guide' && (
-            <FormField
-              control={control}
-              name="instruct"
-              render={({ field }) => (
-                <FormItem className="flex flex-1 flex-col">
-                  <FormDescription className="text-base">
-                    Cung cấp hướng dẫn để người học biết họ đang giải quyết vấn
-                    đề gì.
-                  </FormDescription>
-
-                  <div className="flex-1">
-                    <FormControl>
-                      <TinyEditor
-                        value={field.value || ''}
-                        onEditorChange={field.onChange}
-                        init={{
-                          height: '100%',
-                          resize: false,
-                        }}
-                        disabled={field.disabled}
+                {fields.map((field, index) => (
+                  <SortableItem key={field.id} value={field.id} asChild>
+                    <div className="grid grid-cols-[1fr,auto,auto] items-start gap-2">
+                      <FormField
+                        control={control}
+                        name={`hints.${index}.hint`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormControl>
+                              <Input
+                                placeholder={`Nhập gợi ý thứ ${index + 1}`}
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
                       />
-                    </FormControl>
-                  </div>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          )}
-        </div>
+                      <SortableDragHandle>
+                        <GripVertical />
+                      </SortableDragHandle>
+                      <Button
+                        variant="outline"
+                        type="button"
+                        size="icon"
+                        className="text-destructive hover:text-destructive/80"
+                        onClick={() => {
+                          remove(index)
+                        }}
+                      >
+                        <Trash />
+                      </Button>
+                    </div>
+                  </SortableItem>
+                ))}
+              </Sortable>
+            </div>
+
+            <Button
+              type="button"
+              disabled={fields.length >= 10 || disabled}
+              onClick={() =>
+                append({
+                  hint: '',
+                })
+              }
+            >
+              Thêm gợi ý
+            </Button>
+          </div>
+        )}
+
+        {activeTab === 'guide' && (
+          <FormField
+            control={control}
+            name="instruct"
+            render={({ field }) => (
+              <FormItem className="flex h-0 flex-1 flex-col p-4">
+                <FormDescription className="text-base">
+                  Cung cấp hướng dẫn để người học biết họ đang giải quyết vấn đề
+                  gì.
+                </FormDescription>
+
+                <FormControl>
+                  <QuillEditor
+                    fullToolbar
+                    className="quill-h-full"
+                    {...field}
+                    value={field.value || ''}
+                  />
+                </FormControl>
+                <FormMessage className="mt-2" />
+              </FormItem>
+            )}
+          />
+        )}
       </ResizablePanel>
     </ResizablePanelGroup>
   )
