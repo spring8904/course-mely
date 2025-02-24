@@ -30,7 +30,7 @@ const CreateLesson = ({ chapterId, onHide, type, courseStatus }: Props) => {
           }}
         />
       ) : (
-        <div className="mt-4 flex h-full flex-col justify-between rounded-lg border p-4">
+        <div className="flex h-full flex-col justify-between rounded-lg border p-4">
           {(() => {
             switch (type) {
               case 'video':
