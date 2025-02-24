@@ -117,7 +117,7 @@ const CourseList = ({
                           width={256}
                           height={187}
                           className="lazyload"
-                          src={course.thumbnail}
+                          src={course.thumbnail ?? ''}
                           alt={course.name}
                         />
 
