@@ -1,9 +1,14 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { DndContext, DragEndEvent, UniqueIdentifier } from '@dnd-kit/core'
-import { arrayMove, SortableContext } from '@dnd-kit/sortable'
-import { CircleCheck, CircleX, SquarePen, Trash2 } from 'lucide-react'
+import { UniqueIdentifier } from '@dnd-kit/core'
+import {
+  CircleCheck,
+  CircleX,
+  GripVertical,
+  SquarePen,
+  Trash2,
+} from 'lucide-react'
 import { toast } from 'react-toastify'
 import Swal from 'sweetalert2'
 
@@ -22,10 +27,13 @@ import {
 } from '@/components/ui/accordion'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import DraggableHandle from '@/components/shared/draggable-handle'
-import DraggableLesson from '@/sections/instructor/components/courses-update/lesson/draggable-lesson'
+import {
+  Sortable,
+  SortableDragHandle,
+  SortableItem,
+} from '@/components/ui/sortable'
+import SortableLesson from '@/sections/instructor/components/courses-update/lesson/sortable-lesson'
 
-import DraggableItem from '../../../../components/shared/draggable-item'
 import CreateChapter from './chapter/create-chapter'
 
 type Props = {
@@ -91,23 +99,24 @@ const CourseChapterTab = ({
     })
   }
 
-  const handleDragEnd = ({ over, active }: DragEndEvent) => {
-    if (over && active.id !== over?.id) {
-      const oldIndex = chapters.findIndex(({ id }) => id === active.id)
-      const newIndex = chapters.findIndex(({ id }) => id === over.id)
+  const onValueChange = (
+    data: {
+      id: UniqueIdentifier
+      value: IChapter
+    }[]
+  ) => {
+    const newChapters = data.map((item) => item.value)
 
-      const newChapters = arrayMove(chapters, oldIndex, newIndex)
-      setChapters(newChapters)
+    setChapters(newChapters)
 
-      const payload = newChapters
-        .filter((chapter) => chapter.id !== undefined)
-        .map((chapter, index) => ({
-          id: chapter.id as number,
-          order: index + 1,
-        }))
+    const payload = newChapters
+      .filter((chapter) => chapter.id !== undefined)
+      .map((chapter, index) => ({
+        id: chapter.id as number,
+        order: index + 1,
+      }))
 
-      updateChapterOrder({ slug, chapters: payload })
-    }
+    updateChapterOrder({ slug, chapters: payload })
   }
 
   useEffect(() => {
@@ -124,104 +133,114 @@ const CourseChapterTab = ({
         </p>
       </div>
       <div className="mt-4">
-        <DndContext onDragEnd={handleDragEnd}>
-          <SortableContext
-            items={chapters.map((chapter) => chapter.id as UniqueIdentifier)}
+        <Accordion type="multiple" className="space-y-6">
+          <Sortable
+            value={chapters.map((chapter) => ({
+              id: chapter.id as UniqueIdentifier,
+              value: chapter,
+            }))}
+            onValueChange={onValueChange}
           >
-            <Accordion type="multiple" className="space-y-6">
-              {chapters?.map((chapter, chapterIndex) => (
-                <DraggableItem
-                  key={chapter.id}
-                  id={chapter.id}
-                  disabled={isUpdateOrder}
-                >
-                  <AccordionItem value={`${chapter.id}`}>
-                    <AccordionTrigger className="rounded-lg">
-                      <div className="flex w-full items-center gap-4">
-                        <div className="flex w-full items-center gap-2">
-                          {chapterEdit === chapter.id ? (
-                            <>
-                              <div
-                                className="w-full"
-                                onClick={(e) => e.stopPropagation()}
+            {chapters?.map((chapter, chapterIndex) => (
+              <SortableItem
+                key={chapter.id}
+                value={chapter.id!}
+                disabled={isUpdateOrder}
+                asChild
+              >
+                <AccordionItem value={`${chapter.id}`}>
+                  <AccordionTrigger className="rounded-lg">
+                    <div className="mr-4 flex w-full items-center justify-between gap-2">
+                      {chapterEdit === chapter.id ? (
+                        <>
+                          <div
+                            className="w-full"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <Input
+                              placeholder="Nhập tên chương"
+                              value={editTitle}
+                              onChange={(e) => setEditTitle(e.target.value)}
+                            />
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Button
+                              variant="outline"
+                              size="icon"
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                handleUpdateChapter(chapter.id as number)
+                              }}
+                            >
+                              <CircleCheck />
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="icon"
+                              className="text-destructive hover:text-destructive/80"
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                setChapterEdit(null)
+                              }}
+                            >
+                              <CircleX />
+                            </Button>
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <h3>
+                            Chương {chapterIndex + 1}: {chapter.title}
+                          </h3>
+
+                          {(courseStatus === 'draft' ||
+                            courseStatus === 'rejected') && (
+                            <div className="flex items-center gap-2">
+                              <Button
+                                variant="outline"
+                                size="icon"
+                                onClick={(e) => {
+                                  e.stopPropagation()
+                                  setChapterEdit(chapter.id as number)
+                                  setEditTitle(chapter.title || '')
+                                }}
                               >
-                                <Input
-                                  placeholder="Nhập tên chương"
-                                  value={editTitle}
-                                  onChange={(e) => setEditTitle(e.target.value)}
-                                />
-                              </div>
-                              <div className="flex items-center gap-2">
-                                <span
-                                  className="flex size-8 items-center justify-center rounded-md border border-[#131316]"
-                                  onClick={(e) => {
-                                    e.stopPropagation()
-                                    handleUpdateChapter(chapter.id as number)
-                                  }}
-                                >
-                                  <CircleCheck size={14} />
-                                </span>
-                                <span
-                                  className="flex size-8 items-center justify-center rounded-md border border-[#131316]"
-                                  onClick={(e) => {
-                                    e.stopPropagation()
-                                    setChapterEdit(null)
-                                  }}
-                                >
-                                  <CircleX size={14} />
-                                </span>
-                              </div>
-                            </>
-                          ) : (
-                            <>
-                              <div>
-                                Chương {chapterIndex + 1}: {chapter.title}
-                              </div>
-                              <div className="flex items-center gap-2">
-                                <span
-                                  className="flex size-8 items-center justify-center rounded-md border border-[#131316]"
-                                  onClick={(e) => {
-                                    e.stopPropagation()
-                                    setChapterEdit(chapter.id as number)
-                                    setEditTitle(chapter.title || '')
-                                  }}
-                                >
-                                  <SquarePen size={14} />
-                                </span>
-                                {(courseStatus === 'draft' ||
-                                  courseStatus === 'rejected') && (
-                                  <span
-                                    className="flex size-8 items-center justify-center rounded-md border border-[#131316]"
-                                    onClick={(e) => {
-                                      e.stopPropagation()
-                                      handleDeleteChapter(chapter.id as number)
-                                    }}
-                                  >
-                                    <Trash2 size={14} />
-                                  </span>
-                                )}
-                              </div>
-                            </>
+                                <SquarePen />
+                              </Button>
+
+                              <SortableDragHandle>
+                                <GripVertical />
+                              </SortableDragHandle>
+
+                              <Button
+                                variant="outline"
+                                size="icon"
+                                className="text-destructive hover:text-destructive/80"
+                                onClick={(e) => {
+                                  e.stopPropagation()
+                                  handleDeleteChapter(chapter.id as number)
+                                }}
+                              >
+                                <Trash2 />
+                              </Button>
+                            </div>
                           )}
-                        </div>
-                        <div className="ml-auto mr-4">
-                          <DraggableHandle />
-                        </div>
-                      </div>
-                    </AccordionTrigger>
-                    <AccordionContent className="mt-3 rounded-lg p-4">
-                      <DraggableLesson
-                        courseStatus={courseStatus}
-                        chapter={chapter}
-                        slug={slug}
-                      />
-                    </AccordionContent>
-                  </AccordionItem>
-                </DraggableItem>
-              ))}
-            </Accordion>
-          </SortableContext>
-        </DndContext>
+                        </>
+                      )}
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="mt-3 rounded-lg p-4">
+                    <SortableLesson
+                      courseStatus={courseStatus}
+                      chapter={chapter}
+                      slug={slug}
+                    />
+                  </AccordionContent>
+                </AccordionItem>
+              </SortableItem>
+            ))}
+          </Sortable>
+        </Accordion>
 
         {addNewChapter ? (
           <CreateChapter onHide={() => setAddNewChapter(false)} />

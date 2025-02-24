@@ -150,7 +150,7 @@ const AddCodingDialog = ({ chapterId, open, onOpenChange }: Props) => {
               </Button>
               <Button type="submit" disabled={isLessonCodingCreatePending}>
                 {isLessonCodingCreatePending && (
-                  <Loader2 className="mr-2 size-4 animate-spin" />
+                  <Loader2 className="animate-spin" />
                 )}
                 Thêm bài học
               </Button>
