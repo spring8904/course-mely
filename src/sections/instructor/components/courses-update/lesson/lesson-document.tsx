@@ -32,7 +32,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import ModalLoading from '@/components/common/ModalLoading'
-import TinyEditor from '@/components/shared/tiny-editor'
+import QuillEditor from '@/components/shared/quill-editor'
 import DialogDocumentPreview from '@/sections/instructor/components/courses-update/lesson/document/dialog-document-preview'
 
 type Props = {
@@ -234,12 +234,7 @@ const LessonDocument = ({
                 <FormItem>
                   <FormLabel>Nội dung bài giảng</FormLabel>
                   <FormControl>
-                    <TinyEditor
-                      value={field.value}
-                      onEditorChange={(value: string) => {
-                        form.setValue('content', value)
-                      }}
-                    />
+                    <QuillEditor {...field} value={field.value || ''} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

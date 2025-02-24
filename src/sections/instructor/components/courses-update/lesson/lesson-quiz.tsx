@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useQueryClient } from '@tanstack/react-query'
 import { Check, Loader2, Pencil, Trash, X } from 'lucide-react'
@@ -22,7 +22,7 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import ModalLoading from '@/components/common/ModalLoading'
-import TinyEditor from '@/components/shared/tiny-editor'
+import QuillEditor from '@/components/shared/quill-editor'
 import AddQuestionDialog from '@/sections/instructor/components/courses-update/lesson/quiz/add-question-dialog'
 
 type Props = {
@@ -178,12 +178,7 @@ const LessonQuiz = ({
                 <FormItem>
                   <FormLabel>Nội dung bài giảng</FormLabel>
                   <FormControl>
-                    <TinyEditor
-                      key={field.value}
-                      value={field.value}
-                      onEditorChange={field.onChange}
-                      minimalist
-                    />
+                    <QuillEditor {...field} value={field.value || ''} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

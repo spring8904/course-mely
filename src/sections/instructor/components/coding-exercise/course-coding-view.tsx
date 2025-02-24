@@ -149,9 +149,9 @@ const CourseCodingView = ({
                     <FormItem>
                       <FormLabel>Chọn ngôn ngữ</FormLabel>
                       <Select
-                        key={field.value}
                         onValueChange={field.onChange}
-                        value={field.value}
+                        defaultValue={field.value}
+                        disabled={field.disabled}
                       >
                         <FormControl>
                           <SelectTrigger>
