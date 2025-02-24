@@ -188,6 +188,9 @@ const CourseManageView = () => {
           </DropdownMenu>
         )
       },
+      meta: {
+        className: 'sticky right-0 bg-background',
+      },
     },
   ]
 

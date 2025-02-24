@@ -12,6 +12,8 @@ import {
   useReactTable,
 } from '@tanstack/react-table'
 
+import { cn } from '@/lib/utils'
+
 import { Input } from '@/components/ui/input'
 import {
   Table,
@@ -73,7 +75,13 @@ export function DataTable<TData, TValue>({
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id} className="font-semibold">
+                    <TableHead
+                      key={header.id}
+                      className={cn(
+                        'font-semibold',
+                        header.column.columnDef.meta?.className
+                      )}
+                    >
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -94,14 +102,19 @@ export function DataTable<TData, TValue>({
                     key={row.id}
                     data-state={row.getIsSelected() && 'selected'}
                   >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id}>
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </TableCell>
-                    ))}
+                    {row.getVisibleCells().map((cell) => {
+                      return (
+                        <TableCell
+                          key={cell.id}
+                          className={cell.column.columnDef.meta?.className}
+                        >
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </TableCell>
+                      )
+                    })}
                   </TableRow>
                 ))
               ) : (
