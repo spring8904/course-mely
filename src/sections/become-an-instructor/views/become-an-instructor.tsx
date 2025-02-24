@@ -272,7 +272,7 @@ const BecomeAnInstructor = () => {
                                 variant="ghost"
                                 type="button"
                                 size="icon"
-                                className="absolute right-0 top-0 text-red-500 hover:bg-transparent hover:text-red-500/70"
+                                className="absolute right-0 top-0 text-destructive hover:bg-transparent hover:text-destructive/80"
                                 onClick={() => {
                                   remove(index)
                                 }}

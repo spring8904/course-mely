@@ -68,6 +68,7 @@ const CourseCodingView = ({
       ...lessonCoding?.data,
       hints: lessonCoding?.data.hints?.map((hint: string) => ({ hint })),
     },
+    disabled,
   })
 
   const onSubmit = (values: UpdateCodingLessonPayload) => {
