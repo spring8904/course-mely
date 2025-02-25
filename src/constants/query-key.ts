@@ -27,6 +27,7 @@ const QUERY_KEY = {
   USER_NOTIFICATION: 'user-notification',
   USER_GET_MY_COURSES: 'user-get-my-courses',
   LEARNING_PATH_LESSON: 'learning-path-lesson',
+  LEARNING_PATH_PROGRESS: 'learning-path-progress',
 }
 
 export default QUERY_KEY

@@ -7,7 +7,7 @@ import { useAuthStore } from '@/stores/useAuthStore'
 import { Role } from '@/constants/role'
 
 interface Props {
-  roles: Role[]
+  roles?: Role[]
   children: React.ReactNode
 }
 

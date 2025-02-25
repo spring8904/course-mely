@@ -5,7 +5,7 @@ const ModalLoading = () => {
   return (
     <AnimatePresence>
       <motion.div
-        className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/50"
+        className="relative z-[9999] flex h-screen w-screen flex-col items-center justify-center bg-black/30"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
