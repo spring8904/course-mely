@@ -1,0 +1,38 @@
+.quill-h-full.quill {
+  @apply flex h-0 flex-1 flex-col;
+
+  .ql-container {
+    @apply h-0 flex-1;
+  }
+
+  .ql-editor {
+    @apply max-h-full;
+  }
+}
+
+.ql-editor {
+  @apply max-h-80 min-h-20 overflow-y-auto scrollbar-thin;
+}
+
+.ql-snow.ql-toolbar {
+  button,
+  .ql-picker-label,
+  .ql-picker-item {
+    &:hover,
+    &:focus,
+    &.ql-active,
+    &.ql-selected {
+      @apply !text-primary;
+    }
+
+    .ql-fill,
+    .ql-stroke.ql-fill {
+      @apply !fill-current;
+    }
+
+    .ql-stroke,
+    .ql-stroke-miter {
+      @apply !stroke-current;
+    }
+  }
+}

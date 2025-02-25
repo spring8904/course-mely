@@ -30,7 +30,7 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import TinyEditor from '@/components/shared/tiny-editor'
+import QuillEditor from '@/components/shared/quill-editor'
 
 type Props = {
   isOpen: boolean
@@ -311,11 +311,7 @@ const AddQuestionDialog = ({
                     <FormItem>
                       <FormLabel>Mô tả</FormLabel>
                       <FormControl>
-                        <TinyEditor
-                          value={field.value}
-                          onEditorChange={field.onChange}
-                          minimalist
-                        />
+                        <QuillEditor {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
