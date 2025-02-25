@@ -1,5 +1,6 @@
 import React from 'react'
 
+import ProtectedRoute from '@/components/shared/protected-route'
 import LearningLessonView from '@/sections/instructor/view/learning-lesson-view'
 
 type Props = {
@@ -9,7 +10,11 @@ type Props = {
 const LearningPage = ({ params }: Props) => {
   const { course, lessonId } = params
 
-  return <LearningLessonView courseSlug={course} lessonId={lessonId} />
+  return (
+    <ProtectedRoute>
+      <LearningLessonView courseSlug={course} lessonId={lessonId} />
+    </ProtectedRoute>
+  )
 }
 
 export default LearningPage

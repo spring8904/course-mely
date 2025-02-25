@@ -1,20 +1,28 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import { useMemo } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import {
+  CheckCircle,
   ChevronLeft,
   ChevronRight,
-  Loader2,
+  Lock,
   MessageCircleMore,
   Notebook,
 } from 'lucide-react'
 
-import { ILesson } from '@/types'
+import { ILesson, ILessonLearningPath } from '@/types'
 import { lessonTypeIcons } from '@/configs'
+import { formatDuration } from '@/lib/common'
+import { cn } from '@/lib/utils'
 import { useGetCourseDetails } from '@/hooks/course/useCourse'
-import { useGetLesson } from '@/hooks/learning-path/useLearningPath'
+import {
+  useGetLessonDetail,
+  useGetLessons,
+  useGetProgress,
+} from '@/hooks/learning-path/useLearningPath'
 
 import {
   Accordion,
@@ -22,6 +30,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion'
+import { Button } from '@/components/ui/button'
 import {
   Sheet,
   SheetContent,
@@ -31,6 +40,7 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet'
 import LearningProcess from '@/components/common/LearningProcess'
+import ModalLoading from '@/components/common/ModalLoading'
 import { LessonContent } from '@/sections/lessons/_components/lesson-content'
 
 type Props = {
@@ -39,42 +49,57 @@ type Props = {
 }
 
 const LearningLessonView = ({ courseSlug, lessonId }: Props) => {
-  const [selectedLesson, setSelectedLesson] = useState<ILesson | null>(null)
-  const { data: courseDetail, isLoading } = useGetCourseDetails(courseSlug)
+  const router = useRouter()
 
-  const { data: lessonData, isLoading: lessonLoading } = useGetLesson(
-    courseSlug,
-    lessonId
+  const { data: courseDetail, isLoading: isCourseDetailLoading } =
+    useGetCourseDetails(courseSlug)
+
+  const { data: lessons, isLoading: isLessonLoading } =
+    useGetLessons(courseSlug)
+
+  const { data: lessonDetail, isLoading: isLessonDetailLoading } =
+    useGetLessonDetail(courseSlug, lessonId)
+
+  const { data: progress } = useGetProgress(courseSlug)
+
+  const getLessonDuration = (lesson: ILesson | ILessonLearningPath) => {
+    switch (lesson.type) {
+      case 'video':
+        return lesson.lessonable?.duration as number
+      default:
+        return 10
+    }
+  }
+
+  const getChapterDuration = (lessons: ILessonLearningPath[]) => {
+    return (
+      lessons?.reduce((acc, lesson) => {
+        return acc + getLessonDuration(lesson)
+      }, 0) || 0
+    )
+  }
+
+  const getChapterProgress = (lessons: ILessonLearningPath[]) => {
+    return lessons.reduce((acc, lesson) => {
+      return acc + (lesson.is_completed ? 1 : 0)
+    }, 0)
+  }
+
+  const courseProgress = useMemo(
+    () =>
+      lessons?.reduce((acc, chapter) => {
+        return acc + getChapterProgress(chapter.lessons)
+      }, 0),
+    [lessons]
   )
 
-  console.log(lessonData)
-  console.log(courseSlug)
-  console.log(lessonId)
-
-  useEffect(() => {
-    // if (lessonData) {
-    //   setSelectedLesson(lessonData?.data?.lesson)
-    // }
-    // if (courseDetail?.chapters?.length) {
-    //   const firstLesson = courseDetail?.chapters[0]?.lessons?.[0] || null
-    //   setSelectedLesson(firstLesson)
-    // }
-    if (lessonData && courseSlug && lessonId) {
-      setSelectedLesson(lessonData?.data?.lesson)
-    }
-  }, [courseDetail])
-
-  if (isLoading)
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <Loader2 className="mx-auto size-10 animate-spin" />
-      </div>
-    )
+  if (isCourseDetailLoading || isLessonLoading || isLessonDetailLoading)
+    return <ModalLoading />
 
   return (
     <div className="relative flex min-h-screen flex-col">
-      <div className="sticky inset-x-0 top-0 z-10 bg-[#292f3b]">
-        <div className="container mx-auto flex h-full items-center justify-between px-4 py-2">
+      <div className="fixed inset-x-0 top-0 z-10 h-16 bg-[#292f3b]">
+        <div className="container mx-auto flex h-full items-center justify-between">
           <div className="flex items-center gap-4">
             <Link href={'/'}>
               <ChevronLeft className="text-white" />
@@ -84,10 +109,10 @@ const LearningLessonView = ({ courseSlug, lessonId }: Props) => {
           </div>
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-1">
-              <LearningProcess value={0} />
+              <LearningProcess value={progress ?? 0} />
               <span className="text-sm text-white">
                 <span className="font-bold">
-                  0/{courseDetail?.lessons_count}
+                  {courseProgress}/{courseDetail?.lessons_count}
                 </span>{' '}
                 bài học
               </span>
@@ -99,115 +124,153 @@ const LearningLessonView = ({ courseSlug, lessonId }: Props) => {
           </div>
         </div>
       </div>
-      <div className="grid grow grid-cols-12">
-        <div className="col-span-9 min-h-screen overflow-hidden">
-          {selectedLesson && <LessonContent lesson={selectedLesson} />}
+
+      <div className="fixed inset-x-0 inset-y-16 grid grid-cols-12 overflow-hidden">
+        <div className="col-span-9 overflow-y-auto">
+          {lessonDetail && <LessonContent lesson={lessonDetail.lesson} />}
         </div>
 
-        <div className="col-span-3 max-h-screen overflow-y-auto">
+        <div className="col-span-3 overflow-y-auto">
           <div className="border-l p-4 font-semibold">
-            <h2 className="text-lg font-bold">Nội dung khoá học</h2>
+            <h2 className="font-bold">Nội dung khoá học</h2>
           </div>
-          {courseDetail?.chapters?.map((chapter: any, chapterIndex: number) => (
-            <Accordion type="single" collapsible key={chapterIndex}>
-              <AccordionItem
-                value={`item-${chapter?.id}`}
-                className="border-b last:border-0"
-              >
-                <AccordionTrigger className="hover:bg-gray-200">
-                  <div>
-                    <h3 className="text-lg font-bold">
-                      {chapterIndex + 1}. {chapter?.title}
-                    </h3>
-                    <p className="mt-1 text-xs font-light">
-                      0/{chapter?.lessons_count} | 00:00
-                    </p>
-                  </div>
-                </AccordionTrigger>
-                <AccordionContent className="m-0 p-0">
-                  <div className="overflow-y-auto">
+
+          <Accordion
+            type="multiple"
+            defaultValue={[`chapter-${lessonDetail?.lesson?.chapter_id}`]}
+          >
+            {lessons?.map((chapter, chapterIndex) => {
+              return (
+                <AccordionItem
+                  key={chapterIndex}
+                  value={`chapter-${chapter.chapter_id}`}
+                >
+                  <AccordionTrigger className="hover:bg-gray-200">
+                    <div>
+                      <h3 className="font-semibold">
+                        {chapterIndex + 1}. {chapter.chapter_title}
+                      </h3>
+                      <p className="mt-1 text-xs font-light">
+                        {getChapterProgress(chapter.lessons)}/
+                        {chapter?.lessons.length} |{' '}
+                        {formatDuration(
+                          getChapterDuration(chapter.lessons),
+                          'colon'
+                        )}
+                      </p>
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="m-0 p-0">
                     {chapter?.lessons?.map((lesson, lessonIndex) => {
-                      const isSelected = lesson?.id === selectedLesson?.id
+                      const isSelected = lesson?.id === lessonDetail?.lesson?.id
                       return (
                         <div
-                          className={`flex items-center space-x-3 border-b px-2 py-3 transition-colors duration-300 ${isSelected ? 'cursor-default bg-orange-100' : 'hover:cursor-pointer hover:bg-gray-200'} `}
+                          onClick={() => {
+                            if (lesson.is_unlocked)
+                              router.push(
+                                `/learning/${courseSlug}/lesson/${lesson?.id}`
+                              )
+                          }}
+                          className={cn(
+                            `flex cursor-default items-center space-x-3 border-b p-3 pr-4 transition-colors duration-300`,
+                            isSelected
+                              ? 'bg-orange-100'
+                              : lesson.is_unlocked
+                                ? 'hover:cursor-pointer hover:bg-gray-200'
+                                : 'bg-muted'
+                          )}
                           key={lessonIndex}
-                          onClick={() => setSelectedLesson(lesson)}
                         >
-                          <div>
-                            <p>{lessonTypeIcons[lesson?.type]}</p>
-                          </div>
-                          <div>
-                            <p>
+                          <div className="ml-2 w-full flex-1 space-y-1">
+                            <h4>
                               {chapterIndex + 1}.{lessonIndex + 1}{' '}
                               {lesson?.title}
-                            </p>
-                            <p className="mt-1 text-xs font-light">00:00</p>
+                            </h4>
+                            <div className="flex items-center gap-1 text-xs font-light [&_svg]:size-3">
+                              {lessonTypeIcons[lesson?.type]}{' '}
+                              {formatDuration(
+                                getLessonDuration(lesson),
+                                'colon'
+                              )}
+                            </div>
+                          </div>
+
+                          <div className="size-5 *:size-full">
+                            {!lesson.is_unlocked ? (
+                              <Lock className="text-muted-foreground" />
+                            ) : lesson.is_completed ? (
+                              <CheckCircle className="text-green-500" />
+                            ) : null}
                           </div>
                         </div>
                       )
                     })}
-                  </div>
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
-          ))}
+                  </AccordionContent>
+                </AccordionItem>
+              )
+            })}
+          </Accordion>
         </div>
       </div>
-      <div className="sticky inset-x-0 bottom-0 z-50 bg-[#f0f0f0] py-3">
-        <div className="container mx-auto flex h-full items-center justify-center gap-4">
-          <Link
-            href={
-              lessonData?.data.previous_lesson
-                ? `/learning/${courseSlug}/lesson/${lessonData?.data.previous_lesson.id}`
-                : ''
-            }
-            className={`rounded-md border-2 border-transparent px-3 py-2 ${
-              lessonData?.data.previous_lesson
-                ? 'hover:border-primary'
-                : 'cursor-not-allowed opacity-50'
-            }`}
-          >
-            <p className="flex items-center font-bold uppercase text-primary">
-              <ChevronLeft />
-              <span>Bài trước</span>
-            </p>
-          </Link>
 
-          <Link
-            href={
-              lessonData?.data.next_lesson
-                ? `/learning/${courseSlug}/lesson/${lessonData?.data.next_lesson.id}`
-                : ''
-            }
-            className={`rounded-md border-2 border-primary bg-transparent px-3 py-2 text-primary transition-colors duration-200 ease-in-out ${
-              lessonData?.data.next_lesson
-                ? 'hover:bg-primary hover:text-white'
-                : 'cursor-not-allowed opacity-50'
-            }`}
+      <div className="fixed inset-x-0 bottom-0 z-10 h-16 bg-accent">
+        <div className="container mx-auto flex h-full items-center justify-center gap-4">
+          <Button
+            variant="outline"
+            size="lg"
+            className="rounded-full border-primary font-semibold text-primary hover:text-primary/80 [&_svg]:size-5"
+            disabled={!lessonDetail?.previous_lesson}
+            onClick={() => {
+              if (lessonDetail?.previous_lesson)
+                router.push(
+                  `/learning/${courseSlug}/lesson/${lessonDetail?.previous_lesson.id}`
+                )
+            }}
           >
-            <p className="flex items-center font-bold uppercase">
-              <span>Bài tiếp theo</span>
-              <ChevronRight />
-            </p>
-          </Link>
-          <div className="absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer rounded-lg bg-primary px-4 py-2 text-white">
-            <Sheet>
-              <SheetTrigger className="flex items-center gap-2 font-bold">
+            <ChevronLeft />
+            BÀI TRƯỚC
+          </Button>
+
+          <Button
+            size="lg"
+            className="rounded-full font-semibold [&_svg]:size-5"
+            disabled={
+              !lessonDetail?.next_lesson ||
+              !lessonDetail?.lesson_process?.is_completed
+            }
+            onClick={() => {
+              if (
+                lessonDetail?.next_lesson &&
+                lessonDetail.lesson_process?.is_completed
+              )
+                router.push(
+                  `/learning/${courseSlug}/lesson/${lessonDetail?.next_lesson.id}`
+                )
+            }}
+          >
+            BÀI TIẾP THEO
+            <ChevronRight />
+          </Button>
+        </div>
+
+        <div className="absolute right-2 top-1/2 -translate-y-1/2">
+          <Sheet>
+            <Button asChild className="text-lg [&_svg]:size-5">
+              <SheetTrigger>
                 <MessageCircleMore />
-                <p>Hỏi đáp</p>
+                Hỏi đáp
               </SheetTrigger>
-              <SheetContent>
-                <SheetHeader>
-                  <SheetTitle>Are you absolutely sure?</SheetTitle>
-                  <SheetDescription>
-                    This action cannot be undone. This will permanently delete
-                    your account and remove your data from our servers.
-                  </SheetDescription>
-                </SheetHeader>
-              </SheetContent>
-            </Sheet>
-          </div>
+            </Button>
+            <SheetContent>
+              <SheetHeader>
+                <SheetTitle>Are you absolutely sure?</SheetTitle>
+                <SheetDescription>
+                  This action cannot be undone. This will permanently delete
+                  your account and remove your data from our servers.
+                </SheetDescription>
+              </SheetHeader>
+            </SheetContent>
+          </Sheet>
         </div>
       </div>
     </div>

@@ -66,25 +66,72 @@ export interface IChapter {
   updatedAt?: Date | null
 }
 
-export type LessonType = 'video' | 'document' | 'quiz' | 'coding'
+export interface Lessonable {
+  id: number
+  title: string
+  type?: LessonableType
+  url?: string
+  asset_id?: string
+  mux_playback_id?: string
+  duration?: number
+  created_at: Date
+  updated_at: Date
+  content?: string
+  file_path?: string
+  file_type?: string
+  language?: string
+  hints?: string[]
+  instruct?: string
+  sample_code?: string
+  result_code?: string
+  solution_code?: string
+}
+export enum LessonableType {
+  Upload = 'upload',
+}
 
-type LessonableType = Record<string, unknown>
+export enum LessonType {
+  Coding = 'coding',
+  Document = 'document',
+  Quiz = 'quiz',
+  Video = 'video',
+}
 
 export interface ILesson {
   id?: number
   slug?: string
-  chapterId?: number
+  chapter_id?: number
   title: string
   duration?: number | null
   content: string
   playbackId?: string | null
-  isFreePreview?: 0 | 1
+  is_free_preview?: 0 | 1
   order?: number | null
   type: LessonType
   lessonable_id?: number
-  lessonable?: LessonableType
+  lessonable?: Lessonable
   created_at: string
   updated_at: string
+}
+
+export interface ILessonLearningPath {
+  id: number
+  title: string
+  type: LessonType
+  is_completed: boolean
+  is_unlocked: boolean
+  order: number
+  lessonable: Lessonable
+}
+
+export interface ILessonProcess {
+  id: number
+  user_id: number
+  lesson_id: number
+  is_completed: number
+  last_time_video: number
+  created_at: Date
+  updated_at: Date
 }
 
 export interface ICourseUser {
