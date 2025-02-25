@@ -27,28 +27,10 @@ export const formatCurrency = (value: number): string => {
   }).format(value)
 }
 
-export const formatDateTime = (
-  value: string,
-  type: 'date' | 'time' | 'both' = 'both'
+export const formatDate = (
+  value: string | Date,
+  options?: Intl.DateTimeFormatOptions
 ): string => {
-  const options: Intl.DateTimeFormatOptions = {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: true,
-  }
-
-  if (type === 'date') {
-    delete options.hour
-    delete options.minute
-  } else if (type === 'time') {
-    delete options.day
-    delete options.month
-    delete options.year
-  }
-
   return new Intl.DateTimeFormat('vi-VN', options).format(new Date(value))
 }
 
