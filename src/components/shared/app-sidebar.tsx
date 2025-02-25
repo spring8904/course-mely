@@ -93,6 +93,11 @@ const data = {
       icon: Wallet,
     },
     {
+      title: 'Lịch sử mua',
+      url: '/instructor/transaction',
+      icon: BadgeEuro,
+    },
+    {
       title: 'Giao dịch của tôi',
       url: '/instructor/transaction',
       icon: BadgeEuro,

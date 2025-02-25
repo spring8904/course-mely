@@ -90,6 +90,7 @@
     "react-select": "^5.10.0",
     "react-toastify": "^11.0.3",
     "react-top-loading-bar": "^3.0.2",
+    "recharts": "^2.15.1",
     "sweetalert2": "^11.15.10",
     "swiper": "^11.2.2",
     "tailwind-merge": "^2.6.0",

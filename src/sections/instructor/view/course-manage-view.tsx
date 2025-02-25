@@ -173,8 +173,10 @@ const CourseManageView = () => {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem>
-                <Eye /> Xem
+              <DropdownMenuItem asChild>
+                <Link href={`/instructor/courses/${course.slug}`}>
+                  <Eye /> Xem
+                </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
                 <Link href={`/instructor/courses/update/${course.slug}`}>

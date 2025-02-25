@@ -40,4 +40,7 @@ export const instructorCourseApi = {
   submitCourse: (slug: string) => {
     return api.post(`${prefix}/${slug}/submit-course`)
   },
+  courseListOfUser: (slug: string) => {
+    return api.get(`${prefix}/${slug}/course-list-of-user`)
+  },
 }

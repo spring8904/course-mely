@@ -11,6 +11,8 @@ const QUERY_KEY = {
   INSTRUCTOR_CHECK_COURSE_COMPLETED: 'instructor-check-course-completed',
   INSTRUCTOR_CHAPTER_DETAIL: 'instructor-chapter-detail',
   INSTRUCTOR_LESSON_CODING: 'instructor-lesson-coding',
+  INSTRUCTOR_GET_PARTICIPATED_COURSE: 'instructor-get-participated-courses',
+  INSTRUCTOR_LIVE_SESSIONS: 'instructor-live-sessions',
   CATEGORY: 'categories',
   COURSE: 'course',
   QA_SYSTEM: 'qa-systems',
@@ -27,6 +29,7 @@ const QUERY_KEY = {
   USER_NOTIFICATION: 'user-notification',
   USER_GET_MY_COURSES: 'user-get-my-courses',
   LEARNING_PATH_LESSON: 'learning-path-lesson',
+  LIVE_SESSION_CLIENT: 'live-session-client',
   LEARNING_PATH_PROGRESS: 'learning-path-progress',
 }
 
