@@ -18,7 +18,7 @@ const DashboardLayout = ({ children }: LayoutProps) => {
   return (
     <SidebarProvider defaultOpen={false}>
       <AppSidebar />
-      <SidebarInset>
+      <SidebarInset className="overflow-auto">
         <TopBar />
         <ProgressBar />
         <div className="flex flex-1 flex-col gap-4 p-4 pt-0">{children}</div>

@@ -13,6 +13,8 @@ import {
 } from '@tanstack/react-table'
 import { format } from 'date-fns'
 
+import { cn } from '@/lib/utils'
+
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
 import { Input } from '@/components/ui/input'
@@ -40,6 +42,7 @@ interface DataTableProps<TData, TValue> {
     fromDate: Date | null
     toDate: Date | null
   }) => void
+  onSearchChange?: (searchTerm: string) => void
 }
 
 export function DataTable<TData, TValue>({
@@ -48,12 +51,14 @@ export function DataTable<TData, TValue>({
   isLoading = false,
   enableDateFilter = false,
   onDateFilterChange,
+  onSearchChange,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([])
   const [globalFilter, setGlobalFilter] = useState<any>([])
   const [rowSelection, setRowSelection] = useState({})
   const [fromDate, setFromDate] = useState<Date | null>(null)
   const [toDate, setToDate] = useState<Date | null>(null)
+  const [searchTerm, setSearchTerm] = useState('')
 
   const table = useReactTable({
     data,
@@ -80,13 +85,21 @@ export function DataTable<TData, TValue>({
     }
   }
 
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    setSearchTerm(value)
+    if (onSearchChange) {
+      onSearchChange(value)
+    }
+  }
+
   return (
     <div className="space-y-4">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <Input
           placeholder="Tìm kiếm..."
-          value={globalFilter}
-          onChange={(e) => table.setGlobalFilter(String(e.target.value))}
+          value={searchTerm}
+          onChange={handleSearchChange}
           className="max-w-sm"
         />
 
@@ -107,7 +120,6 @@ export function DataTable<TData, TValue>({
               </PopoverContent>
             </Popover>
 
-            {/* Chọn đến ngày */}
             <Popover>
               <PopoverTrigger asChild>
                 <Button variant="outline">
@@ -128,7 +140,6 @@ export function DataTable<TData, TValue>({
         )}
       </div>
 
-      {/* Bảng hiển thị dữ liệu */}
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -136,7 +147,13 @@ export function DataTable<TData, TValue>({
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id} className="font-semibold">
+                    <TableHead
+                      key={header.id}
+                      className={cn(
+                        'font-semibold',
+                        header.column.columnDef.meta?.className
+                      )}
+                    >
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -157,14 +174,19 @@ export function DataTable<TData, TValue>({
                     key={row.id}
                     data-state={row.getIsSelected() && 'selected'}
                   >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id}>
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </TableCell>
-                    ))}
+                    {row.getVisibleCells().map((cell) => {
+                      return (
+                        <TableCell
+                          key={cell.id}
+                          className={cell.column.columnDef.meta?.className}
+                        >
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </TableCell>
+                      )
+                    })}
                   </TableRow>
                 ))
               ) : (

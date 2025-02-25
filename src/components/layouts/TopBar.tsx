@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { useAuthStore } from '@/stores/useAuthStore'
-import { useQueryClient } from '@tanstack/react-query'
 import { Bell, CheckCircle, Loader2 } from 'lucide-react'
 import { toast } from 'react-toastify'
 
@@ -116,7 +115,7 @@ const TopBar = () => {
   }
 
   return (
-    <header className="sticky top-0 z-50 flex h-16 shrink-0 items-center justify-between border-b bg-white px-4">
+    <header className="sticky top-0 flex h-16 shrink-0 items-center justify-between border-b bg-white px-4">
       <div className="flex items-center gap-2">
         <SidebarTrigger className="-ml-1" />
         <Separator orientation="vertical" className="mr-2 h-4" />

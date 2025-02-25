@@ -25,6 +25,14 @@ export const useGetCourseOverview = (slug?: string) => {
   })
 }
 
+export const useGetCourseListOfUser = (slug?: string) => {
+  return useQuery({
+    queryKey: [QUERY_KEY.INSTRUCTOR_COURSE, slug],
+    queryFn: () => instructorCourseApi.courseListOfUser(slug!),
+    enabled: !!slug,
+  })
+}
+
 export const useCreateCourse = () => {
   const queryClient = useQueryClient()
   const router = useRouter()

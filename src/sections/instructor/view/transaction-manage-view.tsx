@@ -3,22 +3,27 @@
 import React, { useState } from 'react'
 import Image from 'next/image'
 import { ColumnDef } from '@tanstack/react-table'
-import { format, isAfter, isBefore } from 'date-fns'
+import { format } from 'date-fns'
 import { Eye } from 'lucide-react'
 
 import { useGetParticipatedCourses } from '@/hooks/instructor/transaction/useInstructorTransaction'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import ModalLoading from '@/components/common/ModalLoading'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 import { DataTable } from '@/components/shared/data-table'
 import { DataTableColumnHeader } from '@/components/shared/data-table-column-header'
 
 export default function TransactionManageView() {
-  const { data: participatedCourseData, isLoading } =
-    useGetParticipatedCourses()
   const [searchTerm, setSearchTerm] = useState('')
+  const [openDialog, setOpenDialog] = useState(false)
+  const [selectedTransation, setSelectedTransation] = useState<any>(null)
+
   const [dateFilters, setDateFilters] = useState<{
     fromDate: Date | null
     toDate: Date | null
@@ -27,17 +32,23 @@ export default function TransactionManageView() {
     toDate: null,
   })
 
+  const formattedFilters = {
+    fromDate: dateFilters.fromDate
+      ? format(dateFilters.fromDate, 'yyyy-MM-dd')
+      : undefined,
+    toDate: dateFilters.toDate
+      ? format(dateFilters.toDate, 'yyyy-MM-dd')
+      : undefined,
+  }
+
+  const { data: participatedCourseData, isLoading } =
+    useGetParticipatedCourses(formattedFilters)
+
   const filteredData = participatedCourseData?.data?.filter((course: any) => {
     const searchFields = ['course_name', 'student_name', 'invoice_code']
-    const matchesSearch = searchFields.some((field) =>
+    return searchFields.some((field) =>
       course[field]?.toLowerCase()?.includes(searchTerm.toLowerCase())
     )
-    const courseDate = new Date(course.invoice_created_at)
-    const matchesDate =
-      (!dateFilters.fromDate || courseDate >= dateFilters.fromDate) &&
-      (!dateFilters.toDate || courseDate <= dateFilters.toDate)
-
-    return matchesSearch && matchesDate
   })
 
   const columns: ColumnDef<any[]>[] = [
@@ -135,9 +146,16 @@ export default function TransactionManageView() {
     {
       id: 'actions',
       cell: ({ row }: any) => {
+        const invoice = row.original
         return (
           <div>
-            <Button variant="ghost">
+            <Button
+              onClick={() => {
+                setSelectedTransation(invoice)
+                setOpenDialog(true)
+              }}
+              variant="ghost"
+            >
               <Eye />
             </Button>
           </div>
@@ -145,10 +163,6 @@ export default function TransactionManageView() {
       },
     },
   ]
-
-  if (isLoading) {
-    return <ModalLoading />
-  }
 
   return (
     <div className="px-5 py-4">
@@ -159,11 +173,52 @@ export default function TransactionManageView() {
         <DataTable
           columns={columns}
           data={filteredData || []}
-          isLoading={false}
+          isLoading={isLoading}
           enableDateFilter={true}
-          onDateFilterChange={(filters) => setDateFilters(filters)} // Cập nhật bộ lọc ngày
+          onSearchChange={setSearchTerm}
+          onDateFilterChange={(filters) => setDateFilters(filters)}
         />
       </div>
+      {selectedTransation && (
+        <Dialog open={openDialog} onOpenChange={setOpenDialog}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Chi tiết hóa đơn</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <p>
+                <strong>Mã hóa đơn:</strong> {selectedTransation.invoice_code}
+              </p>
+              <p>
+                <strong>Khóa học:</strong> {selectedTransation.course_name}
+              </p>
+              <p>
+                <strong>Học viên:</strong> {selectedTransation.student_name}
+              </p>
+              <p>
+                <strong>Số tiền thanh toán:</strong>{' '}
+                {Number(selectedTransation.amount_paid).toLocaleString(
+                  'vi-VN',
+                  {
+                    style: 'currency',
+                    currency: 'VND',
+                  }
+                )}
+              </p>
+              <p>
+                <strong>Ngày mua:</strong>{' '}
+                {format(
+                  new Date(selectedTransation.invoice_created_at),
+                  'dd/MM/yyyy'
+                )}
+              </p>
+              <p>
+                <strong>Trạng thái:</strong> {selectedTransation.status}
+              </p>
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   )
 }

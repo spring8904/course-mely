@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Trash } from 'lucide-react'
+import { GripVertical, Trash } from 'lucide-react'
 import { useFieldArray, useFormContext } from 'react-hook-form'
 
 import { UpdateCodingLessonPayload } from '@/validations/course'
@@ -21,6 +21,11 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from '@/components/ui/resizable'
+import {
+  Sortable,
+  SortableDragHandle,
+  SortableItem,
+} from '@/components/ui/sortable'
 import TinyEditor from '@/components/shared/tiny-editor'
 
 const GuideTab = () => {
@@ -31,7 +36,7 @@ const GuideTab = () => {
     formState: { disabled, errors },
   } = useFormContext<UpdateCodingLessonPayload>()
 
-  const { fields, append, remove } = useFieldArray({
+  const { fields, append, remove, move } = useFieldArray({
     name: 'hints',
   })
 
@@ -110,26 +115,46 @@ const GuideTab = () => {
                 và bài kiểm tra liên quan.
               </p>
 
-              {fields.map((field, index) => (
-                <FormField
-                  key={field.id}
-                  control={control}
-                  name={`hints.${index}.hint`}
-                  render={({ field }) => (
-                    <FormItem>
-                      <div className="relative">
-                        <FormControl>
-                          <Input
-                            placeholder={`Nhập gợi ý thứ ${index + 1}`}
-                            {...field}
-                          />
-                        </FormControl>
-
+              <div className="flex w-full flex-col gap-3">
+                <Sortable
+                  value={fields}
+                  onMove={({ activeIndex, overIndex }) =>
+                    move(activeIndex, overIndex)
+                  }
+                  overlay={
+                    <div className="grid grid-cols-[1fr,auto,auto] items-center gap-2">
+                      <div className="h-9 w-full rounded-sm bg-black/5" />
+                      <div className="size-9 shrink-0 rounded-sm bg-black/5" />
+                      <div className="size-9 shrink-0 rounded-sm bg-black/5" />
+                    </div>
+                  }
+                >
+                  {fields.map((field, index) => (
+                    <SortableItem key={field.id} value={field.id} asChild>
+                      <div className="grid grid-cols-[1fr,auto,auto] items-center gap-2">
+                        <FormField
+                          control={control}
+                          name={`hints.${index}.hint`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <Input
+                                  placeholder={`Nhập gợi ý thứ ${index + 1}`}
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <SortableDragHandle>
+                          <GripVertical />
+                        </SortableDragHandle>
                         <Button
-                          variant="ghost"
+                          variant="outline"
                           type="button"
                           size="icon"
-                          className="absolute right-0 top-0 text-red-500 hover:bg-transparent hover:text-red-500/70"
+                          className="text-destructive hover:text-destructive/80"
                           onClick={() => {
                             remove(index)
                           }}
@@ -137,11 +162,10 @@ const GuideTab = () => {
                           <Trash />
                         </Button>
                       </div>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              ))}
+                    </SortableItem>
+                  ))}
+                </Sortable>
+              </div>
 
               <Button
                 type="button"
