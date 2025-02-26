@@ -17,6 +17,8 @@ export const Quiz = ({ lesson }: Props) => {
     {}
   )
 
+  console.log('lesson', lesson)
+
   const { data: quizData, isLoading } = useGetQuiz(
     lesson?.lessonable_id?.toString() ?? ''
   )

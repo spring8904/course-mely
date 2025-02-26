@@ -5,7 +5,7 @@ export enum AnswerType {
 
 export interface IQuiz {
   id?: number
-  lessonId?: number
+  quiz_id?: number
   question: string
   image?: string | null
   answer_type: AnswerType

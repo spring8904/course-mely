@@ -13,16 +13,15 @@ import {
   Notebook,
 } from 'lucide-react'
 
-import { ILesson, ILessonLearningPath } from '@/types'
+import { LearningPathLesson } from '@/types'
 import { lessonTypeIcons } from '@/configs'
 import { formatDuration } from '@/lib/common'
 import { cn } from '@/lib/utils'
-import { useGetCourseDetails } from '@/hooks/course/useCourse'
 import {
   useGetLessonDetail,
   useGetLessons,
-  useGetProgress,
 } from '@/hooks/learning-path/useLearningPath'
+import { useGetProgress } from '@/hooks/user/useUser'
 
 import {
   Accordion,
@@ -51,18 +50,17 @@ type Props = {
 const LearningLessonView = ({ courseSlug, lessonId }: Props) => {
   const router = useRouter()
 
-  const { data: courseDetail, isLoading: isCourseDetailLoading } =
-    useGetCourseDetails(courseSlug)
-
   const { data: lessons, isLoading: isLessonLoading } =
     useGetLessons(courseSlug)
+
+  const { chapter_lessons, course_name, total_lesson } = lessons || {}
 
   const { data: lessonDetail, isLoading: isLessonDetailLoading } =
     useGetLessonDetail(courseSlug, lessonId)
 
   const { data: progress } = useGetProgress(courseSlug)
 
-  const getLessonDuration = (lesson: ILesson | ILessonLearningPath) => {
+  const getLessonDuration = (lesson: LearningPathLesson) => {
     switch (lesson.type) {
       case 'video':
         return lesson.lessonable?.duration as number
@@ -71,15 +69,7 @@ const LearningLessonView = ({ courseSlug, lessonId }: Props) => {
     }
   }
 
-  const getChapterDuration = (lessons: ILessonLearningPath[]) => {
-    return (
-      lessons?.reduce((acc, lesson) => {
-        return acc + getLessonDuration(lesson)
-      }, 0) || 0
-    )
-  }
-
-  const getChapterProgress = (lessons: ILessonLearningPath[]) => {
+  const getChapterProgress = (lessons: LearningPathLesson[]) => {
     return lessons.reduce((acc, lesson) => {
       return acc + (lesson.is_completed ? 1 : 0)
     }, 0)
@@ -87,14 +77,13 @@ const LearningLessonView = ({ courseSlug, lessonId }: Props) => {
 
   const courseProgress = useMemo(
     () =>
-      lessons?.reduce((acc, chapter) => {
+      chapter_lessons?.reduce((acc, chapter) => {
         return acc + getChapterProgress(chapter.lessons)
       }, 0),
-    [lessons]
+    [chapter_lessons]
   )
 
-  if (isCourseDetailLoading || isLessonLoading || isLessonDetailLoading)
-    return <ModalLoading />
+  if (isLessonLoading || isLessonDetailLoading) return <ModalLoading />
 
   return (
     <div className="relative flex min-h-screen flex-col">
@@ -105,14 +94,14 @@ const LearningLessonView = ({ courseSlug, lessonId }: Props) => {
               <ChevronLeft className="text-white" />
             </Link>
             <Image src="/images/Logo.png" alt="logo" width={36} height={36} />
-            <p className="font-bold text-white">{courseDetail?.name}</p>
+            <p className="font-bold text-white">{course_name}</p>
           </div>
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-1">
               <LearningProcess value={progress ?? 0} />
               <span className="text-sm text-white">
                 <span className="font-bold">
-                  {courseProgress}/{courseDetail?.lessons_count}
+                  {courseProgress}/{total_lesson}
                 </span>{' '}
                 bài học
               </span>
@@ -139,7 +128,7 @@ const LearningLessonView = ({ courseSlug, lessonId }: Props) => {
             type="multiple"
             defaultValue={[`chapter-${lessonDetail?.lesson?.chapter_id}`]}
           >
-            {lessons?.map((chapter, chapterIndex) => {
+            {chapter_lessons?.map((chapter, chapterIndex) => {
               return (
                 <AccordionItem
                   key={chapterIndex}
@@ -154,7 +143,7 @@ const LearningLessonView = ({ courseSlug, lessonId }: Props) => {
                         {getChapterProgress(chapter.lessons)}/
                         {chapter?.lessons.length} |{' '}
                         {formatDuration(
-                          getChapterDuration(chapter.lessons),
+                          chapter.total_chapter_duration,
                           'colon'
                         )}
                       </p>

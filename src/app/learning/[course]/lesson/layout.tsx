@@ -1,9 +1,11 @@
+import ProtectedRoute from '@/components/shared/protected-route'
+
 interface LayoutProps {
   children?: React.ReactNode
 }
 
 const CommonLayout = ({ children }: LayoutProps) => {
-  return <main className="min-h-screen">{children}</main>
+  return <ProtectedRoute>{children}</ProtectedRoute>
 }
 
 export default CommonLayout

@@ -49,9 +49,13 @@ export const formatDuration = (
   const secs = seconds % 60
 
   if (type === 'colon') {
-    return `${hours.toString().padStart(2, '0')}:${minutes
-      .toString()
-      .padStart(2, '0')}:${secs.toString().padStart(2, '0')}`
+    return hours > 0
+      ? `${hours.toString().padStart(2, '0')}:${minutes
+          .toString()
+          .padStart(2, '0')}:${secs.toString().padStart(2, '0')}`
+      : `${minutes.toString().padStart(2, '0')}:${secs
+          .toString()
+          .padStart(2, '0')}`
   }
 
   let result = ''

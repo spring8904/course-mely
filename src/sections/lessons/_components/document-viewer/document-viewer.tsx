@@ -9,9 +9,9 @@ type Props = {
 
 export const DocumentViewer = ({ lesson }: Props) => {
   return (
-    <div className="mx-auto my-12 max-w-2xl">
+    <div className="mx-16 mb-40 mt-12">
       <div className="space-y-2">
-        <h1 className="text-3xl font-semibold">{lesson.title}</h1>
+        <h1 className="text-3xl font-extrabold">{lesson.title}</h1>
         <p className="text-sm text-muted-foreground">
           Cập nhật vào{' '}
           {formatDate(lesson.updated_at, {
