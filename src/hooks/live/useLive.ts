@@ -14,7 +14,7 @@ export const useGetLiveSessions = (filters?: {
   return useQuery({
     queryKey: [QUERY_KEY.INSTRUCTOR_LIVE_SESSIONS],
     queryFn: () => liveSteamApi.getLiveSessions(filters),
-    keepPreviousData: true,
+    // keepPreviousData: true,
   })
 }
 

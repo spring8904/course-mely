@@ -3,7 +3,7 @@
 import React, { useState } from 'react'
 import { Loader2 } from 'lucide-react'
 
-import { formatCurrency, formatDateTime } from '@/lib/common'
+import { formatCurrency, formatDate } from '@/lib/common'
 import { useGetOrderById, useGetOrders } from '@/hooks/order/useOrder'
 
 import OrderDetailView from '@/sections/me/_components/order/order-detail'
@@ -80,9 +80,7 @@ const MeOrder = () => {
                     </a>
                   </div>
                   <div>
-                    <p className="fs-15 fw-5">
-                      {formatDateTime(order.created_at, 'date')}
-                    </p>
+                    <p className="fs-15 fw-5">{formatDate(order.created_at)}</p>
                   </div>
                   <div>
                     <p className="fs-15 fw-5">

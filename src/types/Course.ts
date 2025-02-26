@@ -52,6 +52,9 @@ export interface ICourse {
   deleted_at?: Date | null
   created_at?: Date | null
   updated_at?: Date | null
+
+  is_free?: 0 | 1
+  total_video_duration?: number
 }
 
 export type ICourses = ICourse[]
@@ -133,13 +136,7 @@ export interface Lessonable {
   solution_code?: string
 }
 
-export enum LessonType {
-  Coding = 'coding',
-  Document = 'document',
-  Quiz = 'quiz',
-  Video = 'video',
-}
-
+export type LessonType = 'video' | 'quiz' | 'document' | 'coding'
 export interface ILessonProcess {
   id: number
   user_id: number

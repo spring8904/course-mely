@@ -1,6 +1,6 @@
 import React from 'react'
 
-import LearningLessonView from '@/sections/instructor/view/learning-lesson-view'
+import LearningPathView from '@/sections/learning-path/view/learning-path-view'
 
 type Props = {
   params: { course: string; lessonId: string }
@@ -9,7 +9,7 @@ type Props = {
 const LearningPage = ({ params }: Props) => {
   const { course, lessonId } = params
 
-  return <LearningLessonView courseSlug={course} lessonId={lessonId} />
+  return <LearningPathView courseSlug={course} lessonId={lessonId} />
 }
 
 export default LearningPage

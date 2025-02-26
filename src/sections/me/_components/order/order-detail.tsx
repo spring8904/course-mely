@@ -14,7 +14,7 @@ import {
   Wallet,
 } from 'lucide-react'
 
-import { formatCurrency, formatDateTime } from '@/lib/common'
+import { formatCurrency, formatDate } from '@/lib/common'
 
 interface OrderDetailProps {
   getOrderByIdData: any
@@ -88,10 +88,7 @@ const OrderDetailView = ({ getOrderByIdData, onBack }: OrderDetailProps) => {
                             Thời gian mua khóa học
                           </p>
                           <p className="mt-1 text-sm font-semibold text-indigo-900">
-                            {formatDateTime(
-                              getOrderByIdData.data.created_at,
-                              'both'
-                            )}
+                            {formatDate(getOrderByIdData.data.created_at)}
                           </p>
                         </div>
                       </div>

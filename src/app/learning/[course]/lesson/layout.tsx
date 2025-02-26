@@ -4,8 +4,8 @@ interface LayoutProps {
   children?: React.ReactNode
 }
 
-const CommonLayout = ({ children }: LayoutProps) => {
+const Layout = ({ children }: LayoutProps) => {
   return <ProtectedRoute>{children}</ProtectedRoute>
 }
 
-export default CommonLayout
+export default Layout

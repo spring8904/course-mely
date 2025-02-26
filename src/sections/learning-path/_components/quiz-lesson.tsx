@@ -26,7 +26,7 @@ type Props = {
   lesson: ILesson
 }
 
-export const Quiz = ({ lesson }: Props) => {
+const QuizLesson = ({ lesson }: Props) => {
   const { lessonable: quizData } = lesson
   const { questions = [] } = quizData!
 
@@ -266,3 +266,5 @@ export const Quiz = ({ lesson }: Props) => {
     </div>
   )
 }
+
+export default QuizLesson

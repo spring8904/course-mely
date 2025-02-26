@@ -33,7 +33,7 @@ type Props = {
   lesson: ILesson
 }
 
-export const CodingExercise = ({ lesson }: Props) => {
+const CodingLesson = ({ lesson }: Props) => {
   const { lessonable: codeData } = lesson
 
   const form = useForm<CodeSubmissionPayLoad>({
@@ -166,3 +166,5 @@ export const CodingExercise = ({ lesson }: Props) => {
     </Form>
   )
 }
+
+export default CodingLesson

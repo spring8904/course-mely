@@ -1,8 +1,8 @@
 'use client'
 
-import { useRef } from 'react'
+import { useState } from 'react'
 import MuxPlayerElement from '@mux/mux-player'
-import MuxPlayer from '@mux/mux-player-react'
+import MuxPlayer from '@mux/mux-player-react/lazy'
 import { Plus } from 'lucide-react'
 
 import { ILesson } from '@/types'
@@ -15,23 +15,25 @@ type Props = {
   lesson: ILesson
 }
 
-export const VideoPlayer = ({ lesson }: Props) => {
-  const muxPlayerRef = useRef<MuxPlayerElement>(null)
+const VideoLesson = ({ lesson }: Props) => {
+  const [currentTime, setCurrentTime] = useState(0)
 
   return (
     <>
-      <div className="bg-black/95 px-16 lg:px-20 xl:px-24">
+      <div className="bg-black/95 px-16 lg:px-20 xl:px-40">
         <div className="aspect-video">
           <MuxPlayer
-            ref={muxPlayerRef}
             playbackId={lesson.lessonable?.mux_playback_id}
             accentColor={'hsl(var(--primary))'}
             className="h-full"
+            onTimeUpdate={(e) => {
+              setCurrentTime((e.target as MuxPlayerElement)?.currentTime)
+            }}
           />
         </div>
       </div>
 
-      <div className="mx-16 mb-40 mt-12">
+      <div className="mx-16 mb-40 mt-8">
         <div className="flex justify-between">
           <div className="space-y-2">
             <h1 className="text-3xl font-bold">{lesson.title}</h1>
@@ -46,7 +48,9 @@ export const VideoPlayer = ({ lesson }: Props) => {
           <Button variant="secondary">
             <Plus />
             Thêm ghi chú tại{' '}
-            <span className="font-semibold">{formatDuration(0, 'colon')}</span>
+            <span className="font-semibold">
+              {formatDuration(Math.round(currentTime), 'colon')}
+            </span>
           </Button>
         </div>
 
@@ -55,3 +59,5 @@ export const VideoPlayer = ({ lesson }: Props) => {
     </>
   )
 }
+
+export default VideoLesson

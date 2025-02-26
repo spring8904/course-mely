@@ -7,7 +7,7 @@ type Props = {
   lesson: ILesson
 }
 
-export const DocumentViewer = ({ lesson }: Props) => {
+const DocumentLesson = ({ lesson }: Props) => {
   return (
     <div className="mx-16 mb-40 mt-12">
       <div className="space-y-2">
@@ -24,3 +24,5 @@ export const DocumentViewer = ({ lesson }: Props) => {
     </div>
   )
 }
+
+export default DocumentLesson

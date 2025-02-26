@@ -74,7 +74,8 @@ export function SocialSection({ socialData, isEditing, setIsEditing }: Props) {
       const bioData = JSON.parse(socialData?.user?.profile?.bio)
       form.reset(bioData)
     }
-  }, [socialData, form.reset])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [socialData])
 
   function onSubmit(data: ProfileBioFormValues) {
     mutate(data)

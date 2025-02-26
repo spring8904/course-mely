@@ -40,14 +40,14 @@ import {
 } from '@/components/ui/sheet'
 import LearningProcess from '@/components/common/LearningProcess'
 import ModalLoading from '@/components/common/ModalLoading'
-import { LessonContent } from '@/sections/lessons/_components/lesson-content'
+import LessonContent from '@/sections/learning-path/_components/lesson-content'
 
 type Props = {
   courseSlug: string
   lessonId: string
 }
 
-const LearningLessonView = ({ courseSlug, lessonId }: Props) => {
+const LearningPathView = ({ courseSlug, lessonId }: Props) => {
   const router = useRouter()
 
   const { data: lessons, isLoading: isLessonLoading } =
@@ -266,4 +266,4 @@ const LearningLessonView = ({ courseSlug, lessonId }: Props) => {
   )
 }
 
-export default LearningLessonView
+export default LearningPathView
