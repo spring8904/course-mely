@@ -1,17 +1,31 @@
 'use client'
 
-import { useState } from 'react'
+import React, { useState } from 'react'
+import { useAuthStore } from '@/stores/useAuthStore'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useQueryClient } from '@tanstack/react-query'
 import {
   AlertCircle,
   ArrowDownToLine,
   Banknote,
   Clock,
   Info,
+  Loader2,
   ShieldCheck,
   Wallet,
 } from 'lucide-react'
+import { useForm } from 'react-hook-form'
+import { toast } from 'react-toastify'
 
+import {
+  WithDrawalRequestPayload,
+  WithdrawalRequestSchema,
+} from '@/validations/support-bank'
+import QUERY_KEY from '@/constants/query-key'
+import { formatCurrency, removeVietnameseTones } from '@/lib/common'
 import { cn } from '@/lib/utils'
+import { useGetSupportBanks } from '@/hooks/support-bank/useSupportBank'
+import { useGetWallet, useWithDrawalRequest } from '@/hooks/wallet/useWallet'
 
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
@@ -27,23 +41,61 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
+import ModalLoading from '@/components/common/ModalLoading'
 
 const AMOUNTS = [50000, 100000, 200000, 500000, 1000000, 2000000]
-const BANKS = [
-  { id: 'vcb', name: 'Vietcombank' },
-  { id: 'tcb', name: 'Techcombank' },
-  { id: 'acb', name: 'ACB' },
-  { id: 'mb', name: 'MB Bank' },
-  { id: 'bidv', name: 'BIDV' },
-]
 
 function WalletView() {
+  const queryClient = useQueryClient()
+
   const [selectedAmount, setSelectedAmount] = useState<number | null>(null)
-  const [customAmount, setCustomAmount] = useState('')
+  const { user } = useAuthStore()
+  const { data: walletData, isLoading } = useGetWallet()
+  const { data: supportBank, isLoading: isLoadingSupportBank } =
+    useGetSupportBanks()
+  const { mutate: withDrawalRequest, isPending } = useWithDrawalRequest()
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+    watch,
+    reset,
+  } = useForm<WithDrawalRequestPayload>({
+    resolver: zodResolver(WithdrawalRequestSchema),
+    defaultValues: {
+      account_no: '',
+      account_name: '',
+      bank: '',
+      amount: undefined,
+      add_info: '',
+    },
+  })
+
+  const watchedAmount = watch('amount')
+
+  if (isLoading || isLoadingSupportBank) return <ModalLoading />
+
+  const onSubmit = (data: WithDrawalRequestPayload) => {
+    withDrawalRequest(data, {
+      onSuccess: async (res: any) => {
+        toast.success(res.message)
+        reset()
+        setSelectedAmount(null)
+        await queryClient.invalidateQueries({
+          queryKey: [QUERY_KEY.INSTRUCTOR_WITH_DRAW_REQUEST],
+        })
+      },
+      onError: async (error: any) => {
+        toast.error(error.message)
+      },
+    })
+  }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 p-8">
-      <div className="mx-auto max-w-7xl">
+    <div className="px-5 py-6">
+      <div className="">
         <div className="mb-8 flex items-center justify-between">
           <h2 className="bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-2xl font-bold">
             Ví của bạn
@@ -56,19 +108,26 @@ function WalletView() {
               <div className="bg-gradient-to-r from-primary to-primary/80 p-6">
                 <div className="flex items-center space-x-4">
                   <Avatar className="size-16 border-4 border-white/20">
-                    <AvatarImage src="https://storage.googleapis.com/a1aa/image/DCqdFGzcb1rqIdoeHHdr3Zjfo9rbmejO9ixlponF0VG2CmePB.jpg" />
+                    <AvatarImage
+                      src={
+                        user?.avatar ||
+                        'https://storage.googleapis.com/a1aa/image/DCqdFGzcb1rqIdoeHHdr3Zjfo9rbmejO9ixlponF0VG2CmePB.jpg'
+                      }
+                    />
                     <AvatarFallback>TN</AvatarFallback>
                   </Avatar>
                   <div className="text-white">
-                    <h3 className="text-xl font-semibold">Tran nguyen</h3>
-                    <p className="text-white/80">ID: #123456</p>
+                    <h3 className="text-xl font-semibold">
+                      {user?.name || 'Nguyễn Văn A'}
+                    </h3>
+                    <p className="text-white/80">ID: {user?.code || ''}</p>
                   </div>
                 </div>
                 <div className="mt-6 rounded-lg bg-white/10 p-4 backdrop-blur-sm">
                   <div className="flex items-center justify-between">
                     <span className="text-white/90">Số dư khả dụng</span>
                     <span className="text-2xl font-bold text-white">
-                      100 VNĐ
+                      {formatCurrency(walletData?.data.balance || 0)}
                     </span>
                   </div>
                 </div>
@@ -89,7 +148,7 @@ function WalletView() {
                       <Clock className="mb-2 size-5 text-primary" />
                       <p className="text-sm font-medium">Thời gian xử lý</p>
                       <p className="text-2xl font-bold text-primary">
-                        1-5 phút
+                        1 - 5 phút
                       </p>
                     </div>
                     <div className="rounded-lg bg-primary/5 p-4">
@@ -173,103 +232,166 @@ function WalletView() {
             <CardHeader className="border-b bg-primary/5">
               <CardTitle>Thông tin rút tiền</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-6 p-6">
-              <div className="space-y-4">
-                <Label>Chọn số tiền muốn rút</Label>
-                <div className="grid grid-cols-3 gap-4">
-                  {AMOUNTS.map((amount) => (
-                    <Button
-                      key={amount}
-                      variant="outline"
-                      className={cn(
-                        'flex h-24 flex-col gap-2 hover:border-primary hover:bg-primary/5',
-                        selectedAmount === amount &&
-                          'border-primary bg-primary/5'
-                      )}
-                      onClick={() => {
-                        setSelectedAmount(amount)
-                        setCustomAmount('')
-                      }}
-                    >
-                      <Wallet className="size-5 text-primary" />
-                      <span className="font-medium">
-                        {amount.toLocaleString('vi-VN')}
-                        <span className="ml-1 text-xs text-muted-foreground">
-                          VNĐ
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <CardContent className="space-y-6 p-6">
+                <div className="space-y-4">
+                  <Label>Chọn số tiền muốn rút</Label>
+                  <div className="grid grid-cols-3 gap-4">
+                    {AMOUNTS.map((amount) => (
+                      <Button
+                        key={amount}
+                        variant="outline"
+                        className={cn(
+                          'flex h-24 flex-col gap-2 hover:border-primary hover:bg-primary/5',
+                          selectedAmount === amount &&
+                            'border-primary bg-primary/5'
+                        )}
+                        onClick={() => {
+                          setSelectedAmount(amount)
+                          setValue('amount', amount)
+                        }}
+                      >
+                        <Wallet className="size-5 text-primary" />
+                        <span className="font-medium">
+                          {amount.toLocaleString('vi-VN')}
+                          <span className="ml-1 text-xs text-muted-foreground">
+                            VNĐ
+                          </span>
                         </span>
-                      </span>
-                    </Button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="amount">Hoặc nhập số tiền khác</Label>
-                <div className="relative">
-                  <Input
-                    id="amount"
-                    value={customAmount}
-                    onChange={(e) => {
-                      setCustomAmount(e.target.value)
-                      setSelectedAmount(null)
-                    }}
-                    placeholder="Nhập số tiền bạn muốn rút"
-                    className="pr-16"
-                  />
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">
-                    VNĐ
-                  </span>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label>Chọn ngân hàng</Label>
-                <Select>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Chọn ngân hàng nhận tiền" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {BANKS.map((bank) => (
-                      <SelectItem key={bank.id} value={bank.id}>
-                        {bank.name}
-                      </SelectItem>
+                      </Button>
                     ))}
-                  </SelectContent>
-                </Select>
-              </div>
+                  </div>
+                </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="accountNumber">Số tài khoản</Label>
-                <Input
-                  id="accountNumber"
-                  placeholder="Nhập số tài khoản nhận tiền"
-                />
-              </div>
+                <div className="space-y-2">
+                  <Label htmlFor="amount">Hoặc nhập số tiền khác</Label>
+                  <div className="relative">
+                    <Input
+                      id="amount"
+                      value={
+                        watchedAmount !== undefined
+                          ? formatCurrency(watchedAmount || 0)
+                          : ''
+                      }
+                      onChange={(e) => {
+                        const rawValue = e.target.value.replace(/\D/g, '')
+                        const numericValue = rawValue
+                          ? parseInt(rawValue, 10)
+                          : undefined
+                        setSelectedAmount(null)
+                        setValue('amount', numericValue as number)
+                      }}
+                      placeholder="Nhập số tiền bạn muốn rút"
+                      className="pr-16"
+                    />
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+                      VNĐ
+                    </span>
+                  </div>
+                  {errors.amount && (
+                    <p className="text-sm text-red-500">
+                      {errors.amount.message}
+                    </p>
+                  )}
+                </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="accountName">Tên chủ tài khoản</Label>
-                <Input
-                  id="accountName"
-                  placeholder="Nhập tên chủ tài khoản nhận tiền"
-                />
-              </div>
+                <div className="space-y-2">
+                  <Label>Chọn ngân hàng</Label>
+                  <Select
+                    onValueChange={(value) => {
+                      const selectedBank = supportBank?.data.find(
+                        (bank: any) => bank.bin === value
+                      )
+                      if (selectedBank) {
+                        setValue('acq_id', selectedBank.bin)
+                        setValue('bank_name', selectedBank.short_name)
+                      }
+                      setValue('bank', value)
+                    }}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Chọn ngân hàng nhận tiền" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {supportBank?.data.map((bank: any) => (
+                        <SelectItem key={bank.bin} value={bank.bin}>
+                          {bank.short_name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {errors.bank && (
+                    <p className="text-sm text-red-500">
+                      {errors.bank.message}
+                    </p>
+                  )}
+                </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="notes">Ghi chú</Label>
-                <Textarea
-                  id="notes"
-                  placeholder="Nhập ghi chú nếu cần thiết"
-                  className="resize-none"
-                />
-              </div>
+                <div className="space-y-2">
+                  <Label htmlFor="accountNumber">Số tài khoản</Label>
+                  <Input
+                    {...register('account_no')}
+                    id="accountNumber"
+                    placeholder="Nhập số tài khoản nhận tiền"
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/\D/g, '')
+                      setValue('account_no', value)
+                    }}
+                  />
+                  {errors.account_no && (
+                    <p className="text-sm text-red-500">
+                      {errors.account_no.message}
+                    </p>
+                  )}
+                </div>
 
-              <Button
-                className="w-full bg-gradient-to-r from-primary to-primary/80"
-                size="lg"
-              >
-                Xác nhận rút tiền
-              </Button>
-            </CardContent>
+                <div className="space-y-2">
+                  <Label htmlFor="account_name">Tên chủ tài khoản</Label>
+                  <Input
+                    id="account_name"
+                    placeholder="Nhập tên chủ tài khoản nhận tiền"
+                    {...register('account_name')}
+                    onChange={(e) => {
+                      const valueWithNoTones = removeVietnameseTones(
+                        e.target.value
+                      )
+                      const valueUppercase = valueWithNoTones.toUpperCase()
+                      setValue('account_name', valueUppercase)
+                    }}
+                  />
+                  {errors.account_name && (
+                    <p className="text-sm text-red-500">
+                      {errors.account_name.message}
+                    </p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="add_info">Ghi chú</Label>
+                  <Textarea
+                    id="add_info"
+                    {...register('add_info')}
+                    placeholder="Nhập ghi chú nếu cần thiết"
+                    className="resize-none"
+                  />
+                </div>
+
+                <Button
+                  className="w-full bg-gradient-to-r from-primary to-primary/80"
+                  size="lg"
+                  type="submit"
+                  disabled={isPending}
+                >
+                  {isPending ? (
+                    <>
+                      <Loader2 className="mr-2 animate-spin" /> Đang xử lý...
+                    </>
+                  ) : (
+                    'Gửi yêu cầu rút tiền'
+                  )}
+                </Button>
+              </CardContent>
+            </form>
           </Card>
         </div>
       </div>
