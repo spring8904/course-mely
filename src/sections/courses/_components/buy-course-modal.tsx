@@ -1,4 +1,3 @@
-import * as process from 'node:process'
 import React, { useState } from 'react'
 import Image from 'next/image'
 import { format, parseISO } from 'date-fns'

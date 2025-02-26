@@ -178,7 +178,7 @@ const Header = () => {
                       </Avatar>
                     </a>
                     <ul
-                      className="dropdown-menu !mt-2 !min-w-[240px] !rounded-lg !bg-white !p-0 !text-base *:cursor-pointer"
+                      className="dropdown-menu data-[popper-placement=bottom-start]:!-ml-5"
                       aria-labelledby="dropdownMenuLink"
                     >
                       <li>
@@ -210,41 +210,29 @@ const Header = () => {
                           borderTop: '1px solid #0000002d',
                         }}
                       >
-                        <Link
-                          href="#"
-                          className="dropdown-item !block !w-full !rounded-lg !bg-transparent !px-4 !py-2 !text-sm !font-medium !transition-colors !duration-200 hover:!bg-[#FFEFEA] hover:!text-[#E27447]"
-                        >
+                        <Link href="#" className="dropdown-item">
                           Học tập
                         </Link>
                       </li>
                       <li>
-                        <Link
-                          href="#"
-                          className="dropdown-item !block !w-full !rounded-lg !bg-transparent !px-4 !py-2 !text-sm !font-medium !transition-colors !duration-200 hover:!bg-[#FFEFEA] hover:!text-[#E27447]"
-                        >
+                        <Link href="#" className="dropdown-item">
                           Giỏ hàng của tôi
                         </Link>
                       </li>
                       <li>
-                        <Link
-                          href="#"
-                          className="dropdown-item !block !w-full !rounded-lg !bg-transparent !px-4 !py-2 !text-sm !font-medium !transition-colors !duration-200 hover:!bg-[#FFEFEA] hover:!text-[#E27447]"
-                        >
+                        <Link href="#" className="dropdown-item">
                           Mong muốn
                         </Link>
                       </li>
                       <li>
                         {role === Role.INSTRUCTOR ? (
-                          <Link
-                            href="/instructor"
-                            className="dropdown-item !block !w-full !rounded-lg !bg-transparent !px-4 !py-2 !text-sm !font-medium !transition-colors !duration-200 hover:!bg-[#FFEFEA] hover:!text-[#E27447]"
-                          >
+                          <Link href="/instructor" className="dropdown-item">
                             Trang người hướng dẫn
                           </Link>
                         ) : (
                           <Link
                             href="/become-an-instructor"
-                            className="dropdown-item !block !w-full !rounded-lg !bg-transparent !px-4 !py-2 !text-sm !font-medium !transition-colors !duration-200 hover:!bg-[#FFEFEA] hover:!text-[#E27447]"
+                            className="dropdown-item"
                           >
                             Trở thành người hướng dẫn
                           </Link>
@@ -256,18 +244,12 @@ const Header = () => {
                           borderTop: '1px solid #0000002d',
                         }}
                       >
-                        <Link
-                          href="#"
-                          className="dropdown-item !block !w-full !rounded-lg !bg-transparent !px-4 !py-2 !text-sm !font-medium !transition-colors !duration-200 hover:!bg-[#FFEFEA] hover:!text-[#E27447]"
-                        >
+                        <Link href="#" className="dropdown-item">
                           Thông báo
                         </Link>
                       </li>
                       <li>
-                        <Link
-                          href="#"
-                          className="dropdown-item !block !w-full !rounded-lg !bg-transparent !px-4 !py-2 !text-sm !font-medium !transition-colors !duration-200 hover:!bg-[#FFEFEA] hover:!text-[#E27447]"
-                        >
+                        <Link href="#" className="dropdown-item">
                           Tin nhắn
                         </Link>
                       </li>
@@ -277,42 +259,27 @@ const Header = () => {
                           borderTop: '1px solid #0000002d',
                         }}
                       >
-                        <Link
-                          href="#"
-                          className="dropdown-item !block !w-full !rounded-lg !bg-transparent !px-4 !py-2 !text-sm !font-medium !transition-colors !duration-200 hover:!bg-[#FFEFEA] hover:!text-[#E27447]"
-                        >
+                        <Link href="#" className="dropdown-item">
                           Cài đặt tài khoản
                         </Link>
                       </li>
                       <li>
-                        <Link
-                          href="#"
-                          className="dropdown-item !block !w-full !rounded-lg !bg-transparent !px-4 !py-2 !text-sm !font-medium !transition-colors !duration-200 hover:!bg-[#FFEFEA] hover:!text-[#E27447]"
-                        >
+                        <Link href="#" className="dropdown-item">
                           Phương thức thanh toán
                         </Link>
                       </li>
                       <li>
-                        <Link
-                          href="#"
-                          className="dropdown-item !block !w-full !rounded-lg !bg-transparent !px-4 !py-2 !text-sm !font-medium !transition-colors !duration-200 hover:!bg-[#FFEFEA] hover:!text-[#E27447]"
-                        >
+                        <Link href="#" className="dropdown-item">
                           Thuê bao
                         </Link>
                       </li>
                       <li>
-                        <Link
-                          href="#"
-                          className="dropdown-item !block !w-full !rounded-lg !bg-transparent !px-4 !py-2 !text-sm !font-medium !transition-colors !duration-200 hover:!bg-[#FFEFEA] hover:!text-[#E27447]"
-                        >
+                        <Link href="#" className="dropdown-item">
                           Ưu đãi
                         </Link>
                       </li>
                       <li>
-                        <Link
-                          href="#"
-                          className="dropdown-item !block !w-full !rounded-lg !bg-transparent !px-4 !py-2 !text-sm !font-medium !transition-colors !duration-200 hover:!bg-[#FFEFEA] hover:!text-[#E27447]"
-                        >
+                        <Link href="#" className="dropdown-item">
                           Lịch sử mua
                         </Link>
                       </li>
@@ -322,18 +289,12 @@ const Header = () => {
                           borderTop: '1px solid #0000002d',
                         }}
                       >
-                        <Link
-                          href="#"
-                          className="dropdown-item !block !w-full !rounded-lg !bg-transparent !px-4 !py-2 !text-sm !font-medium !transition-colors !duration-200 hover:!bg-[#FFEFEA] hover:!text-[#E27447]"
-                        >
+                        <Link href="#" className="dropdown-item">
                           Hồ sơ công khai
                         </Link>
                       </li>
                       <li>
-                        <Link
-                          href="#"
-                          className="dropdown-item !block !w-full !rounded-lg !bg-transparent !px-4 !py-2 !text-sm !font-medium !transition-colors !duration-200 hover:!bg-[#FFEFEA] hover:!text-[#E27447]"
-                        >
+                        <Link href="#" className="dropdown-item">
                           Chỉnh sửa hồ sơ
                         </Link>
                       </li>
@@ -343,18 +304,12 @@ const Header = () => {
                           borderTop: '1px solid #0000002d',
                         }}
                       >
-                        <Link
-                          href="#"
-                          className="dropdown-item !block !w-full !rounded-lg !bg-transparent !px-4 !py-2 !text-sm !font-medium !transition-colors !duration-200 hover:!bg-[#FFEFEA] hover:!text-[#E27447]"
-                        >
+                        <Link href="#" className="dropdown-item">
                           Trợ giúp và Hỗ trợ
                         </Link>
                       </li>
                       <li>
-                        <div
-                          onClick={handleLogout}
-                          className="dropdown-item !block !w-full !rounded-lg !bg-transparent !px-4 !py-2 !text-sm !font-medium !transition-colors !duration-200 hover:!bg-[#FFEFEA] hover:!text-[#E27447]"
-                        >
+                        <div onClick={handleLogout} className="dropdown-item">
                           Đăng xuất
                         </div>
                       </li>

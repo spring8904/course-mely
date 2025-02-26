@@ -124,11 +124,7 @@ export function NavUser({
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
-      <UserProfileModal
-        user={user}
-        open={openModal}
-        onOpenChange={setOpenModal}
-      />
+      <UserProfileModal open={openModal} onOpenChange={setOpenModal} />
     </SidebarMenu>
   )
 }

@@ -31,7 +31,7 @@ const QUERY_KEY = {
   USER_GET_MY_COURSES: 'user-get-my-courses',
   LEARNING_PATH_LESSON: 'learning-path-lesson',
   LIVE_SESSION_CLIENT: 'live-session-client',
-  LEARNING_PATH_PROGRESS: 'learning-path-progress',
+  COURSE_PROGRESS: 'course-progress',
 }
 
 export default QUERY_KEY

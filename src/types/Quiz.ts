@@ -1,11 +1,11 @@
 export enum AnswerType {
-  MultipleChoice = 'multiple-choice',
+  MultipleChoice = 'multiple_choice',
   OneChoice = 'single_choice',
 }
 
 export interface IQuiz {
   id?: number
-  lessonId?: number
+  quiz_id?: number
   question: string
   image?: string | null
   answer_type: AnswerType

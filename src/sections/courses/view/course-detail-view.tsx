@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -123,7 +123,7 @@ const CourseDetailView = ({ slug }: { slug: string }) => {
 
   const { user } = useAuthStore()
 
-  const { mutate: enrollFreeCourse, isPending } = useEnrollFreeCourse()
+  const { mutate: enrollFreeCourse } = useEnrollFreeCourse()
   const { data: courseDetails, isLoading: isCourseDetailsLoading } =
     useGetCourseDetails(slug)
 
@@ -253,7 +253,7 @@ const CourseDetailView = ({ slug }: { slug: string }) => {
                       <Image
                         width="50"
                         height={50}
-                        src={courseDetails?.user.avatar}
+                        src={courseDetails?.user.avatar || ''}
                         alt=""
                       />
                     </div>
@@ -761,7 +761,7 @@ const CourseDetailView = ({ slug }: { slug: string }) => {
 
                         {isOpenIntro && (
                           <div
-                            className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+                            className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
                             onClick={() => setIsOpenIntro(false)}
                           >
                             <div
@@ -802,31 +802,31 @@ const CourseDetailView = ({ slug }: { slug: string }) => {
                         <div className="price">
                           <h3 className="fw-5">Miễn phí</h3>
                         </div>
-                      ) : courseDetails?.price_sale > 0 ? (
+                      ) : (courseDetails?.price_sale ?? 0) > 0 ? (
                         <>
                           <div className="price">
                             <h3 className="fw-5">
-                              {formatCurrency(courseDetails.price_sale)}
+                              {formatCurrency(courseDetails?.price_sale ?? 0)}
                             </h3>
                             <h6 className="fs-15">
-                              {formatCurrency(courseDetails.price)}
+                              {formatCurrency(courseDetails?.price ?? 0)}
                             </h6>
                           </div>
                           <p className="sale-off">
                             {courseDetails?.price &&
                               Math.round(
                                 ((courseDetails.price -
-                                  courseDetails.price_sale) /
+                                  (courseDetails.price_sale ?? 0)) /
                                   courseDetails.price) *
                                   100
                               )}
                             % OFF
                           </p>
                         </>
-                      ) : courseDetails?.price > 0 ? (
+                      ) : (courseDetails?.price ?? 0) > 0 ? (
                         <div className="price">
                           <h3 className="fw-5">
-                            {formatCurrency(courseDetails.price)}
+                            {formatCurrency(courseDetails?.price ?? 0)}
                           </h3>
                         </div>
                       ) : (
@@ -851,7 +851,7 @@ const CourseDetailView = ({ slug }: { slug: string }) => {
                               })
                               .then((result) => {
                                 if (result.isConfirmed) {
-                                  enrollFreeCourse(courseDetails?.id, {
+                                  enrollFreeCourse(String(courseDetails?.id), {
                                     onSuccess: (res: any) => {
                                       toast.info(res.message)
                                       router.push('/my-courses')
@@ -869,7 +869,7 @@ const CourseDetailView = ({ slug }: { slug: string }) => {
                     >
                       {courseDetails?.user_id === user?.id
                         ? 'Đây là khoá học của bạn'
-                        : courseDetails.is_free === 1
+                        : courseDetails?.is_free === 1
                           ? 'Tham gia ngay'
                           : 'Mua khoá học'}
                       <i className="icon-shopcart fs-18"></i>
@@ -979,7 +979,7 @@ const CourseDetailView = ({ slug }: { slug: string }) => {
         </section>
       </div>
       <BuyCourseModal
-        course={courseDetails}
+        course={courseDetails as any}
         isOpen={isOpenBuyCourse}
         onClose={() => setIsOpenBuyCourse(false)}
       />

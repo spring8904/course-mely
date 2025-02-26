@@ -9,3 +9,12 @@ export const useGetMyCourses = () => {
     queryKey: [QUERY_KEY.USER_GET_MY_COURSES],
   })
 }
+
+export const useGetProgress = (course: string) => {
+  return useQuery({
+    queryKey: [QUERY_KEY.COURSE_PROGRESS, course],
+    queryFn: () => userApi.getProgress(course),
+    enabled: !!course,
+    staleTime: 1000 * 60 * 5,
+  })
+}
