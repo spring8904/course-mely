@@ -1,5 +1,5 @@
 export enum AnswerType {
-  MultipleChoice = 'multiple-choice',
+  MultipleChoice = 'multiple_choice',
   OneChoice = 'single_choice',
 }
 

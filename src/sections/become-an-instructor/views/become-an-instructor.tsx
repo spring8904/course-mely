@@ -110,7 +110,9 @@ const BecomeAnInstructor = () => {
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <div className="container mx-auto my-20 p-8 pb-16">
-            <h1 className="bold text-3xl">Chia sẻ kiến thức của bạn</h1>
+            <h1 className="text-3xl font-semibold">
+              Chia sẻ kiến thức của bạn
+            </h1>
 
             <p className="mb-16 mt-8 max-w-3xl">
               Các khóa học trên CourseMely đều mang lại trải nghiệm học tập bằng
