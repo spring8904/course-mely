@@ -1,10 +1,10 @@
 import { cn } from '@/lib/utils'
 
 const HtmlRenderer = ({
-  html,
+  html = '',
   className,
 }: {
-  html: string | TrustedHTML
+  html?: string | TrustedHTML
   className?: string
 }) => {
   return (

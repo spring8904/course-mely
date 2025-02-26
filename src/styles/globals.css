@@ -94,10 +94,9 @@
   .dropdown-item {
     @apply block w-full rounded-lg bg-transparent px-4 py-2 text-sm font-medium transition-colors hover:bg-primary/5 hover:text-primary !important;
   }
-
-  .Toastify__toast.hot-toast {
-    @apply mb-2 min-h-fit w-fit px-2.5 py-2 [&_svg]:size-5;
-  }
+}
+.Toastify__toast.hot-toast {
+  @apply mb-2 min-h-fit w-fit px-2.5 py-2 [&_svg]:size-5;
 }
 
 @keyframes gradient {

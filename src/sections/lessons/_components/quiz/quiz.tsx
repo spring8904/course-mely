@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form'
 
 import { AnswerType, ILesson } from '@/types'
 import {
-  QuizSubmissionInput,
+  QuizSubmissionPayload,
   quizSubmissionSchema,
 } from '@/validations/quiz-submission'
 import { formatDate } from '@/lib/common'
@@ -38,7 +38,7 @@ export const Quiz = ({ lesson }: Props) => {
     [key: number]: { [key: number]: string }
   }>({})
 
-  const form = useForm<QuizSubmissionInput>({
+  const form = useForm<QuizSubmissionPayload>({
     resolver: zodResolver(quizSubmissionSchema),
     defaultValues: {
       quiz_id: lesson.lessonable_id,
@@ -101,7 +101,7 @@ export const Quiz = ({ lesson }: Props) => {
     )
   }, [isCorrect, questions.length])
 
-  const onSubmit = (values: QuizSubmissionInput) => {
+  const onSubmit = (values: QuizSubmissionPayload) => {
     console.log('values submit', values)
   }
 

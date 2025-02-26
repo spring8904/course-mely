@@ -10,4 +10,4 @@ export const quizSubmissionSchema = z.object({
   ),
 })
 
-export type QuizSubmissionInput = z.infer<typeof quizSubmissionSchema>
+export type QuizSubmissionPayload = z.infer<typeof quizSubmissionSchema>

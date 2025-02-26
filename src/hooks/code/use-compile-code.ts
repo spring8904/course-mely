@@ -6,8 +6,9 @@ import { compileCode } from '@/services/code/compile-code'
 export const useCompileCode = () => {
   return useMutation({
     mutationFn: compileCode,
-    onSuccess: () => {
-      hotToast.success('Biên dịch thành công')
+    onSuccess: (res) => {
+      if (res.run.code === 0) hotToast.success('Biên dịch thành công')
+      else hotToast.error('Biên dịch thất bại')
     },
     onError: () => {
       hotToast.error('Biên dịch thất bại')
