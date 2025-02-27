@@ -48,6 +48,8 @@ const LearningPathView = ({ courseSlug, lessonId }: Props) => {
 
   const { data: lessonDetail, isLoading: isLessonDetailLoading } =
     useGetLessonDetail(courseSlug, lessonId)
+  const isCompleted = !!lessonDetail?.lesson_process?.is_completed
+  const lastTimeVideo = lessonDetail?.lesson_process?.last_time_video
 
   const { data: progress } = useGetProgress(courseSlug)
 
@@ -107,7 +109,13 @@ const LearningPathView = ({ courseSlug, lessonId }: Props) => {
 
       <div className="fixed inset-x-0 inset-y-16 grid grid-cols-12 overflow-hidden">
         <div className="col-span-9 overflow-y-auto">
-          {lessonDetail && <LessonContent lesson={lessonDetail.lesson} />}
+          {lessonDetail && (
+            <LessonContent
+              lesson={lessonDetail.lesson}
+              isCompleted={isCompleted}
+              lastTimeVideo={lastTimeVideo}
+            />
+          )}
         </div>
 
         <div className="col-span-3 overflow-y-auto">
@@ -214,15 +222,9 @@ const LearningPathView = ({ courseSlug, lessonId }: Props) => {
           <Button
             size="lg"
             className="rounded-full font-semibold [&_svg]:size-5"
-            disabled={
-              !lessonDetail?.next_lesson ||
-              !lessonDetail?.lesson_process?.is_completed
-            }
+            disabled={!lessonDetail?.next_lesson || !isCompleted}
             onClick={() => {
-              if (
-                lessonDetail?.next_lesson &&
-                lessonDetail.lesson_process?.is_completed
-              )
+              if (lessonDetail?.next_lesson && isCompleted)
                 router.push(
                   `/learning/${courseSlug}/lesson/${lessonDetail?.next_lesson.id}`
                 )

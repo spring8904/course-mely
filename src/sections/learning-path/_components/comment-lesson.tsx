@@ -17,7 +17,7 @@ import { timeAgo } from '@/lib/common'
 import {
   useGetLessonComments,
   useStoreCommentLesson,
-  useStoreReplyCommentLesson,
+  // useStoreReplyCommentLesson,
 } from '@/hooks/comment-lesson/useComment'
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
@@ -52,10 +52,10 @@ const CommentLesson = ({ lessonId }: { lessonId: string }) => {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false)
 
   const { mutate: storeLessonComment, isPending } = useStoreCommentLesson()
-  const {
-    mutate: storeReplyLessonComment,
-    isPending: isPendingStoreReplyLessonComment,
-  } = useStoreReplyCommentLesson()
+  // const {
+  //   mutate: storeReplyLessonComment,
+  //   isPending: isPendingStoreReplyLessonComment,
+  // } = useStoreReplyCommentLesson()
   const { data: lessonCommentData, isLoading: isLoadingLessonCommentData } =
     useGetLessonComments(lessonId)
 
@@ -94,10 +94,10 @@ const CommentLesson = ({ lessonId }: { lessonId: string }) => {
     })
   }
 
-  const handleReplySubmit = (commentId: string) => {
-    setSelectedComment(null)
-    setReplyContent('')
-  }
+  // const handleReplySubmit = (commentId: string) => {
+  //   setSelectedComment(null)
+  //   setReplyContent('')
+  // }
 
   return (
     <>
@@ -183,101 +183,104 @@ const CommentLesson = ({ lessonId }: { lessonId: string }) => {
                 <Loader2 className="mt-2 size-8 animate-spin" />
               ) : (
                 <>
-                  {lessonCommentData?.data.map((data: any, index: string) => (
-                    <div className="mt-4" key={index}>
-                      <div className="flex items-center gap-2">
-                        <Avatar>
-                          <AvatarImage
-                            src={data?.user.avatar || ''}
-                            alt={data?.user.name}
-                          />
-                          <AvatarFallback>
-                            {data?.user.name || 'Avatar'}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div className="flex gap-2">
-                          <p>{data?.user.name || ''}</p>
-                          <span>{timeAgo(data?.created_at || '')}</span>
+                  {Array.isArray(lessonCommentData?.data) &&
+                    lessonCommentData.data?.map((data: any, index: number) => (
+                      <div className="mt-4" key={index}>
+                        <div className="flex items-center gap-2">
+                          <Avatar>
+                            <AvatarImage
+                              src={data?.user.avatar || ''}
+                              alt={data?.user.name}
+                            />
+                            <AvatarFallback>
+                              {data?.user.name || 'Avatar'}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div className="flex gap-2">
+                            <p>{data?.user.name || ''}</p>
+                            <span>{timeAgo(data?.created_at || '')}</span>
+                          </div>
                         </div>
-                      </div>
-                      <div className="mt-2">
-                        <HtmlRenderer html={data?.content || ''} />
-                      </div>
-                      <div className="mt-4 flex items-center gap-4">
-                        <div>
-                          <button
-                            className="flex items-center gap-2 text-sm text-gray-600 hover:text-blue-500"
-                            onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-                          >
-                            <FiThumbsUp className="text-lg" />
-                            {selectedEmoji || 'Thích'}
-                          </button>
-                          {showEmojiPicker && (
-                            <div className="absolute z-50 mt-2">
-                              <EmojiPicker
-                                onEmojiClick={handleEmojiClick}
-                                lazyLoadEmojis={true}
-                              />
-                            </div>
-                          )}
+                        <div className="mt-2">
+                          <HtmlRenderer html={data?.content || ''} />
                         </div>
+                        <div className="mt-4 flex items-center gap-4">
+                          <div>
+                            <button
+                              className="flex items-center gap-2 text-sm text-gray-600 hover:text-blue-500"
+                              onClick={() =>
+                                setShowEmojiPicker(!showEmojiPicker)
+                              }
+                            >
+                              <FiThumbsUp className="text-lg" />
+                              {selectedEmoji || 'Thích'}
+                            </button>
+                            {showEmojiPicker && (
+                              <div className="absolute z-50 mt-2">
+                                <EmojiPicker
+                                  onEmojiClick={handleEmojiClick}
+                                  lazyLoadEmojis={true}
+                                />
+                              </div>
+                            )}
+                          </div>
 
-                        <button
-                          onClick={() => {
-                            setSelectedComment(data.id)
-                            setReplyContent(`@${data?.user?.name} `)
-                          }}
-                          className="flex items-center gap-1 text-sm text-gray-600 hover:text-blue-500"
-                        >
-                          <FiMessageCircle className="text-lg" />
-                          Phản hồi
-                        </button>
-                      </div>
-                      {selectedComment === data.id && (
-                        <div className="mt-4 flex flex-col gap-2">
-                          <div className="flex items-center gap-2">
-                            <Avatar>
-                              <AvatarImage
-                                src={data.user.avatar || ''}
-                                alt={data.user.name}
-                              />
-                              <AvatarFallback>
-                                {data.user.name || 'Avatar'}
-                              </AvatarFallback>
-                            </Avatar>
-                            <p className="text-sm text-gray-600">
-                              Phản hồi tới {data.user.name}
-                            </p>
-                          </div>
-                          <QuillEditor
-                            theme="snow"
-                            value={replyContent}
-                            onChange={(content) => setReplyContent(content)}
-                            placeholder={`Phản hồi bình luận của ${data.user.name}...`}
-                          />
-                          <div className="mt-2 flex justify-end gap-2">
-                            <Button
-                              variant="outline"
-                              onClick={() => {
-                                setSelectedComment(null)
-                                setReplyContent('')
-                              }}
-                            >
-                              Hủy
-                            </Button>
-                            <Button
-                              onClick={() => {
-                                if (replyContent.trim())
-                                  handleReplySubmit(data.id)
-                              }}
-                            >
-                              Phản hồi
-                            </Button>
-                          </div>
+                          <button
+                            onClick={() => {
+                              setSelectedComment(data.id)
+                              setReplyContent(`@${data?.user?.name} `)
+                            }}
+                            className="flex items-center gap-1 text-sm text-gray-600 hover:text-blue-500"
+                          >
+                            <FiMessageCircle className="text-lg" />
+                            Phản hồi
+                          </button>
                         </div>
-                      )}
-                    </div>
-                  ))}
+                        {selectedComment === data.id && (
+                          <div className="mt-4 flex flex-col gap-2">
+                            <div className="flex items-center gap-2">
+                              <Avatar>
+                                <AvatarImage
+                                  src={data.user.avatar || ''}
+                                  alt={data.user.name}
+                                />
+                                <AvatarFallback>
+                                  {data.user.name || 'Avatar'}
+                                </AvatarFallback>
+                              </Avatar>
+                              <p className="text-sm text-gray-600">
+                                Phản hồi tới {data.user.name}
+                              </p>
+                            </div>
+                            <QuillEditor
+                              theme="snow"
+                              value={replyContent}
+                              onChange={(content) => setReplyContent(content)}
+                              placeholder={`Phản hồi bình luận của ${data.user.name}...`}
+                            />
+                            <div className="mt-2 flex justify-end gap-2">
+                              <Button
+                                variant="outline"
+                                onClick={() => {
+                                  setSelectedComment(null)
+                                  setReplyContent('')
+                                }}
+                              >
+                                Hủy
+                              </Button>
+                              <Button
+                              // onClick={() => {
+                              //   if (replyContent.trim())
+                              //     handleReplySubmit(data.id)
+                              // }}
+                              >
+                                Phản hồi
+                              </Button>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    ))}
                 </>
               )}
             </div>

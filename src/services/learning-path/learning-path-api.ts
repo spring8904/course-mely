@@ -14,6 +14,11 @@ interface GetLessonDetailResponse {
   lesson_process: ILessonProcess
 }
 
+interface CompleteLessonPayload {
+  lesson_id: number
+  current_time?: number
+}
+
 const prefix = 'learning-paths'
 
 export const learningPathApi = {
@@ -27,5 +32,14 @@ export const learningPathApi = {
   ): Promise<GetLessonDetailResponse> => {
     const response = await api.get(`${prefix}/${course}/lesson/${lesson}`)
     return response.data
+  },
+
+  completeLesson: async ({
+    lesson_id,
+    current_time,
+  }: CompleteLessonPayload): Promise<void> => {
+    await api.patch(`${prefix}/lesson/${lesson_id}/complete-lesson`, {
+      current_time,
+    })
   },
 }
