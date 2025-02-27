@@ -1,22 +1,28 @@
 'use client'
 
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import MuxPlayerElement from '@mux/mux-player'
 import MuxPlayer from '@mux/mux-player-react/lazy'
 import { Plus } from 'lucide-react'
 
 import { ILesson } from '@/types'
 import { formatDate, formatDuration } from '@/lib/common'
+import { useCompleteLesson } from '@/hooks/learning-path/useLearningPath'
 
 import { Button } from '@/components/ui/button'
 import HtmlRenderer from '@/components/shared/html-renderer'
 
 type Props = {
   lesson: ILesson
+  isCompleted: boolean
+  lastTimeVideo?: number
 }
 
-const VideoLesson = ({ lesson }: Props) => {
+const VideoLesson = ({ lesson, isCompleted, lastTimeVideo = 0 }: Props) => {
   const [currentTime, setCurrentTime] = useState(0)
+  const isCalled = useRef<boolean>(false)
+
+  const { mutate } = useCompleteLesson()
 
   return (
     <>
@@ -26,8 +32,29 @@ const VideoLesson = ({ lesson }: Props) => {
             playbackId={lesson.lessonable?.mux_playback_id}
             accentColor={'hsl(var(--primary))'}
             className="h-full"
+            currentTime={lastTimeVideo}
             onTimeUpdate={(e) => {
-              setCurrentTime((e.target as MuxPlayerElement)?.currentTime)
+              const element = e.target as MuxPlayerElement
+              setCurrentTime(element?.currentTime)
+
+              if (
+                !isCompleted &&
+                element.currentTime > (2 / 3) * element.duration &&
+                !isCalled.current
+              ) {
+                isCalled.current = true
+                mutate(
+                  {
+                    lesson_id: lesson.id!,
+                    current_time: element.currentTime,
+                  },
+                  {
+                    onError: () => {
+                      isCalled.current = false
+                    },
+                  }
+                )
+              }
             }}
           />
         </div>

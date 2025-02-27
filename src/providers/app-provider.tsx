@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { Toaster } from 'react-hot-toast'
 import { ToastContainer } from 'react-toastify'
 
 import QueryProvider from './query-provider'
@@ -24,6 +25,14 @@ const AppProvider = ({ children }: Props) => {
     <QueryProvider>
       {children}
       <ToastContainer newestOnTop />
+      <Toaster
+        position="top-center"
+        toastOptions={{
+          style: {
+            zIndex: 9999, // Đảm bảo toast hiển thị trên modal
+          },
+        }}
+      />
     </QueryProvider>
   )
 }
