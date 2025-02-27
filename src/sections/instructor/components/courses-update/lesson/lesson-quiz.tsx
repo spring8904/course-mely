@@ -45,6 +45,7 @@ const LessonQuiz = ({
   const [editQuestion, setEditQuestion] = useState(false)
   const [, setQuestions] = useState<any[]>([])
   const [editQuestionId, setEditQuestionId] = useState<string | null>(null)
+  const isReadOnly = !(courseStatus === 'draft' || courseStatus === 'rejected')
 
   const { data: questionData, isLoading: isQuestionLoading } = useGetQuiz(
     quizId as string
@@ -162,7 +163,11 @@ const LessonQuiz = ({
                 <FormItem>
                   <FormLabel>Tiêu đề bài giảng</FormLabel>
                   <FormControl>
-                    <Input placeholder="Nhập tiêu đề bài giảng" {...field} />
+                    <Input
+                      readOnly={isReadOnly}
+                      placeholder="Nhập tiêu đề bài giảng"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -177,7 +182,11 @@ const LessonQuiz = ({
                 <FormItem>
                   <FormLabel>Nội dung bài giảng</FormLabel>
                   <FormControl>
-                    <QuillEditor {...field} value={field.value || ''} />
+                    <QuillEditor
+                      disabled={isReadOnly}
+                      {...field}
+                      value={field.value || ''}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
