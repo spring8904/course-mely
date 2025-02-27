@@ -10,6 +10,5 @@ export const useGetParticipatedCourses = (filters?: {
   return useQuery({
     queryKey: [QUERY_KEY.INSTRUCTOR_GET_PARTICIPATED_COURSE, filters],
     queryFn: () => instructorTransationApi.getParticipatedCourses(filters),
-    keepPreviousData: true,
   })
 }

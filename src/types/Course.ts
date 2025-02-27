@@ -3,6 +3,7 @@ import { IUser } from '@/types/User'
 import { BadgeProps } from '@/components/ui/badge'
 
 import { ICategory } from './Category'
+import { IQuiz } from './Quiz'
 
 export enum CourseStatus {
   Draft = 'draft',
@@ -51,6 +52,9 @@ export interface ICourse {
   deleted_at?: Date | null
   created_at?: Date | null
   updated_at?: Date | null
+
+  is_free?: 0 | 1
+  total_video_duration?: number
 }
 
 export type ICourses = ICourse[]
@@ -64,37 +68,6 @@ export interface IChapter {
   lessons_count?: number
   createdAt?: Date | null
   updatedAt?: Date | null
-}
-
-export interface Lessonable {
-  id: number
-  title: string
-  type?: LessonableType
-  url?: string
-  asset_id?: string
-  mux_playback_id?: string
-  duration?: number
-  created_at: Date
-  updated_at: Date
-  content?: string
-  file_path?: string
-  file_type?: string
-  language?: string
-  hints?: string[]
-  instruct?: string
-  sample_code?: string
-  result_code?: string
-  solution_code?: string
-}
-export enum LessonableType {
-  Upload = 'upload',
-}
-
-export enum LessonType {
-  Coding = 'coding',
-  Document = 'document',
-  Quiz = 'quiz',
-  Video = 'video',
 }
 
 export interface ILesson {
@@ -112,9 +85,18 @@ export interface ILesson {
   lessonable?: Lessonable
   created_at: string
   updated_at: string
+  chapter?: IChapter
 }
 
-export interface ILessonLearningPath {
+export interface LearningPathChapterLesson {
+  chapter_id: number
+  chapter_title: string
+  total_chapter_duration: number
+  total_lessons: number
+  lessons: LearningPathLesson[]
+}
+
+export interface LearningPathLesson {
   id: number
   title: string
   type: LessonType
@@ -124,6 +106,37 @@ export interface ILessonLearningPath {
   lessonable: Lessonable
 }
 
+export interface Lessonable {
+  id: number
+  title: string
+  created_at: Date
+  updated_at: Date
+
+  // Quiz
+  questions?: IQuiz[]
+
+  // Video
+  type?: string
+  url?: string
+  asset_id?: string
+  mux_playback_id?: string
+  duration?: number
+
+  // Document
+  content?: string
+  file_path?: string
+  file_type?: string
+
+  // Coding
+  language?: string
+  hints?: string[]
+  instruct?: string
+  sample_code?: string
+  result_code?: string
+  solution_code?: string
+}
+
+export type LessonType = 'video' | 'quiz' | 'document' | 'coding'
 export interface ILessonProcess {
   id: number
   user_id: number

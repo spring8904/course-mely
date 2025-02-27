@@ -1,11 +1,11 @@
-import { ILesson, ILessonLearningPath, ILessonProcess } from '@/types'
+import { ILesson, ILessonProcess, LearningPathChapterLesson } from '@/types'
 import api from '@/configs/api'
 
-type GetLessonsResponse = {
-  chapter_id: number
-  chapter_title: string
-  lessons: ILessonLearningPath[]
-}[]
+export interface GetLessonsResponse {
+  course_name: string
+  total_lesson: number
+  chapter_lessons: LearningPathChapterLesson[]
+}
 
 interface GetLessonDetailResponse {
   lesson: ILesson

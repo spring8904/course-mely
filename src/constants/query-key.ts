@@ -2,6 +2,7 @@ const QUERY_KEY = {
   AUTH: 'auth',
   PROFILE: 'profile',
   CHANGE_PASSWORD: 'change-password',
+  ORDER: 'order',
   COURSES_DISCOUNTED: 'discounted-courses',
   COURSES_FREE: 'free-courses',
   INSTRUCTOR_COURSE: 'instructor-course',
@@ -34,6 +35,7 @@ const QUERY_KEY = {
   LIVE_SESSION_CLIENT: 'live-session-client',
   LEARNING_PATH_PROGRESS: 'learning-path-progress',
   SUPPORT_BANKS: 'support-banks',
+  COURSE_PROGRESS: 'course-progress',
 }
 
 export default QUERY_KEY

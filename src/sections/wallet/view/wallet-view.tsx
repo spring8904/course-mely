@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { useAuthStore } from '@/stores/useAuthStore'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useQueryClient } from '@tanstack/react-query'
@@ -46,6 +47,7 @@ import ModalLoading from '@/components/common/ModalLoading'
 const AMOUNTS = [50000, 100000, 200000, 500000, 1000000, 2000000]
 
 function WalletView() {
+  const router = useRouter()
   const queryClient = useQueryClient()
 
   const [selectedAmount, setSelectedAmount] = useState<number | null>(null)
@@ -83,6 +85,7 @@ function WalletView() {
         toast.success(res.message)
         reset()
         setSelectedAmount(null)
+        router.push(`/instructor/with-draw-request`)
         await queryClient.invalidateQueries({
           queryKey: [QUERY_KEY.INSTRUCTOR_WITH_DRAW_REQUEST],
         })

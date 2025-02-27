@@ -100,7 +100,7 @@ const data = {
     },
     {
       title: 'Giao dịch của tôi',
-      url: '/instructor/transaction',
+      url: '/instructor/with-draw-request',
       icon: Database,
     },
   ],

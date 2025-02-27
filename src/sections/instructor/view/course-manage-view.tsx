@@ -11,7 +11,7 @@ import { useForm } from 'react-hook-form'
 import { ICourse } from '@/types'
 import { ICategory } from '@/types/Category'
 import { CreateCoursePayload, createCourseSchema } from '@/validations/course'
-import { formatCurrency, formatDateTime } from '@/lib/common'
+import { formatCurrency, formatDate } from '@/lib/common'
 import { useGetCategories } from '@/hooks/category/useCategory'
 import {
   useCreateCourse,
@@ -118,16 +118,24 @@ const CourseManageView = () => {
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Ngày tạo" />
       ),
-      cell: () => (
-        <div className="space-y-1">
-          <div className="font-medium">
-            {formatDateTime('2025-01-25T15:41:03.000000Z', 'date')}
+      cell: ({ row }) => {
+        console.log(row.original)
+        return (
+          <div className="space-y-1">
+            <div className="font-medium">
+              {formatDate('2025-01-25T15:41:03.000000Z', {
+                dateStyle: 'medium',
+              })}
+            </div>
+            <div className="text-xs text-muted-foreground">
+              {formatDate('2025-01-25T15:41:03.000000Z', {
+                timeStyle: 'short',
+                hour12: true,
+              })}
+            </div>
           </div>
-          <div className="text-xs text-muted-foreground">
-            {formatDateTime('2025-01-25T15:41:03.000000Z', 'time')}
-          </div>
-        </div>
-      ),
+        )
+      },
     },
     {
       accessorKey: 'price',

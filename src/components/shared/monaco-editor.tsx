@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import dynamic from 'next/dynamic'
 import confetti from 'canvas-confetti'
-import { CirclePlay, Loader2 } from 'lucide-react'
+import { CirclePlay, Loader2, RotateCcw } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
 import { useCompileCode } from '@/hooks/code/use-compile-code'
@@ -23,6 +23,7 @@ type File = {
 
 type Props = {
   files: { [key: string]: File }
+  value?: string
   onChange?: (value?: string, fileName?: string) => void
   onCompile?: (value: any) => void
   theme?: 'light' | 'vs-dark'
@@ -41,6 +42,7 @@ const MonacoEditor = ({
   readOnly,
   runCode = false,
   activeFileGroup = 'solution',
+  value,
   ...rest
 }: Props & { activeFileGroup?: string }) => {
   const firstFileName = Object.keys(files)[0]
@@ -49,16 +51,8 @@ const MonacoEditor = ({
   const [fileName, setFileName] = useState<string>(firstFileName)
   const file = files[fileName]
 
-  const [currentCode, setCurrentCode] = useState<string>(() => {
-    return files[firstFileName]?.value || ''
-  })
-
   const [markers, setMarkers] = useState<any>()
   const editorRef = useRef<any>(null)
-
-  useEffect(() => {
-    setCurrentCode(files[fileName]?.value || '')
-  }, [fileName, files])
 
   useEffect(() => {
     editorRef.current?.focus()
@@ -71,17 +65,19 @@ const MonacoEditor = ({
       {
         language: file.language,
         version: file.version,
-        files: [{ content: currentCode }],
+        files: [{ content: value }],
       },
       {
         onSuccess: (res) => {
           onCompile?.(res.run.output)
 
-          confetti({
-            particleCount: 100,
-            spread: 100,
-            origin: { y: 0.9 },
-          })
+          if (res.run.code === 0) {
+            confetti({
+              particleCount: 100,
+              spread: 100,
+              origin: { y: 0.9 },
+            })
+          }
 
           console.log(
             `File group run: ${activeFileGroup}`,
@@ -116,15 +112,24 @@ const MonacoEditor = ({
             </button>
           )
         })}
+
+        <Button
+          size="icon"
+          className="ml-auto mr-2 bg-transparent hover:bg-transparent"
+          onClick={() => {
+            onChange?.(files[firstFileName]?.value, fileName)
+          }}
+        >
+          <RotateCcw />
+        </Button>
       </div>
 
       <div className="flex-1 bg-[#1e1e1e] pt-5">
         <Editor
           theme={theme}
-          value={currentCode}
+          value={value}
           onChange={(value) => {
-            setCurrentCode(value || '') // Cập nhật state khi người dùng chỉnh sửa
-            onChange?.(value, fileName) // Callback cho cha nếu cần
+            onChange?.(value, fileName)
           }}
           path={file.name}
           defaultLanguage={file.language}
