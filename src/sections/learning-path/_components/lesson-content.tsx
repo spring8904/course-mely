@@ -7,12 +7,20 @@ import VideoLesson from '@/sections/learning-path/_components/video-lesson'
 
 type Props = {
   lesson: ILesson
+  isCompleted: boolean
+  lastTimeVideo?: number
 }
 
-const LessonContent = ({ lesson }: Props) => {
+const LessonContent = ({ lesson, isCompleted, lastTimeVideo }: Props) => {
   const lessonComponents = {
-    video: <VideoLesson lesson={lesson} />,
-    document: <DocumentLesson lesson={lesson} />,
+    video: (
+      <VideoLesson
+        lesson={lesson}
+        isCompleted={isCompleted}
+        lastTimeVideo={lastTimeVideo}
+      />
+    ),
+    document: <DocumentLesson lesson={lesson} isCompleted={isCompleted} />,
     quiz: <QuizLesson lesson={lesson} />,
     coding: <CodingLesson lesson={lesson} />,
   }

@@ -1,13 +1,30 @@
+import { useEffect } from 'react'
+
 import { ILesson } from '@/types'
 import { formatDate } from '@/lib/common'
+import { useCompleteLesson } from '@/hooks/learning-path/useLearningPath'
 
 import HtmlRenderer from '@/components/shared/html-renderer'
 
 type Props = {
   lesson: ILesson
+  isCompleted: boolean
 }
 
-const DocumentLesson = ({ lesson }: Props) => {
+const DocumentLesson = ({ lesson, isCompleted }: Props) => {
+  const { mutate } = useCompleteLesson()
+
+  useEffect(() => {
+    if (isCompleted) return
+
+    const timer = setTimeout(() => {
+      mutate({ lesson_id: lesson.id! })
+    }, 10000)
+
+    return () => clearTimeout(timer)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   return (
     <div className="mx-16 mb-40 mt-12">
       <div className="space-y-2">

@@ -1,17 +1,17 @@
 import { useMutation } from '@tanstack/react-query'
+import toast from 'react-hot-toast'
 
-import { hotToast } from '@/lib/hot-toast'
 import { compileCode } from '@/services/code/compile-code'
 
 export const useCompileCode = () => {
   return useMutation({
     mutationFn: compileCode,
     onSuccess: (res) => {
-      if (res.run.code === 0) hotToast.success('Biên dịch thành công')
-      else hotToast.error('Biên dịch thất bại')
+      if (res.run.code === 0) toast.success('Biên dịch thành công')
+      else toast.error('Biên dịch thất bại')
     },
     onError: () => {
-      hotToast.error('Biên dịch thất bại')
+      toast.error('Biên dịch thất bại')
     },
   })
 }

@@ -1,8 +1,7 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import Image from 'next/image'
 import { format, parseISO } from 'date-fns'
 import { Loader2 } from 'lucide-react'
-import { Toaster } from 'react-hot-toast'
 import { toast } from 'react-toastify'
 
 import { formatDuration, formatNumber } from '@/lib/common'
@@ -152,169 +151,159 @@ const BuyCourseModal = ({ course, isOpen, onClose }: BuyCourseModalProps) => {
   }
 
   return (
-    <>
-      <Toaster
-        position="top-center"
-        toastOptions={{
-          style: {
-            zIndex: 9999, // Đảm bảo toast hiển thị trên modal
-          },
-        }}
-      />
-      <Dialog open={isOpen} onOpenChange={onClose}>
-        <DialogContent className="sm:max-w-4xl">
-          <div className="grid grid-cols-2 gap-8">
-            <div>
-              <DialogHeader>
-                <DialogTitle>Thông tin khoá học</DialogTitle>
-                <DialogDescription>Xác nhận mua khoá học</DialogDescription>
-              </DialogHeader>
-              <div className="mt-4">
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="sm:max-w-4xl">
+        <div className="grid grid-cols-2 gap-8">
+          <div>
+            <DialogHeader>
+              <DialogTitle>Thông tin khoá học</DialogTitle>
+              <DialogDescription>Xác nhận mua khoá học</DialogDescription>
+            </DialogHeader>
+            <div className="mt-4">
+              <Image
+                src={course.thumbnail}
+                alt={course.name}
+                width={400}
+                height={225}
+                className="rounded-lg object-cover"
+              />
+              <p className="mt-4 text-xl font-semibold">{course.name}</p>
+              <ul className="my-2">
+                <li className="flex items-center gap-2">
+                  <i className="flaticon-play-1" />
+                  <p>{formatDuration(course?.total_video_duration ?? 0)}</p>
+                </li>
+                <li className="flex items-center gap-2">
+                  <i className="flaticon-document" />
+                  <p>{course?.lessons_count} bài học</p>
+                </li>
+                <li className="flex items-center gap-2">
+                  <i className="icon-extremely" />
+                  <p>Truy cập chọn đời</p>
+                </li>
+                <li className="flex items-center gap-2">
+                  <i className="flaticon-medal" />
+                  <p>Cấp chứng chỉ khi hoàn thành</p>
+                </li>
+              </ul>
+              <div className="mt-2 flex items-center space-x-2">
                 <Image
-                  src={course.thumbnail}
-                  alt={course.name}
-                  width={400}
-                  height={225}
-                  className="rounded-lg object-cover"
+                  width={30}
+                  height={30}
+                  src={course.user.avatar}
+                  alt={course.user.name}
+                  className="rounded-full object-cover"
                 />
-                <p className="mt-4 text-xl font-semibold">{course.name}</p>
-                <ul className="my-2">
-                  <li className="flex items-center gap-2">
-                    <i className="flaticon-play-1" />
-                    <p>{formatDuration(course?.total_video_duration ?? 0)}</p>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <i className="flaticon-document" />
-                    <p>{course?.lessons_count} bài học</p>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <i className="icon-extremely" />
-                    <p>Truy cập chọn đời</p>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <i className="flaticon-medal" />
-                    <p>Cấp chứng chỉ khi hoàn thành</p>
-                  </li>
-                </ul>
-                <div className="mt-2 flex items-center space-x-2">
-                  <Image
-                    width={30}
-                    height={30}
-                    src={course.user.avatar}
-                    alt={course.user.name}
-                    className="rounded-full object-cover"
-                  />
-                  <div>
-                    <span className="text-sm text-gray-600">
-                      By {course.user.name}
-                    </span>
-                    <span className="block text-xs text-gray-400">
-                      Tham gia{' '}
-                      {format(parseISO(course.user.created_at), 'dd/MM/yyyy')}
-                    </span>
-                  </div>
+                <div>
+                  <span className="text-sm text-gray-600">
+                    By {course.user.name}
+                  </span>
+                  <span className="block text-xs text-gray-400">
+                    Tham gia{' '}
+                    {format(parseISO(course.user.created_at), 'dd/MM/yyyy')}
+                  </span>
                 </div>
               </div>
-            </div>
-            <div>
-              <DialogHeader>
-                <DialogTitle>Thông tin thanh toán</DialogTitle>
-              </DialogHeader>
-              <div className="mt-4 space-y-4">
-                <div>
-                  <Label htmlFor="price">Số tiền gốc</Label>
-                  <Input
-                    id="price"
-                    value={`${formatNumber(course.price_sale > 0 ? course.price_sale : course.price)} VND`}
-                    readOnly
-                    className="mt-1"
-                  />
-                </div>
-
-                <div>
-                  <Label htmlFor="discount">Mã giảm giá</Label>
-                  <div className="flex gap-2">
-                    <Input
-                      id="discount"
-                      placeholder="Nhập mã giảm giá"
-                      value={discountCode}
-                      onChange={(e) => {
-                        setDiscountCode(e.target.value) // Cập nhật mã mới
-                        setDiscountApplied(false) // Xóa trạng thái mã cũ
-                        setDiscountAmount(0) // Reset giảm giá về 0
-                      }}
-                      className="mt-1 flex-1"
-                    />
-                    <Button onClick={handleApplyDiscount} className="mt-1">
-                      Áp dụng
-                    </Button>
-                  </div>
-                </div>
-
-                {discountApplied && (
-                  <div>
-                    <Label>Giảm giá</Label>
-                    <Input
-                      value={`-${formatNumber(discountAmount)} VND`}
-                      readOnly
-                      className="mt-1 text-red-500"
-                    />
-                  </div>
-                )}
-
-                <div>
-                  <Label>Số tiền thanh toán</Label>
-                  <Input
-                    value={`${formatNumber(finalPrice)} VND`}
-                    readOnly
-                    className="mt-1 font-semibold text-green-600"
-                  />
-                </div>
-
-                <div>
-                  <Label>Hình thức thanh toán</Label>
-                  <div className="mt-2 grid grid-cols-3 gap-4">
-                    {paymentMethods.map((method) => (
-                      <div
-                        key={method.id}
-                        className={`cursor-pointer rounded-lg border p-4 transition-all hover:border-primary ${
-                          selectedPaymentMethod === method.id
-                            ? 'border-primary shadow'
-                            : 'border-gray-200'
-                        }`}
-                        onClick={() => setSelectedPaymentMethod(method.id)}
-                      >
-                        <Image
-                          src={method.icon}
-                          alt={method.name}
-                          width={80}
-                          height={50}
-                          className="mx-auto"
-                        />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              <Button
-                disabled={isPendingCreateVNPayPayment}
-                onClick={handlePayment}
-                className="mt-6 w-full"
-              >
-                {isPendingCreateVNPayPayment ? (
-                  <div className="flex items-center gap-2">
-                    <Loader2 className="animate-spin" /> Loading...
-                  </div>
-                ) : (
-                  'Thanh toán'
-                )}
-              </Button>
             </div>
           </div>
-        </DialogContent>
-      </Dialog>
-    </>
+          <div>
+            <DialogHeader>
+              <DialogTitle>Thông tin thanh toán</DialogTitle>
+            </DialogHeader>
+            <div className="mt-4 space-y-4">
+              <div>
+                <Label htmlFor="price">Số tiền gốc</Label>
+                <Input
+                  id="price"
+                  value={`${formatNumber(course.price_sale > 0 ? course.price_sale : course.price)} VND`}
+                  readOnly
+                  className="mt-1"
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="discount">Mã giảm giá</Label>
+                <div className="flex gap-2">
+                  <Input
+                    id="discount"
+                    placeholder="Nhập mã giảm giá"
+                    value={discountCode}
+                    onChange={(e) => {
+                      setDiscountCode(e.target.value) // Cập nhật mã mới
+                      setDiscountApplied(false) // Xóa trạng thái mã cũ
+                      setDiscountAmount(0) // Reset giảm giá về 0
+                    }}
+                    className="mt-1 flex-1"
+                  />
+                  <Button onClick={handleApplyDiscount} className="mt-1">
+                    Áp dụng
+                  </Button>
+                </div>
+              </div>
+
+              {discountApplied && (
+                <div>
+                  <Label>Giảm giá</Label>
+                  <Input
+                    value={`-${formatNumber(discountAmount)} VND`}
+                    readOnly
+                    className="mt-1 text-red-500"
+                  />
+                </div>
+              )}
+
+              <div>
+                <Label>Số tiền thanh toán</Label>
+                <Input
+                  value={`${formatNumber(finalPrice)} VND`}
+                  readOnly
+                  className="mt-1 font-semibold text-green-600"
+                />
+              </div>
+
+              <div>
+                <Label>Hình thức thanh toán</Label>
+                <div className="mt-2 grid grid-cols-3 gap-4">
+                  {paymentMethods.map((method) => (
+                    <div
+                      key={method.id}
+                      className={`cursor-pointer rounded-lg border p-4 transition-all hover:border-primary ${
+                        selectedPaymentMethod === method.id
+                          ? 'border-primary shadow'
+                          : 'border-gray-200'
+                      }`}
+                      onClick={() => setSelectedPaymentMethod(method.id)}
+                    >
+                      <Image
+                        src={method.icon}
+                        alt={method.name}
+                        width={80}
+                        height={50}
+                        className="mx-auto"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <Button
+              disabled={isPendingCreateVNPayPayment}
+              onClick={handlePayment}
+              className="mt-6 w-full"
+            >
+              {isPendingCreateVNPayPayment ? (
+                <div className="flex items-center gap-2">
+                  <Loader2 className="animate-spin" /> Loading...
+                </div>
+              ) : (
+                'Thanh toán'
+              )}
+            </Button>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
   )
 }
 
