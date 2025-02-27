@@ -9,6 +9,7 @@ import {
   Book,
   ChartPie,
   Command,
+  Database,
   GalleryVerticalEnd,
   MessageSquareText,
   UsersRound,
@@ -99,8 +100,8 @@ const data = {
     },
     {
       title: 'Giao dịch của tôi',
-      url: '/instructor/transaction',
-      icon: BadgeEuro,
+      url: '/instructor/with-draw-request',
+      icon: Database,
     },
   ],
 }

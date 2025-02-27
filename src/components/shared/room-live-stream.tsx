@@ -34,7 +34,7 @@ const RoomLiveStream = ({ id }: { id: string }) => {
   const [chatInput, setChatInput] = useState('')
   const [joinNotification, setJoinNotification] = useState<string | null>(null)
 
-  const { isAuthenticated, user } = useAuthStore()
+  const { isAuthenticated } = useAuthStore()
   const { data: liveSession, isLoading } = useLiveSessionInfo(id)
   const { mutate: sendMessage, isPending } = useSendMessageLive()
 
@@ -137,7 +137,7 @@ const RoomLiveStream = ({ id }: { id: string }) => {
   }
 
   if (isLoading) return <ModalLoading />
-
+  console.log(liveSession?.data.mux_playback_id)
   return (
     <div className="flex h-screen bg-gray-100">
       <div className="relative flex w-2/3 flex-col border-r border-gray-300">
@@ -149,9 +149,9 @@ const RoomLiveStream = ({ id }: { id: string }) => {
 
         <div className="relative flex grow items-center justify-center bg-black">
           <MuxPlayer
-            streamType="live"
+            // streamType="live"
             playbackId={liveSession?.data.mux_playback_id}
-            metadata={{ viewer_user_id: user?.id || 'anonymous' }}
+            // metadata={{ viewer_user_id: user?.id || 'anonymous' }}
             className="size-full"
           />
 

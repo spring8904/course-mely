@@ -14,6 +14,8 @@ const QUERY_KEY = {
   INSTRUCTOR_LESSON_CODING: 'instructor-lesson-coding',
   INSTRUCTOR_GET_PARTICIPATED_COURSE: 'instructor-get-participated-courses',
   INSTRUCTOR_LIVE_SESSIONS: 'instructor-live-sessions',
+  INSTRUCTOR_WALLET: 'instructor-wallet',
+  INSTRUCTOR_WITH_DRAW_REQUEST: 'instructor-with-draw-request',
   CATEGORY: 'categories',
   COURSE: 'course',
   QA_SYSTEM: 'qa-systems',
@@ -31,6 +33,8 @@ const QUERY_KEY = {
   USER_GET_MY_COURSES: 'user-get-my-courses',
   LEARNING_PATH_LESSON: 'learning-path-lesson',
   LIVE_SESSION_CLIENT: 'live-session-client',
+  LEARNING_PATH_PROGRESS: 'learning-path-progress',
+  SUPPORT_BANKS: 'support-banks',
   COURSE_PROGRESS: 'course-progress',
 }
 

@@ -21,7 +21,7 @@ const DashboardLayout = ({ children }: LayoutProps) => {
       <SidebarInset className="overflow-auto">
         <TopBar />
         <ProgressBar />
-        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">{children}</div>
+        <div className="gap-4pt-0 flex flex-1 flex-col">{children}</div>
       </SidebarInset>
     </SidebarProvider>
   )
