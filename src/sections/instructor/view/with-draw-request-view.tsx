@@ -119,6 +119,9 @@ const WithDrawRequestView = () => {
             variant = 'warning'
             break
           case 'Đã xử lý':
+            variant = 'secondary'
+            break
+          case 'Chờ xác nhận lại':
             variant = 'info'
             break
           case 'Từ chối':
