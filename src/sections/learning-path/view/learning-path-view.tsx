@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo } from 'react'
+import React, { useMemo } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -9,7 +9,6 @@ import {
   ChevronLeft,
   ChevronRight,
   Lock,
-  MessageCircleMore,
   Notebook,
 } from 'lucide-react'
 
@@ -30,16 +29,9 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion'
 import { Button } from '@/components/ui/button'
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from '@/components/ui/sheet'
 import LearningProcess from '@/components/common/LearningProcess'
 import ModalLoading from '@/components/common/ModalLoading'
+import CommentLesson from '@/sections/learning-path/_components/comment-lesson'
 import LessonContent from '@/sections/learning-path/_components/lesson-content'
 
 type Props = {
@@ -52,7 +44,6 @@ const LearningPathView = ({ courseSlug, lessonId }: Props) => {
 
   const { data: lessons, isLoading: isLessonLoading } =
     useGetLessons(courseSlug)
-
   const { chapter_lessons, course_name, total_lesson } = lessons || {}
 
   const { data: lessonDetail, isLoading: isLessonDetailLoading } =
@@ -243,23 +234,7 @@ const LearningPathView = ({ courseSlug, lessonId }: Props) => {
         </div>
 
         <div className="absolute right-2 top-1/2 -translate-y-1/2">
-          <Sheet>
-            <Button asChild className="text-lg [&_svg]:size-5">
-              <SheetTrigger>
-                <MessageCircleMore />
-                Hỏi đáp
-              </SheetTrigger>
-            </Button>
-            <SheetContent>
-              <SheetHeader>
-                <SheetTitle>Are you absolutely sure?</SheetTitle>
-                <SheetDescription>
-                  This action cannot be undone. This will permanently delete
-                  your account and remove your data from our servers.
-                </SheetDescription>
-              </SheetHeader>
-            </SheetContent>
-          </Sheet>
+          <CommentLesson lessonId={lessonId} />
         </div>
       </div>
     </div>

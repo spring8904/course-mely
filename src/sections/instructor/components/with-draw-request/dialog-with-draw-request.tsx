@@ -4,11 +4,13 @@ import { Loader2 } from 'lucide-react'
 import { toast } from 'react-toastify'
 
 import QUERY_KEY from '@/constants/query-key'
+import { formatCurrency } from '@/lib/common'
 import {
   useGetWithDrawalRequest,
   useHandleConfirmWithDrawalRequest,
 } from '@/hooks/wallet/useWallet'
 
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -17,6 +19,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
+
+const statusMappings: Record<string, string> = {
+  'Đang xử lý': 'bg-yellow-100 text-yellow-800',
+  'Đã xử lý': 'bg-blue-100 text-blue-800',
+  'Chờ xác nhận lại': 'bg-purple-100 text-purple-800',
+  'Hoàn thành': 'bg-green-100 text-green-800',
+  'Từ chối': 'bg-red-100 text-red-800',
+}
 
 const DialogWithDrawRequest = ({
   open,
@@ -79,12 +89,24 @@ const DialogWithDrawRequest = ({
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent className="max-w-4xl">
-          <DialogHeader>
-            <DialogTitle>Thông tin yêu cầu: {selectWithDraw ?? ''}</DialogTitle>
-            <DialogDescription className="text-gray-600">
-              Dưới đây là thông tin yêu cầu rút tiền của bạn.
-            </DialogDescription>
-          </DialogHeader>
+          <div className="flex items-center justify-between">
+            <DialogHeader>
+              <DialogTitle>
+                Thông tin yêu cầu: {selectWithDraw ?? ''}
+              </DialogTitle>
+              <DialogDescription className="text-gray-600">
+                Dưới đây là thông tin yêu cầu rút tiền của bạn.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogHeader>
+              {withDrawRequestData?.data.instructor_confirmation ===
+              'confirmed' ? (
+                <Badge variant="success">Đã phản hồi</Badge>
+              ) : (
+                <Badge>Chưa phản hồi</Badge>
+              )}
+            </DialogHeader>
+          </div>
           {isLoading ? (
             <Loader2 className="mx-auto size-8 animate-spin" />
           ) : (
@@ -114,10 +136,9 @@ const DialogWithDrawRequest = ({
                           Số tiền
                         </td>
                         <td className="px-4 py-2 text-gray-600">
-                          {parseInt(
-                            withDrawRequestData.data.amount
-                          ).toLocaleString()}{' '}
-                          ₫
+                          {formatCurrency(
+                            withDrawRequestData.data.amount || ''
+                          )}
                         </td>
                       </tr>
                       <tr className="border-b">
@@ -135,15 +156,8 @@ const DialogWithDrawRequest = ({
                         <td className="px-4 py-2 text-gray-600">
                           <span
                             className={`inline-flex items-center rounded-full px-3 py-0.5 text-sm font-medium ${
-                              withDrawRequestData.data.status === 'Đã xử lý'
-                                ? 'bg-blue-100 text-blue-800'
-                                : withDrawRequestData.data.status ===
-                                    'Đang xử lý'
-                                  ? 'bg-yellow-100 text-yellow-800'
-                                  : withDrawRequestData.data.status ===
-                                      'Hoàn thành'
-                                    ? 'bg-green-100 text-green-800'
-                                    : 'bg-red-100 text-red-800'
+                              statusMappings[withDrawRequestData.data.status] ||
+                              'bg-gray-100 text-gray-800'
                             }`}
                           >
                             {withDrawRequestData.data.status}
@@ -165,6 +179,37 @@ const DialogWithDrawRequest = ({
                         <td className="px-4 py-2 text-gray-600">
                           {withDrawRequestData.data.completed_date ||
                             'Chưa hoàn thành'}
+                        </td>
+                      </tr>
+                      {withDrawRequestData.data.admin_comment && (
+                        <tr className="border-b">
+                          <td className="px-4 py-2 font-medium text-gray-900">
+                            Ghi chú từ giảng viên
+                          </td>
+                          <td className="px-4 py-2 text-gray-600">
+                            {withDrawRequestData.data.admin_comment ||
+                              'Không có ghi chú'}
+                          </td>
+                        </tr>
+                      )}
+                      <tr className="border-b">
+                        <td className="px-4 py-2 font-medium text-gray-900">
+                          Phản hồi xác nhận
+                        </td>
+                        <td className="px-4 py-2 text-gray-600">
+                          {withDrawRequestData.data
+                            .instructor_confirmation_note ||
+                            'Bạn chưa phản hồi'}
+                        </td>
+                      </tr>
+                      <tr className="border-b">
+                        <td className="px-4 py-2 font-medium text-gray-900">
+                          Ngày gửi yêu cầu khiếu nại
+                        </td>
+                        <td className="px-4 py-2 text-gray-600">
+                          {withDrawRequestData.data
+                            .instructor_confirmation_date ||
+                            'Bạn chưa phản hồi'}
                         </td>
                       </tr>
                     </tbody>

@@ -36,6 +36,7 @@ const QUERY_KEY = {
   LEARNING_PATH_PROGRESS: 'learning-path-progress',
   SUPPORT_BANKS: 'support-banks',
   COURSE_PROGRESS: 'course-progress',
+  LESSON_COMMENT: 'lesson-comment',
 }
 
 export default QUERY_KEY
