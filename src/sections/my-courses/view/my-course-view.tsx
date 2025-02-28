@@ -3,6 +3,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { Loader2 } from 'lucide-react'
 
+import { formatDuration } from '@/lib/common'
 import { useGetMyCourses } from '@/hooks/user/useUser'
 
 import { Button } from '@/components/ui/button'
@@ -44,7 +45,7 @@ const MyCourseView = () => {
                     </div>
                     <div className="meta-item">
                       <i className="flaticon-clock"></i>
-                      <p>16 hours</p>
+                      <p>{formatDuration(course.total_video_duration || '')}</p>
                     </div>
                   </div>
                   <h6 className="fw-5 line-clamp-2">
@@ -79,7 +80,9 @@ const MyCourseView = () => {
                     </a>
                   </div>
                   <div className="mt-4">
-                    <Link href={`/learning/${course.id}`}>
+                    <Link
+                      href={`/learning/${course.slug}/lesson/${course.current_lesson.id}`}
+                    >
                       <Button>Tiếp tục học</Button>
                     </Link>
                   </div>

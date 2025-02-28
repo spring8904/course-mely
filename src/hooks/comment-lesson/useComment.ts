@@ -14,6 +14,13 @@ export const useGetLessonComments = (lessonId: string) => {
     enabled: !!lessonId,
   })
 }
+export const useGetReplyLessonComment = (commentId: string) => {
+  return useQuery({
+    queryKey: [QUERY_KEY.LESSON_COMMENT, commentId],
+    queryFn: () => commentLessonApi.getCommentReplyLesson(commentId!),
+    enabled: !!commentId,
+  })
+}
 
 export const useStoreCommentLesson = () => {
   return useMutation({

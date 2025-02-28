@@ -283,9 +283,8 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
               <Button
                 disabled={
                   courseStatus === 'pending' ||
-                  courseStatus === 'approved' ||
                   isSubmitCoursePending ||
-                  progress < 100
+                  (courseStatus !== 'approved' && progress < 100)
                 }
                 onClick={courseHandleSubmit}
                 className={
@@ -293,7 +292,7 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
                 }
               >
                 {courseStatus === 'approved'
-                  ? 'Đã được kiểm duyệt'
+                  ? 'Yêu cầu sửa đổi nội dung'
                   : courseStatus === 'rejected'
                     ? 'Gửi lại thông tin khoá học'
                     : 'Gửi yêu cầu kiểm duyệt'}
