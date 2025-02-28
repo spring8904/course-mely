@@ -7,7 +7,10 @@ import { Plus } from 'lucide-react'
 
 import { ILesson } from '@/types'
 import { formatDate, formatDuration } from '@/lib/common'
-import { useCompleteLesson } from '@/hooks/learning-path/useLearningPath'
+import {
+  useCompleteLesson,
+  useUpdateLastTime,
+} from '@/hooks/learning-path/useLearningPath'
 
 import { Button } from '@/components/ui/button'
 import HtmlRenderer from '@/components/shared/html-renderer'
@@ -20,42 +23,66 @@ type Props = {
 
 const VideoLesson = ({ lesson, isCompleted, lastTimeVideo = 0 }: Props) => {
   const [currentTime, setCurrentTime] = useState(0)
+  const muxPlayerRef = useRef<MuxPlayerElement>(null)
   const isCalled = useRef<boolean>(false)
 
-  const { mutate } = useCompleteLesson()
+  const { mutate: completeLesson } = useCompleteLesson()
+  const { mutate: updateLastTime } = useUpdateLastTime()
+
+  const handleTimeUpdate = (e: Event) => {
+    const element = e.target as MuxPlayerElement
+    setCurrentTime(element.currentTime)
+
+    if (
+      !isCompleted &&
+      element.currentTime > (2 / 3) * element.duration &&
+      !isCalled.current
+    ) {
+      isCalled.current = true
+      completeLesson(
+        {
+          lesson_id: lesson.id!,
+          current_time: element.currentTime,
+        },
+        {
+          onError: () => {
+            isCalled.current = false
+          },
+        }
+      )
+    }
+  }
+
+  const handlePause = (e: Event) => {
+    const element = e.target as MuxPlayerElement
+    updateLastTime({
+      lesson_id: lesson.id!,
+      last_time_video: element.currentTime,
+    })
+  }
+
+  // useEffect(() => {
+  //   const handleBeforeUnload = (e: Event) => {
+  //     e.preventDefault()
+  //     muxPlayerRef.current?.pause()
+  //   }
+
+  //   window.addEventListener('beforeunload', handleBeforeUnload)
+  //   return () => window.removeEventListener('beforeunload', handleBeforeUnload)
+  // }, [])
 
   return (
     <>
       <div className="bg-black/95 px-16 lg:px-20 xl:px-40">
         <div className="aspect-video">
           <MuxPlayer
+            ref={muxPlayerRef}
             playbackId={lesson.lessonable?.mux_playback_id}
             accentColor={'hsl(var(--primary))'}
             className="h-full"
             currentTime={lastTimeVideo}
-            onTimeUpdate={(e) => {
-              const element = e.target as MuxPlayerElement
-              setCurrentTime(element?.currentTime)
-
-              if (
-                !isCompleted &&
-                element.currentTime > (2 / 3) * element.duration &&
-                !isCalled.current
-              ) {
-                isCalled.current = true
-                mutate(
-                  {
-                    lesson_id: lesson.id!,
-                    current_time: element.currentTime,
-                  },
-                  {
-                    onError: () => {
-                      isCalled.current = false
-                    },
-                  }
-                )
-              }
-            }}
+            onTimeUpdate={handleTimeUpdate}
+            onPause={handlePause}
           />
         </div>
       </div>

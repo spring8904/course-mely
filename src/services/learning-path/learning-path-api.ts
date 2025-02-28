@@ -19,6 +19,11 @@ interface CompleteLessonPayload {
   current_time?: number
 }
 
+interface UpdateLastTimePayload {
+  lesson_id: number
+  last_time_video: number
+}
+
 const prefix = 'learning-paths'
 
 export const learningPathApi = {
@@ -34,12 +39,15 @@ export const learningPathApi = {
     return response.data
   },
 
-  completeLesson: async ({
-    lesson_id,
-    current_time,
-  }: CompleteLessonPayload): Promise<void> => {
-    await api.patch(`${prefix}/lesson/${lesson_id}/complete-lesson`, {
+  completeLesson: ({ lesson_id, current_time }: CompleteLessonPayload) => {
+    return api.patch(`${prefix}/lesson/${lesson_id}/complete-lesson`, {
       current_time,
+    })
+  },
+
+  updateLastTime: ({ lesson_id, last_time_video }: UpdateLastTimePayload) => {
+    return api.put(`${prefix}/lesson/${lesson_id}/update-last-time-video`, {
+      last_time_video,
     })
   },
 }
