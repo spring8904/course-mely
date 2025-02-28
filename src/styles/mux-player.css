@@ -1,0 +1,7 @@
+mux-player {
+  /* --seek-live-button: none; */
+  /* --seek-backward-button: none; */
+  --seek-forward-button: none;
+  /* --time-range: none; */
+  --playback-rate-button: none;
+}

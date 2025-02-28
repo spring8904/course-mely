@@ -15,6 +15,8 @@ import {
 import { Button } from '@/components/ui/button'
 import HtmlRenderer from '@/components/shared/html-renderer'
 
+import '@/styles/mux-player.css'
+
 type Props = {
   lesson: ILesson
   isCompleted: boolean
@@ -27,7 +29,8 @@ const VideoLesson = ({ lesson, isCompleted, lastTimeVideo = 0 }: Props) => {
   const isCalled = useRef<boolean>(false)
 
   const { mutate: completeLesson } = useCompleteLesson()
-  const { mutate: updateLastTime } = useUpdateLastTime()
+  const { mutate: updateLastTime, isPending: isLastTimeUpdating } =
+    useUpdateLastTime()
 
   const handleTimeUpdate = (e: Event) => {
     const element = e.target as MuxPlayerElement
@@ -51,6 +54,13 @@ const VideoLesson = ({ lesson, isCompleted, lastTimeVideo = 0 }: Props) => {
         }
       )
     }
+
+    if (Math.round(element.currentTime) % 30 === 0 && !isLastTimeUpdating) {
+      updateLastTime({
+        lesson_id: lesson.id!,
+        last_time_video: element.currentTime,
+      })
+    }
   }
 
   const handlePause = (e: Event) => {
@@ -60,16 +70,6 @@ const VideoLesson = ({ lesson, isCompleted, lastTimeVideo = 0 }: Props) => {
       last_time_video: element.currentTime,
     })
   }
-
-  // useEffect(() => {
-  //   const handleBeforeUnload = (e: Event) => {
-  //     e.preventDefault()
-  //     muxPlayerRef.current?.pause()
-  //   }
-
-  //   window.addEventListener('beforeunload', handleBeforeUnload)
-  //   return () => window.removeEventListener('beforeunload', handleBeforeUnload)
-  // }, [])
 
   return (
     <>
