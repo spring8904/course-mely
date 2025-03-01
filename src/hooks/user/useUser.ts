@@ -18,3 +18,10 @@ export const useGetProgress = (course: string) => {
     staleTime: 1000 * 60 * 5,
   })
 }
+
+export const useGetCouponUser = () => {
+  return useQuery({
+    queryKey: [QUERY_KEY.USER_GET_MY_COUPONS],
+    queryFn: () => userApi.getCouponUser(),
+  })
+}

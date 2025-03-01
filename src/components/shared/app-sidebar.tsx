@@ -12,6 +12,7 @@ import {
   Database,
   GalleryVerticalEnd,
   MessageSquareText,
+  TicketPercent,
   UsersRound,
   Wallet,
 } from 'lucide-react'
@@ -87,6 +88,11 @@ const data = {
       title: 'Bài viết',
       url: '/instructor/posts',
       icon: MessageSquareText,
+    },
+    {
+      title: 'Mã giảm giá',
+      url: '/instructor/coupon',
+      icon: TicketPercent,
     },
     {
       title: 'Ví của bạn',

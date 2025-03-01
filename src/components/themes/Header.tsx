@@ -6,18 +6,32 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useAuthStore } from '@/stores/useAuthStore'
 import { useWishListStore } from '@/stores/useWishListStore'
-import { Loader2, Search } from 'lucide-react'
+import { Bell, CheckCircle, Loader2, Search } from 'lucide-react'
+import { toast } from 'react-toastify'
 import Swal from 'sweetalert2'
 
 import { ICourse, IInstructorProfile } from '@/types'
 import { Role } from '@/constants/role'
+import echo from '@/lib/echo'
+import { cn } from '@/lib/utils'
 import { useLogOut } from '@/hooks/auth/useLogOut'
 import { useGetCategories } from '@/hooks/category/useCategory'
 import { useDebounce } from '@/hooks/debounce/useDebounce'
+import {
+  useGetNotifications,
+  useMarkAsRead,
+} from '@/hooks/notification/useNotification'
 import { useSearch } from '@/hooks/search/userSearch'
 import { useGetWishLists } from '@/hooks/wish-list/useWishList'
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Button } from '@/components/ui/button'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
+import { Separator } from '@/components/ui/separator'
 import WishListIcon from '@/components/common/WishListIcon'
 
 const MobileMenu = dynamic(() => import('./MobileMenu'), {
@@ -28,6 +42,15 @@ const Header = () => {
   const [query, setQuery] = useState('')
   const [categories, setCategories] = useState<any[]>([])
   const [inputWidth, setInputWidth] = useState(0)
+  const [searchTerm, setSearchTerm] = useState('')
+  const [notifications, setNotifications] = useState<
+    { id: string; message: string; read_at: string | null }[]
+  >([])
+
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
+    useGetNotifications()
+  const { mutate: markAsRead } = useMarkAsRead()
+
   const { user, isAuthenticated, role } = useAuthStore()
   const { isPending, mutate } = useLogOut()
   const { data: wishListData } = useGetWishLists()
@@ -39,6 +62,38 @@ const Header = () => {
     useSearch(debouncedQuery)
 
   const inputRef = useRef<HTMLInputElement | null>(null)
+
+  useEffect(() => {
+    if (!isLoading && data) {
+      setNotifications(data?.pages.flatMap((page) => page.notifications) || [])
+    }
+  }, [user?.id, data, isLoading])
+
+  useEffect(() => {
+    if (!user?.id) return
+
+    const privateChannel = echo.private(`member.${user?.id}`)
+
+    privateChannel.notification((notification: any) => {
+      console.log('🔔 Notification for Member:', notification)
+      toast.info(notification.message)
+
+      setNotifications((prev) => {
+        if (prev.some((noti) => noti.id === notification.id)) {
+          console.log('Duplicate notification detected:', notification.id)
+          return prev
+        }
+        return [
+          { id: notification.id, message: notification.message, read_at: null },
+          ...prev,
+        ]
+      })
+    })
+
+    return () => {
+      echo.leave(`instructor.${user.id}`)
+    }
+  }, [user?.id])
 
   useEffect(() => {
     if (inputRef.current) {
@@ -81,6 +136,23 @@ const Header = () => {
       }
     })
   }
+
+  const handleMarkAsRead = (id: string) => {
+    markAsRead(id)
+    setNotifications((prev) =>
+      prev.map((n) =>
+        n.id === id ? { ...n, read_at: new Date().toISOString() } : n
+      )
+    )
+  }
+
+  const filteredNotifications = notifications
+    .filter((noti: any) =>
+      noti?.data?.message.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    .slice(0, 5)
+
+  const hasUnread = notifications.some((n) => !n.read_at)
 
   return (
     <>
@@ -157,6 +229,100 @@ const Header = () => {
                 <i className="icon-search fs-20"></i>
               </a>
               <WishListIcon />
+              <div>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      className="relative rounded-full border-2 p-2"
+                    >
+                      <Bell
+                        className={cn(
+                          'size-6 text-gray-700',
+                          hasUnread && 'animate-bell'
+                        )}
+                      />
+                      {hasUnread && (
+                        <span className="absolute -top-1 right-[-2px] flex size-3">
+                          <span className="absolute size-full animate-ping rounded-full bg-red-400/75"></span>
+                          <span className="relative size-3 rounded-full bg-red-500"></span>
+                        </span>
+                      )}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent
+                    align="start"
+                    side="bottom"
+                    className="w-100 mr-6 p-2"
+                  >
+                    <div className="flex justify-between gap-2">
+                      <h4 className="text-sm font-medium">Thông báo</h4>
+                      <input
+                        type="text"
+                        placeholder="Tìm kiếm..."
+                        className="w-60 rounded border px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                      />
+                    </div>
+                    <Separator className="my-2" />
+                    {isLoading ? (
+                      <Loader2 />
+                    ) : filteredNotifications.length > 0 ? (
+                      <div className="flex w-full flex-col gap-3">
+                        {filteredNotifications.map((noti: any) => (
+                          <div
+                            key={noti.id}
+                            className={`flex cursor-pointer items-center gap-4 rounded p-2 ${
+                              noti.read_at ? 'bg-gray-100' : 'bg-blue-50'
+                            }`}
+                            onClick={() => handleMarkAsRead(noti.id)}
+                          >
+                            <div className="flex size-8 items-center justify-center rounded-full bg-gray-300">
+                              {noti?.data.course_thumbnail ? (
+                                <Image
+                                  src={noti?.data.course_thumbnail}
+                                  alt="thumbnail"
+                                  className="size-full rounded-full object-cover"
+                                  width={32}
+                                  height={32}
+                                />
+                              ) : (
+                                <span className="text-sm font-bold text-white">
+                                  {noti?.data.sender?.charAt(0) ?? 'N'}
+                                </span>
+                              )}
+                            </div>
+
+                            <div className="flex flex-1 items-center justify-between">
+                              <span className="text-sm">
+                                {noti?.data.message}
+                              </span>
+                              {!noti.read_at && (
+                                <CheckCircle className="size-4 text-green-500" />
+                              )}
+                            </div>
+                          </div>
+                        ))}
+
+                        {hasNextPage && (
+                          <button
+                            className="mt-2 w-full text-center font-bold text-primary"
+                            onClick={() => fetchNextPage()}
+                            disabled={!hasNextPage || isFetchingNextPage}
+                          >
+                            {isFetchingNextPage ? 'Đang tải...' : 'Xem thêm'}
+                          </button>
+                        )}
+                      </div>
+                    ) : (
+                      <p className="text-sm text-gray-500">
+                        Không có thông báo mới
+                      </p>
+                    )}
+                  </PopoverContent>
+                </Popover>
+              </div>
               {isAuthenticated ? (
                 <>
                   <div className="dropdown">
