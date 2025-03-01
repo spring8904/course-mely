@@ -13,8 +13,6 @@ interface Props {
   error: any
 }
 
-const orderNumber = 'ORD-2024-03-15-789'
-
 const PaymentErrorView = ({ error }: Props) => {
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-rose-50 via-red-50 to-orange-50 p-4">
@@ -57,12 +55,6 @@ const PaymentErrorView = ({ error }: Props) => {
                   </h3>
                   <div className="space-y-1.5">
                     <p className="flex items-center gap-2 text-xs text-red-700">
-                      <span className="text-red-600">Mã đơn hàng:</span>
-                      <code className="rounded-md bg-red-100 px-2 py-0.5 font-mono text-red-900">
-                        {orderNumber}
-                      </code>
-                    </p>
-                    <p className="flex items-center gap-2 text-xs text-red-700">
                       <span className="text-red-600">Mã lỗi:</span>
                       <code className="rounded-md bg-red-100 px-2 py-0.5 font-mono text-red-900">
                         {error}
@@ -76,7 +68,7 @@ const PaymentErrorView = ({ error }: Props) => {
             <div className="space-y-3 pt-4">
               <button
                 onClick={() => (window.location.href = '/checkout')}
-                className="animate-gradient group w-full rounded-xl bg-gradient-to-r from-red-600 via-rose-600 to-orange-600 px-4 py-3 text-sm font-medium text-white shadow-sm transition-all duration-300 hover:-translate-y-0.5"
+                className="animate-gradient group mb-2 w-full rounded-xl bg-gradient-to-r from-red-600 via-rose-600 to-orange-600 px-4 py-3 text-sm font-medium text-white shadow-sm transition-all duration-300 hover:-translate-y-0.5"
               >
                 <span className="flex items-center justify-center gap-2">
                   <RefreshCcw
