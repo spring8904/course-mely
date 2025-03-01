@@ -60,6 +60,11 @@ export const couponSchema = z
       .array(z.number().positive('ID người dùng phải là số nguyên dương.'))
       .optional()
       .nullable(),
+    course_ids: z
+      .array(z.number().positive('ID khoá học phải là số nguyên dương.'))
+      .optional()
+      .nullable(),
+    specific_course: z.any().optional(),
   })
   .superRefine((data, ctx) => {
     if (data.discount_type === 'fixed') {

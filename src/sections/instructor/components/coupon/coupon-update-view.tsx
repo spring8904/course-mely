@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useQueryClient } from '@tanstack/react-query'
+import { Loader2 } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 
@@ -14,11 +15,13 @@ import {
   useGetCoupon,
   useUpdateCoupon,
 } from '@/hooks/instructor/coupon/useCoupon'
+import { useGetCourses } from '@/hooks/instructor/course/useCourse'
 import { useGetLearners } from '@/hooks/learner/useLearner'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog'
 import {
   Form,
   FormControl,
@@ -43,9 +46,12 @@ const CouponUpdateView = ({ id }: { id: string }) => {
   const queryClient = useQueryClient()
 
   const [searchTerm, setSearchTerm] = useState('')
+  const [dialogOpen, setDialogOpen] = useState(false)
   const [selectedRows, setSelectedRows] = useState<number[]>([])
+  const [selectedCourses, setSelectedCourses] = useState<number[]>([])
 
   const { data: learnerData, isLoading } = useGetLearners()
+  const { data: courseData, isLoading: isLoadingCourseData } = useGetCourses()
   const { data: couponDetails, isLoading: isCouponLoading } = useGetCoupon(id)
   const { mutate: updateCoupon, isPending } = useUpdateCoupon()
 
@@ -67,7 +73,9 @@ const CouponUpdateView = ({ id }: { id: string }) => {
 
   useEffect(() => {
     if (couponDetails && couponDetails.data) {
-      const { coupon_uses, ...couponValues } = couponDetails.data
+      const { coupon_uses, coupon_courses, ...couponValues } =
+        couponDetails.data
+
       form.reset({
         ...couponValues,
         discount_value: parseFloat(couponValues.discount_value),
@@ -83,6 +91,7 @@ const CouponUpdateView = ({ id }: { id: string }) => {
         form.setValue('discount_max_value', undefined)
       }
       setSelectedRows(coupon_uses.map((use: any) => use.user.id))
+      setSelectedCourses(coupon_courses.map((course: any) => course.id))
     }
   }, [couponDetails, form])
 
@@ -104,12 +113,19 @@ const CouponUpdateView = ({ id }: { id: string }) => {
       form.setValue('discount_value', currentDiscountValue)
       form.setValue('discount_max_value', undefined)
     }
-  }, [form.watch('discount_type')])
+  }, [form])
 
   const filteredData = learnerData?.data?.filter((learner: any) => {
     const searchFields = ['name']
     return searchFields.some((field) =>
       learner[field]?.toLowerCase()?.includes(searchTerm.toLowerCase())
+    )
+  })
+
+  const filteredDataCourse = courseData?.data?.filter((course: any) => {
+    const searchFields = ['name', 'slug', 'description']
+    return searchFields.some((field) =>
+      course[field]?.toLowerCase()?.includes(searchTerm.toLowerCase())
     )
   })
 
@@ -151,14 +167,51 @@ const CouponUpdateView = ({ id }: { id: string }) => {
     { accessorKey: 'name', header: 'Tên học viên' },
     { accessorKey: 'email', header: 'Email' },
   ]
+  const courseColumns = [
+    {
+      id: 'select',
+      header: ({ table }: any) => (
+        <Checkbox
+          checked={table.getIsAllPageRowsSelected()}
+          onCheckedChange={(checked) => {
+            if (checked) {
+              const allRows = table
+                .getRowModel()
+                .rows.map((row: any) => row.original.id)
+              setSelectedCourses(allRows)
+            } else {
+              setSelectedCourses([])
+            }
+            table.toggleAllPageRowsSelected(checked)
+          }}
+        />
+      ),
+      cell: ({ row }: any) => (
+        <Checkbox
+          checked={selectedCourses.includes(row.original.id)}
+          onCheckedChange={(checked) => {
+            if (checked) {
+              setSelectedCourses((prev) => [...prev, row.original.id])
+            } else {
+              setSelectedCourses((prev) =>
+                prev.filter((id) => id !== row.original.id)
+              )
+            }
+            row.toggleSelected(checked)
+          }}
+        />
+      ),
+    },
+    { accessorKey: 'name', header: 'Tên khoá học' },
+  ]
 
   const onSubmit = (data: CouponPayload) => {
     const payload = {
       ...data,
+      specific_course: selectedCourses?.length > 0 ? 1 : 0,
       user_ids: selectedRows,
+      course_ids: selectedCourses,
     }
-
-    console.log(payload)
 
     updateCoupon(
       {
@@ -192,9 +245,14 @@ const CouponUpdateView = ({ id }: { id: string }) => {
       </div>
       <div className="mt-4 grid grid-cols-12 gap-2">
         <div className="col-span-8 rounded-lg border p-4">
-          <h2 className="text-xl font-bold text-gray-900">
-            Thông tin mã giảm giá
-          </h2>
+          <div className="flex justify-between">
+            <h2 className="text-xl font-bold text-gray-900">
+              Thông tin mã giảm giá
+            </h2>
+            <Button variant="outline" onClick={() => setDialogOpen(true)}>
+              Áp dụng cho khoá học
+            </Button>
+          </div>
           <div className="mt-2">
             <Form {...form}>
               <form
@@ -482,7 +540,14 @@ const CouponUpdateView = ({ id }: { id: string }) => {
                 </div>
                 <div className="flex items-center gap-2">
                   <Button disabled={isPending} type="submit">
-                    {isPending ? 'Đang cập nhật...' : 'Cập nhật mã'}
+                    {isPending ? (
+                      <>
+                        <Loader2 className="mr-2 size-4 animate-spin" /> Đang
+                        cập nhật...
+                      </>
+                    ) : (
+                      'Cập nhật'
+                    )}
                   </Button>
                   <Link href="/instructor/coupon">
                     <Button
@@ -514,6 +579,31 @@ const CouponUpdateView = ({ id }: { id: string }) => {
           </div>
         </div>
       </div>
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <DialogContent>
+          <DialogTitle>Chọn khoá học áp dụng mã</DialogTitle>
+          <DataTable
+            data={filteredDataCourse || []}
+            columns={courseColumns}
+            showPageSize={false}
+            showPageIndex={false}
+            isLoading={isLoadingCourseData}
+            onSearchChange={setSearchTerm}
+          />
+          <div className="mt-4 flex justify-end space-x-2">
+            <Button variant="outline" onClick={() => setDialogOpen(false)}>
+              Huỷ bỏ
+            </Button>
+            <Button
+              onClick={() => {
+                setDialogOpen(false)
+              }}
+            >
+              Áp dụng
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

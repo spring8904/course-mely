@@ -33,6 +33,7 @@ const QUERY_KEY = {
   INSTRUCTOR_LESSON_DOCUMENT: 'instructor-lesson-document',
   USER_NOTIFICATION: 'user-notification',
   USER_GET_MY_COURSES: 'user-get-my-courses',
+  USER_GET_MY_COUPONS: 'user-get-my-coupons',
   LEARNING_PATH_LESSON: 'learning-path-lesson',
   LIVE_SESSION_CLIENT: 'live-session-client',
   LEARNING_PATH_PROGRESS: 'learning-path-progress',
