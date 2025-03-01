@@ -41,12 +41,6 @@ const PaymentUnknownView = () => {
                     Thông tin giao dịch
                   </h3>
                   <div className="space-y-1.5">
-                    {/*<p className="flex items-center gap-2 text-xs text-slate-700">*/}
-                    {/*  <span className="text-slate-600">Mã đơn hàng:</span>*/}
-                    {/*  <code className="rounded-md bg-slate-100 px-2 py-0.5 font-mono text-slate-900">*/}
-                    {/*    {orderNumber}*/}
-                    {/*  </code>*/}
-                    {/*</p>*/}
                     <p className="text-xs text-slate-600">
                       Chúng tôi đang gặp sự cố trong việc xác định trạng thái
                       giao dịch của bạn. Vui lòng kiểm tra email hoặc liên hệ
@@ -60,10 +54,13 @@ const PaymentUnknownView = () => {
             <div className="space-y-3 pt-4">
               <button
                 onClick={() => (window.location.href = '/checkout')}
-                className="animate-gradient group w-full rounded-xl bg-gradient-to-r from-slate-600 via-gray-600 to-zinc-600 px-4 py-3 text-sm font-medium text-white shadow-sm shadow-slate-100 transition-all duration-300 hover:-translate-y-0.5"
+                className="animate-gradient group mb-2 w-full rounded-xl bg-gradient-to-r from-slate-600 via-gray-600 to-zinc-600 px-4 py-3 text-sm font-medium text-white shadow-sm shadow-slate-100 transition-all duration-300 hover:-translate-y-0.5"
               >
                 <span className="flex items-center justify-center gap-2">
-                  <RefreshCcw className="size-4" strokeWidth={1.5} />
+                  <RefreshCcw
+                    className="size-4 transition-transform duration-500 group-hover:rotate-180"
+                    strokeWidth={1.5}
+                  />
                   <span>Kiểm tra lại giao dịch</span>
                   <ArrowRight
                     className="size-4 -translate-x-4 opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100"
