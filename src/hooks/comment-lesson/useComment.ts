@@ -46,7 +46,7 @@ export const useDeleteComment = (commentId: string) => {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: () => commentLessonApi.deleteComment(commentId),
-    onSuccess: async (res: any) => {
+    onSuccess: async () => {
       await queryClient.invalidateQueries({
         queryKey: [QUERY_KEY.LESSON_COMMENT],
       })
