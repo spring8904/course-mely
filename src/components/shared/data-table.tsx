@@ -43,6 +43,9 @@ interface DataTableProps<TData, TValue> {
     toDate: Date | null
   }) => void
   onSearchChange?: (searchTerm: string) => void
+  showPageSize?: boolean
+  showPageIndex?: boolean
+  showNavigateButtons?: boolean
 }
 
 export function DataTable<TData, TValue>({
@@ -52,6 +55,9 @@ export function DataTable<TData, TValue>({
   enableDateFilter = false,
   onDateFilterChange,
   onSearchChange,
+  showPageSize = true,
+  showPageIndex = true,
+  showNavigateButtons = true,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([])
   const [globalFilter, setGlobalFilter] = useState<any>([])
@@ -213,7 +219,12 @@ export function DataTable<TData, TValue>({
         </Table>
       </div>
 
-      <DataTablePagination table={table} />
+      <DataTablePagination
+        showPageIndex={showPageIndex}
+        showPageSize={showPageSize}
+        showNavigateButtons={showNavigateButtons}
+        table={table}
+      />
     </div>
   )
 }
