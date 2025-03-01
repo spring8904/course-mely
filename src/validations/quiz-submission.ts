@@ -5,7 +5,7 @@ export const quizSubmissionSchema = z.object({
   answers: z.array(
     z.object({
       question_id: z.number(),
-      answer_id: z.array(z.number()),
+      answer_id: z.array(z.number()).or(z.number()),
     })
   ),
 })

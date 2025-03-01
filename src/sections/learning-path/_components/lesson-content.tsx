@@ -21,8 +21,8 @@ const LessonContent = ({ lesson, isCompleted, lastTimeVideo }: Props) => {
       />
     ),
     document: <DocumentLesson lesson={lesson} isCompleted={isCompleted} />,
-    quiz: <QuizLesson lesson={lesson} />,
-    coding: <CodingLesson lesson={lesson} />,
+    quiz: <QuizLesson lesson={lesson} isCompleted={isCompleted} />,
+    coding: <CodingLesson lesson={lesson} isCompleted={isCompleted} />,
   }
 
   return lessonComponents[lesson?.type]

@@ -15,8 +15,6 @@ import {
 import { Button } from '@/components/ui/button'
 import HtmlRenderer from '@/components/shared/html-renderer'
 
-import '@/styles/mux-player.css'
-
 type Props = {
   lesson: ILesson
   isCompleted: boolean
@@ -76,13 +74,20 @@ const VideoLesson = ({ lesson, isCompleted, lastTimeVideo = 0 }: Props) => {
       <div className="bg-black/95 px-16 lg:px-20 xl:px-40">
         <div className="aspect-video">
           <MuxPlayer
+            hotkeys="noarrowright"
             ref={muxPlayerRef}
             playbackId={lesson.lessonable?.mux_playback_id}
             accentColor={'hsl(var(--primary))'}
             className="h-full"
-            currentTime={lastTimeVideo}
+            startTime={lastTimeVideo}
             onTimeUpdate={handleTimeUpdate}
             onPause={handlePause}
+            style={
+              {
+                '--seek-forward-button': 'none',
+                '--playback-rate-button': 'none',
+              } as React.CSSProperties
+            }
           />
         </div>
       </div>
