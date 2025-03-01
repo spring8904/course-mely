@@ -17,6 +17,7 @@ import {
 import QUERY_KEY from '@/constants/query-key'
 import { timeAgo } from '@/lib/common'
 import {
+  useDeleteComment,
   useGetLessonComments,
   useStoreCommentLesson,
   useStoreReplyCommentLesson,
@@ -50,7 +51,6 @@ const reactionEmojis = [
   { emoji: '😢', name: 'Buồn' },
   { emoji: '😡', name: 'Phẫn nộ' },
 ]
-
 const CommentLesson = ({ lessonId }: { lessonId: string }) => {
   const queryClient = useQueryClient()
   const { user } = useAuthStore()
@@ -60,6 +60,11 @@ const CommentLesson = ({ lessonId }: { lessonId: string }) => {
   const [isAdding, setIsAdding] = useState(false)
   const [selectedComment, setSelectedComment] = useState<string | null>(null)
   const [replyContent, setReplyContent] = useState<string>('')
+  const [commentToDelete, setCommentToDelete] = useState<{
+    id: string
+    type: 'comment' | 'reply'
+  } | null>(null)
+  const [replyTargetName, setReplyTargetName] = useState<string>('')
 
   const [commentReactions, setCommentReactions] = useState<
     Record<string, string>
@@ -92,6 +97,9 @@ const CommentLesson = ({ lessonId }: { lessonId: string }) => {
     isPending: isPendingStoreReplyLessonComment,
   } = useStoreReplyCommentLesson()
 
+  const { mutate: deleteComment, isPending: isPendingDeleteComment } =
+    useDeleteComment(commentToDelete?.id || '')
+
   const { data: lessonCommentData, isLoading: isLoadingLessonCommentData } =
     useGetLessonComments(lessonId)
 
@@ -117,6 +125,35 @@ const CommentLesson = ({ lessonId }: { lessonId: string }) => {
       document.removeEventListener('mousedown', handleClickOutside)
     }
   }, [])
+
+  useEffect(() => {
+    if (commentToDelete) {
+      deleteComment(undefined, {
+        onSuccess: () => {
+          toast.success(
+            `Đã xóa ${commentToDelete.type === 'comment' ? 'bình luận' : 'phản hồi'} thành công`
+          )
+          setOpenDropdown(null)
+
+          if (commentToDelete.type === 'comment') {
+            queryClient.invalidateQueries({
+              queryKey: [QUERY_KEY.LESSON_COMMENT, lessonId],
+            })
+          } else if (commentToDelete.type === 'reply' && selectedComment) {
+            queryClient.invalidateQueries({
+              queryKey: [QUERY_KEY.LESSON_COMMENT, selectedComment],
+            })
+          }
+
+          setCommentToDelete(null)
+        },
+        onError: (error: any) => {
+          toast.error(error?.message || 'Xóa bình luận không thành công')
+          setCommentToDelete(null)
+        },
+      })
+    }
+  }, [commentToDelete, deleteComment, queryClient, lessonId, selectedComment])
 
   const form = useForm<LessonCommentPayload>({
     resolver: zodResolver(lessonCommentSchema),
@@ -148,6 +185,7 @@ const CommentLesson = ({ lessonId }: { lessonId: string }) => {
 
   const handleReplyClick = (id: string, type: 'comment' | 'reply') => {
     setActiveReplyEditor(activeReplyEditor === id ? null : id)
+    setSelectedComment(id)
 
     const targetName =
       type === 'reply'
@@ -157,23 +195,19 @@ const CommentLesson = ({ lessonId }: { lessonId: string }) => {
         : lessonCommentData?.data.find((c: any) => c.id === id)?.user?.name ||
           ''
 
+    setReplyTargetName(targetName)
     setReplyContent(`@${targetName} `)
-  }
-  const handleDeleteComment = (id: string, type: 'comment' | 'reply') => {
-    toast.success(
-      `Đã xóa ${type === 'comment' ? 'bình luận' : 'phản hồi'} thành công`
-    )
-    setOpenDropdown(null)
 
-    if (type === 'comment') {
-      queryClient.invalidateQueries({
-        queryKey: [QUERY_KEY.LESSON_COMMENT, lessonId],
-      })
-    } else if (type === 'reply' && selectedComment) {
-      queryClient.invalidateQueries({
-        queryKey: [QUERY_KEY.LESSON_COMMENT, selectedComment],
-      })
+    if (type === 'comment' && !visibleReplies[id]) {
+      setVisibleReplies((prev) => ({
+        ...prev,
+        [id]: true,
+      }))
     }
+  }
+
+  const handleDeleteComment = (id: string, type: 'comment' | 'reply') => {
+    setCommentToDelete({ id, type })
   }
 
   const onSubmit = (values: LessonCommentPayload) => {
@@ -204,27 +238,10 @@ const CommentLesson = ({ lessonId }: { lessonId: string }) => {
       return
     }
 
-    const targetName =
-      lessonCommentData?.data
-        .flatMap((comment: any) => comment.replies || [])
-        .find((reply: any) => reply.id === commentId)?.user?.name ||
-      lessonCommentData?.data.find((comment: any) => comment.id === commentId)
-        ?.user?.name ||
-      ''
-
-    const cleanedReplyContent = replyContent
-      .replace(`@${targetName}`, '')
-      .trim()
-
-    console.log(cleanedReplyContent)
-
-    if (!cleanedReplyContent) {
-      toast.error('Nội dung phản hồi không hợp lệ (chỉ chứa lời đề cập)')
-      return
-    }
+    const fullContent = replyContent.trim()
 
     const payload: ReplyLessonCommentPayload = {
-      content: cleanedReplyContent,
+      content: fullContent,
     }
 
     storeReplyLessonComment(
@@ -233,7 +250,6 @@ const CommentLesson = ({ lessonId }: { lessonId: string }) => {
         onSuccess: async (res: any) => {
           toast.success(res.message || 'Đã phản hồi bình luận thành công')
           setReplyContent('')
-          setActiveReplyEditor(null)
 
           await queryClient.invalidateQueries({
             queryKey: [QUERY_KEY.LESSON_COMMENT, lessonId],
@@ -242,6 +258,8 @@ const CommentLesson = ({ lessonId }: { lessonId: string }) => {
           await queryClient.invalidateQueries({
             queryKey: [QUERY_KEY.LESSON_COMMENT, commentId],
           })
+
+          setReplyContent(`@${replyTargetName} `)
         },
         onError: (error: any) => {
           toast.error(error.message || 'Có lỗi xảy ra khi phản hồi bình luận')
@@ -249,11 +267,16 @@ const CommentLesson = ({ lessonId }: { lessonId: string }) => {
       }
     )
   }
+
   const handleViewRepliesClick = (commentId: string) => {
     setVisibleReplies((prev) => ({
       ...prev,
       [commentId]: !prev[commentId],
     }))
+  }
+
+  const isCommentAuthor = (commentUserId: string) => {
+    return user?.id?.toString() === commentUserId
   }
 
   const renderReplies = (comment: any) => {
@@ -351,39 +374,45 @@ const CommentLesson = ({ lessonId }: { lessonId: string }) => {
                   <span className="text-gray-500">
                     {timeAgo(reply?.created_at || '')}
                   </span>
-                  <div className="relative ml-auto">
-                    <button
-                      className="text-gray-400 hover:text-gray-600"
-                      onClick={() =>
-                        setOpenDropdown(
-                          openDropdown?.id === reply?.id &&
-                            openDropdown?.type === 'reply'
-                            ? null
-                            : { id: reply?.id, type: 'reply' }
-                        )
-                      }
-                    >
-                      <FiMoreHorizontal />
-                    </button>
 
-                    {openDropdown?.id === reply?.id &&
-                      openDropdown?.type === 'reply' && (
-                        <div
-                          ref={dropdownRef}
-                          className="animate-fade-in absolute right-0 top-6 z-50 w-40 rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5"
-                        >
-                          <button
-                            className="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-red-600 hover:bg-gray-100"
-                            onClick={() =>
-                              handleDeleteComment(reply?.id, 'reply')
-                            }
+                  {isCommentAuthor(reply?.user?.id) && (
+                    <div className="relative ml-auto">
+                      <button
+                        className="text-gray-400 hover:text-gray-600"
+                        onClick={() =>
+                          setOpenDropdown(
+                            openDropdown?.id === reply?.id &&
+                              openDropdown?.type === 'reply'
+                              ? null
+                              : { id: reply?.id, type: 'reply' }
+                          )
+                        }
+                      >
+                        <FiMoreHorizontal />
+                      </button>
+
+                      {openDropdown?.id === reply?.id &&
+                        openDropdown?.type === 'reply' && (
+                          <div
+                            ref={dropdownRef}
+                            className="animate-fade-in ring-opacity/5 absolute right-0 top-6 z-50 w-40 rounded-md bg-white py-1 shadow-lg ring-1 ring-black"
                           >
-                            <Trash2 className="size-4" />
-                            Xóa phản hồi
-                          </button>
-                        </div>
-                      )}
-                  </div>
+                            <button
+                              className="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-red-600 hover:bg-gray-100"
+                              onClick={() =>
+                                handleDeleteComment(reply?.id, 'reply')
+                              }
+                            >
+                              {isPendingDeleteComment && (
+                                <Loader2 className="animate-spin" />
+                              )}
+                              <Trash2 className="size-4" />
+                              Xóa phản hồi
+                            </button>
+                          </div>
+                        )}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -392,11 +421,11 @@ const CommentLesson = ({ lessonId }: { lessonId: string }) => {
                 <div className="flex gap-2">
                   <Avatar className="size-8">
                     <AvatarImage
-                      src={reply?.user?.avatar || ''}
-                      alt={reply?.user?.name || 'User Avatar'}
+                      src={user?.avatar || ''}
+                      alt={user?.name || 'User Avatar'}
                     />
                     <AvatarFallback className="bg-blue-100 text-blue-800">
-                      {reply?.user?.name?.charAt(0) || 'A'}
+                      {user?.name?.charAt(0) || 'U'}
                     </AvatarFallback>
                   </Avatar>
                   <Textarea
@@ -412,7 +441,7 @@ const CommentLesson = ({ lessonId }: { lessonId: string }) => {
                     onClick={() => {
                       setSelectedComment(null)
                       setReplyContent('')
-                      setActiveReplyEditor('')
+                      setActiveReplyEditor(null)
                     }}
                     disabled={isPendingStoreReplyLessonComment}
                     className="rounded-full"
@@ -649,42 +678,47 @@ const CommentLesson = ({ lessonId }: { lessonId: string }) => {
                                 {timeAgo(comment?.created_at || '')}
                               </span>
 
-                              <div className="relative ml-auto">
-                                <button
-                                  className="rounded-full p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
-                                  onClick={() =>
-                                    setOpenDropdown(
-                                      openDropdown?.id === comment?.id &&
-                                        openDropdown?.type === 'comment'
-                                        ? null
-                                        : { id: comment?.id, type: 'comment' }
-                                    )
-                                  }
-                                >
-                                  <FiMoreHorizontal className="size-4" />
-                                </button>
+                              {isCommentAuthor(comment?.user?.id) && (
+                                <div className="relative ml-auto">
+                                  <button
+                                    className="rounded-full p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+                                    onClick={() =>
+                                      setOpenDropdown(
+                                        openDropdown?.id === comment?.id &&
+                                          openDropdown?.type === 'comment'
+                                          ? null
+                                          : { id: comment?.id, type: 'comment' }
+                                      )
+                                    }
+                                  >
+                                    <FiMoreHorizontal className="size-4" />
+                                  </button>
 
-                                {openDropdown?.id === comment?.id &&
-                                  openDropdown?.type === 'comment' && (
-                                    <div
-                                      ref={dropdownRef}
-                                      className="animate-fade-in absolute right-0 top-8 z-50 w-40 rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5"
-                                    >
-                                      <button
-                                        className="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-red-600 hover:bg-gray-100"
-                                        onClick={() =>
-                                          handleDeleteComment(
-                                            comment?.id,
-                                            'comment'
-                                          )
-                                        }
+                                  {openDropdown?.id === comment?.id &&
+                                    openDropdown?.type === 'comment' && (
+                                      <div
+                                        ref={dropdownRef}
+                                        className="animate-fade-in ring-opacity/5 absolute right-0 top-8 z-50 w-40 rounded-md bg-white py-1 shadow-lg ring-1 ring-black"
                                       >
-                                        <Trash2 className="size-4" />
-                                        Xóa bình luận
-                                      </button>
-                                    </div>
-                                  )}
-                              </div>
+                                        <button
+                                          className="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-red-600 hover:bg-gray-100"
+                                          onClick={() =>
+                                            handleDeleteComment(
+                                              comment?.id,
+                                              'comment'
+                                            )
+                                          }
+                                        >
+                                          {isPendingDeleteComment && (
+                                            <Loader2 className="animate-spin" />
+                                          )}
+                                          <Trash2 className="size-4" />
+                                          Xóa bình luận
+                                        </button>
+                                      </div>
+                                    )}
+                                </div>
+                              )}
                             </div>
 
                             {activeReplyEditor === comment.id && (
@@ -718,7 +752,7 @@ const CommentLesson = ({ lessonId }: { lessonId: string }) => {
                                             onClick={() => {
                                               setSelectedComment(null)
                                               setReplyContent('')
-                                              setActiveReplyEditor('')
+                                              setActiveReplyEditor(null)
                                             }}
                                             disabled={
                                               isPendingStoreReplyLessonComment
