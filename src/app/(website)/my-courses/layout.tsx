@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { AnimatePresence, motion } from 'framer-motion'
 
 import CertificatePage from '@/app/(website)/my-courses/certificate/page'
+import CouponPage from '@/app/(website)/my-courses/coupons/page'
 import AllCoursesPage from '@/app/(website)/my-courses/page'
 import WishlistPage from '@/app/(website)/my-courses/wishlist/page'
 
@@ -14,10 +15,12 @@ export default function MyCoursesLayout() {
 
   const initialTab = searchParams.get('tab') || 'all'
   const [activeTab, setActiveTab] = useState<
-    'all' | 'wishlist' | 'certificate'
-  >(initialTab as 'all' | 'wishlist' | 'certificate')
+    'all' | 'wishlist' | 'certificate' | 'coupon'
+  >(initialTab as 'all' | 'wishlist' | 'certificate' | 'coupon')
 
-  const handleTabChange = (tab: 'all' | 'wishlist' | 'certificate') => {
+  const handleTabChange = (
+    tab: 'all' | 'wishlist' | 'certificate' | 'coupon'
+  ) => {
     setActiveTab(tab)
     router.push(`/my-courses?tab=${tab}`)
   }
@@ -30,6 +33,8 @@ export default function MyCoursesLayout() {
         return <WishlistPage />
       case 'certificate':
         return <CertificatePage />
+      case 'coupon':
+        return <CouponPage />
       default:
         return <AllCoursesPage />
     }
@@ -52,6 +57,7 @@ export default function MyCoursesLayout() {
               { id: 'all', label: 'Tất cả các khoá học' },
               { id: 'wishlist', label: 'Danh sách khoá học yêu thích' },
               { id: 'certificate', label: 'Chứng chỉ đã nhận' },
+              { id: 'coupon', label: 'Mã giảm giá của tôi' },
             ].map((tab) => (
               <button
                 key={tab.id}
