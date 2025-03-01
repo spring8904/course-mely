@@ -1,7 +1,9 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
+import { Loader2 } from 'lucide-react'
 import { useForm } from 'react-hook-form'
+import { toast } from 'react-toastify'
 
 import { ILesson } from '@/types'
 import {
@@ -10,6 +12,7 @@ import {
 } from '@/validations/code-submission'
 import { Language, LANGUAGE_CONFIG } from '@/constants/language'
 import { formatDate } from '@/lib/common'
+import { useCompleteLesson } from '@/hooks/learning-path/useLearningPath'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -31,18 +34,20 @@ import MonacoEditor from '@/components/shared/monaco-editor'
 
 type Props = {
   lesson: ILesson
+  isCompleted: boolean
 }
 
-const CodingLesson = ({ lesson }: Props) => {
+const CodingLesson = ({ lesson, isCompleted }: Props) => {
   const { lessonable: codeData } = lesson
 
   const form = useForm<CodeSubmissionPayLoad>({
     resolver: zodResolver(codeSubmissionSchema),
     defaultValues: {
-      coding_id: lesson.lessonable_id,
       code: codeData?.sample_code,
     },
   })
+
+  const { mutate: completeLesson, isPending } = useCompleteLesson()
 
   const language = codeData?.language as Language
 
@@ -58,7 +63,21 @@ const CodingLesson = ({ lesson }: Props) => {
   }
 
   const onSubmit = (values: CodeSubmissionPayLoad) => {
-    console.log('values submit', values)
+    completeLesson(
+      {
+        lesson_id: lesson.id!,
+        code: values.result,
+      },
+
+      {
+        onSuccess: (res: any) => {
+          toast.success(res.message)
+        },
+        onError: (error) => {
+          toast.error(error.message)
+        },
+      }
+    )
   }
 
   return (
@@ -159,9 +178,16 @@ const CodingLesson = ({ lesson }: Props) => {
           </ResizablePanel>
         </ResizablePanelGroup>
 
-        <Button type="submit" className="absolute bottom-5 right-5">
-          Nộp bài
-        </Button>
+        {!isCompleted && (
+          <Button
+            type="submit"
+            className="absolute bottom-5 right-5"
+            disabled={isPending || !form.formState.isValid}
+          >
+            {isPending && <Loader2 className="animate-spin" />}
+            Nộp bài
+          </Button>
+        )}
       </form>
     </Form>
   )

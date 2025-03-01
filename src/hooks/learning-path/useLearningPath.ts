@@ -34,3 +34,9 @@ export const useCompleteLesson = () => {
     },
   })
 }
+
+export const useUpdateLastTime = () => {
+  return useMutation({
+    mutationFn: learningPathApi.updateLastTime,
+  })
+}

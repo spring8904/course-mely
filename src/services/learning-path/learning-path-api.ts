@@ -1,4 +1,6 @@
 import { ILesson, ILessonProcess, LearningPathChapterLesson } from '@/types'
+import { CodeSubmissionPayLoad } from '@/validations/code-submission'
+import { QuizSubmissionPayload } from '@/validations/quiz-submission'
 import api from '@/configs/api'
 
 export interface GetLessonsResponse {
@@ -14,9 +16,16 @@ interface GetLessonDetailResponse {
   lesson_process: ILessonProcess
 }
 
-interface CompleteLessonPayload {
+interface CompleteLessonPayload
+  extends Partial<CodeSubmissionPayLoad>,
+    Partial<QuizSubmissionPayload> {
   lesson_id: number
   current_time?: number
+}
+
+interface UpdateLastTimePayload {
+  lesson_id: number
+  last_time_video: number
 }
 
 const prefix = 'learning-paths'
@@ -34,12 +43,13 @@ export const learningPathApi = {
     return response.data
   },
 
-  completeLesson: async ({
-    lesson_id,
-    current_time,
-  }: CompleteLessonPayload): Promise<void> => {
-    await api.patch(`${prefix}/lesson/${lesson_id}/complete-lesson`, {
-      current_time,
+  completeLesson: ({ lesson_id, ...payload }: CompleteLessonPayload) => {
+    return api.patch(`${prefix}/lesson/${lesson_id}/complete-lesson`, payload)
+  },
+
+  updateLastTime: ({ lesson_id, last_time_video }: UpdateLastTimePayload) => {
+    return api.put(`${prefix}/lesson/${lesson_id}/update-last-time-video`, {
+      last_time_video,
     })
   },
 }
