@@ -13,7 +13,6 @@ export const useGetNotes = (
     queryKey: [QUERY_KEY.NOTE_LESSON, slug, filters],
     queryFn: () => noteApi.getNotes(slug!, filters),
     enabled: !!slug,
-    staleTime: 1000 * 60 * 60 * 24,
   })
 }
 

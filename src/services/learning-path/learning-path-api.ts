@@ -35,7 +35,7 @@ export const learningPathApi = {
     const response = await api.get(`${prefix}/${course}/lesson`)
     return response.data
   },
-  getChapterFromLesson: async (lessonId: string) => {
+  getChapterFromLesson: async (lessonId: number) => {
     return await api.get(`${prefix}/${lessonId}/get-chapter-from-lesson`)
   },
   getLessonDetail: async (

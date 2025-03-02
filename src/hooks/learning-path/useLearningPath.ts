@@ -8,11 +8,10 @@ export const useGetLessons = (course: string) => {
     queryKey: [QUERY_KEY.LEARNING_PATH_LESSON, course],
     queryFn: () => learningPathApi.getLessons(course),
     enabled: !!course,
-    staleTime: 1000 * 60 * 5,
   })
 }
 
-export const useGetChapterFromLesson = (lessonId: string) => {
+export const useGetChapterFromLesson = (lessonId: number) => {
   return useQuery({
     queryKey: [QUERY_KEY.NOTE_LESSON, lessonId],
     queryFn: () => learningPathApi.getChapterFromLesson(lessonId!),

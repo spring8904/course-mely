@@ -32,8 +32,10 @@ type Props = {
 const VideoLesson = ({ lesson, isCompleted, lastTimeVideo = 0 }: Props) => {
   const muxPlayerRef = useRef<MuxPlayerElement>(null)
   const isCalled = useRef<boolean>(false)
-  const [currentTime, setCurrentTime] = useState(lastTimeVideo)
-  const [watchedTime, setWatchedTime] = useState(lastTimeVideo)
+  const [videoState, setVideoState] = useState({
+    currentTime: lastTimeVideo,
+    watchedTime: lastTimeVideo,
+  })
 
   const [openWarningSeeking, setOpenWarningSeeking] = useState(false)
   const [openAddNote, setOpenAddNote] = useState(false)
@@ -43,25 +45,22 @@ const VideoLesson = ({ lesson, isCompleted, lastTimeVideo = 0 }: Props) => {
     useUpdateLastTime()
 
   const handleTimeUpdate = (e: Event) => {
-    const muxPlayer = e.target as MuxPlayerElement
+    const { currentTime, duration } = e.target as MuxPlayerElement
+    const roundedCurrentTime = Math.round(currentTime)
 
-    if (muxPlayer.currentTime > watchedTime + 30) {
+    if (!isCompleted && currentTime > videoState.watchedTime + 30) {
       muxPlayerRef.current?.pause()
       if (muxPlayerRef.current) {
-        muxPlayerRef.current.currentTime = currentTime
+        muxPlayerRef.current.currentTime = videoState.currentTime
       }
       setOpenWarningSeeking(true)
       return
     }
 
-    const roundedCurrentTime = Math.round(muxPlayer.currentTime)
-    const duration = muxPlayer.duration
-
-    setCurrentTime(roundedCurrentTime)
-
-    if (roundedCurrentTime > watchedTime) {
-      setWatchedTime(roundedCurrentTime)
-    }
+    setVideoState((prev) => ({
+      currentTime: roundedCurrentTime,
+      watchedTime: Math.max(roundedCurrentTime, prev.watchedTime),
+    }))
 
     if (
       !isCompleted &&
@@ -97,7 +96,7 @@ const VideoLesson = ({ lesson, isCompleted, lastTimeVideo = 0 }: Props) => {
   const handlePause = () => {
     updateLastTime({
       lesson_id: lesson.id!,
-      last_time_video: currentTime,
+      last_time_video: videoState.currentTime,
     })
   }
 
@@ -146,7 +145,7 @@ const VideoLesson = ({ lesson, isCompleted, lastTimeVideo = 0 }: Props) => {
             <Plus />
             Thêm ghi chú tại{' '}
             <span className="font-semibold">
-              {formatDuration(currentTime, 'colon')}
+              {formatDuration(videoState.currentTime, 'colon')}
             </span>
           </Button>
         </div>
@@ -160,12 +159,10 @@ const VideoLesson = ({ lesson, isCompleted, lastTimeVideo = 0 }: Props) => {
 
           if (open) {
             muxPlayerRef.current?.pause()
-          } else {
-            muxPlayerRef.current?.play()
           }
         }}
-        lessonId={lesson.id! as unknown as string}
-        currentTime={currentTime}
+        lessonId={lesson.id!}
+        currentTime={videoState.currentTime}
       />
 
       <AlertDialog

@@ -67,7 +67,7 @@ const NoteList = ({
     content: string
   }>({ id: null, content: '' })
 
-  const { data: chapterData } = useGetChapterFromLesson(lessonId)
+  const { data: chapterData } = useGetChapterFromLesson(+lessonId)
   const { data: noteData, isLoading } = useGetNotes(slug, filters)
 
   const { mutate: updateNote, isPending: isPendingUpdateNote } = useUpdateNote()
@@ -99,7 +99,7 @@ const NoteList = ({
   const handleSaveNote = () => {
     if (selectNote.id && selectNote.content) {
       const payload = {
-        lesson_id: lessonId,
+        lesson_id: +lessonId,
         content: selectNote.content,
       }
 
@@ -195,12 +195,12 @@ const NoteList = ({
                     </div>
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
-                        <div className="cursor-pointer">
+                        <div className="cursor-pointer text-destructive">
                           <Trash size="16" />
                         </div>
                       </AlertDialogTrigger>
 
-                      <AlertDialogContent>
+                      <AlertDialogContent className="max-w-md">
                         <AlertDialogHeader>
                           <AlertDialogTitle>Xóa ghi chú</AlertDialogTitle>
                           <AlertDialogDescription>
@@ -224,14 +224,10 @@ const NoteList = ({
                               })
                             }
                           >
-                            {isPendingDeleteNote ? (
-                              <>
-                                <Loader2 className="mr-2 size-4 animate-spin" />{' '}
-                                Loading..
-                              </>
-                            ) : (
-                              ' Xoá'
+                            {isPendingDeleteNote && (
+                              <Loader2 className="animate-spin" />
                             )}
+                            Xóa
                           </AlertDialogAction>
                         </AlertDialogFooter>
                       </AlertDialogContent>
@@ -265,14 +261,10 @@ const NoteList = ({
                         disabled={isPendingUpdateNote}
                         type="submit"
                       >
-                        {isPendingUpdateNote ? (
-                          <>
-                            <Loader2 className="mr-2 size-4 animate-spin" />{' '}
-                            Loading..
-                          </>
-                        ) : (
-                          'Lưu lại'
+                        {isPendingUpdateNote && (
+                          <Loader2 className="animate-spin" />
                         )}
+                        Lưu
                       </Button>
                     </div>
                   </div>

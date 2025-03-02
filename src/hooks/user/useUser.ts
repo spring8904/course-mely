@@ -15,7 +15,6 @@ export const useGetProgress = (course: string) => {
     queryKey: [QUERY_KEY.COURSE_PROGRESS, course],
     queryFn: () => userApi.getProgress(course),
     enabled: !!course,
-    staleTime: 1000 * 60 * 5,
   })
 }
 
@@ -28,7 +27,7 @@ export const useGetCouponUser = () => {
 
 export const useGenerateCertificate = (slug?: string) => {
   return useQuery({
-    queryKey: [QUERY_KEY.CERTIFICATE],
+    queryKey: [QUERY_KEY.CERTIFICATE, slug],
     queryFn: () => userApi.generateCertificate(slug!),
     enabled: !!slug,
   })
@@ -43,7 +42,7 @@ export const useGetCertificates = () => {
 
 export const useDownloadCertificate = (slug?: string) => {
   return useQuery({
-    queryKey: [QUERY_KEY.CERTIFICATE],
+    queryKey: [QUERY_KEY.CERTIFICATE, slug],
     queryFn: () => userApi.downloadCertificate(slug!),
     enabled: !!slug,
   })

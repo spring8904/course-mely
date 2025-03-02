@@ -125,23 +125,21 @@ const TopBar = () => {
         <InputSearch />
         <Popover>
           <PopoverTrigger asChild>
-            <Button
-              variant="ghost"
-              className="relative rounded-full border-2 p-2 shadow"
-            >
-              <Bell
-                className={cn(
-                  'size-6 text-gray-700',
-                  hasUnread && 'animate-bell'
-                )}
-              />
+            <div className="relative">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="rounded-full shadow [&_svg]:size-5"
+              >
+                <Bell className={cn(hasUnread && 'animate-bell')} />
+              </Button>
               {hasUnread && (
-                <span className="absolute -top-1 right-[-2px] flex size-3">
+                <span className="absolute -right-0.5 -top-1 flex size-3">
                   <span className="absolute size-full animate-ping rounded-full bg-red-400/75"></span>
                   <span className="relative size-3 rounded-full bg-red-500"></span>
                 </span>
               )}
-            </Button>
+            </div>
           </PopoverTrigger>
           <PopoverContent
             align="start"

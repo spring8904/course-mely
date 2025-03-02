@@ -59,6 +59,7 @@ const LearningPathView = ({ courseSlug, lessonId }: Props) => {
 
   const { data: lessonDetail, isLoading: isLessonDetailLoading } =
     useGetLessonDetail(courseSlug, lessonId)
+
   const isCompleted = !!lessonDetail?.lesson_process?.is_completed
   const lastTimeVideo = lessonDetail?.lesson_process?.last_time_video
 
@@ -120,14 +121,14 @@ const LearningPathView = ({ courseSlug, lessonId }: Props) => {
   return (
     <>
       <div className="relative flex min-h-screen flex-col">
-        <div className="fixed inset-x-0 top-0 z-10 h-16 bg-[#292f3b]">
+        <div className="fixed inset-x-0 top-0 z-10 h-16 bg-[#292f3b] text-primary-foreground">
           <div className="mx-16 flex h-full items-center justify-between">
             <div className="flex items-center gap-4">
               <Link href={'/'}>
-                <ChevronLeft className="text-white" />
+                <ChevronLeft />
               </Link>
               <Image src="/images/Logo.png" alt="logo" width={36} height={36} />
-              <p className="font-bold text-white">{course_name}</p>
+              <p className="font-bold">{course_name}</p>
             </div>
             <div className="flex items-center gap-6">
               <div className="flex items-center gap-1">
@@ -136,19 +137,19 @@ const LearningPathView = ({ courseSlug, lessonId }: Props) => {
                     <TooltipTrigger>
                       <LearningProcess value={progress ?? 0} />
                     </TooltipTrigger>
-                    {progress == 100 && (
+                    {progress === 100 && (
                       <TooltipContent
                         className="cursor-pointer"
                         onClick={() => {
                           window.open(downloadCertificate, '_blank')
                         }}
                       >
-                        <p>Nhận chứng chỉ</p>
+                        Nhận chứng chỉ
                       </TooltipContent>
                     )}
                   </Tooltip>
                 </TooltipProvider>
-                <span className="text-sm text-white">
+                <span className="text-sm">
                   <span className="font-bold">
                     {courseProgress}/{total_lesson}
                   </span>{' '}
@@ -159,8 +160,8 @@ const LearningPathView = ({ courseSlug, lessonId }: Props) => {
                 onClick={() => setIsSheetOpen(true)}
                 className="flex cursor-pointer items-center gap-1 opacity-75 hover:opacity-100"
               >
-                <Notebook size={18} className="text-white" />
-                <span className="text-sm font-normal text-white">Ghi chú</span>
+                <Notebook size={18} />
+                <span className="text-sm font-normal">Ghi chú</span>
               </div>
             </div>
           </div>

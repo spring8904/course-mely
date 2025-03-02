@@ -61,7 +61,11 @@ api.interceptors.response.use(
         }
       }
 
-      if (!!data) return Promise.reject(data)
+      if (!!data)
+        return Promise.reject({
+          status,
+          ...data,
+        })
     } else if (error.request) {
       toast.error('No response received from the server')
     } else {

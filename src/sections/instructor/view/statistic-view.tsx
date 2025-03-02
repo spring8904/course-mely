@@ -1,9 +1,7 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts'
-
-import api from '@/configs/api'
 
 import {
   Card,
@@ -29,6 +27,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { useGetRevenue } from '@/hooks/instructor/use-statistic'
 
 const chartConfig = {
   desktop: {
@@ -116,36 +115,9 @@ const featuredStudents = [
 export function StatisticView() {
   const [selectFilter, setSelectFilter] = useState('today')
 
-  const [stats, setStats] = useState({
-    totalRevenue: 0,
-    numberOfCourses: 0,
-    numberOfStudents: 0,
-    chartData: [],
-  })
+  const { data: revenue } = useGetRevenue()
 
-  const fetchStatistics = async (selectFilter: any) => {
-    try {
-      const response = await api.get('instructor/statistics/revenue', {
-        params: { selectFilter },
-      })
-      if (response.data) {
-        setStats(response.data)
-      }
-    } catch (err) {
-      console.error('Failed to fetch statistics:', err)
-    } finally {
-    }
-  }
-
-  useEffect(() => {
-    fetchStatistics(selectFilter)
-  }, [selectFilter])
-
-  const handleTimeRangeChange = (newValue: string) => {
-    setSelectFilter(newValue)
-  }
-
-  console.log(stats)
+  console.log('>>> revenue', revenue)
 
   return (
     <div className="px-5 py-6">
@@ -193,7 +165,7 @@ export function StatisticView() {
             <CardTitle>Biểu dồ </CardTitle>
             <CardDescription>Thống kê doanh thu & học viên</CardDescription>
           </div>
-          <Select value={selectFilter} onValueChange={handleTimeRangeChange}>
+          <Select value={selectFilter} onValueChange={setSelectFilter}>
             <SelectTrigger
               className="w-[160px] rounded-lg sm:ml-auto"
               aria-label="Select a value"
