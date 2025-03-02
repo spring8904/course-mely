@@ -23,4 +23,8 @@ export const commentLessonApi = {
   ) => {
     return await api.post(`${prefix}/${commentId}/reply`, data)
   },
+
+  deleteComment: async (commentId: string) => {
+    return await api.delete(`comments/${commentId}`)
+  },
 }

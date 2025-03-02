@@ -12,6 +12,14 @@ export const useGetLessons = (course: string) => {
   })
 }
 
+export const useGetChapterFromLesson = (lessonId: string) => {
+  return useQuery({
+    queryKey: [QUERY_KEY.NOTE_LESSON, lessonId],
+    queryFn: () => learningPathApi.getChapterFromLesson(lessonId!),
+    enabled: !!lessonId,
+  })
+}
+
 export const useGetLessonDetail = (course: string, lesson: string) => {
   return useQuery({
     queryKey: [QUERY_KEY.LEARNING_PATH_LESSON, course, lesson],
@@ -32,5 +40,11 @@ export const useCompleteLesson = () => {
         queryKey: [QUERY_KEY.COURSE_PROGRESS],
       })
     },
+  })
+}
+
+export const useUpdateLastTime = () => {
+  return useMutation({
+    mutationFn: learningPathApi.updateLastTime,
   })
 }

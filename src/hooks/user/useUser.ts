@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 
 import QUERY_KEY from '@/constants/query-key'
 import { userApi } from '@/services/user/user-api'
@@ -23,5 +23,21 @@ export const useGetCouponUser = () => {
   return useQuery({
     queryKey: [QUERY_KEY.USER_GET_MY_COUPONS],
     queryFn: () => userApi.getCouponUser(),
+  })
+}
+
+export const useGenerateCertificate = (slug?: string) => {
+  return useQuery({
+    queryKey: [QUERY_KEY.CERTIFICATE],
+    queryFn: () => userApi.generateCertificate(slug!),
+    enabled: !!slug,
+  })
+}
+
+export const useDownloadCertificate = (slug?: string) => {
+  return useQuery({
+    queryKey: [QUERY_KEY.CERTIFICATE],
+    queryFn: () => userApi.downloadCertificate(slug!),
+    enabled: !!slug,
   })
 }

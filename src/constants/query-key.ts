@@ -40,6 +40,8 @@ const QUERY_KEY = {
   SUPPORT_BANKS: 'support-banks',
   COURSE_PROGRESS: 'course-progress',
   LESSON_COMMENT: 'lesson-comment',
+  CERTIFICATE: 'certificate',
+  NOTE_LESSON: 'note-lesson',
 }
 
 export default QUERY_KEY

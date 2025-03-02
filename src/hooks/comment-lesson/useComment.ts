@@ -1,4 +1,5 @@
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { toast } from 'react-toastify'
 
 import {
   LessonCommentPayload,
@@ -38,5 +39,20 @@ export const useStoreReplyCommentLesson = () => {
       commentId: string
       data: ReplyLessonCommentPayload
     }) => commentLessonApi.storeReplyCommentLesson(commentId, data),
+  })
+}
+
+export const useDeleteComment = (commentId: string) => {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: () => commentLessonApi.deleteComment(commentId),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: [QUERY_KEY.LESSON_COMMENT],
+      })
+    },
+    onError: (error: any) => {
+      toast.error(error?.message || 'Xóa bình luận không thành công')
+    },
   })
 }

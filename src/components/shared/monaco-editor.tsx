@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from 'react'
 import dynamic from 'next/dynamic'
-import confetti from 'canvas-confetti'
 import { CirclePlay, Loader2, RotateCcw } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
@@ -70,14 +69,6 @@ const MonacoEditor = ({
       {
         onSuccess: (res) => {
           onCompile?.(res.run.output)
-
-          if (res.run.code === 0) {
-            confetti({
-              particleCount: 100,
-              spread: 100,
-              origin: { y: 0.9 },
-            })
-          }
 
           console.log(
             `File group run: ${activeFileGroup}`,

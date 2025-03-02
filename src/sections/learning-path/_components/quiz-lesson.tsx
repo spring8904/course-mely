@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { Loader2 } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 
 import { AnswerType, ILesson } from '@/types'
@@ -9,6 +10,7 @@ import {
 } from '@/validations/quiz-submission'
 import { formatDate } from '@/lib/common'
 import { cn } from '@/lib/utils'
+import { useCompleteLesson } from '@/hooks/learning-path/useLearningPath'
 
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -24,9 +26,10 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 
 type Props = {
   lesson: ILesson
+  isCompleted: boolean
 }
 
-const QuizLesson = ({ lesson }: Props) => {
+const QuizLesson = ({ lesson, isCompleted }: Props) => {
   const { lessonable: quizData } = lesson
   const { questions = [] } = quizData!
 
@@ -49,6 +52,8 @@ const QuizLesson = ({ lesson }: Props) => {
     },
   })
 
+  const { mutate: completeLesson, isPending } = useCompleteLesson()
+
   const handleAnswerChange = () => {
     setIsCorrect({
       ...isCorrect,
@@ -68,7 +73,9 @@ const QuizLesson = ({ lesson }: Props) => {
       ?.filter((answer) => answer.is_correct === 1)
       .map((answer) => answer.id)
 
-    const selectedSet = new Set(selectedAnswers)
+    const selectedSet = new Set(
+      Array.isArray(selectedAnswers) ? selectedAnswers : [selectedAnswers]
+    )
     const correctSet = new Set(correctAnswers)
 
     const isAnswerCorrect =
@@ -102,7 +109,10 @@ const QuizLesson = ({ lesson }: Props) => {
   }, [isCorrect, questions.length])
 
   const onSubmit = (values: QuizSubmissionPayload) => {
-    console.log('values submit', values)
+    completeLesson({
+      lesson_id: lesson.id!,
+      ...values,
+    })
   }
 
   if (!quizData || !questions.length) return <p>Không có câu hỏi nào.</p>
@@ -144,11 +154,11 @@ const QuizLesson = ({ lesson }: Props) => {
                           <RadioGroup
                             className="gap-4"
                             onValueChange={(value) => {
-                              field.onChange([parseInt(value)])
+                              field.onChange(parseInt(value))
                               field.onBlur()
                               handleAnswerChange()
                             }}
-                            defaultValue={field.value[0]?.toString()}
+                            defaultValue={field.value?.toString()}
                           >
                             {question.answers.map(
                               (answer, answerIndex: number) => (
@@ -189,6 +199,7 @@ const QuizLesson = ({ lesson }: Props) => {
                             control={form.control}
                             name={`answers.${questionIndex}.answer_id`}
                             render={({ field }) => {
+                              const value = field.value as number[]
                               return (
                                 <FormItem key={`${question.id}-${answer.id}`}>
                                   <FormLabel
@@ -201,18 +212,16 @@ const QuizLesson = ({ lesson }: Props) => {
                                   >
                                     <FormControl>
                                       <Checkbox
-                                        checked={field.value.includes(
-                                          answer.id!
-                                        )}
+                                        checked={value.includes(answer.id!)}
                                         onCheckedChange={(checked) => {
                                           if (checked) {
                                             field.onChange([
-                                              ...field.value,
+                                              ...value,
                                               answer.id,
                                             ])
                                           } else {
                                             field.onChange(
-                                              field.value?.filter(
+                                              value?.filter(
                                                 (value) => value !== answer.id
                                               )
                                             )
@@ -259,7 +268,12 @@ const QuizLesson = ({ lesson }: Props) => {
               <Button onClick={checkAnswer}>Kiểm tra đáp án</Button>
             )}
 
-            {isCorrectAll && <Button type="submit">Nộp bài</Button>}
+            {!isCompleted && isCorrectAll && (
+              <Button type="submit" disabled={isPending}>
+                {isPending && <Loader2 className="animate-spin" />}
+                Nộp bài
+              </Button>
+            )}
           </div>
         </form>
       </Form>

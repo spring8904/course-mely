@@ -13,4 +13,11 @@ export const userApi = {
   getCouponUser: async () => {
     return await api.get(`${prefix}/coupons`)
   },
+  generateCertificate: async (slug: string) => {
+    return await api.get(`${prefix}/certificate/${slug}`)
+  },
+  downloadCertificate: async (slug: string) => {
+    const response = await api.get(`${prefix}/courses/${slug}/certificate`)
+    return response.data
+  },
 }
