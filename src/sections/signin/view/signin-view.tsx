@@ -24,15 +24,13 @@ const SigninView = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<IAuthData>()
-  const { mutate, status } = useSignIn()
+  const { mutate, isPending } = useSignIn()
 
   useEffect(() => {
     if (isAuthenticated) {
       router.push('/')
     }
   }, [isAuthenticated, router])
-
-  const isPending = status === 'pending'
 
   const onSubmit = handleSubmit((data) => {
     mutate(data)

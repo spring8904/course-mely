@@ -11,7 +11,7 @@ export const noteApi = {
     const params = filters ? filters : {}
     return await api.get(`${prefix}/${slug}/get-notes`, { params })
   },
-  storeNote: async (data: NotePayload) => {
+  storeNote: async (data: NotePayload): Promise<any> => {
     return await api.post(`${prefix}`, data)
   },
 }

@@ -1,3 +1,5 @@
+import { Loader2 } from 'lucide-react'
+
 type Props = {
   text: string
   disabled: boolean
@@ -10,13 +12,11 @@ const SubmitButton = ({ text, disabled }: Props) => (
     type="submit"
     disabled={disabled}
   >
+    {text}
     {disabled ? (
-      `Loading...`
+      <Loader2 className="animate-spin" />
     ) : (
-      <>
-        {text}
-        <i className="icon-arrow-top-right" />
-      </>
+      <i className="icon-arrow-top-right" />
     )}
   </button>
 )
