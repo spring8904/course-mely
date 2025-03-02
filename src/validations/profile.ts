@@ -33,5 +33,51 @@ export const profileBioSchema = z.object({
   instagram: z.string().url('URL phải là một dẫn!').optional(),
 })
 
+export const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB
+export const ACCEPTED_FILE_TYPES = [
+  'image/jpeg',
+  'image/jpg',
+  'image/png',
+  'image/webp',
+  'application/pdf',
+]
+export const certificatesProfileSchema = z.object({
+  certificates: z
+    .array(
+      z
+        .instanceof(File)
+        .refine(
+          (file) => file.size <= MAX_FILE_SIZE,
+          'File size must be less than 5MB'
+        )
+        .refine(
+          (file) => ACCEPTED_FILE_TYPES.includes(file.type),
+          'Only JPG, JPEG, PNG, WEBP and PDF files are accepted'
+        )
+    )
+    .optional(),
+  existingCertificates: z.array(z.string()).optional(),
+})
+
+export const careerProfileSchema = z.object({
+  careers: z.object({
+    institution_name: z
+      .string()
+      .min(2, 'School name must be at least 2 characters'),
+    major: z.string().min(2, 'Major must be at least 2 characters'),
+    start_date: z.string().min(1, 'Vui lòng chọn ngày bắt đầu'),
+    end_date: z.string().min(1, 'Vui lòng chọn ngày kết thúc'),
+    description: z
+      .string()
+      .max(1000, 'Description must not exceed 1000 characters')
+      .optional(),
+    degree: z.string().min(2, 'Degree must be at least 2 characters'),
+  }),
+})
+export type UpdateCareerProfilePayload = z.infer<typeof careerProfileSchema>
+
 export type UpdateProfilePayload = z.infer<typeof updateProfile>
 export type ProfileBioFormValues = z.infer<typeof profileBioSchema>
+export type UpdateCertificatesProfilePayload = z.infer<
+  typeof certificatesProfileSchema
+>
