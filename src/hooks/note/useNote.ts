@@ -1,8 +1,8 @@
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
-import { NotePayload } from '@/validations/note'
 import QUERY_KEY from '@/constants/query-key'
 import { noteApi } from '@/services/note/note-api'
+import { toast } from 'react-toastify'
 
 export const useGetNotes = (
   slug?: string,
@@ -17,7 +17,17 @@ export const useGetNotes = (
 }
 
 export const useStoreNote = () => {
+  const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: (data: NotePayload) => noteApi.storeNote(data),
+    mutationFn: noteApi.storeNote,
+    onSuccess: (res) => {
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEY.NOTE_LESSON],
+      })
+      toast.success(res.message)
+    },
+    onError: (error) => {
+      toast.error(error.message)
+    },
   })
 }

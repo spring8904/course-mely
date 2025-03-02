@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { FilePenLine, Loader2, Trash } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
 
-import { formatDuration } from '@/lib/common'
 import { useGetChapterFromLesson } from '@/hooks/learning-path/useLearningPath'
 import { useGetNotes } from '@/hooks/note/useNote'
+import { formatDuration } from '@/lib/common'
 
+import HtmlRenderer from '@/components/shared/html-renderer'
 import { Badge } from '@/components/ui/badge'
 import {
   Select,
@@ -18,11 +19,9 @@ import {
   Sheet,
   SheetContent,
   SheetDescription,
-  SheetFooter,
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet'
-import HtmlRenderer from '@/components/shared/html-renderer'
 
 const NoteList = ({
   open,
@@ -67,7 +66,7 @@ const NoteList = ({
         <SheetHeader>
           <SheetTitle>Ghi chú của tôi</SheetTitle>
           <SheetDescription>
-            <span> Danh sách ghi chú trong khoá học của bạn.</span>
+            Danh sách ghi chú trong khoá học của bạn.
           </SheetDescription>
         </SheetHeader>
 

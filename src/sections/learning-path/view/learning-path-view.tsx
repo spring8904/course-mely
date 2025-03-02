@@ -1,27 +1,7 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
-import Image from 'next/image'
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-import {
-  CheckCircle,
-  ChevronLeft,
-  ChevronRight,
-  Lock,
-  Notebook,
-} from 'lucide-react'
-
-import { LearningPathLesson } from '@/types'
-import { lessonTypeIcons } from '@/configs'
-import { formatDuration } from '@/lib/common'
-import { cn } from '@/lib/utils'
-import {
-  useGetLessonDetail,
-  useGetLessons,
-} from '@/hooks/learning-path/useLearningPath'
-import { useDownloadCertificate, useGetProgress } from '@/hooks/user/useUser'
-
+import LearningProcess from '@/components/common/LearningProcess'
+import ModalLoading from '@/components/common/ModalLoading'
 import {
   Accordion,
   AccordionContent,
@@ -35,11 +15,29 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
-import LearningProcess from '@/components/common/LearningProcess'
-import ModalLoading from '@/components/common/ModalLoading'
+import { lessonTypeIcons } from '@/configs'
+import {
+  useGetLessonDetail,
+  useGetLessons,
+} from '@/hooks/learning-path/useLearningPath'
+import { useDownloadCertificate, useGetProgress } from '@/hooks/user/useUser'
+import { formatDuration } from '@/lib/common'
+import { cn } from '@/lib/utils'
 import CommentLesson from '@/sections/learning-path/_components/comment-lesson'
 import LessonContent from '@/sections/learning-path/_components/lesson-content'
 import NoteList from '@/sections/learning-path/_components/note-list'
+import { LearningPathLesson } from '@/types'
+import {
+  CheckCircle,
+  ChevronLeft,
+  ChevronRight,
+  Lock,
+  Notebook,
+} from 'lucide-react'
+import Image from 'next/image'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { useEffect, useMemo, useState } from 'react'
 
 type Props = {
   courseSlug: string
@@ -118,7 +116,7 @@ const LearningPathView = ({ courseSlug, lessonId }: Props) => {
     <>
       <div className="relative flex min-h-screen flex-col">
         <div className="fixed inset-x-0 top-0 z-10 h-16 bg-[#292f3b]">
-          <div className="container mx-auto flex h-full items-center justify-between px-8">
+          <div className="mx-16 flex h-full items-center justify-between">
             <div className="flex items-center gap-4">
               <Link href={'/'}>
                 <ChevronLeft className="text-white" />

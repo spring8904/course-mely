@@ -68,7 +68,7 @@ const SolutionTab = () => {
                 <FormControl>
                   <MonacoEditor
                     files={files}
-                    onCompile={(code) => {
+                    onExecute={(code) => {
                       form.setValue('result_code', code)
                       form.trigger('result_code')
                     }}
