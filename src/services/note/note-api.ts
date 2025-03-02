@@ -14,4 +14,10 @@ export const noteApi = {
   storeNote: async (data: NotePayload) => {
     return await api.post(`${prefix}`, data)
   },
+  updateNote: async (id: string, data: NotePayload) => {
+    return await api.put(`${prefix}/${id}`, data)
+  },
+  deleteNote: async (id: string) => {
+    return await api.delete(`${prefix}/${id}`)
+  },
 }

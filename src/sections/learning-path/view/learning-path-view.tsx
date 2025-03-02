@@ -20,6 +20,7 @@ import {
   useGetLessonDetail,
   useGetLessons,
 } from '@/hooks/learning-path/useLearningPath'
+import { useCheckCourseRatingState } from '@/hooks/rating/useRating'
 import { useDownloadCertificate, useGetProgress } from '@/hooks/user/useUser'
 
 import {
@@ -38,6 +39,7 @@ import {
 import LearningProcess from '@/components/common/LearningProcess'
 import ModalLoading from '@/components/common/ModalLoading'
 import CommentLesson from '@/sections/learning-path/_components/comment-lesson'
+import EvaluationCourse from '@/sections/learning-path/_components/evaluation-course'
 import LessonContent from '@/sections/learning-path/_components/lesson-content'
 import NoteList from '@/sections/learning-path/_components/note-list'
 
@@ -61,6 +63,7 @@ const LearningPathView = ({ courseSlug, lessonId }: Props) => {
   const lastTimeVideo = lessonDetail?.lesson_process?.last_time_video
 
   const { data: progress } = useGetProgress(courseSlug)
+  const { data: checkCourseRatingState } = useCheckCourseRatingState(courseSlug)
   const { data: downloadCertificate } = useDownloadCertificate(courseSlug)
 
   const getLessonDuration = (lesson: LearningPathLesson) => {
@@ -292,7 +295,10 @@ const LearningPathView = ({ courseSlug, lessonId }: Props) => {
             </Button>
           </div>
 
-          <div className="absolute right-2 top-1/2 -translate-y-1/2">
+          <div className="absolute right-2 top-1/2 flex -translate-y-1/2 gap-2">
+            {progress === 100 && !checkCourseRatingState && (
+              <EvaluationCourse courseSlug={courseSlug} />
+            )}
             <CommentLesson lessonId={lessonId} />
           </div>
         </div>

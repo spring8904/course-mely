@@ -83,7 +83,11 @@ const MyCourseView = () => {
                     <Link
                       href={`/learning/${course.slug}/lesson/${course.current_lesson.id}`}
                     >
-                      <Button>Tiếp tục học</Button>
+                      <Button>
+                        {course.progress_percent
+                          ? 'Đã hoàn thành'
+                          : 'Tiếp tục học'}
+                      </Button>
                     </Link>
                   </div>
                 </div>

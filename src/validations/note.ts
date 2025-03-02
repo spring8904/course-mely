@@ -1,8 +1,8 @@
 import { z } from 'zod'
 
 export const noteSchema = z.object({
-  lesson_id: z.number().int(),
-  time: z.number().int(),
+  lesson_id: z.any(),
+  time: z.any().optional(),
   content: z.string().min(1, { message: 'Vui lòng nhập nội dung' }),
 })
 

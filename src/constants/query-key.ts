@@ -42,6 +42,7 @@ const QUERY_KEY = {
   LESSON_COMMENT: 'lesson-comment',
   CERTIFICATE: 'certificate',
   NOTE_LESSON: 'note-lesson',
+  COURSE_RATING_STATE: 'course-rating-state',
 }
 
 export default QUERY_KEY

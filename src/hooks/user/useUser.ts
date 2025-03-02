@@ -34,6 +34,13 @@ export const useGenerateCertificate = (slug?: string) => {
   })
 }
 
+export const useGetCertificates = () => {
+  return useQuery({
+    queryKey: [QUERY_KEY.CERTIFICATE],
+    queryFn: () => userApi.getCertificate(),
+  })
+}
+
 export const useDownloadCertificate = (slug?: string) => {
   return useQuery({
     queryKey: [QUERY_KEY.CERTIFICATE],

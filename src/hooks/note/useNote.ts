@@ -21,3 +21,16 @@ export const useStoreNote = () => {
     mutationFn: (data: NotePayload) => noteApi.storeNote(data),
   })
 }
+
+export const useUpdateNote = () => {
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: NotePayload }) =>
+      noteApi.updateNote(id, data),
+  })
+}
+
+export const useDeleteNote = () => {
+  return useMutation({
+    mutationFn: (id: string) => noteApi.deleteNote(id),
+  })
+}
