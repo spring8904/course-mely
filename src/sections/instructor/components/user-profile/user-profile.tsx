@@ -1,10 +1,19 @@
 import { useState } from 'react'
-import { KeyRound, Link2, Loader2, User } from 'lucide-react'
+import {
+  BadgeCheck,
+  Building2,
+  KeyRound,
+  Link2,
+  Loader2,
+  User,
+} from 'lucide-react'
 
 import { useGetProfile } from '@/hooks/profile/useProfile'
 
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog'
+import CareersSection from '@/sections/instructor/components/user-profile/_components/career-section'
+import { CertificateSection } from '@/sections/instructor/components/user-profile/_components/certificate-section'
 
 import { PasswordSection } from './_components/password-section'
 import { ProfileSection } from './_components/profile-section'
@@ -17,24 +26,24 @@ interface Props {
 
 export function UserProfileModal({ open, onOpenChange }: Props) {
   const [currentView, setCurrentView] = useState<
-    'profile' | 'social' | 'password'
+    'profile' | 'social' | 'password' | 'careers' | 'certificates'
   >('profile')
   const [isEditing, setIsEditing] = useState(false)
   const { data: getProfile, isLoading } = useGetProfile()
   if (isLoading) {
     return (
       <div>
-        <Loader2 />
+        <Loader2 className="animate-spin" />
       </div>
     )
   }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-[800px] overflow-hidden p-0">
+      <DialogContent className="max-w-[1050px] overflow-hidden p-0">
         <DialogTitle className="sr-only">Account Settings</DialogTitle>
-        <div className="flex h-[600px]">
-          <div className="w-[200px] border-r bg-muted/30 p-6">
+        <div className="flex h-[650px]">
+          <div className="w-[280px] border-r bg-muted/30 p-6">
             <div className="mb-6">
               <h1 className="text-lg font-semibold tracking-tight">Cài Đặt</h1>
               <p className="mt-1 text-xs text-muted-foreground">
@@ -59,6 +68,22 @@ export function UserProfileModal({ open, onOpenChange }: Props) {
                 Mạng xã hội
               </Button>
               <Button
+                variant={currentView === 'careers' ? 'secondary' : 'ghost'}
+                className="w-full justify-start gap-3 font-medium"
+                onClick={() => setCurrentView('careers')}
+              >
+                <Building2 className="size-4" />
+                Nghề nghiệp
+              </Button>
+              <Button
+                variant={currentView === 'certificates' ? 'secondary' : 'ghost'}
+                className="w-full justify-start gap-3 font-medium"
+                onClick={() => setCurrentView('certificates')}
+              >
+                <BadgeCheck className="size-4" />
+                Chứng chỉ
+              </Button>
+              <Button
                 variant={currentView === 'password' ? 'secondary' : 'ghost'}
                 className="w-full justify-start gap-3 font-medium"
                 onClick={() => setCurrentView('password')}
@@ -76,7 +101,11 @@ export function UserProfileModal({ open, onOpenChange }: Props) {
                   ? 'Thông tin hồ sơ'
                   : currentView === 'social'
                     ? 'Mạng xã hội'
-                    : 'Đổi mật khẩu'}
+                    : currentView === 'careers'
+                      ? 'Thông tin nghề nghiệp'
+                      : currentView === 'certificates'
+                        ? 'Chứng chỉ'
+                        : 'Đổi mật khẩu'}
               </h2>
               {/*<Button*/}
               {/*  variant="ghost"*/}
@@ -98,6 +127,14 @@ export function UserProfileModal({ open, onOpenChange }: Props) {
               ) : currentView === 'social' ? (
                 <SocialSection
                   socialData={getProfile?.data}
+                  isEditing={isEditing}
+                  setIsEditing={setIsEditing}
+                />
+              ) : currentView === 'careers' ? (
+                <CareersSection careersData={getProfile?.data?.user?.profile} />
+              ) : currentView === 'certificates' ? (
+                <CertificateSection
+                  certificateData={getProfile?.data?.user?.profile}
                   isEditing={isEditing}
                   setIsEditing={setIsEditing}
                 />

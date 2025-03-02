@@ -1,7 +1,7 @@
 import { ChangePasswordPayload } from '@/validations/change-password'
 import api from '@/configs/api'
 
-const prefix = '/user/change-password'
+const prefix = '/users/change-password'
 
 export const changePasswordApi = {
   changePassword: async (data: ChangePasswordPayload) => {
