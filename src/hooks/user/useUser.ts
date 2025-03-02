@@ -25,3 +25,19 @@ export const useGetCouponUser = () => {
     queryFn: () => userApi.getCouponUser(),
   })
 }
+
+export const useGenerateCertificate = (slug?: string) => {
+  return useQuery({
+    queryKey: [QUERY_KEY.CERTIFICATE],
+    queryFn: () => userApi.generateCertificate(slug!),
+    enabled: !!slug,
+  })
+}
+
+export const useDownloadCertificate = (slug?: string) => {
+  return useQuery({
+    queryKey: [QUERY_KEY.CERTIFICATE],
+    queryFn: () => userApi.downloadCertificate(slug!),
+    enabled: !!slug,
+  })
+}
