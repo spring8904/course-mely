@@ -1,4 +1,5 @@
 import React from 'react'
+import Image from 'next/image'
 
 const BlogListSideBar = () => {
   return (
@@ -70,7 +71,8 @@ const BlogListSideBar = () => {
         <ul className="tf-collapse-content">
           <li className="recent-item hover-img">
             <div className="image image-wrap">
-              <img
+              <Image
+                layout="fill"
                 className="lazyload"
                 data-src="/assets/images/blog/blog-05.jpg"
                 src="/assets/images/blog/blog-05.jpg"

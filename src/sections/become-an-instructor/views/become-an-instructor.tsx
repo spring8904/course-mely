@@ -34,13 +34,14 @@ import ModalOption from '@/sections/become-an-instructor/_components/modal-optio
 
 import 'swiper/css'
 import 'swiper/css/autoplay'
+import ModalLoading from '@/components/common/ModalLoading'
 
 const BecomeAnInstructor = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [step, setStep] = useState(1)
 
   const { data: qaSystems } = useGetQaSystems()
-  const { mutate: registerInstructor } = useInstructorRegister()
+  const { mutate: registerInstructor, isPending } = useInstructorRegister()
 
   const form = useForm<RegisterInstructorInput>({
     resolver: zodResolver(registerInstructorSchema),
@@ -67,6 +68,8 @@ const BecomeAnInstructor = () => {
   useEffect(() => {
     // setIsModalOpen(true)
   }, [])
+
+  if (isPending) return <ModalLoading />
 
   return (
     <>

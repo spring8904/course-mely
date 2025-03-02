@@ -3,173 +3,101 @@ import Link from 'next/link'
 import {
   ArrowRight,
   BookOpen,
-  Calendar,
   CheckCircle,
-  Clock,
-  CreditCard,
   Gift,
   Home,
-  Receipt,
-  Shield,
+  Star,
 } from 'lucide-react'
 
 import PaymentSupport from '@/sections/payment/_components/payment-support'
 
-const orderNumber = 'ORD-2024-03-15-789'
-const amount = '1,290,000'
-
 const PaymentSuccessView = () => {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 p-4">
-      <div className="fixed inset-0 bg-[url('https://images.unsplash.com/photo-1557683311-eac922347aa1')] bg-cover bg-center opacity-5" />
-      <div className="relative z-10 w-full max-w-xl space-y-6">
-        <div className="overflow-hidden rounded-2xl border border-emerald-100 bg-white shadow-sm">
-          <div className="animate-gradient relative overflow-hidden bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 p-6 text-white">
-            <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1557683316-973673baf926')] bg-cover bg-center opacity-10 mix-blend-overlay" />
-            <div className="relative z-10">
-              <div className="flex items-center gap-4">
-                <div className="animate-[bounce_5s_ease-in-out_infinite] rounded-xl bg-white/20 p-3 shadow-lg">
-                  <CheckCircle className="size-8" strokeWidth={1.5} />
-                </div>
-                <div>
-                  <h2 className="text-2xl font-bold text-white">
-                    Thanh toán thành công
-                  </h2>
-                  <p className="mt-1 text-sm text-emerald-50">
-                    Cảm ơn bạn đã tin tưởng lựa chọn chúng tôi
-                  </p>
+    <div className="flex min-h-screen items-center justify-center bg-[#F8FAFC] p-4">
+      <div className="animate-slide-in w-full max-w-xl space-y-6">
+        <div className="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm transition-shadow duration-500">
+          <div className="animate-gradient relative overflow-hidden bg-gradient-to-br from-emerald-500 via-teal-500 to-emerald-600 p-10 text-white">
+            <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1557683311-eac922347aa1')] bg-cover bg-center opacity-10 mix-blend-overlay" />
+
+            <div className="absolute left-0 top-0 size-full">
+              <div className="absolute left-4 top-4 size-24 rounded-full bg-white/10 blur-2xl" />
+              <div className="absolute bottom-4 right-4 size-32 rounded-full bg-white/10 blur-2xl" />
+            </div>
+
+            <div className="relative z-10 text-center">
+              <div className="mb-6 flex justify-center">
+                <div className="animate-[bounce_5s_ease-in-out_infinite] rounded-full bg-white/20 p-5 shadow-lg shadow-emerald-900/20 backdrop-blur-xl">
+                  <CheckCircle
+                    className="animate-float size-10"
+                    strokeWidth={1.5}
+                  />
                 </div>
               </div>
+              <h2 className="mb-2 text-3xl font-bold tracking-tight text-white">
+                Thanh toán thành công!
+              </h2>
+              <p className="text-base text-emerald-50">
+                Cảm ơn bạn đã đăng ký khóa học
+              </p>
             </div>
           </div>
 
-          <div className="space-y-6 p-6">
-            <div className="py-6 text-center">
-              <p className="mb-1 text-sm text-slate-600">Số tiền thanh toán</p>
-              <div className="animate-gradient-fast bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-3xl font-bold text-transparent">
-                {amount} ₫
-              </div>
+          <div className="bg-gradient-to-b from-white to-emerald-50/30 px-6 py-8">
+            <div className="mb-6 space-y-2 text-center">
+              <h3 className="text-lg font-semibold text-slate-900">
+                Bắt đầu hành trình học tập của bạn
+              </h3>
+              <p className="text-sm text-slate-600">
+                Khám phá ngay những kiến thức thú vị đang chờ đợi
+              </p>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div className="group rounded-xl border border-slate-100 bg-slate-50/50 p-4 transition-all duration-300 hover:bg-slate-50">
-                <div className="flex items-center gap-3">
-                  <div className="rounded-lg bg-white p-2 shadow-sm transition-all duration-300 group-hover:shadow-md">
-                    <Receipt
-                      className="size-4 text-slate-600"
-                      strokeWidth={1.5}
-                    />
+            <div className="mb-6 grid grid-cols-2 gap-4">
+              <div className="flex items-center gap-3 rounded-xl border border-emerald-100 bg-emerald-50/50 p-3">
+                <div className="rounded-full bg-emerald-100 p-2">
+                  <Gift className="size-4 text-emerald-600" strokeWidth={1.5} />
+                </div>
+                <div className="text-xs">
+                  <div className="font-medium text-emerald-900">
+                    Truy cập trọn đời
                   </div>
-                  <div className="flex-1 space-y-0.5">
-                    <p className="text-xs font-medium text-slate-500">
-                      Mã đơn hàng
-                    </p>
-                    <p className="font-mono text-sm font-medium text-slate-700">
-                      {orderNumber}
-                    </p>
+                  <div className="text-emerald-600">
+                    Không giới hạn thời gian
                   </div>
                 </div>
               </div>
-
-              <div className="group rounded-xl border border-slate-100 bg-slate-50/50 p-4 transition-all duration-300 hover:bg-slate-50">
-                <div className="flex items-center gap-3">
-                  <div className="rounded-lg bg-white p-2 shadow-sm transition-all duration-300 group-hover:shadow-md">
-                    <Calendar
-                      className="size-4 text-slate-600"
-                      strokeWidth={1.5}
-                    />
-                  </div>
-                  <div className="flex-1 space-y-0.5">
-                    <p className="text-xs font-medium text-slate-500">
-                      Thời gian
-                    </p>
-                    <p className="text-sm font-medium text-slate-700">
-                      {new Date().toLocaleString('vi-VN')}
-                    </p>
-                  </div>
+              <div className="flex items-center gap-3 rounded-xl border border-emerald-100 bg-emerald-50/50 p-3">
+                <div className="rounded-full bg-emerald-100 p-2">
+                  <Star className="size-4 text-emerald-600" strokeWidth={1.5} />
                 </div>
-              </div>
-
-              <div className="group rounded-xl border border-slate-100 bg-slate-50/50 p-4 transition-all duration-300 hover:bg-slate-50">
-                <div className="flex items-center gap-3">
-                  <div className="rounded-lg bg-white p-2 shadow-sm transition-all duration-300 group-hover:shadow-md">
-                    <CreditCard
-                      className="size-4 text-slate-600"
-                      strokeWidth={1.5}
-                    />
+                <div className="text-xs">
+                  <div className="font-medium text-emerald-900">
+                    Nội dung chất lượng
                   </div>
-                  <div className="flex-1 space-y-0.5">
-                    <p className="text-xs font-medium text-slate-500">
-                      Phương thức
-                    </p>
-                    <p className="text-sm font-medium text-slate-700">
-                      Thẻ tín dụng
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="group rounded-xl border border-slate-100 bg-slate-50/50 p-4 transition-all duration-300 hover:bg-slate-50">
-                <div className="flex items-center gap-3">
-                  <div className="rounded-lg bg-white p-2 shadow-sm transition-all duration-300 group-hover:shadow-md">
-                    <CheckCircle
-                      className="size-4 text-slate-600"
-                      strokeWidth={1.5}
-                    />
-                  </div>
-                  <div className="flex-1 space-y-0.5">
-                    <p className="text-xs font-medium text-slate-500">
-                      Trạng thái
-                    </p>
-                    <p className="text-sm font-medium text-slate-700">
-                      Đã thanh toán
-                    </p>
-                  </div>
+                  <div className="text-emerald-600">Cập nhật liên tục</div>
                 </div>
               </div>
             </div>
 
-            <div className="mt-4 grid grid-cols-3 gap-3">
-              <div className="cursor-pointer space-y-1.5 rounded-xl bg-emerald-50 p-3 text-center transition-all duration-300 hover:-translate-y-1 hover:bg-emerald-100">
-                <Shield className="mx-auto size-5 text-emerald-600" />
-                <p className="text-xs font-medium text-emerald-900">
-                  Bảo mật tuyệt đối
-                </p>
-              </div>
-              <div className="cursor-pointer space-y-1.5 rounded-xl bg-blue-50 p-3 text-center transition-all duration-300 hover:-translate-y-1 hover:bg-blue-100">
-                <Clock className="mx-auto size-5 text-blue-600" />
-                <p className="text-xs font-medium text-blue-900">
-                  Truy cập ngay
-                </p>
-              </div>
-              <div className="cursor-pointer space-y-1.5 rounded-xl bg-purple-50 p-3 text-center transition-all duration-300 hover:-translate-y-1 hover:bg-purple-100">
-                <Gift className="mx-auto size-5 text-purple-600" />
-                <p className="text-xs font-medium text-purple-900">
-                  Ưu đãi độc quyền
-                </p>
-              </div>
-            </div>
-
-            <div className="space-y-3 pt-4">
+            <div className="space-y-3">
               <Link href="/my-courses">
-                <button className="animate-gradient group w-full rounded-xl bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 px-4 py-3 text-sm font-medium text-white shadow-sm shadow-emerald-100 transition-all duration-300 hover:-translate-y-0.5">
-                  <span className="flex items-center justify-center gap-2">
-                    <BookOpen className="size-4" strokeWidth={1.5} />
-                    <span>Truy cập khoá học</span>
-                    <ArrowRight
-                      className="size-4 -translate-x-4 opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100"
-                      strokeWidth={1.5}
-                    />
-                  </span>
+                <button className="group mb-2 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 px-4 py-3 font-medium text-white transition-all duration-300 hover:-translate-y-0.5 hover:from-emerald-600 hover:to-teal-700 hover:shadow-xl hover:shadow-emerald-200/50">
+                  <BookOpen className="size-4" strokeWidth={1.5} />
+                  <span className="text-base">Truy cập khóa học</span>
+                  <ArrowRight
+                    className="size-4 -translate-x-4 opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100"
+                    strokeWidth={1.5}
+                  />
                 </button>
               </Link>
 
               <Link href="/">
-                <button className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-700 transition-all duration-300 hover:-translate-y-0.5 hover:bg-slate-50">
-                  <span className="flex items-center justify-center gap-2">
-                    <Home className="size-4 text-slate-500" strokeWidth={1.5} />
-                    <span>Quay về trang chủ</span>
-                  </span>
+                <button className="group flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-3 font-medium text-slate-700 transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50">
+                  <Home
+                    className="size-4 text-slate-500 transition-colors group-hover:text-slate-700"
+                    strokeWidth={1.5}
+                  />
+                  <span className="text-base">Quay về trang chủ</span>
                 </button>
               </Link>
             </div>

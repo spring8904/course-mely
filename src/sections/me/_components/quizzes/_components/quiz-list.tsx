@@ -1,4 +1,5 @@
 import React from 'react'
+import Image from 'next/image'
 
 const QuizList = () => {
   return (
@@ -14,7 +15,8 @@ const QuizList = () => {
           <li>
             <div className="list-quizzes border-bottom wow fadeInUp flex items-center">
               <div className="img-name">
-                <img
+                <Image
+                  layout="fill"
                   src="/assets/images/item/js.jpg"
                   data-src="/assets/images/item/js.jpg"
                   alt=""
@@ -52,7 +54,8 @@ const QuizList = () => {
           <li>
             <div className="list-quizzes border-bottom wow fadeInUp flex items-center">
               <div className="img-name">
-                <img
+                <Image
+                  layout="fill"
                   src="/assets/images/item/react.jpg"
                   data-src="/assets/images/item/react.jpg"
                   alt=""
@@ -90,7 +93,8 @@ const QuizList = () => {
           <li>
             <div className="list-quizzes border-bottom wow fadeInUp flex items-center">
               <div className="img-name">
-                <img
+                <Image
+                  layout="fill"
                   src="/assets/images/item/css.jpg"
                   data-src="/assets/images/item/css.jpg"
                   alt=""
@@ -128,7 +132,8 @@ const QuizList = () => {
           <li>
             <div className="list-quizzes border-bottom wow fadeInUp flex items-center">
               <div className="img-name">
-                <img
+                <Image
+                  layout="fill"
                   src="/assets/images/item/vue.jpg"
                   data-src="/assets/images/item/vue.jpg"
                   alt=""
@@ -166,7 +171,8 @@ const QuizList = () => {
           <li>
             <div className="list-quizzes wow fadeInUp flex items-center">
               <div className="img-name">
-                <img
+                <Image
+                  layout="fill"
                   src="/assets/images/item/html5.jpg"
                   data-src="/assets/images/item/html5.jpg"
                   alt=""

@@ -1,5 +1,4 @@
 import ReactQuill from 'react-quill'
-
 import 'react-quill/dist/quill.snow.css'
 import '@/styles/quill-editor.css'
 
@@ -28,6 +27,8 @@ const toolbarOptions = [
 ]
 
 const QuillEditor = ({
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  ref,
   fullToolbar = false,
   disabled,
   ...rest

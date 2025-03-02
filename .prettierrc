@@ -3,36 +3,5 @@
   "semi": false,
   "singleQuote": true,
   "trailingComma": "es5",
-  "importOrder": [
-    "^react(/.*)?$",
-    "^next(/.*)?$",
-    "<THIRD_PARTY_MODULES>",
-
-    "",
-    "^@/types(/.*)?$",
-    "^@/validations(/.*)?$",
-
-    "^@/constants(/.*)?$",
-    "^@/configs(/.*)?$",
-    "^@/lib(/.*)?$",
-
-    "^@/services(/.*)?$",
-    "^@/hooks(/.*)?$",
-
-    "",
-    "^@/providers(/.*)?$",
-    "^@/components/ui(/.*)?$",
-    "^@/components(/.*)?$",
-    "^@/sections(/.*)?$",
-
-    "^@/app(/.*)?$",
-    "^@/styles(/.*)?$",
-
-    "",
-    "^[./]"
-  ],
-  "plugins": [
-    "@ianvs/prettier-plugin-sort-imports",
-    "prettier-plugin-tailwindcss"
-  ]
+  "plugins": ["prettier-plugin-tailwindcss"]
 }

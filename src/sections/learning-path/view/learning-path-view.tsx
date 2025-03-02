@@ -121,7 +121,7 @@ const LearningPathView = ({ courseSlug, lessonId }: Props) => {
     <>
       <div className="relative flex min-h-screen flex-col">
         <div className="fixed inset-x-0 top-0 z-10 h-16 bg-[#292f3b]">
-          <div className="container mx-auto flex h-full items-center justify-between px-8">
+          <div className="mx-16 flex h-full items-center justify-between">
             <div className="flex items-center gap-4">
               <Link href={'/'}>
                 <ChevronLeft className="text-white" />

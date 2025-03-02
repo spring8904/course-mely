@@ -84,7 +84,7 @@ const MyCourseView = () => {
                       href={`/learning/${course.slug}/lesson/${course.current_lesson.id}`}
                     >
                       <Button>
-                        {course.progress_percent
+                        {course.progress_percent == 100
                           ? 'Đã hoàn thành'
                           : 'Tiếp tục học'}
                       </Button>

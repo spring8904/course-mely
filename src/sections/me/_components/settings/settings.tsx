@@ -11,6 +11,7 @@ import { useGetProfile, useUpdateProfile } from '@/hooks/profile/useProfile'
 import SocialView from '@/sections/me/_components/settings/_components/social'
 
 import PassWordView from './_components/password'
+import Image from 'next/image'
 
 const MeSetting = () => {
   const [activeTab, setActiveTab] = useState('Profile')
@@ -86,7 +87,8 @@ const MeSetting = () => {
                   <div className="row">
                     <div className="profile-wrap">
                       <div className="profile-img">
-                        <img
+                        <Image
+                          layout="fill"
                           id="profile-img"
                           src={profileData?.data.user?.avatar}
                           alt={profileData?.data.user?.name}

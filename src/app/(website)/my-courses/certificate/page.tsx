@@ -1,7 +1,7 @@
 import MyCertificateView from '@/sections/my-courses/view/my-certificate-view'
 
-const CertificatePage = () => {
+const page = () => {
   return <MyCertificateView />
 }
 
-export default CertificatePage
+export default page

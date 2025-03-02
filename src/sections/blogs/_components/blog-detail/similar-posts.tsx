@@ -1,4 +1,5 @@
 import React from 'react'
+import Image from 'next/image'
 
 const BlogDetailSimilarPosts = () => {
   return (
@@ -29,7 +30,8 @@ const BlogDetailSimilarPosts = () => {
               <div className="swiper-slide">
                 <div className="blog-article-item hover-img wow fadeInUp">
                   <div className="article-thumb image-wrap">
-                    <img
+                    <Image
+                      layout="fill"
                       className="lazyload"
                       data-src="/assets/images/blog/blog-01.jpg"
                       src="/assets/images/blog/blog-01.jpg"

@@ -30,7 +30,7 @@ const DocumentLesson = ({ lesson, isCompleted }: Props) => {
       <div className="space-y-2">
         <h1 className="text-3xl font-bold">{lesson.title}</h1>
         <p className="text-sm text-muted-foreground">
-          Cập nhật vào{' '}
+          Cập nhật{' '}
           {formatDate(lesson.updated_at, {
             dateStyle: 'long',
           })}

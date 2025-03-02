@@ -1,4 +1,5 @@
 import React from 'react'
+import Image from 'next/image'
 
 interface BlogDetailPostProps {
   initialBlogDetail: any
@@ -123,7 +124,7 @@ const BlogDetailPost = ({ initialBlogDetail }: BlogDetailPostProps) => {
       </ul>
       <div className="image-wrap">
         <div className="image-item wow fadeInLeft">
-          <img
+          <Image
             className="lazyload"
             data-src="/assets/images/blog/blog-12.jpg"
             src="/assets/images/blog/blog-12.jpg"

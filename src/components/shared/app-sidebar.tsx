@@ -11,6 +11,7 @@ import {
   Command,
   Database,
   GalleryVerticalEnd,
+  MessageSquareQuote,
   MessageSquareText,
   TicketPercent,
   UsersRound,
@@ -88,6 +89,11 @@ const data = {
       title: 'Bài viết',
       url: '/instructor/posts',
       icon: MessageSquareText,
+    },
+    {
+      title: 'Đánh giá',
+      url: '/instructor/evaluation',
+      icon: MessageSquareQuote,
     },
     {
       title: 'Mã giảm giá',
