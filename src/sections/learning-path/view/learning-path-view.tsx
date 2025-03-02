@@ -1,7 +1,28 @@
 'use client'
 
-import LearningProcess from '@/components/common/LearningProcess'
-import ModalLoading from '@/components/common/ModalLoading'
+import { useEffect, useMemo, useState } from 'react'
+import Image from 'next/image'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import {
+  CheckCircle,
+  ChevronLeft,
+  ChevronRight,
+  Lock,
+  Notebook,
+} from 'lucide-react'
+
+import { LearningPathLesson } from '@/types'
+import { lessonTypeIcons } from '@/configs'
+import { formatDuration } from '@/lib/common'
+import { cn } from '@/lib/utils'
+import {
+  useGetLessonDetail,
+  useGetLessons,
+} from '@/hooks/learning-path/useLearningPath'
+import { useCheckCourseRatingState } from '@/hooks/rating/useRating'
+import { useDownloadCertificate, useGetProgress } from '@/hooks/user/useUser'
+
 import {
   Accordion,
   AccordionContent,
@@ -15,29 +36,12 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
-import { lessonTypeIcons } from '@/configs'
-import {
-  useGetLessonDetail,
-  useGetLessons,
-} from '@/hooks/learning-path/useLearningPath'
-import { useDownloadCertificate, useGetProgress } from '@/hooks/user/useUser'
-import { formatDuration } from '@/lib/common'
-import { cn } from '@/lib/utils'
+import LearningProcess from '@/components/common/LearningProcess'
+import ModalLoading from '@/components/common/ModalLoading'
 import CommentLesson from '@/sections/learning-path/_components/comment-lesson'
+import EvaluationCourse from '@/sections/learning-path/_components/evaluation-course'
 import LessonContent from '@/sections/learning-path/_components/lesson-content'
 import NoteList from '@/sections/learning-path/_components/note-list'
-import { LearningPathLesson } from '@/types'
-import {
-  CheckCircle,
-  ChevronLeft,
-  ChevronRight,
-  Lock,
-  Notebook,
-} from 'lucide-react'
-import Image from 'next/image'
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-import { useEffect, useMemo, useState } from 'react'
 
 type Props = {
   courseSlug: string
@@ -59,6 +63,7 @@ const LearningPathView = ({ courseSlug, lessonId }: Props) => {
   const lastTimeVideo = lessonDetail?.lesson_process?.last_time_video
 
   const { data: progress } = useGetProgress(courseSlug)
+  const { data: checkCourseRatingState } = useCheckCourseRatingState(courseSlug)
   const { data: downloadCertificate } = useDownloadCertificate(courseSlug)
 
   const getLessonDuration = (lesson: LearningPathLesson) => {
@@ -290,7 +295,10 @@ const LearningPathView = ({ courseSlug, lessonId }: Props) => {
             </Button>
           </div>
 
-          <div className="absolute right-2 top-1/2 -translate-y-1/2">
+          <div className="absolute right-2 top-1/2 flex -translate-y-1/2 gap-2">
+            {progress === 100 && !checkCourseRatingState && (
+              <EvaluationCourse courseSlug={courseSlug} />
+            )}
             <CommentLesson lessonId={lessonId} />
           </div>
         </div>

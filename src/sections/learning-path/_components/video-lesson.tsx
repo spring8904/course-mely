@@ -164,7 +164,7 @@ const VideoLesson = ({ lesson, isCompleted, lastTimeVideo = 0 }: Props) => {
             muxPlayerRef.current?.play()
           }
         }}
-        lessonId={lesson.id!}
+        lessonId={lesson.id! as unknown as string}
         currentTime={currentTime}
       />
 

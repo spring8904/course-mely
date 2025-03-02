@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import QUERY_KEY from '@/constants/query-key'
 import { noteApi } from '@/services/note/note-api'
 import { toast } from 'react-toastify'
+import { UpdateNotePayload } from '@/validations/note'
 
 export const useGetNotes = (
   slug?: string,
@@ -29,5 +30,18 @@ export const useStoreNote = () => {
     onError: (error) => {
       toast.error(error.message)
     },
+  })
+}
+
+export const useUpdateNote = () => {
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: UpdateNotePayload }) =>
+      noteApi.updateNote(id, data),
+  })
+}
+
+export const useDeleteNote = () => {
+  return useMutation({
+    mutationFn: (id: string) => noteApi.deleteNote(id),
   })
 }

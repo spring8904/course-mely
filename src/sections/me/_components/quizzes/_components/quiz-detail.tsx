@@ -1,4 +1,5 @@
 import React from 'react'
+import Image from 'next/image'
 
 const QuizDetail = () => {
   return (
@@ -6,7 +7,7 @@ const QuizDetail = () => {
       <div className="box-3 section-right">
         <div className="heading-section flex items-center justify-between">
           <h6 className="fw-5 fs-22 wow fadeInUp">
-            <img src="/assets/images/item/react.jpg" alt="" />
+            <Image layout="fill" src="/assets/images/item/react.jpg" alt="" />
             React Basic Quiz
           </h6>
           <span

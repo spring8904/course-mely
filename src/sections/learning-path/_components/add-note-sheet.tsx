@@ -19,7 +19,7 @@ import {
 } from '@/components/ui/sheet'
 import { useStoreNote } from '@/hooks/note/useNote'
 import { formatDuration } from '@/lib/common'
-import { NotePayload, noteSchema } from '@/validations/note'
+import { CreateNotePayload, createNoteSchema } from '@/validations/note'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2 } from 'lucide-react'
 import { useForm } from 'react-hook-form'
@@ -27,13 +27,13 @@ import { useForm } from 'react-hook-form'
 interface Props {
   open: boolean
   onOpenChange: (open: boolean) => void
-  lessonId: number
+  lessonId: string
   currentTime: number
 }
 
 const AddNoteSheet = ({ open, onOpenChange, currentTime, lessonId }: Props) => {
-  const form = useForm<NotePayload>({
-    resolver: zodResolver(noteSchema),
+  const form = useForm<CreateNotePayload>({
+    resolver: zodResolver(createNoteSchema),
     defaultValues: {
       lesson_id: lessonId,
       time: currentTime,
@@ -42,8 +42,13 @@ const AddNoteSheet = ({ open, onOpenChange, currentTime, lessonId }: Props) => {
 
   const { mutate: storeNote, isPending: isPendingStoreNote } = useStoreNote()
 
-  const onSubmit = (values: NotePayload) => {
-    storeNote(values, {
+  const onSubmit = (values: CreateNotePayload) => {
+    const payload = {
+      ...values,
+      time: currentTime,
+    }
+
+    storeNote(payload, {
       onSuccess: () => {
         onOpenChange(false)
       },
@@ -55,7 +60,6 @@ const AddNoteSheet = ({ open, onOpenChange, currentTime, lessonId }: Props) => {
       open={open}
       onOpenChange={(open) => {
         if (isPendingStoreNote) return
-
         onOpenChange(open)
         form.reset()
       }}
@@ -80,7 +84,8 @@ const AddNoteSheet = ({ open, onOpenChange, currentTime, lessonId }: Props) => {
                     <QuillEditor
                       theme="snow"
                       placeholder="Nhập nội dung ghi chú"
-                      {...field}
+                      value={field.value || ''}
+                      onChange={field.onChange}
                     />
                   </FormControl>
                   <FormMessage />

@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   title: 'Thông tin cá nhân',
 }
 
-const MePage = () => {
+const page = () => {
   return (
     <div>
       <MeView />
@@ -15,4 +15,4 @@ const MePage = () => {
   )
 }
 
-export default MePage
+export default page

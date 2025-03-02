@@ -1,4 +1,4 @@
-import { NotePayload } from '@/validations/note'
+import { CreateNotePayload, UpdateNotePayload } from '@/validations/note'
 import api from '@/configs/api'
 
 const prefix = 'notes'
@@ -11,7 +11,13 @@ export const noteApi = {
     const params = filters ? filters : {}
     return await api.get(`${prefix}/${slug}/get-notes`, { params })
   },
-  storeNote: async (data: NotePayload): Promise<any> => {
+  storeNote: async (data: CreateNotePayload): Promise<any> => {
     return await api.post(`${prefix}`, data)
+  },
+  updateNote: async (id: string, data: UpdateNotePayload) => {
+    return await api.put(`${prefix}/${id}`, data)
+  },
+  deleteNote: async (id: string) => {
+    return await api.delete(`${prefix}/${id}`)
   },
 }
