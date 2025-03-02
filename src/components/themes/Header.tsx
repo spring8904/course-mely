@@ -229,100 +229,103 @@ const Header = () => {
                 <i className="icon-search fs-20"></i>
               </a>
               <WishListIcon />
-              <div>
-                <Popover>
-                  <PopoverTrigger asChild>
+
+              <Popover>
+                <PopoverTrigger asChild>
+                  <div className="relative">
                     <Button
                       variant="ghost"
-                      className="relative rounded-full border-2 p-2"
+                      size="icon"
+                      className="hover:bg-transparent hover:text-primary [&_svg]:size-5"
                     >
                       <Bell
                         className={cn(
-                          'size-6 text-gray-700',
+                          'stroke-[1.6]',
                           hasUnread && 'animate-bell'
                         )}
                       />
-                      {hasUnread && (
-                        <span className="absolute -top-1 right-[-2px] flex size-3">
-                          <span className="absolute size-full animate-ping rounded-full bg-red-400/75"></span>
-                          <span className="relative size-3 rounded-full bg-red-500"></span>
-                        </span>
-                      )}
                     </Button>
-                  </PopoverTrigger>
-                  <PopoverContent
-                    align="start"
-                    side="bottom"
-                    className="w-100 mr-6 p-2"
-                  >
-                    <div className="flex justify-between gap-2">
-                      <h4 className="text-sm font-medium">Thông báo</h4>
-                      <input
-                        type="text"
-                        placeholder="Tìm kiếm..."
-                        className="w-60 rounded border px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                      />
-                    </div>
-                    <Separator className="my-2" />
-                    {isLoading ? (
-                      <Loader2 />
-                    ) : filteredNotifications.length > 0 ? (
-                      <div className="flex w-full flex-col gap-3">
-                        {filteredNotifications.map((noti: any) => (
-                          <div
-                            key={noti.id}
-                            className={`flex cursor-pointer items-center gap-4 rounded p-2 ${
-                              noti.read_at ? 'bg-gray-100' : 'bg-blue-50'
-                            }`}
-                            onClick={() => handleMarkAsRead(noti.id)}
-                          >
-                            <div className="flex size-8 items-center justify-center rounded-full bg-gray-300">
-                              {noti?.data.course_thumbnail ? (
-                                <Image
-                                  src={noti?.data.course_thumbnail}
-                                  alt="thumbnail"
-                                  className="size-full rounded-full object-cover"
-                                  width={32}
-                                  height={32}
-                                />
-                              ) : (
-                                <span className="text-sm font-bold text-white">
-                                  {noti?.data.sender?.charAt(0) ?? 'N'}
-                                </span>
-                              )}
-                            </div>
-
-                            <div className="flex flex-1 items-center justify-between">
-                              <span className="text-sm">
-                                {noti?.data.message}
-                              </span>
-                              {!noti.read_at && (
-                                <CheckCircle className="size-4 text-green-500" />
-                              )}
-                            </div>
-                          </div>
-                        ))}
-
-                        {hasNextPage && (
-                          <button
-                            className="mt-2 w-full text-center font-bold text-primary"
-                            onClick={() => fetchNextPage()}
-                            disabled={!hasNextPage || isFetchingNextPage}
-                          >
-                            {isFetchingNextPage ? 'Đang tải...' : 'Xem thêm'}
-                          </button>
-                        )}
-                      </div>
-                    ) : (
-                      <p className="text-sm text-gray-500">
-                        Không có thông báo mới
-                      </p>
+                    {hasUnread && (
+                      <span className="absolute right-[5px] top-px flex size-3">
+                        <span className="absolute size-full animate-ping rounded-full bg-red-400/75"></span>
+                        <span className="relative size-3 rounded-full bg-red-500"></span>
+                      </span>
                     )}
-                  </PopoverContent>
-                </Popover>
-              </div>
+                  </div>
+                </PopoverTrigger>
+                <PopoverContent
+                  align="start"
+                  side="bottom"
+                  className="w-100 mr-6 p-2"
+                >
+                  <div className="flex justify-between gap-2">
+                    <h4 className="text-sm font-medium">Thông báo</h4>
+                    <input
+                      type="text"
+                      placeholder="Tìm kiếm..."
+                      className="w-60 rounded border px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                  </div>
+                  <Separator className="my-2" />
+                  {isLoading ? (
+                    <Loader2 />
+                  ) : filteredNotifications.length > 0 ? (
+                    <div className="flex w-full flex-col gap-3">
+                      {filteredNotifications.map((noti: any) => (
+                        <div
+                          key={noti.id}
+                          className={`flex cursor-pointer items-center gap-4 rounded p-2 ${
+                            noti.read_at ? 'bg-gray-100' : 'bg-blue-50'
+                          }`}
+                          onClick={() => handleMarkAsRead(noti.id)}
+                        >
+                          <div className="flex size-8 items-center justify-center rounded-full bg-gray-300">
+                            {noti?.data.course_thumbnail ? (
+                              <Image
+                                src={noti?.data.course_thumbnail}
+                                alt="thumbnail"
+                                className="size-full rounded-full object-cover"
+                                width={32}
+                                height={32}
+                              />
+                            ) : (
+                              <span className="text-sm font-bold text-white">
+                                {noti?.data.sender?.charAt(0) ?? 'N'}
+                              </span>
+                            )}
+                          </div>
+
+                          <div className="flex flex-1 items-center justify-between">
+                            <span className="text-sm">
+                              {noti?.data.message}
+                            </span>
+                            {!noti.read_at && (
+                              <CheckCircle className="size-4 text-green-500" />
+                            )}
+                          </div>
+                        </div>
+                      ))}
+
+                      {hasNextPage && (
+                        <button
+                          className="mt-2 w-full text-center font-bold text-primary"
+                          onClick={() => fetchNextPage()}
+                          disabled={!hasNextPage || isFetchingNextPage}
+                        >
+                          {isFetchingNextPage ? 'Đang tải...' : 'Xem thêm'}
+                        </button>
+                      )}
+                    </div>
+                  ) : (
+                    <p className="text-sm text-gray-500">
+                      Không có thông báo mới
+                    </p>
+                  )}
+                </PopoverContent>
+              </Popover>
+
               {isAuthenticated ? (
                 <>
                   <div className="dropdown">

@@ -7,6 +7,5 @@ export const useGetRevenue = () => {
   return useQuery({
     queryKey: [QUERY_KEY.INSTRUCTOR_REVENUE],
     queryFn: instructorStatisticApi.getRevenue,
-    staleTime: 1000 * 60 * 5,
   })
 }

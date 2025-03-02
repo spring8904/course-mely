@@ -8,6 +8,7 @@ import 'swiper/css/pagination'
 import 'swiper/css/scrollbar'
 
 import Image from 'next/image'
+import { formatCurrency } from '@/lib/common'
 
 type Props = {
   courses: any[]
@@ -75,7 +76,9 @@ const CourseSlide = ({ courses }: Props) => {
                 </a>
               </div>
               <div className="bottom">
-                <div className="h6 price fw-5">${course.price}</div>
+                <div className="h6 price fw-5">
+                  {formatCurrency(course.price)}
+                </div>
                 <a href="#" className="tf-btn-arrow">
                   <span className="fw-5 fs-15">Enroll Course</span>
                   <i className="icon-arrow-top-right" />

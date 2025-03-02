@@ -27,7 +27,7 @@ import { useForm } from 'react-hook-form'
 interface Props {
   open: boolean
   onOpenChange: (open: boolean) => void
-  lessonId: string
+  lessonId: number
   currentTime: number
 }
 
@@ -37,6 +37,7 @@ const AddNoteSheet = ({ open, onOpenChange, currentTime, lessonId }: Props) => {
     defaultValues: {
       lesson_id: lessonId,
       time: currentTime,
+      content: '',
     },
   })
 

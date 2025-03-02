@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 export const createNoteSchema = z.object({
-  lesson_id: z.string(),
+  lesson_id: z.number(),
   time: z.number().int(),
   content: z.string({
     required_error: 'Vui lòng nhập nội dung',
@@ -9,7 +9,7 @@ export const createNoteSchema = z.object({
 })
 
 export const updateNoteSchema = z.object({
-  lesson_id: z.string(),
+  lesson_id: z.number(),
   content: z.string({
     required_error: 'Vui lòng nhập nội dung',
   }),
