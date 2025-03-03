@@ -20,7 +20,8 @@ import { ILesson } from '@/types'
 import MuxPlayerElement from '@mux/mux-player'
 import MuxPlayer from '@mux/mux-player-react/lazy'
 import { Plus } from 'lucide-react'
-import React, { useRef, useState } from 'react'
+import { useSearchParams } from 'next/navigation'
+import React, { useEffect, useRef, useState } from 'react'
 import AddNoteSheet from './add-note-sheet'
 
 type Props = {
@@ -30,6 +31,9 @@ type Props = {
 }
 
 const VideoLesson = ({ lesson, isCompleted, lastTimeVideo = 0 }: Props) => {
+  const searchParams = useSearchParams()
+  const time = searchParams.get('time')
+
   const muxPlayerRef = useRef<MuxPlayerElement>(null)
   const isCalled = useRef<boolean>(false)
   const [videoState, setVideoState] = useState({
@@ -100,6 +104,12 @@ const VideoLesson = ({ lesson, isCompleted, lastTimeVideo = 0 }: Props) => {
     })
   }
 
+  useEffect(() => {
+    if (muxPlayerRef.current && time) {
+      muxPlayerRef.current.currentTime = +time
+    }
+  }, [time])
+
   return (
     <>
       <div className="bg-black/95 px-16 lg:px-20 xl:px-40">
@@ -110,7 +120,7 @@ const VideoLesson = ({ lesson, isCompleted, lastTimeVideo = 0 }: Props) => {
             playbackId={lesson.lessonable?.mux_playback_id}
             accentColor={'hsl(var(--primary))'}
             className="h-full"
-            startTime={lastTimeVideo}
+            startTime={time ? +time : lastTimeVideo}
             onTimeUpdate={handleTimeUpdate}
             onPause={handlePause}
             style={

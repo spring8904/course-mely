@@ -1,14 +1,15 @@
-import React, { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { useQueryClient } from '@tanstack/react-query'
 import { FilePenLine, Loader2, Trash } from 'lucide-react'
+import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 
 import QUERY_KEY from '@/constants/query-key'
-import { formatDuration } from '@/lib/common'
 import { useGetChapterFromLesson } from '@/hooks/learning-path/useLearningPath'
 import { useDeleteNote, useGetNotes, useUpdateNote } from '@/hooks/note/useNote'
+import { formatDuration } from '@/lib/common'
 
+import HtmlRenderer from '@/components/shared/html-renderer'
+import QuillEditor from '@/components/shared/quill-editor'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -36,8 +37,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet'
-import HtmlRenderer from '@/components/shared/html-renderer'
-import QuillEditor from '@/components/shared/quill-editor'
+import Link from 'next/link'
 
 const NoteList = ({
   open,
@@ -50,7 +50,6 @@ const NoteList = ({
   slug: string
   lessonId: string
 }) => {
-  const router = useRouter()
   const queryClient = useQueryClient()
 
   const [filters, setFilters] = useState<{
@@ -74,13 +73,13 @@ const NoteList = ({
   const { mutate: deleteNote, isPending: isPendingDeleteNote } = useDeleteNote()
 
   useEffect(() => {
-    if (chapterData?.data.id && filters.chapterId === null && !open) {
+    if (chapterData?.data.id) {
       setFilters((prev) => ({
         ...prev,
         chapterId: chapterData.data.id,
       }))
     }
-  }, [chapterData, filters.chapterId, open])
+  }, [chapterData?.data.id])
 
   const handleFilterChange = (field: string, value: string | number | null) => {
     setFilters((prev) => ({ ...prev, [field]: value }))
@@ -167,37 +166,42 @@ const NoteList = ({
             </Select>
           </div>
           {isLoading ? (
-            <Loader2 className="size-8 animate-spin" />
+            <Loader2 className="mx-auto size-8 animate-spin text-muted-foreground" />
           ) : noteData?.data?.length > 0 ? (
             noteData?.data?.map((note: any) => (
               <div className="mt-6" key={note.id}>
                 <div className="flex items-center justify-between">
-                  <div
-                    className="flex cursor-pointer items-center gap-2"
-                    onClick={() => {
-                      router.push(`/learning/${slug}/lesson/${note.lesson_id}`)
-                    }}
-                  >
-                    <Badge>
-                      {formatDuration(Math.round(note.time), 'colon')}
-                    </Badge>
-                    <h4 className="font-bold text-primary">
-                      {note.lesson_name}
-                    </h4>
+                  <div className="flex items-center gap-2">
+                    <Link
+                      href={`/learning/${slug}/lesson/${note.lesson_id}?time=${note.time}`}
+                      onClick={() => onOpenChange(false)}
+                    >
+                      <Badge>
+                        {formatDuration(Math.round(note.time), 'colon')}
+                      </Badge>
+                    </Link>
+                    <Link
+                      className="font-bold text-primary hover:text-primary/80"
+                      href={`/learning/${slug}/lesson/${note.lesson_id} `}
+                      onClick={() => onOpenChange(false)}
+                    >
+                      <h4>{note.lesson_name}</h4>
+                    </Link>
                     <h4 className="font-medium">{note.chapter_name}</h4>
                   </div>
                   <div className="flex gap-2">
-                    <div
+                    <FilePenLine
+                      size="16"
+                      className="cursor-pointer text-muted-foreground hover:text-foreground"
                       onClick={() => handleEdit(note.id, note.content)}
-                      className="cursor-pointer"
-                    >
-                      <FilePenLine size="16" />
-                    </div>
+                    />
+
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
-                        <div className="cursor-pointer text-destructive">
-                          <Trash size="16" />
-                        </div>
+                        <Trash
+                          size="16"
+                          className="cursor-pointer text-muted-foreground hover:text-foreground"
+                        />
                       </AlertDialogTrigger>
 
                       <AlertDialogContent className="max-w-md">
