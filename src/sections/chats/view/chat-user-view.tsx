@@ -1,8 +1,8 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
-import EmojiPicker from 'emoji-picker-react'
-import type { EmojiClickData } from 'emoji-picker-react'
+import React, { useEffect, useRef, useState } from 'react'
+import EmojiPicker, { EmojiClickData } from 'emoji-picker-react'
+import { Button } from '@/components/ui/button'
 import {
   Archive,
   Info,
@@ -18,22 +18,20 @@ import {
   Volume2,
   X,
 } from 'lucide-react'
-
+import { Input } from '@/components/ui/input'
+import { ScrollArea } from '@/components/ui/scroll-area'
 import { Avatar } from '@/components/ui/avatar'
-import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { Input } from '@/components/ui/input'
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
-import { ScrollArea } from '@/components/ui/scroll-area'
 
 interface Message {
   id: number
@@ -116,7 +114,7 @@ const channels = [
   { id: 4, name: 'Meeting' },
 ]
 
-const ChatView = () => {
+const ChatUserView = () => {
   const [message, setMessage] = useState('')
   const [selectedUser, setSelectedUser] = useState<User>(users[3])
   const [activeTab, setActiveTab] = useState<'chats' | 'contacts'>('chats')
@@ -324,7 +322,7 @@ const ChatView = () => {
   }, [chats, filePreviews])
 
   return (
-    <div className="flex h-[650px] bg-white">
+    <div className="flex h-screen bg-white">
       <input
         type="file"
         ref={fileInputRef}
@@ -781,4 +779,4 @@ const ChatView = () => {
   )
 }
 
-export default ChatView
+export default ChatUserView
