@@ -1,4 +1,4 @@
-import { ICourse } from '@/types'
+import { ICourse, ICourseDataResponse, ICourseFilter } from '@/types'
 import api from '@/configs/api'
 
 const prefix = 'courses'
@@ -19,5 +19,14 @@ export const getCourseDetailsBySlug = async (
   slug: string
 ): Promise<ICourse> => {
   const { data } = await api.get(`${prefix}/${slug}`)
+  return data
+}
+
+export const getCourses = async (
+  dataFilters: ICourseFilter
+): Promise<ICourseDataResponse> => {
+  const { data } = await api.get('/filters', {
+    params: dataFilters,
+  })
   return data
 }

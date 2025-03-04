@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import dynamic from 'next/dynamic'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { useAuthStore } from '@/stores/useAuthStore'
 import { useWishListStore } from '@/stores/useWishListStore'
 import { Bell, CheckCircle, Loader2, Search } from 'lucide-react'
@@ -11,6 +12,7 @@ import { toast } from 'react-toastify'
 import Swal from 'sweetalert2'
 
 import { ICourse, IInstructorProfile } from '@/types'
+import { ICategory } from '@/types/Category'
 import { Role } from '@/constants/role'
 import echo from '@/lib/echo'
 import { cn } from '@/lib/utils'
@@ -40,7 +42,6 @@ const MobileMenu = dynamic(() => import('./MobileMenu'), {
 
 const Header = () => {
   const [query, setQuery] = useState('')
-  const [categories, setCategories] = useState<any[]>([])
   const [inputWidth, setInputWidth] = useState(0)
   const [searchTerm, setSearchTerm] = useState('')
   const [notifications, setNotifications] = useState<
@@ -60,8 +61,18 @@ const Header = () => {
   const debouncedQuery = useDebounce(query, 300)
   const { data: searchResults, isLoading: searchLoading } =
     useSearch(debouncedQuery)
+  const router = useRouter()
 
   const inputRef = useRef<HTMLInputElement | null>(null)
+
+  const handleCategorySelect = (categorySlug: string) => {
+    const updatedFilters = { categories: [categorySlug] }
+    localStorage.setItem('courseFilters', JSON.stringify(updatedFilters))
+
+    window.dispatchEvent(new Event('courseFiltersUpdated'))
+
+    router.push('/courses')
+  }
 
   useEffect(() => {
     if (!isLoading && data) {
@@ -107,12 +118,6 @@ const Header = () => {
       setWishList(ids)
     }
   }, [wishListData, setWishList])
-
-  useEffect(() => {
-    if (categoryData) {
-      setCategories(categoryData?.data)
-    }
-  }, [categoryData])
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value)
@@ -192,7 +197,7 @@ const Header = () => {
                   <li className="has-children">
                     <a href="javascript:void(0);">Danh mục</a>
                     <ul>
-                      {categories.map((category: any) => (
+                      {categoryData?.data?.map((category: ICategory) => (
                         <li key={category.id}>
                           <Link
                             style={{
@@ -202,7 +207,11 @@ const Header = () => {
                               overflow: 'hidden',
                               textOverflow: 'ellipsis',
                             }}
-                            href={`/categories/${category.slug}`}
+                            onClick={(e) => {
+                              e.preventDefault()
+                              handleCategorySelect(category?.slug)
+                            }}
+                            href={`/course/${category?.slug}`}
                           >
                             {category.name}
                           </Link>
