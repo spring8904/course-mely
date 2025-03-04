@@ -299,7 +299,7 @@ const CareersSection = ({ careersData }: Props) => {
                           placeholder="Nhập tên công ty"
                           {...field}
                           disabled={isCreating}
-                          className="focus:border-orange-300 focus:ring focus:ring-orange-200 focus:ring-opacity-50"
+                          className="focus:border-orange-300 focus:ring focus:ring-orange-200/50"
                         />
                       </FormControl>
                       <FormMessage />
@@ -770,7 +770,8 @@ const CareersSection = ({ careersData }: Props) => {
                               Không tìm thấy kết quả phù hợp
                             </p>
                             <p className="mt-1 text-xs text-gray-500">
-                              Không có kết quả nào phù hợp với "{searchQuery}"
+                              Không có kết quả nào phù hợp với &quot;
+                              {searchQuery}&quot;
                             </p>
                             <Button
                               variant="outline"
@@ -976,7 +977,7 @@ const CareersSection = ({ careersData }: Props) => {
                       Không tìm thấy kết quả phù hợp
                     </p>
                     <p className="mt-1 text-xs text-gray-500">
-                      Không có kết quả nào phù hợp với "{searchQuery}"
+                      Không có kết quả nào phù hợp với &quot;{searchQuery}&quot;
                     </p>
                     <Button
                       variant="outline"

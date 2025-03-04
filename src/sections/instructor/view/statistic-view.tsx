@@ -27,7 +27,6 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { useGetRevenue } from '@/hooks/instructor/use-statistic'
 
 const chartConfig = {
   desktop: {
@@ -114,10 +113,6 @@ const featuredStudents = [
 
 export function StatisticView() {
   const [selectFilter, setSelectFilter] = useState('today')
-
-  const { data: revenue } = useGetRevenue()
-
-  console.log('>>> revenue', revenue)
 
   return (
     <div className="px-5 py-6">

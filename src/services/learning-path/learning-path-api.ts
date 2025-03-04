@@ -35,15 +35,34 @@ export const learningPathApi = {
     const response = await api.get(`${prefix}/${course}/lesson`)
     return response.data
   },
+
   getChapterFromLesson: async (lessonId: number) => {
     return await api.get(`${prefix}/${lessonId}/get-chapter-from-lesson`)
   },
+
   getLessonDetail: async (
     course: string,
     lesson: string
   ): Promise<GetLessonDetailResponse> => {
     const response = await api.get(`${prefix}/${course}/lesson/${lesson}`)
     return response.data
+  },
+
+  getQuizSubmission: async (lessonId: number, quizId: number): Promise<any> => {
+    const res = await api.get(
+      `${prefix}/lesson/${lessonId}/get-quiz-submission/${quizId}`
+    )
+    return res.data
+  },
+
+  getCodeSubmission: async (
+    lessonId: number,
+    codingId: number
+  ): Promise<any> => {
+    const res = await api.get(
+      `${prefix}/lesson/${lessonId}/get-coding-submission/${codingId}`
+    )
+    return res.data
   },
 
   completeLesson: ({ lesson_id, ...payload }: CompleteLessonPayload) => {
