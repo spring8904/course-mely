@@ -1,99 +1,69 @@
 import React from 'react'
+import Link from 'next/link'
 
-const courses = [
-  {
-    image: '/assets/images/courses/courses-01.jpg',
-    lessons: 11,
-    students: 229,
-    hours: 16,
-    title: 'Become a Certified Web Developer: HTML, CSS and JavaScript',
-    ratings: 4.9,
-    author: 'Carolyn Welborn',
-    price: 89.29,
-  },
-  {
-    image: '/assets/images/courses/courses-02.jpg',
-    lessons: 12,
-    students: 300,
-    hours: 18,
-    title: 'Figma Prototyping: A deep dive for UX/UI Designer',
-    ratings: 4.7,
-    author: 'John Doe',
-    price: 79.99,
-  },
-  {
-    image: '/assets/images/courses/courses-03.jpg',
-    lessons: 8,
-    students: 150,
-    hours: 10,
-    title: 'Figma Prototyping: A deep dive for UX/UI Designer',
-    ratings: 4.8,
-    author: 'Jane Smith',
-    price: 59.99,
-  },
-  {
-    image: '/assets/images/courses/courses-04.jpg',
-    lessons: 14,
-    students: 299,
-    hours: 11,
-    title: 'Advanced JavaScript Programming',
-    ratings: 5.0,
-    author: 'Mark Johnson',
-    price: 99.99,
-  },
-  {
-    image: '/assets/images/courses/courses-05.jpg',
-    lessons: 9,
-    students: 120,
-    hours: 12,
-    title: 'Advanced JavaScript Programming',
-    ratings: 4.6,
-    author: 'Emily Davis',
-    price: 49.99,
-  },
-]
-const CourseListItem = () => {
+import { ICourseDataResponse, ICourseFilter } from '@/types'
+import { formatCurrency } from '@/lib/common'
+
+import { SortByDropdown } from '@/sections/courses/_components/sort-by-dropdown'
+
+type Props = {
+  dataFilters: ICourseFilter
+  coursesData: ICourseDataResponse
+  setDataFilters: React.Dispatch<React.SetStateAction<ICourseFilter>>
+}
+
+const CourseListItem = ({
+  coursesData,
+  dataFilters,
+  setDataFilters,
+}: Props) => {
+  const handlePageChange = (pageUrl?: string | null) => {
+    if (!pageUrl) return
+
+    const url = new URL(pageUrl)
+    const page = Number(url.searchParams.get('page'))
+
+    if (page) {
+      setDataFilters((prev) => {
+        const updatedFilters = {
+          ...prev,
+          page,
+        }
+
+        localStorage.setItem('courseFilters', JSON.stringify(updatedFilters))
+
+        return updatedFilters
+      })
+    }
+  }
+
   return (
     <div className="wrap-courses style-left">
       <div className="sort-by-wrap mb-[30px]">
         <div className="sort-wrap">
           <p className="text text-1 wow fadeInUp grow">
-            Showing 1-9 Of 62 Courses
+            Hiển thị {coursesData?.from}-{coursesData?.to} trong{'  '}
+            {coursesData?.total} khoá học
           </p>
-          <div className="d-flex">
-            <p className="text text-2 wow fadeInUp ps-0" data-wow-delay="0.1s">
-              Sort by
-            </p>
-            <div
-              className="nice-select default wow fadeInUp"
-              data-wow-delay="0.1s"
-              tabIndex={0}
-            >
-              <span className="current text text-1">Best Selling</span>
-              <ul className="list">
-                <li data-value="" className="option selected text text-1">
-                  Best Selling
-                </li>
-                <li data-value="For Ren" className="option text text-1">
-                  Oldest
-                </li>
-                <li data-value="Sold" className="option text text-1">
-                  3 days
-                </li>
-              </ul>
-            </div>
-          </div>
+          <SortByDropdown
+            dataFilters={dataFilters}
+            setDataFilters={setDataFilters}
+          />
         </div>
       </div>
       <div className="grid-list-items-3">
-        {courses.map((course, index) => (
+        {coursesData?.data?.map((course, index) => (
           <div key={index} className="course-item hover-img h240 wow fadeInUp">
             <div className="features image-wrap">
               <img
                 className="lazyload"
-                data-src={course.image}
-                src={course.image}
-                alt={course.title}
+                data-src={
+                  course?.thumbnail ?? '/assets/images/courses/courses-01.jpg'
+                }
+                src={
+                  course?.thumbnail ?? '/assets/images/courses/courses-01.jpg'
+                }
+                alt={course?.name}
               />
               <div className="box-wishlist tf-action-btns">
                 <i className="flaticon-heart" />
@@ -103,26 +73,26 @@ const CourseListItem = () => {
               <div className="meta">
                 <div className="meta-item">
                   <i className="flaticon-calendar" />
-                  <p>{course.lessons} Lessons</p>
+                  <p>{course?.lessons_count ?? 0} bài học</p>
                 </div>
                 <div className="meta-item">
                   <i className="flaticon-user" />
-                  <p>{course.students} Students</p>
+                  <p>{course?.total_student ?? 0} học viên</p>
                 </div>
                 <div className="meta-item">
                   <i className="flaticon-clock" />
-                  <p>{course.hours} hours</p>
+                  <p>9 giờ học</p>
                 </div>
               </div>
               <h5 className="fw-5 line-clamp-2">
-                <a href="course-single-v2.html">{course.title}</a>
+                <Link href={`/courses/${course?.slug}`}>{course?.name}</Link>
               </h5>
               <div className="ratings pb-30">
-                <div className="number">{course.ratings}</div>
-                {[...Array(Math.floor(course.ratings))].map((_, i) => (
+                <div className="number">{4}</div>
+                {[...Array(Math.floor(4))].map((_, i) => (
                   <i key={i} className="icon-star-1" />
                 ))}
-                {course.ratings % 1 > 0 && (
+                {4 % 1 > 0 && (
                   <svg
                     width={12}
                     height={11}
@@ -136,55 +106,65 @@ const CourseListItem = () => {
                     />
                   </svg>
                 )}
-                <div className="total">({course.students})</div>
+                <div className="total">({course?.total_student})</div>
               </div>
               <div className="author">
                 By:{' '}
                 <a href="#" className="author">
-                  {course.author}
+                  {course?.user?.name}
                 </a>
               </div>
               <div className="bottom">
-                <div className="h5 price fw-5">${course.price}</div>
-                <a href="course-single-v2.html" className="tf-btn-arrow">
-                  <span className="fw-5">Enroll Course</span>
+                <div className="h5 price fw-5">
+                  {parseFloat(`${course?.price_sale}`) > 0 ? (
+                    <>
+                      <span className="text-danger fw-bold">
+                        {formatCurrency(parseFloat(`${course?.price_sale}`))}
+                      </span>
+                      &nbsp;
+                      <span className="text-decoration-line-through text-sm text-muted">
+                        {formatCurrency(parseFloat(`${course?.price}`))}
+                      </span>
+                    </>
+                  ) : (
+                    <span>
+                      {formatCurrency(parseFloat(`${course?.price}`))}
+                    </span>
+                  )}
+                </div>
+                <Link
+                  href={`/courses/${course?.slug}`}
+                  className="tf-btn-arrow"
+                >
+                  <span className="fw-5">Đăng ký</span>
                   <i className="icon-arrow-top-right" />
-                </a>
+                </Link>
               </div>
             </div>
           </div>
         ))}
       </div>
-      <ul className="wg-pagination wow fadeInUp justify-center">
-        <li>
-          <a href="#">
-            <i className="icon-arrow-left" />
-          </a>
-        </li>
-        <li>
-          <a href="#">1</a>
-        </li>
-        <li className="active">
-          <a href="#">2</a>
-        </li>
-        <li>
-          <a href="#">3</a>
-        </li>
-        <li>
-          <a href="#">4</a>
-        </li>
-        <li>
-          <a href="#">...</a>
-        </li>
-        <li>
-          <a href="#">20</a>
-        </li>
-        <li>
-          <a href="#">
-            <i className="icon-arrow-right" />
-          </a>
-        </li>
-      </ul>
+
+      <div className="flex items-center justify-center">
+        <ul className="wg-pagination wow fadeInUp justify-center">
+          {coursesData.links.map((link, index) => {
+            const isActive = link.active ? 'bg-orange-200' : ''
+            return (
+              <li key={index}>
+                <a
+                  className={isActive}
+                  style={{ width: 'fit-content', padding: '12px' }}
+                  onClick={(e) => {
+                    e.preventDefault()
+                    handlePageChange(link.url)
+                  }}
+                  dangerouslySetInnerHTML={{ __html: link.label }}
+                />
+              </li>
+            )
+          })}
+        </ul>
+      </div>
     </div>
   )
 }
