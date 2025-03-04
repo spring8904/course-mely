@@ -9,11 +9,12 @@ export const instructorStatisticApi = {
     return res.data
   },
 
-  getRevenueStatistics: async (year: number): Promise<RevenueStatistics> => {
-    const res = await api.get(`${prefix}/get-course-revenue`, {
+  getMonthlyRevenueStatistics: async (
+    year: number
+  ): Promise<RevenueStatistics> => {
+    const res = await api.get(`${prefix}/get-month-revenue`, {
       params: {
-        start_date: `${year}-01-01`,
-        end_date: `${year}-12-31`,
+        year,
       },
     })
     return res.data

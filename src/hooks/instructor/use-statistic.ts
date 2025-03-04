@@ -10,10 +10,10 @@ export const useGetOverviewStatistics = () => {
   })
 }
 
-export const useGetRevenueStatistics = (year: number) => {
+export const useGetMonthlyRevenueStatistics = (year: number) => {
   return useQuery({
     queryKey: [QUERY_KEY.INSTRUCTOR_STATISTICS_REVENUE, year],
-    queryFn: () => instructorStatisticApi.getRevenueStatistics(year),
+    queryFn: () => instructorStatisticApi.getMonthlyRevenueStatistics(year),
     enabled: year > 0,
   })
 }

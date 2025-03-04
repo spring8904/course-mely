@@ -6,14 +6,5 @@ export interface OverviewStatistics {
 }
 
 export interface RevenueStatistics {
-  fullMonthlyRevenue: { [key: string]: null | string }
-  courseRevenue: CourseRevenue[]
-  newPurchases: number
-}
-
-export interface CourseRevenue {
-  id: number
-  name: string
-  slug: string
-  total_revenue: string
+  [key: string]: null | string
 }

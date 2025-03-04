@@ -263,7 +263,7 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
 
             <div className="mt-4 flex flex-wrap gap-2">
               <Link href="/instructor/courses/">
-                <Button variant="outline">Khoá học của tôi</Button>
+                <Button variant="outline">Quay trở lại</Button>
               </Link>
               <Button
                 disabled={
@@ -273,7 +273,9 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
                 }
                 onClick={courseHandleSubmit}
                 className={
-                  courseStatus === 'approved' ? 'bg-green-500 text-white' : ''
+                  courseStatus === 'approved'
+                    ? 'bg-green-500 text-white hover:bg-green-500/80'
+                    : ''
                 }
               >
                 {courseStatus === 'approved'
