@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import QUERY_KEY from '@/constants/query-key'
 import { learningPathApi } from '@/services/learning-path/learning-path-api'
+import { CompleteLessonPayload } from '@/types/LearningPath'
 
 export const useGetLessons = (course: string) => {
   return useQuery({
@@ -25,14 +26,14 @@ export const useGetLessonDetail = (course: string, lesson: string) => {
 }
 
 export const useGetQuizSubmission = (
-  lessonId: number,
-  quizId: number,
-  isCompleted: boolean
+  isCompleted: boolean,
+  lessonId?: number,
+  quizId?: number
 ) => {
   return useQuery({
     queryKey: [QUERY_KEY.QUIZ_SUBMISSION, lessonId, quizId],
-    queryFn: () => learningPathApi.getQuizSubmission(lessonId, quizId),
-    enabled: isCompleted,
+    queryFn: () => learningPathApi.getQuizSubmission(lessonId!, quizId!),
+    enabled: isCompleted && !!lessonId && !!quizId,
   })
 }
 
@@ -48,10 +49,14 @@ export const useGetCodeSubmission = (
   })
 }
 
-export const useCompleteLesson = () => {
+export const useCompleteLesson = (lessonId: number) => {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: learningPathApi.completeLesson,
+    mutationFn: (payload: CompleteLessonPayload) => {
+      if (lessonId === undefined)
+        return Promise.reject(new Error('Lesson ID is required'))
+      return learningPathApi.completeLesson(lessonId, payload)
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEY.LEARNING_PATH_LESSON],

@@ -65,7 +65,10 @@ const LearningPathView = ({ courseSlug, lessonId }: Props) => {
 
   const { data: progress } = useGetProgress(courseSlug)
   const { data: checkCourseRatingState } = useCheckCourseRatingState(courseSlug)
-  const { data: downloadCertificate } = useDownloadCertificate(courseSlug)
+  const { data: downloadCertificate } = useDownloadCertificate(
+    courseSlug,
+    progress
+  )
 
   const getLessonDuration = (lesson: LearningPathLesson) => {
     switch (lesson.type) {

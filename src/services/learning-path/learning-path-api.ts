@@ -1,32 +1,11 @@
-import { ILesson, ILessonProcess, LearningPathChapterLesson } from '@/types'
-import { CodeSubmissionPayLoad } from '@/validations/code-submission'
-import { QuizSubmissionPayload } from '@/validations/quiz-submission'
 import api from '@/configs/api'
-
-export interface GetLessonsResponse {
-  course_name: string
-  total_lesson: number
-  chapter_lessons: LearningPathChapterLesson[]
-}
-
-interface GetLessonDetailResponse {
-  lesson: ILesson
-  next_lesson: ILesson | null
-  previous_lesson: ILesson | null
-  lesson_process: ILessonProcess
-}
-
-interface CompleteLessonPayload
-  extends Partial<CodeSubmissionPayLoad>,
-    Partial<QuizSubmissionPayload> {
-  lesson_id: number
-  current_time?: number
-}
-
-interface UpdateLastTimePayload {
-  lesson_id: number
-  last_time_video: number
-}
+import {
+  CompleteLessonPayload,
+  GetLessonDetailResponse,
+  GetLessonsResponse,
+  GetQuizSubmissionResponse,
+  UpdateLastTimePayload,
+} from '@/types/LearningPath'
 
 const prefix = 'learning-paths'
 
@@ -48,7 +27,10 @@ export const learningPathApi = {
     return response.data
   },
 
-  getQuizSubmission: async (lessonId: number, quizId: number): Promise<any> => {
+  getQuizSubmission: async (
+    lessonId: number,
+    quizId: number
+  ): Promise<GetQuizSubmissionResponse> => {
     const res = await api.get(
       `${prefix}/lesson/${lessonId}/get-quiz-submission/${quizId}`
     )
@@ -65,8 +47,8 @@ export const learningPathApi = {
     return res.data
   },
 
-  completeLesson: ({ lesson_id, ...payload }: CompleteLessonPayload) => {
-    return api.patch(`${prefix}/lesson/${lesson_id}/complete-lesson`, payload)
+  completeLesson: (lessonId: number, payload: CompleteLessonPayload) => {
+    return api.patch(`${prefix}/lesson/${lessonId}/complete-lesson`, payload)
   },
 
   updateLastTime: ({ lesson_id, last_time_video }: UpdateLastTimePayload) => {

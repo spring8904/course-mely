@@ -40,10 +40,10 @@ export const useGetCertificates = () => {
   })
 }
 
-export const useDownloadCertificate = (slug?: string) => {
+export const useDownloadCertificate = (slug?: string, progress?: number) => {
   return useQuery({
     queryKey: [QUERY_KEY.CERTIFICATE, slug],
     queryFn: () => userApi.downloadCertificate(slug!),
-    enabled: !!slug,
+    enabled: !!slug && progress === 100,
   })
 }
