@@ -16,11 +16,11 @@ const StatisticsView = () => {
           </div>
         </div>
 
-        <div className="grid items-stretch gap-5 lg:grid-cols-3 lg:gap-8">
-          <div className="lg:col-span-1">
+        <div className="grid items-stretch gap-5 lg:grid-cols-2 lg:gap-8 xl:grid-cols-3">
+          <div className="xl:col-span-1">
             <OverviewStatistics />
           </div>
-          <div className="lg:col-span-2">
+          <div className="xl:col-span-2">
             <RevenueChart />
           </div>
         </div>

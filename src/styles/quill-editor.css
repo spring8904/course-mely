@@ -36,3 +36,11 @@
     }
   }
 }
+
+.ql-container {
+  @apply font-manrope;
+}
+
+.ql-disabled {
+  @apply opacity-50 [&_*]:cursor-not-allowed;
+}

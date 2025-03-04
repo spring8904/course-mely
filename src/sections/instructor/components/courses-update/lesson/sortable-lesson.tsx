@@ -170,15 +170,17 @@ const SortableLesson = ({
                   value={`lesson-${lesson.id}`}
                 >
                   <AccordionTrigger
-                    className="rounded-lg py-2"
+                    className="space-x-4 rounded-lg py-2"
                     onClick={(e) => {
                       if (!lessonEdit || lessonEdit !== lesson.id) {
                         e.stopPropagation()
                         setLessonEdit(lesson.id as number)
                       }
                     }}
+                    disabled={lesson.type === 'coding'}
+                    hideArrow={lesson.type === 'coding'}
                   >
-                    <div className="mr-4 flex w-full items-center justify-between gap-2">
+                    <div className="flex w-full items-center justify-between gap-2">
                       <div className="flex items-center gap-2">
                         {(() => {
                           switch (lesson?.type) {
@@ -249,106 +251,96 @@ const SortableLesson = ({
                       )}
                     </div>
                   </AccordionTrigger>
-                  {lessonEdit === lesson.id && (
-                    <AccordionContent className="mt-2 space-y-3 rounded-lg p-4">
-                      {(() => {
-                        switch (lesson?.type) {
-                          case 'video':
-                            return (
-                              <LessonVideo
-                                courseStatus={courseStatus as string}
-                                isEdit={lessonEdit === lesson.id}
-                                chapterId={chapter ? String(chapter.id) : ''}
-                                onHide={() => setLessonEdit(null)}
-                                lessonId={lesson?.id}
-                              />
-                            )
-                          case 'document':
-                            return (
-                              <LessonDocument
-                                courseStatus={courseStatus as string}
-                                lessonId={lesson?.id}
-                                chapterId={chapter ? String(chapter.id) : ''}
-                                onHide={() => setLessonEdit(null)}
-                              />
-                            )
-                          case 'quiz':
-                            return (
-                              <>
-                                <div className="flex w-full items-center gap-2">
-                                  <Button
-                                    onClick={(e) => {
-                                      e.stopPropagation()
-                                      handleDownloadQuizForm()
-                                    }}
-                                    variant="default"
-                                    className="bg-[#FFF7ED] p-2 text-xs text-primary shadow hover:text-white"
-                                    disabled={
-                                      courseStatus !== 'draft' &&
-                                      courseStatus !== 'rejected'
-                                    }
-                                  >
-                                    Mẫu Import
-                                    <FileDown className="size-2" />
-                                  </Button>
-                                  <Button
-                                    onClick={(e) => {
-                                      e.stopPropagation()
-                                      setIsOpenImportQuestion(true)
-                                      setQuizId(
-                                        lesson?.lessonable_id as
-                                          | string
-                                          | undefined
-                                      )
-                                    }}
-                                    className="bg-[#FFF7ED] p-2 text-xs text-primary shadow hover:text-white"
-                                    disabled={
-                                      courseStatus !== 'draft' &&
-                                      courseStatus !== 'rejected'
-                                    }
-                                  >
-                                    Import câu hỏi
-                                    <FileUp className="size-2" />
-                                  </Button>
-                                  <Button
-                                    onClick={(e) => {
-                                      e.stopPropagation()
-                                      setIsOpenAddQuestion(true)
-                                      setQuizId(
-                                        lesson?.lessonable_id as
-                                          | string
-                                          | undefined
-                                      )
-                                    }}
-                                    className="rounded-lg border bg-[#FFF7ED] p-2 text-xs text-primary shadow hover:text-white"
-                                    disabled={
-                                      courseStatus !== 'draft' &&
-                                      courseStatus !== 'rejected'
-                                    }
-                                  >
-                                    Thêm câu hỏi
-                                  </Button>
-                                </div>
-
-                                <LessonQuiz
+                  {lessonEdit === lesson.id &&
+                    lesson.type &&
+                    lesson.type !== 'coding' && (
+                      <AccordionContent className="mt-2 space-y-3 rounded-lg p-4">
+                        {(() => {
+                          switch (lesson.type) {
+                            case 'video':
+                              return (
+                                <LessonVideo
                                   courseStatus={courseStatus as string}
                                   isEdit={lessonEdit === lesson.id}
                                   chapterId={chapter ? String(chapter.id) : ''}
                                   onHide={() => setLessonEdit(null)}
-                                  quizId={
-                                    lesson.lessonable_id as string | undefined
-                                  }
+                                  lessonId={lesson?.id}
                                 />
-                              </>
-                            )
-                          case 'coding':
-                            return 'Bài tập'
-                          default:
-                            return 'Bài giảng'
-                        }
-                      })()}{' '}
-                    </AccordionContent>
-                  )}
+                              )
+                            case 'document':
+                              return (
+                                <LessonDocument
+                                  courseStatus={courseStatus as string}
+                                  lessonId={lesson?.id}
+                                  chapterId={chapter ? String(chapter.id) : ''}
+                                  onHide={() => setLessonEdit(null)}
+                                />
+                              )
+                            case 'quiz':
+                              return (
+                                <>
+                                  {courseStatus !== 'approved' && (
+                                    <div className="flex w-full items-center gap-2">
+                                      <Button
+                                        onClick={(e) => {
+                                          e.stopPropagation()
+                                          handleDownloadQuizForm()
+                                        }}
+                                        variant="default"
+                                        className="bg-[#FFF7ED] p-2 text-xs text-primary shadow hover:text-white"
+                                      >
+                                        Mẫu Import
+                                        <FileDown className="size-2" />
+                                      </Button>
+                                      <Button
+                                        onClick={(e) => {
+                                          e.stopPropagation()
+                                          setIsOpenImportQuestion(true)
+                                          setQuizId(
+                                            lesson?.lessonable_id as
+                                              | string
+                                              | undefined
+                                          )
+                                        }}
+                                        className="bg-[#FFF7ED] p-2 text-xs text-primary shadow hover:text-white"
+                                      >
+                                        Import câu hỏi
+                                        <FileUp className="size-2" />
+                                      </Button>
+                                      <Button
+                                        onClick={(e) => {
+                                          e.stopPropagation()
+                                          setIsOpenAddQuestion(true)
+                                          setQuizId(
+                                            lesson?.lessonable_id as
+                                              | string
+                                              | undefined
+                                          )
+                                        }}
+                                        className="rounded-lg border bg-[#FFF7ED] p-2 text-xs text-primary shadow hover:text-white"
+                                      >
+                                        Thêm câu hỏi
+                                      </Button>
+                                    </div>
+                                  )}
+
+                                  <LessonQuiz
+                                    courseStatus={courseStatus as string}
+                                    isEdit={lessonEdit === lesson.id}
+                                    chapterId={
+                                      chapter ? String(chapter.id) : ''
+                                    }
+                                    onHide={() => setLessonEdit(null)}
+                                    quizId={
+                                      lesson.lessonable_id as string | undefined
+                                    }
+                                  />
+                                </>
+                              )
+                          }
+                        })()}{' '}
+                      </AccordionContent>
+                    )}
                 </AccordionItem>
               </Accordion>
             </SortableItem>
@@ -389,7 +381,7 @@ const SortableLesson = ({
               courseStatus={courseStatus}
             />
           ) : (
-            <div className="flex justify-evenly rounded-lg border border-dashed p-2">
+            <div className="grid gap-4 rounded-lg border border-dashed p-2 md:grid-cols-2 lg:grid-cols-4 xl:gap-8">
               <Button onClick={() => setSelectedLesson('video')}>
                 <Video />
                 Bài giảng

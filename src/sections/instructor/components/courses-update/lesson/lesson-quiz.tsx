@@ -1,16 +1,17 @@
-import { useEffect, useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useQueryClient } from '@tanstack/react-query'
 import { Check, Loader2, Pencil, Trash, X } from 'lucide-react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import Swal from 'sweetalert2'
 
-import { LessonQuizPayload, lessonQuizSchema } from '@/validations/lesson'
 import QUERY_KEY from '@/constants/query-key'
 import { useCreateLessonQuiz } from '@/hooks/instructor/lesson/useLesson'
 import { useDeleteQuestion, useGetQuiz } from '@/hooks/instructor/quiz/useQuiz'
+import { LessonQuizPayload, lessonQuizSchema } from '@/validations/lesson'
 
+import QuillEditor from '@/components/shared/quill-editor'
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -21,8 +22,6 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import ModalLoading from '@/components/common/ModalLoading'
-import QuillEditor from '@/components/shared/quill-editor'
 import AddQuestionDialog from '@/sections/instructor/components/courses-update/lesson/quiz/add-question-dialog'
 
 type Props = {
@@ -41,7 +40,6 @@ const LessonQuiz = ({
   courseStatus,
 }: Props) => {
   const queryClient = useQueryClient()
-  console.log(courseStatus)
   const [editQuestion, setEditQuestion] = useState(false)
   const [, setQuestions] = useState<any[]>([])
   const [editQuestionId, setEditQuestionId] = useState<string | null>(null)
@@ -54,6 +52,8 @@ const LessonQuiz = ({
     useCreateLessonQuiz()
   const { mutate: deleteQuestion } = useDeleteQuestion()
 
+  const isApproved = courseStatus === 'approved'
+
   const form = useForm<LessonQuizPayload>({
     resolver: zodResolver(lessonQuizSchema),
     defaultValues: {
@@ -61,6 +61,7 @@ const LessonQuiz = ({
       content: '',
     },
     values: questionData?.data,
+    disabled: isApproved,
   })
 
   useEffect(() => {
@@ -119,7 +120,7 @@ const LessonQuiz = ({
   }
 
   if (isQuestionLoading) {
-    return <ModalLoading />
+    return <Loader2 className="mx-auto animate-spin text-muted-foreground" />
   }
 
   return (
