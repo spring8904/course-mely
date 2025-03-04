@@ -117,3 +117,7 @@
   background-size: 200% 200%;
   animation: gradient 4s ease infinite;
 }
+
+.channel-stats-bg {
+  background-image: url(https://keenthemes.com/metronic/tailwind/react/demo1/media/images/2600x1600/bg-3.png);
+}

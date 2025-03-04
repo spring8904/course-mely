@@ -133,49 +133,34 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-export function Component() {
-  const [timeRange, setTimeRange] = React.useState('90d')
-
-  const filteredData = chartData.filter((item) => {
-    const date = new Date(item.date)
-    const referenceDate = new Date('2024-06-30')
-    let daysToSubtract = 90
-    if (timeRange === '30d') {
-      daysToSubtract = 30
-    } else if (timeRange === '7d') {
-      daysToSubtract = 7
-    }
-    const startDate = new Date(referenceDate)
-    startDate.setDate(startDate.getDate() - daysToSubtract)
-    return date >= startDate
-  })
+const RevenueChart = () => {
+  const currentYear = new Date().getFullYear()
+  const [year, setYear] = React.useState(currentYear + '')
 
   return (
     <Card>
       <CardHeader className="flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row">
         <div className="grid flex-1 gap-1 text-center sm:text-left">
-          <CardTitle>Area Chart - Interactive</CardTitle>
+          <CardTitle>Doanh thu hàng tháng</CardTitle>
           <CardDescription>
-            Showing total visitors for the last 3 months
+            Phân tích doanh thu hàng tháng để hiểu rõ hơn về hiệu suất kinh
+            doanh của bạn theo thời gian
           </CardDescription>
         </div>
-        <Select value={timeRange} onValueChange={setTimeRange}>
+        <Select value={year} onValueChange={setYear}>
           <SelectTrigger
-            className="w-[160px] rounded-lg sm:ml-auto"
+            className="w-fit rounded-lg"
             aria-label="Select a value"
+            hideArrow
           >
-            <SelectValue placeholder="Last 3 months" />
+            <SelectValue placeholder={currentYear} />
           </SelectTrigger>
-          <SelectContent className="rounded-xl">
-            <SelectItem value="90d" className="rounded-lg">
-              Last 3 months
-            </SelectItem>
-            <SelectItem value="30d" className="rounded-lg">
-              Last 30 days
-            </SelectItem>
-            <SelectItem value="7d" className="rounded-lg">
-              Last 7 days
-            </SelectItem>
+          <SelectContent className="rounded-xl" align="end">
+            {Array.from({ length: 5 }, (_, i) => currentYear - i).map((y) => (
+              <SelectItem key={y} value={y + ''} className="rounded-lg">
+                {y}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
       </CardHeader>
@@ -184,7 +169,7 @@ export function Component() {
           config={chartConfig}
           className="aspect-auto h-[250px] w-full"
         >
-          <AreaChart data={filteredData}>
+          <AreaChart data={chartData}>
             <defs>
               <linearGradient id="fillDesktop" x1="0" y1="0" x2="0" y2="1">
                 <stop
@@ -261,3 +246,5 @@ export function Component() {
     </Card>
   )
 }
+
+export default RevenueChart
