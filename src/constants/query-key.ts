@@ -45,6 +45,7 @@ const QUERY_KEY = {
   COURSE_RATING_STATE: 'course-rating-state',
   INSTRUCTOR_REVENUE: 'instructor-revenue',
   EVALUATION: 'evaluation',
+  BANNERS: 'banners',
 }
 
 export default QUERY_KEY
