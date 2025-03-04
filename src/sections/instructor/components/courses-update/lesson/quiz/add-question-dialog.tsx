@@ -30,7 +30,7 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import TinyEditor from '@/components/shared/tiny-editor'
+import QuillEditor from '@/components/shared/quill-editor'
 
 type Props = {
   isOpen: boolean
@@ -63,6 +63,10 @@ const AddQuestionDialog = ({
   const { data: questionData, isLoading: isQuestionLoading } = useGetQuestion(
     questionId as string
   )
+
+  console.log(courseStatus)
+  console.log(quizId)
+
   const { mutate: createQuestion, isPending: isQuestionCreatePending } =
     useCreateQuestion()
   const { mutate: updateQuestion, isPending: isQuestionUpdatePending } =
@@ -307,11 +311,7 @@ const AddQuestionDialog = ({
                     <FormItem>
                       <FormLabel>Mô tả</FormLabel>
                       <FormControl>
-                        <TinyEditor
-                          value={field.value}
-                          onEditorChange={field.onChange}
-                          minimalist
-                        />
+                        <QuillEditor {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -454,7 +454,7 @@ const AddQuestionDialog = ({
                   variant="outline"
                   onClick={() => {
                     handleCloseOrCancel()
-                    onOpenChange(false)
+                    // onOpenChange(false)
                   }}
                 >
                   Hủy

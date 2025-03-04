@@ -1,4 +1,5 @@
 import React from 'react'
+import Image from 'next/image'
 
 interface BlogDetailPostProps {
   initialBlogDetail: any
@@ -8,7 +9,8 @@ const BlogDetailProfileItem = ({ initialBlogDetail }: BlogDetailPostProps) => {
   return (
     <div className="profile-item">
       <div className="image">
-        <img
+        <Image
+          layout="fill"
           src={initialBlogDetail.user.avatar}
           alt={initialBlogDetail.user.name}
         />

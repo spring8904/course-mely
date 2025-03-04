@@ -27,28 +27,10 @@ export const formatCurrency = (value: number): string => {
   }).format(value)
 }
 
-export const formatDateTime = (
-  value: string,
-  type: 'date' | 'time' | 'both' = 'both'
+export const formatDate = (
+  value: string | Date,
+  options?: Intl.DateTimeFormatOptions
 ): string => {
-  const options: Intl.DateTimeFormatOptions = {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: true,
-  }
-
-  if (type === 'date') {
-    delete options.hour
-    delete options.minute
-  } else if (type === 'time') {
-    delete options.day
-    delete options.month
-    delete options.year
-  }
-
   return new Intl.DateTimeFormat('vi-VN', options).format(new Date(value))
 }
 
@@ -67,9 +49,13 @@ export const formatDuration = (
   const secs = seconds % 60
 
   if (type === 'colon') {
-    return `${hours.toString().padStart(2, '0')}:${minutes
-      .toString()
-      .padStart(2, '0')}:${secs.toString().padStart(2, '0')}`
+    return hours > 0
+      ? `${hours.toString().padStart(2, '0')}:${minutes
+          .toString()
+          .padStart(2, '0')}:${secs.toString().padStart(2, '0')}`
+      : `${minutes.toString().padStart(2, '0')}:${secs
+          .toString()
+          .padStart(2, '0')}`
   }
 
   let result = ''
@@ -77,4 +63,55 @@ export const formatDuration = (
   if (minutes > 0) result += `${minutes} phút `
 
   return result.trim()
+}
+
+export const removeVietnameseTones = (str: string) => {
+  return str
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/đ/g, 'd')
+    .replace(/Đ/g, 'D')
+}
+
+export const timeAgo = (dataTime: string) => {
+  const now = new Date()
+  const time = new Date(dataTime)
+  const diffInMs = now.getTime() - time.getTime()
+  const diffInSeconds = Math.floor(diffInMs / 1000)
+
+  if (diffInSeconds < 60) {
+    return `${diffInSeconds} giây trước`
+  }
+
+  const diffInMinutes = Math.floor(diffInSeconds / 60)
+  if (diffInMinutes < 60) {
+    return `${diffInMinutes} phút trước`
+  }
+
+  const diffInHours = Math.floor(diffInMinutes / 60)
+  if (diffInHours < 24) {
+    return `${diffInHours} giờ trước`
+  }
+
+  const diffInDays = Math.floor(diffInHours / 24)
+  if (diffInDays < 30) {
+    return `${diffInDays} ngày trước`
+  }
+
+  const diffInMonths = Math.floor(diffInDays / 30)
+  if (diffInMonths < 12) {
+    return `${diffInMonths} tháng trước`
+  }
+
+  const diffInYears = Math.floor(diffInDays / 365)
+  return `${diffInYears} năm trước`
+}
+
+export const generateRandomCode = (length: number): string => {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+  let result = ''
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * characters.length))
+  }
+  return result
 }

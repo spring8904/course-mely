@@ -150,7 +150,7 @@ export const updateCodingLessonSchema = z.object({
   language: z.string({
     message: 'Vui lòng chọn ngôn ngữ lập trình',
   }),
-  instruct: z.string().nullable().optional(),
+  instruct: z.string().optional(),
   content: z
     .string({
       required_error: 'Vui lòng nhập nội dung bài học',

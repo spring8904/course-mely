@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2 } from 'lucide-react'
 import { useForm } from 'react-hook-form'
@@ -24,7 +24,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { Switch } from '@/components/ui/switch'
 import ModalLoading from '@/components/common/ModalLoading'
-import TinyEditor from '@/components/shared/tiny-editor'
+import QuillEditor from '@/components/shared/quill-editor'
 import DialogVideoPreview from '@/sections/instructor/components/courses-update/lesson/video/dialog-video-preview'
 
 type Props = {
@@ -240,11 +240,7 @@ const LessonVideo = ({
                 <FormItem>
                   <FormLabel>Nội dung bài giảng</FormLabel>
                   <FormControl>
-                    <TinyEditor
-                      value={field.value}
-                      onEditorChange={field.onChange}
-                      minimalist
-                    />
+                    <QuillEditor {...field} value={field.value || ''} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

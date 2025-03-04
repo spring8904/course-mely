@@ -1,19 +1,5 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { Loader2 } from 'lucide-react'
-import { useForm } from 'react-hook-form'
-import { toast } from 'react-toastify'
-
-import {
-  LessonDocumentPayload,
-  lessonDocumentSchema,
-} from '@/validations/lesson'
-import {
-  useCreateLessonDocument,
-  useGetLessonDocument,
-  useUpdateLessonDocument,
-} from '@/hooks/instructor/lesson/useLesson'
-
+import ModalLoading from '@/components/common/ModalLoading'
+import QuillEditor from '@/components/shared/quill-editor'
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -31,9 +17,21 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import ModalLoading from '@/components/common/ModalLoading'
-import TinyEditor from '@/components/shared/tiny-editor'
+import {
+  useCreateLessonDocument,
+  useGetLessonDocument,
+  useUpdateLessonDocument,
+} from '@/hooks/instructor/lesson/useLesson'
 import DialogDocumentPreview from '@/sections/instructor/components/courses-update/lesson/document/dialog-document-preview'
+import {
+  LessonDocumentPayload,
+  lessonDocumentSchema,
+} from '@/validations/lesson'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { Loader2 } from 'lucide-react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { toast } from 'react-toastify'
 
 type Props = {
   chapterId?: string | number
@@ -234,12 +232,7 @@ const LessonDocument = ({
                 <FormItem>
                   <FormLabel>Nội dung bài giảng</FormLabel>
                   <FormControl>
-                    <TinyEditor
-                      value={field.value}
-                      onEditorChange={(value: string) => {
-                        form.setValue('content', value)
-                      }}
-                    />
+                    <QuillEditor {...field} value={field.value || ''} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

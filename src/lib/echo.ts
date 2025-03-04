@@ -3,7 +3,6 @@ import Echo from 'laravel-echo'
 import Pusher from 'pusher-js'
 
 import { StorageKeys } from '@/constants/storage-keys'
-
 ;(window as any).Pusher = Pusher
 
 const token = Cookies.get(StorageKeys.ACCESS_TOKEN)

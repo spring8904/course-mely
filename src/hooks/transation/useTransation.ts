@@ -15,3 +15,9 @@ export const useEnrollFreeCourse = () => {
     },
   })
 }
+
+export const useApplyCoupon = () => {
+  return useMutation({
+    mutationFn: (data: any) => transationApi.applyCoupon(data),
+  })
+}

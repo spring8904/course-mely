@@ -46,7 +46,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
-import TinyEditor from '@/components/shared/tiny-editor'
+import QuillEditor from '@/components/shared/quill-editor'
 
 const PostAddView = () => {
   const router = useRouter()
@@ -54,8 +54,6 @@ const PostAddView = () => {
   const { data: categoryData } = useGetCategories()
   const { mutate: createPost, isPending } = useCreatePost()
 
-  const [description, setDescription] = useState<string>('')
-  const [content, setContent] = useState<string>('')
   const [preview, setPreview] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -97,8 +95,6 @@ const PostAddView = () => {
     createPost(
       {
         ...values,
-        description,
-        content,
         thumbnail: form.getValues('thumbnail'),
       },
       {
@@ -202,13 +198,7 @@ const PostAddView = () => {
                             render={({ field }) => (
                               <FormItem>
                                 <FormControl>
-                                  <TinyEditor
-                                    {...field}
-                                    value={content}
-                                    onEditorChange={(value: any) => {
-                                      setContent(value)
-                                    }}
-                                  />
+                                  <QuillEditor {...field} />
                                 </FormControl>
                                 <FormMessage />
                               </FormItem>
@@ -225,13 +215,7 @@ const PostAddView = () => {
                             render={({ field }) => (
                               <FormItem>
                                 <FormControl>
-                                  <TinyEditor
-                                    {...field}
-                                    value={description}
-                                    onEditorChange={(value: any) => {
-                                      setDescription(value)
-                                    }}
-                                  />
+                                  <QuillEditor {...field} />
                                 </FormControl>
                                 <FormMessage />
                               </FormItem>

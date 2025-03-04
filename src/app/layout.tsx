@@ -1,5 +1,6 @@
 import { Metadata } from 'next'
 import { Manrope } from 'next/font/google'
+import { GoogleAnalytics } from '@next/third-parties/google'
 
 import AppProvider from '@/providers/app-provider'
 
@@ -46,6 +47,7 @@ export default function RootLayout({
           <AppProvider>{children}</AppProvider>
         </div>
       </body>
+      <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID!} />
     </html>
   )
 }

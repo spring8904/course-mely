@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useQueryClient } from '@tanstack/react-query'
 import { Check, Loader2, Pencil, Trash, X } from 'lucide-react'
@@ -22,7 +22,7 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import ModalLoading from '@/components/common/ModalLoading'
-import TinyEditor from '@/components/shared/tiny-editor'
+import QuillEditor from '@/components/shared/quill-editor'
 import AddQuestionDialog from '@/sections/instructor/components/courses-update/lesson/quiz/add-question-dialog'
 
 type Props = {
@@ -41,11 +41,11 @@ const LessonQuiz = ({
   courseStatus,
 }: Props) => {
   const queryClient = useQueryClient()
-
+  console.log(courseStatus)
   const [editQuestion, setEditQuestion] = useState(false)
-
   const [, setQuestions] = useState<any[]>([])
   const [editQuestionId, setEditQuestionId] = useState<string | null>(null)
+  const isReadOnly = !(courseStatus === 'draft' || courseStatus === 'rejected')
 
   const { data: questionData, isLoading: isQuestionLoading } = useGetQuiz(
     quizId as string
@@ -163,7 +163,11 @@ const LessonQuiz = ({
                 <FormItem>
                   <FormLabel>Tiêu đề bài giảng</FormLabel>
                   <FormControl>
-                    <Input placeholder="Nhập tiêu đề bài giảng" {...field} />
+                    <Input
+                      readOnly={isReadOnly}
+                      placeholder="Nhập tiêu đề bài giảng"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -178,11 +182,10 @@ const LessonQuiz = ({
                 <FormItem>
                   <FormLabel>Nội dung bài giảng</FormLabel>
                   <FormControl>
-                    <TinyEditor
-                      key={field.value}
-                      value={field.value}
-                      onEditorChange={field.onChange}
-                      minimalist
+                    <QuillEditor
+                      disabled={isReadOnly}
+                      {...field}
+                      value={field.value || ''}
                     />
                   </FormControl>
                   <FormMessage />

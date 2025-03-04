@@ -6,10 +6,10 @@ import { StorageKeys } from '@/constants/storage-keys'
 
 const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api/',
-  withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
   },
+  withCredentials: true,
 })
 
 api.interceptors.request.use((config) => {
@@ -61,7 +61,11 @@ api.interceptors.response.use(
         }
       }
 
-      if (!!data) return Promise.reject(data)
+      if (!!data)
+        return Promise.reject({
+          status,
+          ...data,
+        })
     } else if (error.request) {
       toast.error('No response received from the server')
     } else {

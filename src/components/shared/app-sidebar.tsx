@@ -9,8 +9,11 @@ import {
   Book,
   ChartPie,
   Command,
+  Database,
   GalleryVerticalEnd,
+  MessageSquareQuote,
   MessageSquareText,
+  TicketPercent,
   UsersRound,
   Wallet,
 } from 'lucide-react'
@@ -88,14 +91,29 @@ const data = {
       icon: MessageSquareText,
     },
     {
+      title: 'Đánh giá',
+      url: '/instructor/evaluation',
+      icon: MessageSquareQuote,
+    },
+    {
+      title: 'Mã giảm giá',
+      url: '/instructor/coupon',
+      icon: TicketPercent,
+    },
+    {
       title: 'Ví của bạn',
       url: '/instructor/wallet',
       icon: Wallet,
     },
     {
-      title: 'Giao dịch của tôi',
+      title: 'Lịch sử mua',
       url: '/instructor/transaction',
       icon: BadgeEuro,
+    },
+    {
+      title: 'Giao dịch của tôi',
+      url: '/instructor/with-draw-request',
+      icon: Database,
     },
   ],
 }

@@ -48,12 +48,11 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import TinyEditor from '@/components/shared/tiny-editor'
+import QuillEditor from '@/components/shared/quill-editor'
 
 const PostUpdateView = ({ slug }: { slug: string }) => {
   const [preview, setPreview] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
-  const [editorKey, setEditorKey] = useState(0)
   const { data: categoryData } = useGetCategories()
   const { data: getPostBySlugData, isLoading } = useGetPostBySlug(slug)
   const { mutate: updatePost, isPending } = useUpdatePost()
@@ -85,7 +84,6 @@ const PostUpdateView = ({ slug }: { slug: string }) => {
         description: postData.description || '',
         content: postData.content || '',
       })
-      setEditorKey((prev) => prev + 1)
     }
   }, [getPostBySlugData, form])
 
@@ -254,13 +252,7 @@ const PostUpdateView = ({ slug }: { slug: string }) => {
                           render={({ field }) => (
                             <FormItem>
                               <FormControl>
-                                <TinyEditor
-                                  key={editorKey}
-                                  value={field.value || ''}
-                                  onEditorChange={(value) =>
-                                    field.onChange(value)
-                                  }
-                                />
+                                <QuillEditor {...field} />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
@@ -277,13 +269,7 @@ const PostUpdateView = ({ slug }: { slug: string }) => {
                           render={({ field }) => (
                             <FormItem>
                               <FormControl>
-                                <TinyEditor
-                                  key={editorKey}
-                                  value={field.value || ''}
-                                  onEditorChange={(value) =>
-                                    field.onChange(value)
-                                  }
-                                />
+                                <QuillEditor {...field} />
                               </FormControl>
                               <FormMessage />
                             </FormItem>

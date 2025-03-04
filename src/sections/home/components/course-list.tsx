@@ -23,6 +23,7 @@ import Swal from 'sweetalert2'
 import { ICourses } from '@/types'
 import { CreateWishListPayload } from '@/validations/wish-list'
 import { useCreateWishList } from '@/hooks/wish-list/useWishList'
+import { formatCurrency } from '@/lib/common'
 
 SwiperCore.use([Navigation, Pagination, Autoplay])
 
@@ -180,7 +181,9 @@ const CourseList = ({
 
                         <div className="bottom">
                           <div className="h6 price fw-5">
-                            {course.is_free ? 'Free' : `${course.price} VND`}
+                            {course.is_free
+                              ? 'Free'
+                              : `${formatCurrency(course.price)}`}
                           </div>
 
                           <a

@@ -1,4 +1,4 @@
-import { IChapter, ILesson } from '@/types'
+import { IChapter } from '@/types'
 
 export const chapterData: IChapter[] = [
   {
@@ -54,24 +54,5 @@ export const chapterData: IChapter[] = [
     courseId: 1,
     title: 'Deploy lên dự án',
     order: 5,
-  },
-]
-
-export const lessonData: ILesson[] = [
-  {
-    id: 1,
-    chapterId: 1,
-    title: 'ReactJS cơ bản',
-    content: 'ReactJS cơ bản',
-    order: 1,
-    type: 'document',
-  },
-  {
-    id: 2,
-    chapterId: 1,
-    title: 'Ôn lại kiến thức về ES6+',
-    content: 'Ôn lại kiến thức về ES6+',
-    order: 2,
-    type: 'document',
   },
 ]

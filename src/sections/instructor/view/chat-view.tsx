@@ -488,7 +488,6 @@ const ChatView = () => {
           )}
         </ScrollArea>
       </div>
-
       {/* Main Chat Area */}
       <div className="flex flex-1 flex-col">
         {/* Chat Header */}

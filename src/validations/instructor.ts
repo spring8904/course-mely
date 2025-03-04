@@ -22,4 +22,4 @@ export const registerInstructorSchema = z.object({
     .optional(),
 })
 
-export type RegisterInstructorInput = z.infer<typeof registerInstructorSchema>
+export type RegisterInstructorPayload = z.infer<typeof registerInstructorSchema>

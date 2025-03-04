@@ -2,11 +2,10 @@
 
 import { useEffect, useRef, useState } from 'react'
 import dynamic from 'next/dynamic'
-import confetti from 'canvas-confetti'
-import { CirclePlay, Loader2 } from 'lucide-react'
+import { CirclePlay, Loader2, RotateCcw } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
-import { useCompileCode } from '@/hooks/code/use-compile-code'
+import { useExecuteCode } from '@/hooks/use-execute-code'
 
 import { Button } from '../ui/button'
 
@@ -23,42 +22,37 @@ type File = {
 
 type Props = {
   files: { [key: string]: File }
+  value?: string
   onChange?: (value?: string, fileName?: string) => void
-  onCompile?: (value: any) => void
+  onExecute?: (value: any) => void
   theme?: 'light' | 'vs-dark'
   disabled?: boolean
   readOnly?: boolean
   runCode?: boolean
+  activeFileGroup?: string
   [key: string]: any
 }
 
 const MonacoEditor = ({
   files,
   onChange,
-  onCompile,
+  onExecute,
   theme = 'vs-dark',
   disabled,
   readOnly,
   runCode = false,
-  activeFileGroup = 'solution',
+  activeFileGroup,
+  value,
   ...rest
-}: Props & { activeFileGroup?: string }) => {
+}: Props) => {
   const firstFileName = Object.keys(files)[0]
-  const compileCode = useCompileCode()
+  const { mutate: executeCode, isPending } = useExecuteCode()
 
   const [fileName, setFileName] = useState<string>(firstFileName)
   const file = files[fileName]
 
-  const [currentCode, setCurrentCode] = useState<string>(() => {
-    return files[firstFileName]?.value || ''
-  })
-
   const [markers, setMarkers] = useState<any>()
   const editorRef = useRef<any>(null)
-
-  useEffect(() => {
-    setCurrentCode(files[fileName]?.value || '')
-  }, [fileName, files])
 
   useEffect(() => {
     editorRef.current?.focus()
@@ -67,21 +61,15 @@ const MonacoEditor = ({
   const handleCompileCode = () => {
     if (markers?.length > 0) return
 
-    compileCode.mutate(
+    executeCode(
       {
         language: file.language,
         version: file.version,
-        files: [{ content: currentCode }],
+        files: [{ content: value! }],
       },
       {
         onSuccess: (res) => {
-          onCompile?.(res.run.output)
-
-          confetti({
-            particleCount: 100,
-            spread: 100,
-            origin: { y: 0.9 },
-          })
+          onExecute?.(res.run.output)
 
           console.log(
             `File group run: ${activeFileGroup}`,
@@ -116,15 +104,24 @@ const MonacoEditor = ({
             </button>
           )
         })}
+
+        <Button
+          size="icon"
+          className="ml-auto mr-2 bg-transparent hover:bg-transparent"
+          onClick={() => {
+            onChange?.(files[firstFileName]?.value, fileName)
+          }}
+        >
+          <RotateCcw />
+        </Button>
       </div>
 
       <div className="flex-1 bg-[#1e1e1e] pt-5">
         <Editor
           theme={theme}
-          value={currentCode}
+          value={value}
           onChange={(value) => {
-            setCurrentCode(value || '') // Cập nhật state khi người dùng chỉnh sửa
-            onChange?.(value, fileName) // Callback cho cha nếu cần
+            onChange?.(value, fileName)
           }}
           path={file.name}
           defaultLanguage={file.language}
@@ -144,13 +141,9 @@ const MonacoEditor = ({
           className="absolute bottom-6 left-6"
           type="button"
           onClick={handleCompileCode}
-          disabled={compileCode.isPending || markers?.length > 0 || disabled}
+          disabled={isPending || markers?.length > 0 || disabled}
         >
-          {compileCode.isPending ? (
-            <Loader2 className="animate-spin" />
-          ) : (
-            <CirclePlay />
-          )}
+          {isPending ? <Loader2 className="animate-spin" /> : <CirclePlay />}
           Chạy mã
         </Button>
       )}

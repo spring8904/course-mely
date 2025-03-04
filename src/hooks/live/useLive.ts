@@ -1,0 +1,59 @@
+import { useMutation, useQuery } from '@tanstack/react-query'
+
+import {
+  CreateLiveSessionMessagePayload,
+  CreateLiveStreamPayload,
+} from '@/validations/live'
+import QUERY_KEY from '@/constants/query-key'
+import { liveSteamApi } from '@/services/live/live'
+
+export const useGetLiveSessions = (filters?: {
+  fromDate?: string | undefined
+  toDate?: string | undefined
+}) => {
+  return useQuery({
+    queryKey: [QUERY_KEY.INSTRUCTOR_LIVE_SESSIONS],
+    queryFn: () => liveSteamApi.getLiveSessions(filters),
+    // keepPreviousData: true,
+  })
+}
+
+export const useGetLiveSessionClient = () => {
+  return useQuery({
+    queryKey: [QUERY_KEY.LIVE_SESSION_CLIENT],
+    queryFn: () => liveSteamApi.getLiveSessionClient(),
+  })
+}
+
+export const useCreateLiveSteam = () => {
+  return useMutation({
+    mutationFn: (data: CreateLiveStreamPayload) =>
+      liveSteamApi.createLiveStream(data),
+  })
+}
+
+export const useLiveSessionInfo = (id: string) => {
+  return useQuery({
+    queryKey: [QUERY_KEY.LIVE_SESSION_CLIENT, id],
+    queryFn: () => liveSteamApi.getLiveSession(id!),
+    enabled: !!id,
+  })
+}
+
+export const useJoinLiveSession = () => {
+  return useMutation({
+    mutationFn: (id: string) => liveSteamApi.joinLiveSession(id),
+  })
+}
+
+export const useSendMessageLive = () => {
+  return useMutation({
+    mutationFn: ({
+      liveSessionId,
+      data,
+    }: {
+      liveSessionId: string
+      data: CreateLiveSessionMessagePayload
+    }) => liveSteamApi.sendMessageLive(liveSessionId, data),
+  })
+}

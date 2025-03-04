@@ -88,18 +88,32 @@
 
 @layer components {
   .dropdown-menu {
-    @apply mt-2 w-[240px] rounded-lg bg-white p-4 text-base !important;
+    @apply mt-2 w-[240px] rounded-lg bg-white text-base data-[popper-placement=bottom-start]:-ml-5 !important;
   }
 
   .dropdown-item {
-    @apply block w-full rounded-lg bg-transparent p-4 text-xl font-medium transition-colors duration-200 hover:bg-[#FFEFEA] hover:text-[#E27447] !important;
+    @apply block w-full rounded-lg bg-transparent px-4 py-2 text-sm font-medium transition-colors hover:bg-primary/5 hover:text-primary !important;
   }
 }
 
-.Toastify__toast.hot-toast {
-  @apply mb-2 min-h-fit w-fit px-2.5 py-2 [&_svg]:size-5;
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
-.custom-quill .ql-editor {
-  @apply min-h-[100px];
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradient 8s ease infinite;
+}
+
+.animate-gradient-fast {
+  background-size: 200% 200%;
+  animation: gradient 4s ease infinite;
 }

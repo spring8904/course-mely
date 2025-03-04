@@ -59,21 +59,26 @@ const TopBar = () => {
   //     })
   // }, [user?.id])
   console.log('Active Channels:', echo.connector.channels)
+
+  useEffect(() => {
+    if (!isLoading && data) {
+      setNotifications(data?.pages.flatMap((page) => page.notifications) || [])
+    }
+  }, [user?.id, data, isLoading])
+
   useEffect(() => {
     if (!user?.id) return
 
-    // Tạo channel cho giảng viên (instructor)
     const privateChannel = echo.private(`instructor.${user?.id}`)
 
     privateChannel.notification((notification: any) => {
       console.log('🔔 Notification for Instructor:', notification)
-      toast.info(notification.message) // Hiển thị thông báo realtime cho giảng viên
+      toast.info(notification.message)
 
-      // Thêm thông báo mới vào danh sách (tránh trùng lặp)
       setNotifications((prev) => {
         if (prev.some((noti) => noti.id === notification.id)) {
           console.log('Duplicate notification detected:', notification.id)
-          return prev // Nếu đã tồn tại thông báo, không thêm
+          return prev
         }
         return [
           { id: notification.id, message: notification.message, read_at: null },
@@ -82,10 +87,9 @@ const TopBar = () => {
       })
     })
 
-    // Clean up khi component bị unmount
     return () => {
-      // privateChannel.stopListening('.notification') // Dừng lắng nghe sự kiện
-      echo.leave(`instructor.${user.id}`) // Rời khỏi kênh
+      // privateChannel.stopListening('.notification')
+      echo.leave(`instructor.${user.id}`)
     }
   }, [user?.id])
 
@@ -121,23 +125,21 @@ const TopBar = () => {
         <InputSearch />
         <Popover>
           <PopoverTrigger asChild>
-            <Button
-              variant="ghost"
-              className="relative rounded-full border-2 p-2 shadow"
-            >
-              <Bell
-                className={cn(
-                  'size-6 text-gray-700',
-                  hasUnread && 'animate-bell'
-                )}
-              />
+            <div className="relative">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="rounded-full shadow [&_svg]:size-5"
+              >
+                <Bell className={cn(hasUnread && 'animate-bell')} />
+              </Button>
               {hasUnread && (
-                <span className="absolute -top-1 right-[-2px] flex size-3">
+                <span className="absolute -right-0.5 -top-1 flex size-3">
                   <span className="absolute size-full animate-ping rounded-full bg-red-400/75"></span>
                   <span className="relative size-3 rounded-full bg-red-500"></span>
                 </span>
               )}
-            </Button>
+            </div>
           </PopoverTrigger>
           <PopoverContent
             align="start"

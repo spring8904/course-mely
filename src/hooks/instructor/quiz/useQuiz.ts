@@ -7,7 +7,7 @@ import { instructorQuizApi } from '@/services/instructor/quiz/quiz-api'
 
 export const useGetQuiz = (id: string) => {
   return useQuery({
-    queryKey: [QUERY_KEY.INSTRUCTOR_QUIZ],
+    queryKey: [QUERY_KEY.INSTRUCTOR_QUIZ, id],
     queryFn: () => instructorQuizApi.getQuiz(id),
     enabled: !!id,
   })
@@ -15,7 +15,7 @@ export const useGetQuiz = (id: string) => {
 
 export const useGetQuestion = (id: string) => {
   return useQuery({
-    queryKey: [QUERY_KEY.INSTRUCTOR_QUESTION],
+    queryKey: [QUERY_KEY.INSTRUCTOR_QUESTION, id],
     queryFn: () => instructorQuizApi.getQuestion(id),
     enabled: !!id,
   })
@@ -62,10 +62,10 @@ export const useUpdateQuestion = () => {
     },
     onSuccess: async (res: any) => {
       await queryClient.invalidateQueries({
-        queryKey: [QUERY_KEY.INSTRUCTOR_QUIZ],
+        queryKey: [QUERY_KEY.INSTRUCTOR_QUESTION, res?.data.id],
       })
       await queryClient.invalidateQueries({
-        queryKey: [QUERY_KEY.INSTRUCTOR_QUESTION],
+        queryKey: [QUERY_KEY.INSTRUCTOR_QUIZ, res?.data.quiz_id],
       })
       toast.success(res.message)
     },
