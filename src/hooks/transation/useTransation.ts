@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
-import QUERY_KEY from '@/constants/query-key'
+import QueryKey from '@/constants/query-key'
 import { transationApi } from '@/services/transation/transation-api'
 
 export const useEnrollFreeCourse = () => {
@@ -10,7 +10,7 @@ export const useEnrollFreeCourse = () => {
     mutationFn: (courseId: string) => transationApi.enrollFreeCourse(courseId),
     onSuccess: async () => {
       await queryClient.invalidateQueries({
-        queryKey: [QUERY_KEY.USER_GET_MY_COURSES],
+        queryKey: [QueryKey.USER_GET_MY_COURSES],
       })
     },
   })

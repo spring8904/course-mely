@@ -3,7 +3,7 @@ import { create } from 'zustand'
 
 import { IUser } from '@/types'
 import { Role } from '@/constants/role'
-import { StorageKeys } from '@/constants/storage-keys'
+import StorageKey from '@/constants/storage-key'
 import {
   getLocalStorage,
   removeLocalStorage,
@@ -22,42 +22,42 @@ interface UserState {
 }
 
 export const useAuthStore = create<UserState>((set) => ({
-  user: getLocalStorage(StorageKeys.USER),
-  token: Cookies.get(StorageKeys.ACCESS_TOKEN) || null,
-  role: (Cookies.get(StorageKeys.ROLE) as Role) || null,
-  isAuthenticated: !!Cookies.get(StorageKeys.ACCESS_TOKEN),
+  user: getLocalStorage(StorageKey.USER),
+  token: Cookies.get(StorageKey.ACCESS_TOKEN) || null,
+  role: (Cookies.get(StorageKey.ROLE) as Role) || null,
+  isAuthenticated: !!Cookies.get(StorageKey.ACCESS_TOKEN),
 
   setUser: (user) => {
     if (user) {
-      setLocalStorage(StorageKeys.USER, user)
+      setLocalStorage(StorageKey.USER, user)
     } else {
-      removeLocalStorage(StorageKeys.USER)
+      removeLocalStorage(StorageKey.USER)
     }
     set({ user })
   },
 
   setToken: (token) => {
     if (token) {
-      Cookies.set(StorageKeys.ACCESS_TOKEN, token, { expires: 7 })
+      Cookies.set(StorageKey.ACCESS_TOKEN, token, { expires: 7 })
     } else {
-      Cookies.remove(StorageKeys.ACCESS_TOKEN)
+      Cookies.remove(StorageKey.ACCESS_TOKEN)
     }
     set({ token, isAuthenticated: !!token })
   },
 
   setRole: (role) => {
     if (role) {
-      Cookies.set(StorageKeys.ROLE, role, { expires: 7 })
+      Cookies.set(StorageKey.ROLE, role, { expires: 7 })
     } else {
-      Cookies.remove(StorageKeys.ROLE)
+      Cookies.remove(StorageKey.ROLE)
     }
     set({ role })
   },
 
   logout: () => {
-    Cookies.remove(StorageKeys.ACCESS_TOKEN)
-    removeLocalStorage(StorageKeys.USER)
-    Cookies.remove(StorageKeys.ROLE)
+    Cookies.remove(StorageKey.ACCESS_TOKEN)
+    removeLocalStorage(StorageKey.USER)
+    Cookies.remove(StorageKey.ROLE)
     set({ user: null, token: null, role: null, isAuthenticated: false })
   },
 }))

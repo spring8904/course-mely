@@ -8,7 +8,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { Loader2, X } from 'lucide-react'
 import Swal from 'sweetalert2'
 
-import QUERY_KEY from '@/constants/query-key'
+import QueryKey from '@/constants/query-key'
 import {
   useDeleteWishList,
   useGetWishLists,
@@ -51,7 +51,7 @@ const WishListView = () => {
 
             if (updatedList.length === 0) {
               queryClient.invalidateQueries({
-                queryKey: [QUERY_KEY.WISH_LIST],
+                queryKey: [QueryKey.WISH_LIST],
               })
             }
           },

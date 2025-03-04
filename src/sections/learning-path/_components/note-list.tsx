@@ -3,7 +3,7 @@ import { FilePenLine, Loader2, Trash } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 
-import QUERY_KEY from '@/constants/query-key'
+import QueryKey from '@/constants/query-key'
 import { useGetChapterFromLesson } from '@/hooks/learning-path/useLearningPath'
 import { useDeleteNote, useGetNotes, useUpdateNote } from '@/hooks/note/useNote'
 import { formatDuration } from '@/lib/common'
@@ -110,7 +110,7 @@ const NoteList = ({
         {
           onSuccess: async () => {
             await queryClient.invalidateQueries({
-              queryKey: [QUERY_KEY.NOTE_LESSON],
+              queryKey: [QueryKey.NOTE_LESSON],
             })
             setIsEditNote(false)
           },
@@ -219,7 +219,7 @@ const NoteList = ({
                               deleteNote(note.id, {
                                 onSuccess: async () => {
                                   await queryClient.invalidateQueries({
-                                    queryKey: [QUERY_KEY.NOTE_LESSON],
+                                    queryKey: [QueryKey.NOTE_LESSON],
                                   })
                                 },
                                 onError: (error: any) => {

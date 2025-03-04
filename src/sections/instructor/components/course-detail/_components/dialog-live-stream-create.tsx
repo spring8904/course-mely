@@ -9,7 +9,7 @@ import {
   createLiveSessionSchema,
   CreateLiveStreamPayload,
 } from '@/validations/live'
-import QUERY_KEY from '@/constants/query-key'
+import QueryKey from '@/constants/query-key'
 import { useCreateLiveSteam } from '@/hooks/live/useLive'
 
 import { Button } from '@/components/ui/button'
@@ -60,7 +60,7 @@ const DialogLiveStreamCreate = ({
         toast.success(res.message)
         onOpenChange(false)
         await queryClient.invalidateQueries({
-          queryKey: [QUERY_KEY.INSTRUCTOR_LIVE_SESSIONS],
+          queryKey: [QueryKey.INSTRUCTOR_LIVE_SESSIONS],
         })
       },
       onError: (error: any) => {

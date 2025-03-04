@@ -14,7 +14,7 @@ import {
   lessonCommentSchema,
   ReplyLessonCommentPayload,
 } from '@/validations/comment'
-import QUERY_KEY from '@/constants/query-key'
+import QueryKey from '@/constants/query-key'
 import { timeAgo } from '@/lib/common'
 import {
   useDeleteComment,
@@ -137,11 +137,11 @@ const CommentLesson = ({ lessonId }: { lessonId: string }) => {
 
           if (commentToDelete.type === 'comment') {
             queryClient.invalidateQueries({
-              queryKey: [QUERY_KEY.LESSON_COMMENT, lessonId],
+              queryKey: [QueryKey.LESSON_COMMENT, lessonId],
             })
           } else if (commentToDelete.type === 'reply' && selectedComment) {
             queryClient.invalidateQueries({
-              queryKey: [QUERY_KEY.LESSON_COMMENT, selectedComment],
+              queryKey: [QueryKey.LESSON_COMMENT, selectedComment],
             })
           }
 
@@ -223,7 +223,7 @@ const CommentLesson = ({ lessonId }: { lessonId: string }) => {
         setIsAdding(false)
 
         await queryClient.invalidateQueries({
-          queryKey: [QUERY_KEY.LESSON_COMMENT, lessonId],
+          queryKey: [QueryKey.LESSON_COMMENT, lessonId],
         })
       },
       onError: (error: any) => {
@@ -252,11 +252,11 @@ const CommentLesson = ({ lessonId }: { lessonId: string }) => {
           setReplyContent('')
 
           await queryClient.invalidateQueries({
-            queryKey: [QUERY_KEY.LESSON_COMMENT, lessonId],
+            queryKey: [QueryKey.LESSON_COMMENT, lessonId],
           })
 
           await queryClient.invalidateQueries({
-            queryKey: [QUERY_KEY.LESSON_COMMENT, commentId],
+            queryKey: [QueryKey.LESSON_COMMENT, commentId],
           })
 
           setReplyContent(`@${replyTargetName} `)

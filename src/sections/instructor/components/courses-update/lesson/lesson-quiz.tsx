@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import Swal from 'sweetalert2'
 
-import QUERY_KEY from '@/constants/query-key'
+import QueryKey from '@/constants/query-key'
 import { useCreateLessonQuiz } from '@/hooks/instructor/lesson/useLesson'
 import { useDeleteQuestion, useGetQuiz } from '@/hooks/instructor/quiz/useQuiz'
 import { LessonQuizPayload, lessonQuizSchema } from '@/validations/lesson'
@@ -104,7 +104,7 @@ const LessonQuiz = ({
       {
         onSuccess: async (res: any) => {
           await queryClient.invalidateQueries({
-            queryKey: [QUERY_KEY.INSTRUCTOR_COURSE],
+            queryKey: [QueryKey.INSTRUCTOR_COURSE],
           })
           handleClose()
           form.reset()

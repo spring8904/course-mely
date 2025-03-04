@@ -5,19 +5,19 @@ import {
   LessonCommentPayload,
   ReplyLessonCommentPayload,
 } from '@/validations/comment'
-import QUERY_KEY from '@/constants/query-key'
+import QueryKey from '@/constants/query-key'
 import { commentLessonApi } from '@/services/comment-lesson/comment-lesson-api'
 
 export const useGetLessonComments = (lessonId: string) => {
   return useQuery({
-    queryKey: [QUERY_KEY.LESSON_COMMENT, lessonId],
+    queryKey: [QueryKey.LESSON_COMMENT, lessonId],
     queryFn: () => commentLessonApi.getCommentLessons(lessonId!),
     enabled: !!lessonId,
   })
 }
 export const useGetReplyLessonComment = (commentId: string) => {
   return useQuery({
-    queryKey: [QUERY_KEY.LESSON_COMMENT, commentId],
+    queryKey: [QueryKey.LESSON_COMMENT, commentId],
     queryFn: () => commentLessonApi.getCommentReplyLesson(commentId!),
     enabled: !!commentId,
   })
@@ -48,7 +48,7 @@ export const useDeleteComment = (commentId: string) => {
     mutationFn: () => commentLessonApi.deleteComment(commentId),
     onSuccess: async () => {
       await queryClient.invalidateQueries({
-        queryKey: [QUERY_KEY.LESSON_COMMENT],
+        queryKey: [QueryKey.LESSON_COMMENT],
       })
     },
     onError: (error: any) => {

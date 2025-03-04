@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 
 import { CouponPayload } from '@/validations/coupon'
-import QUERY_KEY from '@/constants/query-key'
+import QueryKey from '@/constants/query-key'
 import { instructorCouponApi } from '@/services/instructor/coupon/coupon-api'
 
 export const useGetCoupons = (filters?: {
@@ -9,14 +9,14 @@ export const useGetCoupons = (filters?: {
   toDate?: string | undefined
 }) => {
   return useQuery({
-    queryKey: [QUERY_KEY.INSTRUCTOR_COUPON, filters],
+    queryKey: [QueryKey.INSTRUCTOR_COUPON, filters],
     queryFn: () => instructorCouponApi.getCoupons(filters),
   })
 }
 
 export const useGetCoupon = (id: string) => {
   return useQuery({
-    queryKey: [QUERY_KEY.INSTRUCTOR_COUPON, id],
+    queryKey: [QueryKey.INSTRUCTOR_COUPON, id],
     queryFn: () => instructorCouponApi.getCoupon(id),
     enabled: !!id,
   })

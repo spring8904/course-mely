@@ -3,7 +3,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { Loader2 } from 'lucide-react'
 import { toast } from 'react-toastify'
 
-import QUERY_KEY from '@/constants/query-key'
+import QueryKey from '@/constants/query-key'
 import { formatCurrency } from '@/lib/common'
 import {
   useGetWithDrawalRequest,
@@ -75,7 +75,7 @@ const DialogWithDrawRequest = ({
           toast.success(res.message)
 
           await queryClient.invalidateQueries({
-            queryKey: [QUERY_KEY.INSTRUCTOR_WITH_DRAW_REQUEST],
+            queryKey: [QueryKey.INSTRUCTOR_WITH_DRAW_REQUEST],
           })
         },
         onError: (error: any) => {

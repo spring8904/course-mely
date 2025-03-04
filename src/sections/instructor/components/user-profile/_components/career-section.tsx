@@ -1046,7 +1046,7 @@ const CareersSection = ({ careersData }: Props) => {
                         placeholder="Nhập tên công ty"
                         {...field}
                         disabled={isUpdating}
-                        className="focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                        className="focus:border-blue-300 focus:ring focus:ring-blue-200/50"
                       />
                     </FormControl>
                     <FormMessage />

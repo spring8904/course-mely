@@ -7,9 +7,9 @@ import Cookies from 'js-cookie'
 import { toast } from 'react-toastify'
 
 import { IAuthData } from '@/types'
-import QUERY_KEY from '@/constants/query-key'
-import { StorageKeys } from '@/constants/storage-keys'
+import StorageKey from '@/constants/storage-key'
 import { authApi } from '@/services/auth/authApi'
+import QueryKey from '@/constants/query-key'
 
 export const useSignIn = () => {
   const queryClient = useQueryClient()
@@ -25,7 +25,7 @@ export const useSignIn = () => {
       const user = res?.user
       const role = res.role
 
-      const currentToken = Cookies.get(StorageKeys.ACCESS_TOKEN)
+      const currentToken = Cookies.get(StorageKey.ACCESS_TOKEN)
 
       if (token && currentToken !== token) {
         setToken(token)
@@ -33,7 +33,7 @@ export const useSignIn = () => {
         setRole(role)
         router.push('/')
 
-        await queryClient.invalidateQueries({ queryKey: [QUERY_KEY.AUTH] })
+        await queryClient.invalidateQueries({ queryKey: [QueryKey.AUTH] })
 
         toast.success(res?.message)
       } else {

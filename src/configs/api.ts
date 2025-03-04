@@ -2,7 +2,7 @@ import axios from 'axios'
 import Cookies from 'js-cookie'
 import { toast } from 'react-toastify'
 
-import { StorageKeys } from '@/constants/storage-keys'
+import StorageKey from '@/constants/storage-key'
 
 const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api/',
@@ -13,7 +13,7 @@ const api = axios.create({
 })
 
 api.interceptors.request.use((config) => {
-  const token = Cookies.get(StorageKeys.ACCESS_TOKEN)
+  const token = Cookies.get(StorageKey.ACCESS_TOKEN)
 
   if (token) {
     config.headers.Authorization = `Bearer ${token}`
