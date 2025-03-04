@@ -14462,9 +14462,6 @@ instructors-item
     padding: 9px 10px;
     gap: 5px;
   }
-  #header_main .navigation {
-    gap: 10px;
-  }
   #header_main .navigation > li.has-children {
     padding-right: 10px;
   }
