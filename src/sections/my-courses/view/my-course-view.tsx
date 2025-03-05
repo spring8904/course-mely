@@ -1,12 +1,12 @@
-import React from 'react'
+import { Loader2 } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Loader2 } from 'lucide-react'
 
-import { formatDuration } from '@/lib/common'
 import { useGetMyCourses } from '@/hooks/user/useUser'
+import { formatDuration } from '@/lib/common'
 
 import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 
 const MyCourseView = () => {
   const { data: myCourseList, isLoading: myCourseListLoading } =
@@ -99,25 +99,24 @@ const MyCourseView = () => {
                     </a>
                   </div>
                   <div className="mt-4">
-                    <Link
-                      href={`/learning/${course.slug}/lesson/${course.current_lesson.id}`}
+                    <Button
+                      className={cn(
+                        'text-white',
+                        course.progress_percent === 100 &&
+                          'bg-green-500 hover:bg-green-500/80',
+                        course?.status === 'draft' &&
+                          'bg-yellow-500 hover:bg-yellow-500/80'
+                      )}
+                      onClick={() => {
+                        window.location.href = `/learning/${course.slug}/lesson/${course.current_lesson.id}`
+                      }}
                     >
-                      <Button
-                        className={
-                          course?.status === 'draft'
-                            ? 'bg-yellow-500 text-white'
-                            : course.progress_percent === 100
-                              ? 'bg-green-500 text-white'
-                              : 'bg-blue-500 text-white'
-                        }
-                      >
-                        {course?.status === 'draft'
-                          ? 'Đang sửa đổi nội dung'
-                          : course.progress_percent === 100
-                            ? 'Đã hoàn thành'
-                            : 'Tiếp tục học'}
-                      </Button>
-                    </Link>
+                      {course?.status === 'draft'
+                        ? 'Đang sửa đổi nội dung'
+                        : course.progress_percent === 100
+                          ? 'Đã hoàn thành'
+                          : 'Tiếp tục học'}
+                    </Button>
                   </div>
                 </div>
               </div>

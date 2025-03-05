@@ -15,7 +15,7 @@ const OverviewStatistics = () => {
   const { data: overviewStatistics, isLoading } = useGetOverviewStatistics()
 
   return (
-    <div className="grid h-full grid-cols-2 items-stretch gap-5 lg:gap-8">
+    <div className="grid h-full grid-cols-2 items-stretch gap-3 lg:gap-5">
       <Card className="channel-stats-bg flex h-full flex-col justify-between gap-6 bg-cover bg-[left_top_-1.7rem] bg-no-repeat">
         <div className="ms-5 mt-4 inline-flex size-14 items-center justify-center rounded-xl bg-primary/15">
           <Folder className="text-primary" />

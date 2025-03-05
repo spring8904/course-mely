@@ -1,21 +1,6 @@
 'use client'
 
-import React from 'react'
-import { useRouter } from 'next/navigation'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { Loader2, MoveLeft } from 'lucide-react'
-import { useForm } from 'react-hook-form'
-
-import {
-  UpdateCodingLessonPayload,
-  updateCodingLessonSchema,
-} from '@/validations/course'
-import { LANGUAGE_CONFIG } from '@/constants/language'
-import {
-  useGetLessonCoding,
-  useUpdateCodingLesson,
-} from '@/hooks/instructor/lesson/useLesson'
-
+import ModalLoading from '@/components/common/ModalLoading'
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -34,8 +19,19 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import ModalLoading from '@/components/common/ModalLoading'
-
+import { LANGUAGE_CONFIG } from '@/constants/language'
+import {
+  useGetLessonCoding,
+  useUpdateCodingLesson,
+} from '@/hooks/instructor/lesson/useLesson'
+import {
+  UpdateCodingLessonPayload,
+  updateCodingLessonSchema,
+} from '@/validations/course'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { Loader2, MoveLeft } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { useForm } from 'react-hook-form'
 import GuideTab from './guide-tab'
 import SolutionTab from './solution-tab'
 
@@ -150,7 +146,9 @@ const CourseCodingView = ({
                       <FormLabel>Chọn ngôn ngữ</FormLabel>
                       <Select
                         onValueChange={field.onChange}
-                        defaultValue={field.value}
+                        defaultValue={
+                          field.value || lessonCoding?.data.language
+                        }
                         disabled={field.disabled}
                       >
                         <FormControl>
