@@ -12,6 +12,7 @@ import { CourseIntro } from '@/sections/courses/_components/course-intro'
 
 import CourseListItem from '../_components/course-list-item'
 import CourseListSidebar from '../_components/course-list-sidebar/course-list-sidebar'
+import { useGetAllInstructor } from '@/hooks/instructor/get-all/useGetAllInstructor'
 
 const CourseListView = () => {
   const [dataFilters, setDataFilters] = useState<ICourseFilter>({})
@@ -21,6 +22,8 @@ const CourseListView = () => {
     useGetCategories()
   const { data: coursesData, isLoading: coursesDataLoading } =
     useGetCourses(dataFilters)
+  const { data: instructorData, isLoading: instructorDataLoading } =
+    useGetAllInstructor()
 
   useEffect(() => {
     const savedFilters = JSON.parse(
@@ -43,7 +46,7 @@ const CourseListView = () => {
     }
   }, [forceUpdate])
 
-  if (categoriesDataLoading)
+  if (categoriesDataLoading || instructorDataLoading)
     return (
       <div className="min-h-screen">
         <ModalLoading />
@@ -76,6 +79,7 @@ const CourseListView = () => {
             <div className="row">
               <div className="col-xl-3">
                 <CourseListSidebar
+                  instructorData={instructorData?.data}
                   categories={categoriesData?.data}
                   dataFilters={dataFilters}
                   setDataFilters={setDataFilters}
