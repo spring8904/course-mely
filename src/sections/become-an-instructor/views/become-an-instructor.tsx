@@ -80,8 +80,6 @@ const BecomeAnInstructor = () => {
     router.push('/login')
   }
 
-  console.log(checkProfile)
-
   if (!checkProfile) {
     Swal.fire({
       title: 'Thông báo',

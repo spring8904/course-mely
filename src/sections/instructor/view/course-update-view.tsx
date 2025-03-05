@@ -325,7 +325,8 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
                   courseStatus === 'pending' ||
                   isSubmitCoursePending ||
                   (courseStatus !== 'approved' && progress < 100) ||
-                  isRequestModifyContent
+                  isRequestModifyContent ||
+                  courseStatus === 'modify_request'
                 }
                 onClick={
                   courseStatus === 'approved' ? openDialog : courseHandleSubmit
@@ -333,14 +334,18 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
                 className={
                   courseStatus === 'approved'
                     ? 'bg-green-500 text-white hover:bg-green-500/80'
-                    : ''
+                    : courseStatus === 'modify_request'
+                      ? 'bg-yellow-500 text-white'
+                      : ''
                 }
               >
                 {courseStatus === 'approved'
                   ? 'Yêu cầu sửa đổi nội dung'
                   : courseStatus === 'rejected'
                     ? 'Gửi lại thông tin khoá học'
-                    : 'Gửi yêu cầu kiểm duyệt'}
+                    : courseStatus === 'modify_request'
+                      ? 'Chờ duyệt'
+                      : 'Gửi yêu cầu kiểm duyệt'}
               </Button>
             </div>
           </div>
