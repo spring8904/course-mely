@@ -11,15 +11,13 @@ export const registerInstructorSchema = z.object({
         .min(1, { message: 'Vui lòng chọn câu trả lời' }),
     })
     .array(),
-  certificates: z
-    .array(
-      z.object({
-        file: z
-          .instanceof(File, { message: 'Vui lòng tải lên tệp hợp lệ' })
-          .optional(),
-      })
-    )
-    .optional(),
+  certificates: z.array(
+    z.object({
+      file: z
+        .instanceof(File, { message: 'Vui lòng tải lên tệp hợp lệ' })
+        .optional(),
+    })
+  ),
 })
 
 export type RegisterInstructorPayload = z.infer<typeof registerInstructorSchema>

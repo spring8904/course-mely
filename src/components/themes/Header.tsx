@@ -153,7 +153,7 @@ const Header = () => {
 
   const filteredNotifications = notifications
     .filter((noti: any) =>
-      noti?.data?.message.toLowerCase().includes(searchTerm.toLowerCase())
+      noti?.data?.message?.toLowerCase().includes(searchTerm.toLowerCase())
     )
     .slice(0, 5)
 
@@ -203,7 +203,7 @@ const Header = () => {
     },
     {
       content: 'Tin nhắn',
-      href: '#',
+      href: 'chats',
       separator: true,
     },
 
@@ -393,7 +393,7 @@ const Header = () => {
               {isAuthenticated ? (
                 <>
                   <div className="dropdown">
-                    <Link
+                    <a
                       href="#"
                       role="button"
                       id="dropdownMenuLink"
@@ -409,7 +409,7 @@ const Header = () => {
                         />
                         <AvatarFallback>Avatar</AvatarFallback>
                       </Avatar>
-                    </Link>
+                    </a>
                     <ul
                       className="dropdown-menu !py-0 data-[popper-placement=bottom-start]:!-ml-5"
                       aria-labelledby="dropdownMenuLink"

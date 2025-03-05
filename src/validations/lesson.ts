@@ -25,7 +25,7 @@ export const lessonVideoSchema = z
       .min(3, 'Tiêu đề phải có ít nhất 3 ký tự')
       .max(255, 'Tiêu đề không được vượt quá 255 ký tự'),
     video_file: z.any(),
-    content: z.string().max(255, 'Nội dung không được vượt quá 255 ký tự'),
+    content: z.string().min(1, 'Nội dung là bắt buộc'),
     is_free_preview: z
       .union([z.boolean(), z.number()])
       .transform((val) => Boolean(val))
@@ -66,11 +66,7 @@ export const lessonDocumentSchema = z
       })
       .optional(),
     document_url: z.string().optional(),
-    content: z
-      .string()
-      .min(1, 'Nội dung là bắt buộc')
-      .max(255, 'Nội dung không được vượt quá 255 ký tự')
-      .optional(),
+    content: z.string().min(1, 'Nội dung là bắt buộc').optional(),
     isEdit: z.boolean().optional(),
   })
   .superRefine((data, ctx) => {

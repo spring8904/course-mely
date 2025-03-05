@@ -10,6 +10,7 @@ export enum CourseStatus {
   Pending = 'pending',
   Approved = 'approved',
   Reject = 'rejected',
+  ModifyRequest = 'modify_request',
 }
 
 export const CourseStatusMap: Record<
@@ -20,6 +21,7 @@ export const CourseStatusMap: Record<
   [CourseStatus.Pending]: { label: 'Chờ duyệt', badge: 'info' },
   [CourseStatus.Approved]: { label: 'Đã duyệt', badge: 'success' },
   [CourseStatus.Reject]: { label: 'Từ chối', badge: 'error' },
+  [CourseStatus.ModifyRequest]: { label: 'Sửa đổi', badge: 'warning' },
 }
 
 export interface ICourse {
@@ -117,6 +119,7 @@ export interface Lessonable {
 }
 
 export type LessonType = 'video' | 'quiz' | 'document' | 'coding'
+
 export interface ILessonProcess {
   id: number
   user_id: number
