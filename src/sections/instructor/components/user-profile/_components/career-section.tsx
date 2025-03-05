@@ -640,7 +640,9 @@ const CareersSection = ({ careersData }: Props) => {
                             </div>
                             <div className="min-w-0">
                               <div className="truncate text-sm font-medium text-gray-900">
-                                {career.institution_name}
+                                {career.institution_name.length > 20
+                                  ? career.institution_name.slice(0, 20) + '...'
+                                  : career.institution_name}
                               </div>
                               <div className="mt-0.5 flex flex-wrap items-center gap-1 text-xs text-gray-600 sm:text-sm">
                                 <Badge
@@ -828,7 +830,9 @@ const CareersSection = ({ careersData }: Props) => {
                           </div>
                           <div className="min-w-0">
                             <CardTitle className="truncate text-base font-semibold text-gray-800">
-                              {career.institution_name}
+                              {career.institution_name.length > 20
+                                ? career.institution_name.slice(0, 20) + '...'
+                                : career.institution_name}
                             </CardTitle>
                             <CardDescription className="mt-1 flex items-center gap-1 truncate text-xs">
                               <Building2 className="size-3 shrink-0 text-gray-500" />
