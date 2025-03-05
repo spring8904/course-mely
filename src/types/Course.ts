@@ -178,3 +178,8 @@ export interface ICourseDataResponse {
   per_page: number
   total: 22
 }
+
+export interface ICourseRelatedResponse {
+  current_course: ICourse
+  related_courses: ICourse[]
+}
