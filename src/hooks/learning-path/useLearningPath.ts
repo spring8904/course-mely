@@ -38,14 +38,14 @@ export const useGetQuizSubmission = (
 }
 
 export const useGetCodeSubmission = (
-  lessonId: number,
-  codingId: number,
-  isCompleted: boolean
+  isCompleted: boolean,
+  lessonId?: number,
+  codingId?: number
 ) => {
   return useQuery({
     queryKey: [QueryKey.CODING_SUBMISSION, lessonId, codingId],
-    queryFn: () => learningPathApi.getCodeSubmission(lessonId, codingId),
-    enabled: isCompleted,
+    queryFn: () => learningPathApi.getCodeSubmission(lessonId!, codingId!),
+    enabled: isCompleted && !!lessonId && !!codingId,
   })
 }
 

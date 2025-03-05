@@ -1,9 +1,12 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2 } from 'lucide-react'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 
-import { useCompleteLesson } from '@/hooks/learning-path/useLearningPath'
+import {
+  useCompleteLesson,
+  useGetQuizSubmission,
+} from '@/hooks/learning-path/useLearningPath'
 import { formatDate } from '@/lib/common'
 import { cn } from '@/lib/utils'
 import { AnswerType, ILesson } from '@/types'
@@ -23,6 +26,7 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { toast } from 'react-toastify'
 
 type Props = {
   lesson: ILesson
@@ -41,6 +45,12 @@ const QuizLesson = ({ lesson, isCompleted }: Props) => {
     [key: number]: { [key: number]: string }
   }>({})
 
+  const { data: quizSubmission, isLoading } = useGetQuizSubmission(
+    isCompleted,
+    lesson.id,
+    quizData?.id
+  )
+
   const form = useForm<QuizSubmissionPayload>({
     resolver: zodResolver(quizSubmissionSchema),
     defaultValues: {
@@ -49,19 +59,6 @@ const QuizLesson = ({ lesson, isCompleted }: Props) => {
         question_id: question.id,
         answer_id: [],
       })),
-    },
-    values: {
-      quiz_id: lesson.lessonable_id!,
-      answers: [
-        {
-          answer_id: 21,
-          question_id: 1,
-        },
-        {
-          answer_id: [5, 6, 7],
-          question_id: 2,
-        },
-      ],
     },
   })
 
@@ -122,8 +119,18 @@ const QuizLesson = ({ lesson, isCompleted }: Props) => {
   }, [isCorrect, questions.length])
 
   const onSubmit = (values: QuizSubmissionPayload) => {
-    completeLesson(values)
+    completeLesson(values, {
+      onSuccess: (res) => toast.success(res.message),
+      onError: (error) => toast.error(error.message),
+    })
   }
+
+  useEffect(() => {
+    if (quizSubmission) {
+      form.setValue('answers', quizSubmission)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [quizSubmission])
 
   if (!quizData || !questions.length) return <p>Không có câu hỏi nào.</p>
 
@@ -139,7 +146,7 @@ const QuizLesson = ({ lesson, isCompleted }: Props) => {
         </p>
       </div>
 
-      {false ? (
+      {isLoading ? (
         <Loader2 className="mx-auto size-8 animate-spin text-muted-foreground" />
       ) : (
         <Form {...form}>
@@ -171,7 +178,7 @@ const QuizLesson = ({ lesson, isCompleted }: Props) => {
                                 field.onBlur()
                                 handleAnswerChange()
                               }}
-                              defaultValue={field.value?.toString()}
+                              value={field.value?.toString()}
                             >
                               {question.answers.map(
                                 (answer, answerIndex: number) => (

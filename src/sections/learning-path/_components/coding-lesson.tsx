@@ -12,7 +12,10 @@ import {
 } from '@/validations/code-submission'
 import { Language, LANGUAGE_CONFIG } from '@/constants/language'
 import { formatDate } from '@/lib/common'
-import { useCompleteLesson } from '@/hooks/learning-path/useLearningPath'
+import {
+  useCompleteLesson,
+  useGetCodeSubmission,
+} from '@/hooks/learning-path/useLearningPath'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -40,11 +43,20 @@ type Props = {
 const CodingLesson = ({ lesson, isCompleted }: Props) => {
   const { lessonable: codeData } = lesson
 
+  const { data: codeSubmission } = useGetCodeSubmission(
+    isCompleted,
+    lesson.id,
+    codeData?.id
+  )
+
   const form = useForm<CodeSubmissionPayLoad>({
     resolver: zodResolver(codeSubmissionSchema),
     defaultValues: {
       code: codeData?.sample_code,
     },
+    values: codeSubmission?.code
+      ? { code: codeSubmission.code, result: '' }
+      : undefined,
   })
 
   const { mutate: completeLesson, isPending } = useCompleteLesson(lesson.id!)
@@ -120,11 +132,11 @@ const CodingLesson = ({ lesson, isCompleted }: Props) => {
               </div>
             </Tabs>
           </ResizablePanel>
-          <ResizableHandle withHandle />
+          <ResizableHandle />
 
           <ResizablePanel minSize={20}>
             <ResizablePanelGroup direction="vertical">
-              <ResizablePanel minSize={30} defaultSize={70}>
+              <ResizablePanel minSize={30} defaultSize={92}>
                 <FormField
                   control={form.control}
                   name="code"
@@ -147,9 +159,9 @@ const CodingLesson = ({ lesson, isCompleted }: Props) => {
                   )}
                 />
               </ResizablePanel>
-              <ResizableHandle withHandle />
+              <ResizableHandle />
 
-              <ResizablePanel minSize={10}>
+              <ResizablePanel minSize={8}>
                 <FormField
                   control={form.control}
                   name="result"

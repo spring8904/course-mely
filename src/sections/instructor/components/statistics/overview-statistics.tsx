@@ -3,10 +3,16 @@
 import { Card, CardContent } from '@/components/ui/card'
 import { useGetOverviewStatistics } from '@/hooks/instructor/use-statistic'
 import { formatCurrency } from '@/lib/common'
-import { CircleDollarSign, Folder, Star, UsersRound } from 'lucide-react'
+import {
+  CircleDollarSign,
+  Folder,
+  Loader2,
+  Star,
+  UsersRound,
+} from 'lucide-react'
 
 const OverviewStatistics = () => {
-  const { data: overviewStatistics } = useGetOverviewStatistics()
+  const { data: overviewStatistics, isLoading } = useGetOverviewStatistics()
 
   return (
     <div className="grid h-full grid-cols-2 items-stretch gap-5 lg:gap-8">
@@ -17,7 +23,11 @@ const OverviewStatistics = () => {
 
         <CardContent className="flex flex-col gap-1">
           <span className="text-2xl font-semibold">
-            {overviewStatistics?.totalCourse}
+            {isLoading ? (
+              <Loader2 className="mb-3 ml-3 animate-spin text-muted-foreground" />
+            ) : (
+              overviewStatistics?.totalCourse
+            )}
           </span>
           <span className="text-sm font-normal text-muted-foreground">
             Tổng số khóa học
@@ -31,10 +41,14 @@ const OverviewStatistics = () => {
         </div>
         <CardContent className="flex flex-col gap-1">
           <span className="text-2xl font-semibold">
-            {formatCurrency(
-              overviewStatistics?.totalRevenue
-                ? +overviewStatistics.totalRevenue
-                : 0
+            {isLoading ? (
+              <Loader2 className="mb-3 ml-3 animate-spin text-muted-foreground" />
+            ) : (
+              formatCurrency(
+                overviewStatistics?.totalRevenue
+                  ? +overviewStatistics.totalRevenue
+                  : 0
+              )
             )}
           </span>
           <span className="text-sm font-normal text-muted-foreground">
@@ -50,7 +64,11 @@ const OverviewStatistics = () => {
 
         <CardContent className="flex flex-col gap-1">
           <span className="text-2xl font-semibold">
-            {overviewStatistics?.totalEnrollments}
+            {isLoading ? (
+              <Loader2 className="mb-3 ml-3 animate-spin text-muted-foreground" />
+            ) : (
+              overviewStatistics?.totalEnrollments
+            )}
           </span>
           <span className="text-sm font-normal text-muted-foreground">
             Số học viên
@@ -65,7 +83,11 @@ const OverviewStatistics = () => {
 
         <CardContent className="flex flex-col gap-1">
           <span className="text-2xl font-semibold">
-            {overviewStatistics?.averageRating}
+            {isLoading ? (
+              <Loader2 className="mb-3 ml-3 animate-spin text-muted-foreground" />
+            ) : (
+              overviewStatistics?.averageRating
+            )}
           </span>
           <span className="text-sm font-normal text-muted-foreground">
             Đánh giá trung bình

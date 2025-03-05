@@ -48,7 +48,7 @@ enum QueryKey {
   INSTRUCTOR_STATISTICS_REVENUE = 'instructor-statistics-revenue',
   QUIZ_SUBMISSION = 'quiz-submission',
   CODING_SUBMISSION = 'coding-submission',
-  BANNERS: 'banners',
+  BANNERS = 'banners',
 }
 
 export default QueryKey
