@@ -5,6 +5,7 @@ import QueryKey from '@/constants/query-key'
 import {
   getCourseDetailsBySlug,
   getCourses,
+  getCoursesRelated,
 } from '@/services/course/course-api'
 
 export const useGetCourseDetails = (slug: string) => {
@@ -19,5 +20,12 @@ export const useGetCourses = (dataFilters: ICourseFilter) => {
     queryKey: [QueryKey.COURSE, dataFilters],
     queryFn: () => getCourses(dataFilters),
     placeholderData: (previousData) => previousData ?? undefined,
+  })
+}
+
+export const useGetCoursesRelated = (slug: string) => {
+  return useQuery({
+    queryKey: [QueryKey.COURSES_RELATED, slug],
+    queryFn: () => getCoursesRelated(slug),
   })
 }

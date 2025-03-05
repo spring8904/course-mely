@@ -3,6 +3,7 @@ enum QueryKey {
   PROFILE = 'profile',
   CHANGE_PASSWORD = 'change-password',
   ORDER = 'order',
+  COURSES_RELATED = 'related-courses',
   COURSES_DISCOUNTED = 'discounted-courses',
   COURSES_FREE = 'free-courses',
   INSTRUCTOR_ALL = 'instructor-all',
