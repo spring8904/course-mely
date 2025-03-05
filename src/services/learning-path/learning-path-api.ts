@@ -3,9 +3,10 @@ import {
   CompleteLessonPayload,
   GetLessonDetailResponse,
   GetLessonsResponse,
-  GetQuizSubmissionResponse,
   UpdateLastTimePayload,
 } from '@/types/LearningPath'
+import { CodeSubmissionPayLoad } from '@/validations/code-submission'
+import { Answers } from '@/validations/quiz-submission'
 
 const prefix = 'learning-paths'
 
@@ -30,7 +31,7 @@ export const learningPathApi = {
   getQuizSubmission: async (
     lessonId: number,
     quizId: number
-  ): Promise<GetQuizSubmissionResponse> => {
+  ): Promise<Answers> => {
     const res = await api.get(
       `${prefix}/lesson/${lessonId}/get-quiz-submission/${quizId}`
     )
@@ -40,14 +41,17 @@ export const learningPathApi = {
   getCodeSubmission: async (
     lessonId: number,
     codingId: number
-  ): Promise<any> => {
+  ): Promise<CodeSubmissionPayLoad> => {
     const res = await api.get(
       `${prefix}/lesson/${lessonId}/get-coding-submission/${codingId}`
     )
     return res.data
   },
 
-  completeLesson: (lessonId: number, payload: CompleteLessonPayload) => {
+  completeLesson: (
+    lessonId: number,
+    payload: CompleteLessonPayload
+  ): Promise<any> => {
     return api.patch(`${prefix}/lesson/${lessonId}/complete-lesson`, payload)
   },
 

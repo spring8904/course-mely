@@ -393,7 +393,7 @@ const Header = () => {
               {isAuthenticated ? (
                 <>
                   <div className="dropdown">
-                    <a
+                    <Link
                       href="#"
                       role="button"
                       id="dropdownMenuLink"
@@ -409,7 +409,7 @@ const Header = () => {
                         />
                         <AvatarFallback>Avatar</AvatarFallback>
                       </Avatar>
-                    </a>
+                    </Link>
                     <ul
                       className="dropdown-menu !py-0 data-[popper-placement=bottom-start]:!-ml-5"
                       aria-labelledby="dropdownMenuLink"

@@ -43,25 +43,3 @@ export interface UpdateLastTimePayload {
   lesson_id: number
   last_time_video: number
 }
-
-export interface GetQuizSubmissionResponse {
-  quiz: Quiz
-  questions: Question[]
-  submitted_at: Date
-}
-
-export interface Question {
-  id: number
-  answers: Answer[]
-}
-
-export interface Answer {
-  id: number
-  is_correct: number
-  is_selected: boolean
-}
-
-export interface Quiz {
-  id: number
-  title: string
-}
