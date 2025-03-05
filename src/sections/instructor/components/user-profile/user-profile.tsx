@@ -119,17 +119,9 @@ export function UserProfileModal({ open, onOpenChange }: Props) {
 
             <div className="hide-scrollbar flex-1 overflow-y-auto p-6">
               {currentView === 'profile' ? (
-                <ProfileSection
-                  userData={getProfile?.data}
-                  // isEditing={isEditing}
-                  // setIsEditing={setIsEditing}
-                />
+                <ProfileSection userData={getProfile?.data} />
               ) : currentView === 'social' ? (
-                <SocialSection
-                  socialData={getProfile?.data}
-                  isEditing={isEditing}
-                  setIsEditing={setIsEditing}
-                />
+                <SocialSection socialData={getProfile?.data} />
               ) : currentView === 'careers' ? (
                 <CareersSection careersData={getProfile?.data?.user?.profile} />
               ) : currentView === 'certificates' ? (
