@@ -23,4 +23,8 @@ export const userApi = {
     const response = await api.get(`${prefix}/courses/${slug}/certificate`)
     return response.data
   },
+  checkProfileUser: async () => {
+    const response = await api.get(`${prefix}/check-profile`)
+    return response.data
+  },
 }

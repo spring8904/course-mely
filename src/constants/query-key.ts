@@ -49,6 +49,9 @@ enum QueryKey {
   QUIZ_SUBMISSION = 'quiz-submission',
   CODING_SUBMISSION = 'coding-submission',
   BANNERS = 'banners',
+  GROUP_CHAT = 'group-chat',
+  GROUP_DIRECT = 'direct-chat',
+  GOOGLE_REDIRECT = 'google-redirect',
 }
 
 export default QueryKey

@@ -22,49 +22,21 @@ import {
 import { Separator } from '@/components/ui/separator'
 import { SidebarTrigger } from '@/components/ui/sidebar'
 import InputSearch from '@/components/common/InputSearch'
-import ModalLoading from '@/components/common/ModalLoading'
+import { useQueryClient } from '@tanstack/react-query'
+import QUERY_KEY from '@/constants/query-key'
 
 const TopBar = () => {
   const { user } = useAuthStore()
+  const queryClient = useQueryClient()
 
   const [searchTerm, setSearchTerm] = useState('')
-  const [notifications, setNotifications] = useState<
-    { id: string; message: string; read_at: string | null }[]
-  >([])
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     useGetNotifications()
-  const { mutate: markAsRead, isPending: isPendingMarkAsRead } = useMarkAsRead()
+  const { mutate: markAsRead } = useMarkAsRead()
+  const notifications = data?.pages.flatMap((page) => page.notifications) || []
 
-  // useEffect(() => {
-  //   if (!isLoading && data) {
-  //     setNotifications(data?.pages.flatMap((page) => page.notifications) || [])
-  //   }
-  // }, [user?.id, data, isLoading])
-  //
-  // console.log(notifications)
-  //
-  // useEffect(() => {
-  //   if (!user?.id) return
-  //
-  //   echo
-  //     .private(`App.Models.User.${user?.id}`)
-  //     .notification((notification: any) => {
-  //       console.log('🔔 New notification:', notification)
-  //       toast.info(notification.message)
-  //       setNotifications((prev) => [
-  //         { id: notification.id, message: notification.message, read_at: null },
-  //         ...prev,
-  //       ])
-  //     })
-  // }, [user?.id])
   console.log('Active Channels:', echo.connector.channels)
-
-  useEffect(() => {
-    if (!isLoading && data) {
-      setNotifications(data?.pages.flatMap((page) => page.notifications) || [])
-    }
-  }, [user?.id, data, isLoading])
 
   useEffect(() => {
     if (!user?.id) return
@@ -75,15 +47,14 @@ const TopBar = () => {
       console.log('🔔 Notification for Instructor:', notification)
       toast.info(notification.message)
 
-      setNotifications((prev) => {
-        if (prev.some((noti) => noti.id === notification.id)) {
-          console.log('Duplicate notification detected:', notification.id)
-          return prev
-        }
-        return [
-          { id: notification.id, message: notification.message, read_at: null },
-          ...prev,
-        ]
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEY.USER_NOTIFICATION],
+      })
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEY.INSTRUCTOR_COURSE],
+      })
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEY.INSTRUCTOR_WITH_DRAW_REQUEST],
       })
     })
 
@@ -91,15 +62,16 @@ const TopBar = () => {
       // privateChannel.stopListening('.notification')
       echo.leave(`instructor.${user.id}`)
     }
-  }, [user?.id])
+  }, [queryClient, user?.id])
 
   const handleMarkAsRead = (id: string) => {
-    markAsRead(id)
-    setNotifications((prev) =>
-      prev.map((n) =>
-        n.id === id ? { ...n, read_at: new Date().toISOString() } : n
-      )
-    )
+    markAsRead(id, {
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_KEY.USER_NOTIFICATION],
+        })
+      },
+    })
   }
 
   const filteredNotifications = notifications
@@ -109,10 +81,6 @@ const TopBar = () => {
     .slice(0, 5)
 
   const hasUnread = notifications.some((n) => !n.read_at)
-
-  if (isPendingMarkAsRead) {
-    return <ModalLoading />
-  }
 
   return (
     <header className="sticky top-0 flex h-16 shrink-0 items-center justify-between border-b bg-white px-4">

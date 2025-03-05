@@ -4,6 +4,7 @@ import { QuizSubmissionPayload } from '@/validations/quiz-submission'
 
 export interface GetLessonsResponse {
   course_name: string
+  course_status: string
   total_lesson: number
   chapter_lessons: LearningPathChapterLesson[]
 }

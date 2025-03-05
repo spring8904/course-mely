@@ -40,6 +40,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useMemo, useState } from 'react'
+import Swal from 'sweetalert2'
 
 type Props = {
   courseSlug: string
@@ -48,12 +49,14 @@ type Props = {
 
 const LearningPathView = ({ courseSlug, lessonId }: Props) => {
   const router = useRouter()
+  const [hasAlerted, setHasAlerted] = useState(false)
 
   const [isSheetOpen, setIsSheetOpen] = useState(false)
 
   const { data: lessons, isLoading: isLessonLoading } =
     useGetLessons(courseSlug)
-  const { chapter_lessons, course_name, total_lesson } = lessons || {}
+  const { chapter_lessons, course_name, total_lesson, course_status } =
+    lessons || {}
 
   const { data: lessonDetail, isLoading: isLessonDetailLoading } =
     useGetLessonDetail(courseSlug, lessonId)
@@ -116,6 +119,26 @@ const LearningPathView = ({ courseSlug, lessonId }: Props) => {
       }
     }
   }, [lessons, lessonDetail, chapter_lessons, lessonId, router, courseSlug])
+
+  useEffect(() => {
+    if (
+      !hasAlerted &&
+      (course_status === 'draft' || course_status === 'pending')
+    ) {
+      setHasAlerted(true)
+      Swal.fire({
+        title: 'Thông báo',
+        text: 'Khoá học đang được chỉnh sửa nội dung, vui lòng quay lại sau.',
+        icon: 'warning',
+        confirmButtonText: 'Đồng ý',
+        allowOutsideClick: false,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          router.push('/my-courses')
+        }
+      })
+    }
+  }, [course_status, hasAlerted, router])
 
   if (isLessonLoading || isLessonDetailLoading) return <ModalLoading />
 

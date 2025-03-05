@@ -22,7 +22,7 @@ import {
   WithDrawalRequestPayload,
   WithdrawalRequestSchema,
 } from '@/validations/support-bank'
-import QueryKey from '@/constants/query-key'
+import QUERY_KEY from '@/constants/query-key'
 import { formatCurrency, removeVietnameseTones } from '@/lib/common'
 import { cn } from '@/lib/utils'
 import { useGetSupportBanks } from '@/hooks/support-bank/useSupportBank'
@@ -56,6 +56,7 @@ function WalletView() {
   const { data: supportBank, isLoading: isLoadingSupportBank } =
     useGetSupportBanks()
   const { mutate: withDrawalRequest, isPending } = useWithDrawalRequest()
+  const walletBalance = walletData?.data?.balance || 0
 
   const {
     register,
@@ -65,7 +66,7 @@ function WalletView() {
     watch,
     reset,
   } = useForm<WithDrawalRequestPayload>({
-    resolver: zodResolver(WithdrawalRequestSchema),
+    resolver: zodResolver(WithdrawalRequestSchema(walletBalance)),
     defaultValues: {
       account_no: '',
       account_name: '',
@@ -87,11 +88,15 @@ function WalletView() {
         setSelectedAmount(null)
         router.push(`/instructor/with-draw-request`)
         await queryClient.invalidateQueries({
-          queryKey: [QueryKey.INSTRUCTOR_WITH_DRAW_REQUEST],
+          queryKey: [QUERY_KEY.INSTRUCTOR_WITH_DRAW_REQUEST],
         })
       },
       onError: async (error: any) => {
         toast.error(error.message)
+
+        await queryClient.invalidateQueries({
+          queryKey: [QUERY_KEY.INSTRUCTOR_WITH_DRAW_REQUEST],
+        })
       },
     })
   }
@@ -374,7 +379,7 @@ function WalletView() {
                   <Textarea
                     id="add_info"
                     {...register('add_info')}
-                    placeholder="Nhập ghi chú nếu cần thiết"
+                    placeholder="Nhập ghi chú"
                     className="resize-none"
                   />
                 </div>
@@ -383,7 +388,7 @@ function WalletView() {
                   className="w-full bg-gradient-to-r from-primary to-primary/80"
                   size="lg"
                   type="submit"
-                  disabled={isPending}
+                  disabled={isPending || walletData?.data.balance == 0}
                 >
                   {isPending ? (
                     <>

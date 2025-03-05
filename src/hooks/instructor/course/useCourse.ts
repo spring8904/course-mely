@@ -4,6 +4,7 @@ import { toast } from 'react-toastify'
 
 import {
   CreateCoursePayload,
+  RequestModifyContentPayload,
   UpdateCourseObjectivePayload,
   UpdateCourseOverViewPayload,
 } from '@/validations/course'
@@ -186,6 +187,26 @@ export const useSubmitCourse = () => {
 
   return useMutation({
     mutationFn: (slug?: string) => instructorCourseApi.submitCourse(slug!),
+    onSuccess: async (res: any) => {
+      router.replace('/instructor/courses')
+      toast.success(res.message)
+      await queryClient.invalidateQueries({
+        queryKey: [QueryKey.INSTRUCTOR_COURSE],
+      })
+    },
+    onError: (error) => {
+      toast.error(error.message)
+    },
+  })
+}
+
+export const useRequestModifyContent = () => {
+  const queryClient = useQueryClient()
+  const router = useRouter()
+
+  return useMutation({
+    mutationFn: (data: RequestModifyContentPayload) =>
+      instructorCourseApi.requestModifyContent(data),
     onSuccess: async (res: any) => {
       router.replace('/instructor/courses')
       toast.success(res.message)

@@ -47,3 +47,10 @@ export const useDownloadCertificate = (slug?: string, progress?: number) => {
     enabled: !!slug && progress === 100,
   })
 }
+
+export const useCheckProfileUser = () => {
+  return useQuery({
+    queryKey: [QueryKey.AUTH],
+    queryFn: () => userApi.checkProfileUser(),
+  })
+}

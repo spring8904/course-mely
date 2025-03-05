@@ -182,6 +182,10 @@ export const updateCodingLessonSchema = z.object({
     .trim(),
 })
 
+export const requestModifyContentSchema = z.object({
+  reason: z.string().min(1, 'Vui lòng nhập lý do cần sửa đổi'),
+})
+
 export type UpdateCodingLessonPayload = z.infer<typeof updateCodingLessonSchema>
 
 export type CreateCoursePayload = z.infer<typeof createCourseSchema>
@@ -190,4 +194,7 @@ export type UpdateCourseOverViewPayload = z.infer<
 >
 export type UpdateCourseObjectivePayload = z.infer<
   typeof updateCourseObjectiveSchema
+>
+export type RequestModifyContentPayload = z.infer<
+  typeof requestModifyContentSchema
 >

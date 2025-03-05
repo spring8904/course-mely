@@ -21,10 +21,17 @@ const MyCourseView = () => {
       )}
       <section className="section-inner mt-10">
         <div className="row mb-[50px]">
-          {myCourseList?.data.map((course: any, index: number) => (
-            <div className="col-xl-3" key={index}>
+          {myCourseList?.data.map((course: any) => (
+            <div className="col-xl-3" key={course.id}>
               <div className="course-item hover-img wow fadeInUp">
-                <div className="features image-wrap">
+                <div
+                  style={{
+                    width: '100%',
+                    height: '200px',
+                    overflow: 'hidden',
+                  }}
+                  className="features image-wrap"
+                >
                   <Image
                     className="lazyload"
                     src={course.thumbnail || ''}
@@ -32,8 +39,7 @@ const MyCourseView = () => {
                     width={270}
                     height={160}
                     style={{
-                      objectFit: 'contain',
-                      backgroundColor: '#f0f0f0',
+                      objectFit: 'cover',
                     }}
                   />
                 </div>
@@ -49,29 +55,42 @@ const MyCourseView = () => {
                     </div>
                   </div>
                   <h6 className="fw-5 line-clamp-2">
-                    <Link href={`/courses/${course.slug}`}>
+                    <Link
+                      href={`/courses/${course.slug}`}
+                      style={{
+                        display: 'block',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap',
+                      }}
+                    >
                       {course.name || ''}
                     </Link>
                   </h6>
                   <div className="ratings pb-30">
-                    <div className="number">4.9</div>
-                    <i className="icon-star-1"></i>
-                    <i className="icon-star-1"></i>
-                    <i className="icon-star-1"></i>
-                    <i className="icon-star-1"></i>
-                    <svg
-                      width="12"
-                      height="11"
-                      viewBox="0 0 12 11"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M3.54831 7.10382L3.58894 6.85477L3.41273 6.67416L1.16841 4.37373L4.24914 3.90314L4.51288 3.86286L4.62625 3.62134L5.99989 0.694982L7.37398 3.62182L7.48735 3.86332L7.75108 3.9036L10.8318 4.37419L8.58749 6.67462L8.41128 6.85523L8.4519 7.10428L8.98079 10.3465L6.24201 8.8325L6.00014 8.69879L5.75826 8.83247L3.01941 10.3461L3.54831 7.10382ZM11.0444 4.15626L11.0442 4.15651L11.0444 4.15626Z"
-                        stroke="#131836"
-                      ></path>
-                    </svg>
-                    <div className="total">(230)</div>
+                    {course.ratings?.count > 0 ? (
+                      <>
+                        <div className="stars flex items-center">
+                          {Array.from({ length: 5 }, (_, index) => (
+                            <i
+                              key={index}
+                              className={`icon-star-1 ${
+                                index < Math.round(course.ratings.average)
+                                  ? 'text-yellow-500'
+                                  : 'text-gray-300'
+                              }`}
+                            ></i>
+                          ))}
+                        </div>
+                        <div className="total text-sm text-gray-500">
+                          ({course.ratings.count} lượt đánh giá)
+                        </div>
+                      </>
+                    ) : (
+                      <div className="text-sm text-gray-500">
+                        Chưa có lượt đánh giá
+                      </div>
+                    )}
                   </div>
                   <div className="author">
                     Người hướng dẫn:
@@ -83,10 +102,20 @@ const MyCourseView = () => {
                     <Link
                       href={`/learning/${course.slug}/lesson/${course.current_lesson.id}`}
                     >
-                      <Button>
-                        {course.progress_percent == 100
-                          ? 'Đã hoàn thành'
-                          : 'Tiếp tục học'}
+                      <Button
+                        className={
+                          course?.status === 'draft'
+                            ? 'bg-yellow-500 text-white'
+                            : course.progress_percent === 100
+                              ? 'bg-green-500 text-white'
+                              : 'bg-blue-500 text-white'
+                        }
+                      >
+                        {course?.status === 'draft'
+                          ? 'Đang sửa đổi nội dung'
+                          : course.progress_percent === 100
+                            ? 'Đã hoàn thành'
+                            : 'Tiếp tục học'}
                       </Button>
                     </Link>
                   </div>
