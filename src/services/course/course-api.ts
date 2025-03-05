@@ -30,3 +30,8 @@ export const getCourses = async (
   })
   return data
 }
+
+export const getCoursesRelated = async (slug: string) => {
+  const { data } = await api.get(`${prefix}/${slug}/related`)
+  return data
+}
