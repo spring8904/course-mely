@@ -109,13 +109,13 @@ const InstructorTop = ({
                   {description}
                 </div>
 
-                <a
-                  href="instructor-list.html"
+                <Link
+                  href="/courses"
                   className="tf-btn-arrow wow fadeInUp"
                   data-wow-delay="0.2s"
                 >
                   Xem thêm <i className="icon-arrow-top-right" />
-                </a>
+                </Link>
               </div>
             </div>
 

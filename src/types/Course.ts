@@ -54,9 +54,9 @@ export interface ICourse {
   deleted_at?: Date | null
   created_at?: Date | null
   updated_at?: Date | null
-
   is_free?: 0 | 1
   total_video_duration?: number
+  is_enrolled?: boolean
 }
 
 export interface IChapter {

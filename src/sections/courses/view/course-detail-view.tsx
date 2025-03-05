@@ -121,7 +121,7 @@ const CourseDetailView = ({ slug }: { slug: string }) => {
   const [isOpenIntro, setIsOpenIntro] = useState<boolean>(false)
   const [isOpenBuyCourse, setIsOpenBuyCourse] = useState<boolean>(false)
 
-  const { user } = useAuthStore()
+  const { user, isAuthenticated } = useAuthStore()
 
   const { mutate: enrollFreeCourse } = useEnrollFreeCourse()
   const { data: courseDetails, isLoading: isCourseDetailsLoading } =
@@ -181,6 +181,8 @@ const CourseDetailView = ({ slug }: { slug: string }) => {
       </div>
     )
   }
+
+  console.log(courseDetails)
 
   return (
     <>
@@ -836,8 +838,16 @@ const CourseDetailView = ({ slug }: { slug: string }) => {
                       )}
                     </div>
                     <button
-                      disabled={courseDetails?.user_id === user?.id}
+                      disabled={
+                        courseDetails?.user_id === user?.id ||
+                        courseDetails?.is_enrolled
+                      }
                       onClick={() => {
+                        if (!user || !isAuthenticated) {
+                          router.push('/sign-in')
+                          return
+                        }
+
                         if (courseDetails?.is_free === 1) {
                           import('sweetalert2').then((Swal) => {
                             Swal.default
@@ -867,8 +877,9 @@ const CourseDetailView = ({ slug }: { slug: string }) => {
                       type="button"
                       className="tf-btn add-to-cart cursor-pointer"
                     >
-                      {courseDetails?.user_id === user?.id
-                        ? 'Đây là khoá học của bạn'
+                      {courseDetails?.user_id === user?.id ||
+                      courseDetails?.is_enrolled
+                        ? 'Đã sở hữu khoá học'
                         : courseDetails?.is_free === 1
                           ? 'Tham gia ngay'
                           : 'Mua khoá học'}
