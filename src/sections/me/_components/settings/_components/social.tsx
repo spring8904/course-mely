@@ -6,10 +6,14 @@ import { Loader2 } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 
 import { ProfileBioFormValues, profileBioSchema } from '@/validations/profile'
-import { useGetProfile, useUpdateBioProfile } from '@/hooks/profile/useProfile'
+import { useUpdateBioProfile } from '@/hooks/profile/useProfile'
 
-const SocialView = () => {
-  const { data: profileBioData, isLoading } = useGetProfile()
+interface Props {
+  profileBioData: any
+  isLoadingProfileData: boolean
+}
+
+const SocialView = ({ profileBioData, isLoadingProfileData }: Props) => {
   const { mutate, isPending } = useUpdateBioProfile()
 
   const {
@@ -41,7 +45,7 @@ const SocialView = () => {
     mutate(data)
   }
 
-  if (isLoading) {
+  if (isLoadingProfileData) {
     return (
       <div className="mt-20">
         <Loader2 className="mx-auto size-8 animate-spin" />

@@ -33,6 +33,7 @@ export const useUpdateProfile = () => {
     },
   })
 }
+
 export const useUpdateBioProfile = () => {
   const queryClient = useQueryClient()
   return useMutation({
