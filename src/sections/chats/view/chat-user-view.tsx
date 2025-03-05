@@ -32,6 +32,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
+import { useAuthStore } from '@/stores/useAuthStore'
+import { useRouter } from 'next/navigation'
 
 interface Message {
   id: number
@@ -115,6 +117,9 @@ const channels = [
 ]
 
 const ChatUserView = () => {
+  const { user, isAuthenticated } = useAuthStore()
+  const router = useRouter()
+
   const [message, setMessage] = useState('')
   const [selectedUser, setSelectedUser] = useState<User>(users[3])
   const [activeTab, setActiveTab] = useState<'chats' | 'contacts'>('chats')
@@ -320,6 +325,10 @@ const ChatUserView = () => {
       })
     }
   }, [chats, filePreviews])
+
+  if (!user || !isAuthenticated) {
+    router.push('/forbidden')
+  }
 
   return (
     <div className="flex h-screen bg-white">

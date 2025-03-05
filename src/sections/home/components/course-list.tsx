@@ -1,7 +1,7 @@
 'use client'
 
 import { useCreateWishList } from '@/hooks/wish-list/useWishList'
-import { formatCurrency } from '@/lib/common'
+import { formatCurrency, formatDuration } from '@/lib/common'
 import { ICourse } from '@/types'
 import { CreateWishListPayload } from '@/validations/wish-list'
 import { Loader2 } from 'lucide-react'
@@ -60,7 +60,7 @@ const CourseList = ({
   }
 
   return (
-    <section className="tf-spacing-6 section-course pt-0">
+    <section className="tf-spacing-12 section-course pt-0">
       <div className="tf-container">
         <div className="row">
           <div className="col-12">
@@ -73,7 +73,7 @@ const CourseList = ({
                   {description ?? ''}
                 </div>
                 <Link
-                  href="#"
+                  href="/courses"
                   className="tf-btn-arrow wow fadeInUp"
                   data-wow-delay="0.3s"
                 >
@@ -120,11 +120,20 @@ const CourseList = ({
                         />
 
                         <div className="box-tags">
-                          <Link href="#" className="item best-seller">
-                            Best Seller
-                          </Link>
+                          {course.is_free ? (
+                            <Link href="#" className="item free best-seller">
+                              Miễn phí
+                            </Link>
+                          ) : course.price_sale > 0 ? (
+                            <Link href="#" className="item sale best-seller">
+                              Đang giảm giá
+                            </Link>
+                          ) : (
+                            <Link href="#" className="item best-seller">
+                              Best Seller
+                            </Link>
+                          )}
                         </div>
-
                         <div
                           onClick={() =>
                             handleAddToWishList({ course_id: course.id })
@@ -144,30 +153,51 @@ const CourseList = ({
 
                           <div className="meta-item pl-2 md:pl-[10px]">
                             <i className="flaticon-clock" />
-                            <p>{course.duration}</p>
+                            <p>{formatDuration(course.total_video_duration)}</p>
                           </div>
                         </div>
 
                         <h6 className="fw-5 line-clamp-2">
-                          <Link href={`/courses/${course.slug}`}>
+                          <Link
+                            style={{
+                              display: 'block',
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis',
+                              whiteSpace: 'nowrap',
+                            }}
+                            href={`/courses/${course.slug}`}
+                          >
                             {course.name}
                           </Link>
                         </h6>
 
                         <div className="ratings pb-30">
-                          <div className="number">{course.rating}</div>
-                          {[...Array(5)].map((_, index) => (
-                            <i
-                              key={index}
-                              className={`icon-star-1 ${
-                                index < Math.floor(course.rating)
-                                  ? 'filled'
-                                  : ''
-                              }`}
-                            />
-                          ))}
-
-                          <div className="total">(230)</div>
+                          {course.ratings?.count > 0 ? (
+                            <>
+                              <div className="number text-lg font-bold text-gray-800">
+                                {course.ratings.average.toFixed(1) || '0.0'}
+                              </div>
+                              <div className="stars flex items-center">
+                                {[...Array(5)].map((_, index) => (
+                                  <i
+                                    key={index}
+                                    className={`icon-star-1 ${
+                                      index < Math.round(course.ratings.average)
+                                        ? 'text-yellow-500'
+                                        : 'text-gray-300'
+                                    }`}
+                                  />
+                                ))}
+                              </div>
+                              <div className="total text-sm text-gray-500">
+                                ({course.ratings.count} lượt đánh giá)
+                              </div>
+                            </>
+                          ) : (
+                            <div className="text-sm text-gray-500">
+                              Chưa có lượt đánh giá
+                            </div>
+                          )}
                         </div>
                         <div className="author">
                           By:
@@ -175,21 +205,31 @@ const CourseList = ({
                             {course.user.name}
                           </a>
                         </div>
-
                         <div className="bottom">
                           <div className="h6 price fw-5">
-                            {course.is_free
-                              ? 'Free'
-                              : `${formatCurrency(course.price)}`}
+                            {course.is_free ? (
+                              <span className="text-orange-500">Miễn phí</span>
+                            ) : course.price_sale > 0 ? (
+                              <div>
+                                <span className="font-bold text-red-500">
+                                  {formatCurrency(course.price_sale)}
+                                </span>
+                                <span className="ml-2 text-gray-500 line-through">
+                                  {formatCurrency(course.price)}
+                                </span>
+                              </div>
+                            ) : (
+                              <span>{formatCurrency(course.price)}</span>
+                            )}
                           </div>
 
-                          <a
-                            href="course-single-v1.html"
+                          <Link
+                            href={`courses/${course?.slug}`}
                             className="tf-btn-arrow"
                           >
-                            <span className="fw-5 fs-15">Enroll Course</span>
+                            <span className="fw-5 fs-15">Xem ngay</span>
                             <i className="icon-arrow-top-right" />
-                          </a>
+                          </Link>
                         </div>
                       </div>
                     </div>

@@ -17,6 +17,7 @@ import {
 } from '@/components/ui/sheet'
 import {
   useGetCourseOverview,
+  useRequestModifyContent,
   useSubmitCourse,
   useValidateCourse,
 } from '@/hooks/instructor/course/useCourse'
@@ -37,6 +38,28 @@ import { buildStyles, CircularProgressbar } from 'react-circular-progressbar'
 import 'react-circular-progressbar/dist/styles.css'
 import 'react-quill/dist/quill.snow.css'
 import Swal from 'sweetalert2'
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from '@/components/ui/dialog'
+import { useForm } from 'react-hook-form'
+import {
+  RequestModifyContentPayload,
+  requestModifyContentSchema,
+} from '@/validations/course'
+import { zodResolver } from '@hookform/resolvers/zod'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from '@/components/ui/form'
+import { Textarea } from '@/components/ui/textarea'
+import { Label } from '@/components/ui/label'
 
 type GroupId = 'planning' | 'content'
 
@@ -75,6 +98,11 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
     content: null,
   })
 
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+
+  const openDialog = () => setIsDialogOpen(true)
+  const closeDialog = () => setIsDialogOpen(false)
+
   const [courseStatus, setCourseStatus] = useState<string>('draft')
   const [progress, setProgress] = useState<number>(0)
 
@@ -84,6 +112,8 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
     useValidateCourse(slug)
   const { mutate: submitCourse, isPending: isSubmitCoursePending } =
     useSubmitCourse()
+  const { mutate: requestModifyContent, isPending: isRequestModifyContent } =
+    useRequestModifyContent()
 
   useEffect(() => {
     if (
@@ -95,6 +125,13 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
     setCourseStatus(courseOverviewData?.data.status)
     setProgress(validateData?.data.progress || 0)
   }, [user, courseOverviewData, isCourseOverviewLoading, router, validateData])
+
+  const form = useForm<RequestModifyContentPayload>({
+    resolver: zodResolver(requestModifyContentSchema),
+    defaultValues: {
+      reason: '',
+    },
+  })
 
   const handleTabClick = (groupId: GroupId, tabId: string) => {
     setActiveGroup(groupId)
@@ -121,7 +158,21 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
     })
   }
 
-  if (isCourseOverviewLoading || isValidateLoading || isSubmitCoursePending) {
+  const handleRequestModifyContent = (values: RequestModifyContentPayload) => {
+    const payload = {
+      slug,
+      ...values,
+    }
+
+    requestModifyContent(payload)
+  }
+
+  if (
+    isCourseOverviewLoading ||
+    isValidateLoading ||
+    isSubmitCoursePending ||
+    isRequestModifyContent
+  ) {
     return <ModalLoading />
   }
 
@@ -187,7 +238,11 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
                 <Sheet>
                   <SheetTrigger asChild>
                     <Button
-                      disabled={progress === 100 || isSubmitCoursePending}
+                      disabled={
+                        progress === 100 ||
+                        isSubmitCoursePending ||
+                        isRequestModifyContent
+                      }
                       type="button"
                     >
                       Xem chi tiết
@@ -269,20 +324,28 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
                 disabled={
                   courseStatus === 'pending' ||
                   isSubmitCoursePending ||
-                  (courseStatus !== 'approved' && progress < 100)
+                  (courseStatus !== 'approved' && progress < 100) ||
+                  isRequestModifyContent ||
+                  courseStatus === 'modify_request'
                 }
-                onClick={courseHandleSubmit}
+                onClick={
+                  courseStatus === 'approved' ? openDialog : courseHandleSubmit
+                }
                 className={
                   courseStatus === 'approved'
                     ? 'bg-green-500 text-white hover:bg-green-500/80'
-                    : ''
+                    : courseStatus === 'modify_request'
+                      ? 'bg-yellow-500 text-white'
+                      : ''
                 }
               >
                 {courseStatus === 'approved'
                   ? 'Yêu cầu sửa đổi nội dung'
                   : courseStatus === 'rejected'
                     ? 'Gửi lại thông tin khoá học'
-                    : 'Gửi yêu cầu kiểm duyệt'}
+                    : courseStatus === 'modify_request'
+                      ? 'Chờ duyệt'
+                      : 'Gửi yêu cầu kiểm duyệt'}
               </Button>
             </div>
           </div>
@@ -314,6 +377,46 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
           </div>
         </div>
       </div>
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(handleRequestModifyContent)}>
+              <DialogTitle className="mb-2">
+                Yêu cầu sửa đổi nội dung
+              </DialogTitle>
+              <DialogDescription>
+                Hãy nhập nội dung bạn muốn yêu cầu sửa đổi. Chúng tôi sẽ xem xét
+                và phản hồi lại sớm nhất.
+              </DialogDescription>
+              <div className="mt-4">
+                <Label>Lý do </Label>
+                <FormField
+                  name="reason"
+                  control={form.control}
+                  render={({ field }) => (
+                    <FormItem className="mt-2">
+                      <FormControl>
+                        <Textarea
+                          {...field}
+                          placeholder="Nhập nội dung yêu cầu chỉnh sửa tại đây..."
+                          className="h-32 resize-none"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <DialogFooter className="mt-4">
+                <Button variant="ghost" onClick={closeDialog}>
+                  Hủy
+                </Button>
+                <Button type="submit">Gửi yêu cầu</Button>
+              </DialogFooter>
+            </form>
+          </Form>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

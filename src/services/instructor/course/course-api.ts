@@ -1,5 +1,6 @@
 import {
   CreateCoursePayload,
+  RequestModifyContentPayload,
   UpdateCourseObjectivePayload,
 } from '@/validations/course'
 import api from '@/configs/api'
@@ -39,6 +40,9 @@ export const instructorCourseApi = {
   },
   submitCourse: (slug: string) => {
     return api.post(`${prefix}/${slug}/submit-course`)
+  },
+  requestModifyContent: (data: RequestModifyContentPayload) => {
+    return api.post(`${prefix}/request-modify-content`, data)
   },
   courseListOfUser: (slug: string) => {
     return api.get(`${prefix}/${slug}/course-list-of-user`)

@@ -34,13 +34,20 @@ import 'swiper/css'
 import 'swiper/css/autoplay'
 import ModalLoading from '@/components/common/ModalLoading'
 import { useRouter } from 'next/navigation'
+import { useAuthStore } from '@/stores/useAuthStore'
+import Swal from 'sweetalert2'
+import { getLocalStorage } from '@/lib/common'
 
 const BecomeAnInstructor = () => {
   const router = useRouter()
   const [step, setStep] = useState(1)
 
+  const { user, isAuthenticated } = useAuthStore()
+
   const { data: qaSystems, isLoading } = useGetQaSystems()
   const { mutate: registerInstructor, isPending } = useInstructorRegister()
+
+  const checkProfile = getLocalStorage('checkProfile')
 
   const form = useForm<RegisterInstructorPayload>({
     resolver: zodResolver(registerInstructorSchema),
@@ -51,7 +58,7 @@ const BecomeAnInstructor = () => {
         options: question.options,
         selected_options: [],
       })),
-      certificates: [{ file: undefined }],
+      certificates: [],
     },
     disabled: isPending,
   })
@@ -68,6 +75,24 @@ const BecomeAnInstructor = () => {
   }
 
   if (isLoading) return <ModalLoading />
+
+  if (!user || !isAuthenticated) {
+    router.push('/login')
+  }
+
+  if (!checkProfile) {
+    Swal.fire({
+      title: 'Thông báo',
+      text: 'Bạn vui lòng hoàn thiện đầy đủ thông tin cá nhân trước khi đăng ký.',
+      icon: 'warning',
+      confirmButtonText: 'Đồng ý',
+      allowOutsideClick: false,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        router.push('/me')
+      }
+    })
+  }
 
   return (
     <Form {...form}>
@@ -235,7 +260,7 @@ const BecomeAnInstructor = () => {
                   <FormLabel className="text-lg font-semibold">
                     Thêm chứng chỉ{' '}
                     <span className="text-sm text-muted-foreground">
-                      (Không bắt buộc)
+                      (* Bắt buộc ít nhất 1 chứng chỉ)
                     </span>
                   </FormLabel>
                   {fields.map((field, index) => (
@@ -328,7 +353,15 @@ const BecomeAnInstructor = () => {
               )}
 
               {step === qaSystems?.data.length + 1 && (
-                <Button type="submit" disabled={form.formState.disabled}>
+                <Button
+                  type="submit"
+                  disabled={
+                    form.formState.disabled ||
+                    !form
+                      .getValues('certificates')
+                      .some((certificate) => certificate?.file)
+                  }
+                >
                   {isPending && <Loader2 className="animate-spin" />}
                   Đăng ký
                 </Button>

@@ -9,6 +9,7 @@ import {
   UpdateCertificatesProfilePayload,
   UpdateProfilePayload,
 } from '@/validations/profile'
+import { setLocalStorage } from '@/lib/common'
 
 export const useGetProfile = () => {
   return useQuery({
@@ -22,11 +23,19 @@ export const useUpdateProfile = () => {
   return useMutation({
     mutationFn: (data: UpdateProfilePayload) => profileApi.updateProfile(data),
     onSuccess: async (res: any) => {
+      const successMessage = res?.message
+      toast.success(successMessage)
+
+      const { user } = res?.data || {}
+      if (user.profile.about_me && user.profile.phone && user.profile.address) {
+        setLocalStorage('checkProfile', 'true')
+      } else {
+        setLocalStorage('checkProfile', 'false')
+      }
+
       await queryClient.invalidateQueries({
         queryKey: [QueryKey.PROFILE],
       })
-      const successMessage = res?.message
-      toast.success(successMessage)
     },
     onError: (error) => {
       toast.error(error?.message)

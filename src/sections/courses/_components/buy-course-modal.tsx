@@ -176,10 +176,6 @@ const BuyCourseModal = ({ course, isOpen, onClose }: BuyCourseModalProps) => {
       default:
         alert('Phương thức thanh toán không hợp lệ')
     }
-
-    console.log('Selected payment method:', selectedPaymentMethod)
-    console.log('Discount code:', discountCode)
-    console.log('Final price:', finalPrice)
   }
 
   return (
