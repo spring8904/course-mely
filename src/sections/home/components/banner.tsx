@@ -5,19 +5,7 @@ import { useGetBanners } from '@/hooks/home/banners/useBanners'
 import { Loader2, ChevronLeft, ChevronRight } from 'lucide-react'
 import { useState, useEffect, useCallback, useRef } from 'react'
 import '../../../styles/banner.css'
-
-interface BannerData {
-  id: number
-  title: string
-  content: string
-  image: string
-  redirect_url: string
-  order: number
-  status: number
-  created_at: string
-  updated_at: string
-  deleted_at: string | null
-}
+import { BannerData } from '@/types/Banner'
 
 const Banner = () => {
   const { data: BannerData, isLoading: BannerLoading } = useGetBanners()
