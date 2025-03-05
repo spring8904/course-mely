@@ -281,10 +281,10 @@ const Banner = () => {
                 >
                   <Link
                     href={currentBanner.redirect_url || '#'}
-                    className="group relative inline-flex items-center overflow-hidden rounded-lg bg-gradient-to-r from-pink-500 to-purple-600 px-6 py-3 font-medium text-white transition-all hover:shadow-[0_0_20px_rgba(236,72,153,0.5)]"
+                    className="group relative inline-flex items-center overflow-hidden rounded-lg bg-gradient-to-r from-pink-500 to-purple-600 px-6 py-3 font-medium text-white transition-all hover:text-white hover:shadow-[0_0_20px_rgba(236,72,153,0.5)]"
                   >
                     <span className="relative z-10">Bắt đầu ngay</span>
-                    <span className="absolute inset-0 z-0 bg-gradient-to-r from-purple-600 to-pink-500 opacity-0 transition-opacity duration-500 group-hover:opacity-100"></span>
+                    <span className="absolute inset-0 z-0 bg-gradient-to-r from-purple-600 to-pink-500 opacity-0 transition-opacity duration-500"></span>
                     <svg
                       className="relative z-10 ml-2 size-4 transition-transform duration-300 group-hover:translate-x-1"
                       viewBox="0 0 24 24"
@@ -304,7 +304,7 @@ const Banner = () => {
 
                   <Link
                     href="/courses"
-                    className="group relative inline-flex items-center overflow-hidden rounded-lg border border-white/20 bg-white/10 px-6 py-3 font-medium text-white backdrop-blur-sm transition-all hover:bg-white/20 hover:shadow-[0_0_20px_rgba(255,255,255,0.3)]"
+                    className="group relative inline-flex items-center overflow-hidden rounded-lg border border-white/20 bg-white/10 px-6 py-3 font-medium text-white backdrop-blur-sm transition-all hover:bg-white/20 hover:text-white hover:shadow-[0_0_20px_rgba(255,255,255,0.3)]"
                   >
                     <span className="relative z-10">Xem tất cả khóa học</span>
                     <span className="absolute bottom-0 left-0 h-[2px] w-0 bg-gradient-to-r from-pink-500 to-purple-600 transition-all duration-300 group-hover:w-full"></span>
