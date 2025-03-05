@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { ICourseFilter } from '@/types'
+import { ICourseFilter, IInstructorResponse } from '@/types'
 import { ICategory } from '@/types/Category'
 
 import { CategorySidebar } from '@/sections/courses/_components/course-list-sidebar/_components/category-sidebar'
@@ -11,12 +11,14 @@ import { PriceSidebar } from '@/sections/courses/_components/course-list-sidebar
 import { RatingSidebar } from '@/sections/courses/_components/course-list-sidebar/_components/rating-sidebar'
 
 type Props = {
+  instructorData: IInstructorResponse
   categories: ICategory[]
   dataFilters: ICourseFilter
   setDataFilters: React.Dispatch<React.SetStateAction<ICourseFilter>>
 }
 
 const CourseListSidebar = ({
+  instructorData,
   categories,
   setDataFilters,
   dataFilters,
@@ -37,7 +39,11 @@ const CourseListSidebar = ({
       />
 
       {/*Người hướng dẫn*/}
-      <InstructorSidebar />
+      <InstructorSidebar
+        instructorData={instructorData}
+        dataFilters={dataFilters}
+        setDataFilters={setDataFilters}
+      />
 
       {/*Cấp độ*/}
       <LevelSidebar dataFilters={dataFilters} setDataFilters={setDataFilters} />

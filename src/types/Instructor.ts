@@ -12,6 +12,18 @@ export interface IInstructorProfile {
   updatedAt?: Date | null
 }
 
+export interface IInstructorResponse {
+  has_more: boolean
+  instructors: {
+    id: number
+    name: string
+    email: string
+    code: string
+    avatar?: string | null
+    total_approved_courses: number
+  }[]
+}
+
 export interface IInstructorEducation {
   id?: number
   instructorProfileId?: number
