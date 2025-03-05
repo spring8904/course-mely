@@ -5,7 +5,7 @@ import {
 } from '@tanstack/react-query'
 import { toast } from 'react-toastify'
 
-import QUERY_KEY from '@/constants/query-key'
+import QueryKey from '@/constants/query-key'
 import { notificationApi } from '@/services/notification/notification-api'
 
 type Notification = {
@@ -21,7 +21,7 @@ type NotificationResponse = {
 
 export const useGetNotifications = () => {
   return useInfiniteQuery<NotificationResponse, Error>({
-    queryKey: [QUERY_KEY.USER_NOTIFICATION],
+    queryKey: [QueryKey.USER_NOTIFICATION],
     queryFn: async ({ pageParam = 1 }) => {
       const response = await notificationApi.getNotifications(
         pageParam as number
@@ -41,7 +41,7 @@ export const useMarkAsRead = () => {
     onSuccess: async (res: any) => {
       toast.info(res.message)
       await queryClient.invalidateQueries({
-        queryKey: [QUERY_KEY.USER_NOTIFICATION],
+        queryKey: [QueryKey.USER_NOTIFICATION],
       })
     },
     onError: (error: any) => {

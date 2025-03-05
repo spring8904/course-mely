@@ -44,7 +44,7 @@ const VideoLesson = ({ lesson, isCompleted, lastTimeVideo = 0 }: Props) => {
   const [openWarningSeeking, setOpenWarningSeeking] = useState(false)
   const [openAddNote, setOpenAddNote] = useState(false)
 
-  const { mutate: completeLesson } = useCompleteLesson()
+  const { mutate: completeLesson } = useCompleteLesson(lesson.id!)
   const { mutate: updateLastTime, isPending: isLastTimeUpdating } =
     useUpdateLastTime()
 
@@ -74,7 +74,6 @@ const VideoLesson = ({ lesson, isCompleted, lastTimeVideo = 0 }: Props) => {
       isCalled.current = true
       completeLesson(
         {
-          lesson_id: lesson.id!,
           current_time: roundedCurrentTime,
         },
         {

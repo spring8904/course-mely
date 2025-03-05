@@ -22,7 +22,7 @@ import {
   WithDrawalRequestPayload,
   WithdrawalRequestSchema,
 } from '@/validations/support-bank'
-import QUERY_KEY from '@/constants/query-key'
+import QueryKey from '@/constants/query-key'
 import { formatCurrency, removeVietnameseTones } from '@/lib/common'
 import { cn } from '@/lib/utils'
 import { useGetSupportBanks } from '@/hooks/support-bank/useSupportBank'
@@ -87,7 +87,7 @@ function WalletView() {
         setSelectedAmount(null)
         router.push(`/instructor/with-draw-request`)
         await queryClient.invalidateQueries({
-          queryKey: [QUERY_KEY.INSTRUCTOR_WITH_DRAW_REQUEST],
+          queryKey: [QueryKey.INSTRUCTOR_WITH_DRAW_REQUEST],
         })
       },
       onError: async (error: any) => {

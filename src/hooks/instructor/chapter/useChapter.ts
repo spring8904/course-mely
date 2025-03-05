@@ -5,7 +5,7 @@ import {
   CreateChapterPayload,
   UpdateChapterPayload,
 } from '@/validations/chapter'
-import QUERY_KEY from '@/constants/query-key'
+import QueryKey from '@/constants/query-key'
 import { instructorChapterApi } from '@/services/instructor/chapter/chapter-api'
 
 export const useCreateChapter = () => {
@@ -17,10 +17,10 @@ export const useCreateChapter = () => {
     onSuccess: async (res: any) => {
       await Promise.all([
         queryClient.invalidateQueries({
-          queryKey: [QUERY_KEY.INSTRUCTOR_COURSE],
+          queryKey: [QueryKey.INSTRUCTOR_COURSE],
         }),
         queryClient.invalidateQueries({
-          queryKey: [QUERY_KEY.VALIDATE_COURSE],
+          queryKey: [QueryKey.VALIDATE_COURSE],
         }),
       ])
       toast.success(res.message)
@@ -48,10 +48,10 @@ export const useUpdateChapter = () => {
     onSuccess: async (res: any) => {
       await Promise.all([
         queryClient.invalidateQueries({
-          queryKey: [QUERY_KEY.INSTRUCTOR_COURSE],
+          queryKey: [QueryKey.INSTRUCTOR_COURSE],
         }),
         queryClient.invalidateQueries({
-          queryKey: [QUERY_KEY.VALIDATE_COURSE],
+          queryKey: [QueryKey.VALIDATE_COURSE],
         }),
       ])
       toast.success(res.message)
@@ -71,10 +71,10 @@ export const useDeleteChapter = () => {
     onSuccess: async (res: any) => {
       await Promise.all([
         queryClient.invalidateQueries({
-          queryKey: [QUERY_KEY.INSTRUCTOR_COURSE],
+          queryKey: [QueryKey.INSTRUCTOR_COURSE],
         }),
         queryClient.invalidateQueries({
-          queryKey: [QUERY_KEY.VALIDATE_COURSE],
+          queryKey: [QueryKey.VALIDATE_COURSE],
         }),
       ])
       toast.success(res.message)
@@ -101,10 +101,10 @@ export const useUpdateChapterOrder = () => {
     onSuccess: async (res: any) => {
       await Promise.all([
         queryClient.invalidateQueries({
-          queryKey: [QUERY_KEY.INSTRUCTOR_COURSE],
+          queryKey: [QueryKey.INSTRUCTOR_COURSE],
         }),
         queryClient.invalidateQueries({
-          queryKey: [QUERY_KEY.VALIDATE_COURSE],
+          queryKey: [QueryKey.VALIDATE_COURSE],
         }),
       ])
 

@@ -2,12 +2,12 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'react-toastify'
 
 import { StoreQuestionPayload } from '@/validations/lesson'
-import QUERY_KEY from '@/constants/query-key'
+import QueryKey from '@/constants/query-key'
 import { instructorQuizApi } from '@/services/instructor/quiz/quiz-api'
 
 export const useGetQuiz = (id: string) => {
   return useQuery({
-    queryKey: [QUERY_KEY.INSTRUCTOR_QUIZ, id],
+    queryKey: [QueryKey.INSTRUCTOR_QUIZ, id],
     queryFn: () => instructorQuizApi.getQuiz(id),
     enabled: !!id,
   })
@@ -15,7 +15,7 @@ export const useGetQuiz = (id: string) => {
 
 export const useGetQuestion = (id: string) => {
   return useQuery({
-    queryKey: [QUERY_KEY.INSTRUCTOR_QUESTION, id],
+    queryKey: [QueryKey.INSTRUCTOR_QUESTION, id],
     queryFn: () => instructorQuizApi.getQuestion(id),
     enabled: !!id,
   })
@@ -34,10 +34,10 @@ export const useCreateQuestion = () => {
     }) => instructorQuizApi.createQuestion(quizId, payload),
     onSuccess: async (res: any) => {
       await queryClient.invalidateQueries({
-        queryKey: [QUERY_KEY.INSTRUCTOR_QUIZ],
+        queryKey: [QueryKey.INSTRUCTOR_QUIZ],
       })
       await queryClient.invalidateQueries({
-        queryKey: [QUERY_KEY.INSTRUCTOR_QUESTION],
+        queryKey: [QueryKey.INSTRUCTOR_QUESTION],
       })
       toast.success(res.message)
     },
@@ -62,10 +62,10 @@ export const useUpdateQuestion = () => {
     },
     onSuccess: async (res: any) => {
       await queryClient.invalidateQueries({
-        queryKey: [QUERY_KEY.INSTRUCTOR_QUESTION, res?.data.id],
+        queryKey: [QueryKey.INSTRUCTOR_QUESTION, res?.data.id],
       })
       await queryClient.invalidateQueries({
-        queryKey: [QUERY_KEY.INSTRUCTOR_QUIZ, res?.data.quiz_id],
+        queryKey: [QueryKey.INSTRUCTOR_QUIZ, res?.data.quiz_id],
       })
       toast.success(res.message)
     },
@@ -83,10 +83,10 @@ export const useDeleteQuestion = () => {
       instructorQuizApi.deleteQuestion(questionId),
     onSuccess: async (res: any) => {
       await queryClient.invalidateQueries({
-        queryKey: [QUERY_KEY.INSTRUCTOR_QUIZ],
+        queryKey: [QueryKey.INSTRUCTOR_QUIZ],
       })
       await queryClient.invalidateQueries({
-        queryKey: [QUERY_KEY.INSTRUCTOR_QUESTION],
+        queryKey: [QueryKey.INSTRUCTOR_QUESTION],
       })
       toast.success(res.message)
     },

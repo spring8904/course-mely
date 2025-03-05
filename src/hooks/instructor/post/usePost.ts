@@ -4,19 +4,19 @@ import { format } from 'date-fns'
 import { toast } from 'react-toastify'
 
 import { CreatePostPayload, UpdatePostPayload } from '@/validations/post'
-import QUERY_KEY from '@/constants/query-key'
+import QueryKey from '@/constants/query-key'
 import { instructorPostApi } from '@/services/instructor/post/post-api'
 
 export const useGetPosts = () => {
   return useQuery({
-    queryKey: [QUERY_KEY.POSTS],
+    queryKey: [QueryKey.POSTS],
     queryFn: () => instructorPostApi.getPosts(),
   })
 }
 
 export const useGetPostBySlug = (slug?: string) => {
   return useQuery({
-    queryKey: [QUERY_KEY.POSTS, slug],
+    queryKey: [QueryKey.POSTS, slug],
     queryFn: () => instructorPostApi.getPostBySlug(slug!),
     enabled: !!slug,
   })
@@ -53,7 +53,7 @@ export const useCreatePost = () => {
     },
     onSuccess: async (res: any) => {
       await queryClient.invalidateQueries({
-        queryKey: [QUERY_KEY.POSTS, res?.data?.slug],
+        queryKey: [QueryKey.POSTS, res?.data?.slug],
       })
 
       toast.success(res?.message || 'Bài viết đã được tạo thành công!')
@@ -101,7 +101,7 @@ export const useUpdatePost = () => {
     },
     onSuccess: async (res: any) => {
       await queryClient.invalidateQueries({
-        queryKey: [QUERY_KEY.POSTS],
+        queryKey: [QueryKey.POSTS],
         enabled: true,
       })
 

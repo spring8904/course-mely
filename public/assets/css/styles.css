@@ -8292,10 +8292,6 @@ instructors-item
   border: none;
 }
 
-.my-20 {
-  margin: 20px 0;
-}
-
 .ptable-20 {
   padding: 20px;
 }
@@ -14465,9 +14461,6 @@ instructors-item
   #header_main .header-catalog > a {
     padding: 9px 10px;
     gap: 5px;
-  }
-  #header_main .navigation {
-    gap: 10px;
   }
   #header_main .navigation > li.has-children {
     padding-right: 10px;

@@ -92,7 +92,7 @@
   }
 
   .dropdown-item {
-    @apply block w-full rounded-lg bg-transparent px-4 py-2 text-sm font-medium transition-colors hover:bg-primary/5 hover:text-primary !important;
+    @apply block w-full bg-transparent px-4 py-2 text-sm font-medium transition-colors hover:bg-primary/5 hover:text-primary !important;
   }
 }
 
@@ -116,4 +116,8 @@
 .animate-gradient-fast {
   background-size: 200% 200%;
   animation: gradient 4s ease infinite;
+}
+
+.channel-stats-bg {
+  background-image: url(https://keenthemes.com/metronic/tailwind/react/demo1/media/images/2600x1600/bg-3.png);
 }

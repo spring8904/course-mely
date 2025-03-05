@@ -57,6 +57,8 @@ const LessonVideo = ({
   const { mutate: updateLessonVideo, isPending: isLessonVideoUpdating } =
     useUpdateLessonVideo()
 
+  const isApproved = courseStatus === 'approved'
+
   const form = useForm<LessonVideoPayload>({
     resolver: zodResolver(lessonVideoSchema),
     defaultValues:
@@ -75,6 +77,7 @@ const LessonVideo = ({
             video_file: null as any,
             isEdit: false,
           },
+    disabled: isApproved,
   })
 
   useEffect(() => {
@@ -247,66 +250,68 @@ const LessonVideo = ({
               )}
             />
           </div>
-          <div className="mt-2">
-            <FormField
-              control={form.control}
-              name="video_file"
-              render={({ field }) => (
-                <div className="mt-2">
-                  <h3 className="my-2 text-sm">Tải video cho bài giảng</h3>
-                  {selectedFile ? (
-                    <div className="flex flex-col items-center justify-center gap-4 rounded-md border-2 border-dashed border-gray-300 p-5">
-                      <video
-                        src={videoUrl}
-                        controls
-                        loop
-                        className="size-full rounded-lg object-cover"
-                      />
-                      <div className="mt-2 flex w-full items-center justify-between">
-                        <p className="text-left text-sm font-medium">
-                          Đã chọn video: {selectedFile?.name || ''}
-                        </p>
-                        <button
-                          onClick={() => {
-                            handleResetClick()
-                            field.onChange(undefined) // Reset field
-                          }}
-                          type="button"
-                          className="rounded-lg border bg-red-500 px-6 py-2 font-medium text-white hover:bg-red-600"
-                        >
-                          Tải lại
-                        </button>
+          {courseStatus !== 'approved' && (
+            <div className="mt-2">
+              <FormField
+                control={form.control}
+                name="video_file"
+                render={({ field }) => (
+                  <div className="mt-2">
+                    <h3 className="my-2 text-sm">Tải video cho bài giảng</h3>
+                    {selectedFile ? (
+                      <div className="flex flex-col items-center justify-center gap-4 rounded-md border-2 border-dashed border-gray-300 p-5">
+                        <video
+                          src={videoUrl}
+                          controls
+                          loop
+                          className="size-full rounded-lg object-cover"
+                        />
+                        <div className="mt-2 flex w-full items-center justify-between">
+                          <p className="text-left text-sm font-medium">
+                            Đã chọn video: {selectedFile?.name || ''}
+                          </p>
+                          <button
+                            onClick={() => {
+                              handleResetClick()
+                              field.onChange(undefined) // Reset field
+                            }}
+                            type="button"
+                            className="rounded-lg border bg-red-500 px-6 py-2 font-medium text-white hover:bg-red-600"
+                          >
+                            Tải lại
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                  ) : (
-                    <div className="flex flex-col items-center justify-center gap-4 rounded-md border-2 border-dashed border-gray-300 p-5">
-                      <span className="text-xs">
-                        Tải dữ liệu video hoặc kéo thả vào đây
-                      </span>
-                      <button
-                        type="button"
-                        className="rounded-lg border border-black p-4 font-medium transition-all duration-300 ease-in-out hover:bg-[#404040] hover:text-white"
-                        onClick={handleUploadClick}
-                      >
-                        Upload a video
-                      </button>
-                      <input
-                        ref={fileInputRef}
-                        type="file"
-                        accept=".mp4,.avi,.mkv,.flv"
-                        style={{ display: 'none' }}
-                        onChange={(event) => {
-                          handleFileChange(event)
-                          field.onChange(event.target.files?.[0])
-                        }}
-                      />
-                      <FormMessage />
-                    </div>
-                  )}
-                </div>
-              )}
-            />
-          </div>
+                    ) : (
+                      <div className="flex flex-col items-center justify-center gap-4 rounded-md border-2 border-dashed border-gray-300 p-5">
+                        <span className="text-xs">
+                          Tải dữ liệu video hoặc kéo thả vào đây
+                        </span>
+                        <button
+                          type="button"
+                          className="rounded-lg border border-black p-4 font-medium transition-all duration-300 ease-in-out hover:bg-[#404040] hover:text-white"
+                          onClick={handleUploadClick}
+                        >
+                          Upload a video
+                        </button>
+                        <input
+                          ref={fileInputRef}
+                          type="file"
+                          accept=".mp4,.avi,.mkv,.flv"
+                          style={{ display: 'none' }}
+                          onChange={(event) => {
+                            handleFileChange(event)
+                            field.onChange(event.target.files?.[0])
+                          }}
+                        />
+                        <FormMessage />
+                      </div>
+                    )}
+                  </div>
+                )}
+              />
+            </div>
+          )}
           <div>
             <h3 className="mt-2 text-sm">
               Cho phép học viên xem trước nội dung
@@ -327,6 +332,7 @@ const LessonVideo = ({
                       <Switch
                         checked={field.value}
                         onCheckedChange={field.onChange}
+                        disabled={field.disabled}
                       />
                     </FormControl>
                     <FormMessage />
@@ -335,20 +341,26 @@ const LessonVideo = ({
               />
             </div>
           </div>
-          <div className="mt-4 flex items-center justify-end">
-            <Button onClick={handleClose} className="mr-3" variant="secondary">
-              Huỷ
-            </Button>
-            <Button
-              type="submit"
-              disabled={isLessonVideoCreating || isLessonVideoUpdating}
-            >
-              {(isLessonVideoCreating || isLessonVideoUpdating) && (
-                <Loader2 className="mr-2 size-4 animate-spin" />
-              )}
-              {isEdit ? 'Cập nhật' : 'Thêm bài học'}
-            </Button>
-          </div>
+          {courseStatus !== 'approved' && (
+            <div className="mt-4 flex items-center justify-end">
+              <Button
+                onClick={handleClose}
+                className="mr-3"
+                variant="secondary"
+              >
+                Huỷ
+              </Button>
+              <Button
+                type="submit"
+                disabled={isLessonVideoCreating || isLessonVideoUpdating}
+              >
+                {(isLessonVideoCreating || isLessonVideoUpdating) && (
+                  <Loader2 className="mr-2 size-4 animate-spin" />
+                )}
+                {isEdit ? 'Cập nhật' : 'Thêm bài học'}
+              </Button>
+            </div>
+          )}
         </form>
       </Form>
       <DialogVideoPreview

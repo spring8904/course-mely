@@ -57,8 +57,6 @@ export interface ICourse {
   total_video_duration?: number
 }
 
-export type ICourses = ICourse[]
-
 export interface IChapter {
   id?: number
   courseId?: number
@@ -86,24 +84,6 @@ export interface ILesson {
   created_at: string
   updated_at: string
   chapter?: IChapter
-}
-
-export interface LearningPathChapterLesson {
-  chapter_id: number
-  chapter_title: string
-  total_chapter_duration: number
-  total_lessons: number
-  lessons: LearningPathLesson[]
-}
-
-export interface LearningPathLesson {
-  id: number
-  title: string
-  type: LessonType
-  is_completed: boolean
-  is_unlocked: boolean
-  order: number
-  lessonable: Lessonable
 }
 
 export interface Lessonable {
@@ -156,4 +136,42 @@ export interface ICourseUser {
   completedAt?: Date | null
   createdAt?: Date | null
   updatedAt?: Date | null
+}
+
+export type SortType = 'price_asc' | 'price_desc'
+export type LevelType = 'beginner' | 'intermediate' | 'advanced'
+export type FeatureType = 'document' | 'video' | 'quiz' | 'coding'
+export type PriceType = 'free' | 'price' | 'price_sale'
+
+export interface ICourseFilter {
+  categories?: string[]
+  instructors?: string[]
+  levels?: Array<LevelType>
+  features?: Array<FeatureType>
+  price?: PriceType
+  rating?: number
+  page?: number
+  sort_by?: SortType
+}
+
+export interface ILinkPagination {
+  url?: string | null
+  label: string
+  active: boolean
+}
+
+export interface ICourseDataResponse {
+  current_page: number
+  data: ICourse[]
+  first_page_url: string
+  last_page_url: string
+  from: number
+  to: number
+  last_page: number
+  links: ILinkPagination[]
+  next_page_url?: string | null
+  prev_page_url?: string | null
+  path: string
+  per_page: number
+  total: 22
 }

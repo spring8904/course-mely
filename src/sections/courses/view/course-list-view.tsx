@@ -1,69 +1,68 @@
-import Link from 'next/link'
+'use client'
+
+import React, { useEffect, useState } from 'react'
+import { Loader2 } from 'lucide-react'
+
+import { ICourseFilter } from '@/types'
+import { useGetCategories } from '@/hooks/category/useCategory'
+import { useGetCourses } from '@/hooks/course/useCourse'
+
+import ModalLoading from '@/components/common/ModalLoading'
+import { CourseIntro } from '@/sections/courses/_components/course-intro'
 
 import CourseListItem from '../_components/course-list-item'
-import CourseListSidebar from '../_components/course-list-sidebar'
+import CourseListSidebar from '../_components/course-list-sidebar/course-list-sidebar'
 
 const CourseListView = () => {
+  const [dataFilters, setDataFilters] = useState<ICourseFilter>({})
+  const [forceUpdate, setForceUpdate] = useState<number>(0)
+
+  const { data: categoriesData, isLoading: categoriesDataLoading } =
+    useGetCategories()
+  const { data: coursesData, isLoading: coursesDataLoading } =
+    useGetCourses(dataFilters)
+
+  useEffect(() => {
+    const savedFilters = JSON.parse(
+      localStorage.getItem('courseFilters') || '{}'
+    )
+    setDataFilters(savedFilters)
+
+    const handleFilterUpdate = () => {
+      const updatedFilters = JSON.parse(
+        localStorage.getItem('courseFilters') || '{}'
+      )
+      setDataFilters(updatedFilters)
+      setForceUpdate((prev) => prev + 1)
+    }
+
+    window.addEventListener('courseFiltersUpdated', handleFilterUpdate)
+
+    return () => {
+      window.removeEventListener('courseFiltersUpdated', handleFilterUpdate)
+    }
+  }, [forceUpdate])
+
+  if (categoriesDataLoading)
+    return (
+      <div className="min-h-screen">
+        <ModalLoading />
+      </div>
+    )
+
   return (
     <>
-      <div className="page-title style-2 has-tags-bg-white">
+      <div className="style-2 has-tags-bg-white">
         <div className="tf-container">
           <div className="row">
             <div className="col-12">
-              <div className="content">
-                <ul className="breadcrumbs mb-[60px] flex items-center justify-start gap-[10px]">
-                  <li>
-                    <Link href="/" className="flex">
-                      <i className="icon-home" />
-                    </Link>
-                  </li>
-                  <li>
-                    <i className="icon-arrow-right" />
-                  </li>
-                  <li>Danh sách khoá học</li>
-                  <li>
-                    <i className="icon-arrow-right" />
-                  </li>
-                  <li>Khóa học phát triển web</li>
-                </ul>
-                <h2 className="font-cardo fw-7">Web Development Courses</h2>
-                <p>
-                  Với một trong các khóa học phát triển web trực tuyến của chúng
-                  tôi, bạn có thể khám phá các lĩnh vực khác nhau của lĩnh vực
-                  có nhu cầu cao này.
-                </p>
-                <div className="widget tags-list style3">
-                  <h6>Các chủ đề liên quan đến Phát triển Web</h6>
-                  <ul className="tag-list">
-                    <li className="tag-list-item">
-                      <a href="#">Design </a>
-                    </li>
-                    <li className="tag-list-item">
-                      <a href="#">UX</a>
-                    </li>
-                    <li className="tag-list-item">
-                      <a href="#">Java</a>
-                    </li>
-                    <li className="tag-list-item">
-                      <a href="#">SEO</a>
-                    </li>
-                    <li className="tag-list-item">
-                      <a href="#">Python</a>
-                    </li>
-                    <li className="tag-list-item">
-                      <a href="#">Digital Media</a>
-                    </li>
-                    <li className="tag-list-item">
-                      <a href="#">Software Development</a>
-                    </li>
-                  </ul>
-                </div>
-              </div>
+              <CourseIntro />
             </div>
           </div>
         </div>
       </div>
-      <div className="main-content pt-0">
+
+      <div className="pt-0">
         <div className="page-inner tf-spacing-1 pt-0">
           <div className="tf-container">
             <div
@@ -76,10 +75,24 @@ const CourseListView = () => {
             </div>
             <div className="row">
               <div className="col-xl-3">
-                <CourseListSidebar />
+                <CourseListSidebar
+                  categories={categoriesData?.data}
+                  dataFilters={dataFilters}
+                  setDataFilters={setDataFilters}
+                />
               </div>
               <div className="col-xl-9">
-                <CourseListItem />
+                {coursesDataLoading ? (
+                  <Loader2 className="mx-auto size-8 animate-spin" />
+                ) : coursesData && coursesData?.data.length > 0 ? (
+                  <CourseListItem
+                    coursesData={coursesData}
+                    dataFilters={dataFilters}
+                    setDataFilters={setDataFilters}
+                  />
+                ) : (
+                  'Danh sách bài học trống...'
+                )}
               </div>
             </div>
           </div>

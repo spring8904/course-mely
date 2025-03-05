@@ -7,7 +7,7 @@ import { toast } from 'react-toastify'
 
 import { LessonCodingPayload, lessonCodingSchema } from '@/validations/lesson'
 import { LANGUAGE_CONFIG } from '@/constants/language'
-import QUERY_KEY from '@/constants/query-key'
+import QueryKey from '@/constants/query-key'
 import { useCreateLessonCoding } from '@/hooks/instructor/lesson/useLesson'
 
 import { Button } from '@/components/ui/button'
@@ -73,7 +73,7 @@ const AddCodingDialog = ({ chapterId, open, onOpenChange }: Props) => {
           toast.success(res.message)
 
           await queryClient.invalidateQueries({
-            queryKey: [QUERY_KEY.INSTRUCTOR_COURSE],
+            queryKey: [QueryKey.INSTRUCTOR_COURSE],
           })
         },
         onError: (error: any) => {

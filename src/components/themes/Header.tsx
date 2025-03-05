@@ -1,19 +1,17 @@
 'use client'
 
-import React, { useEffect, useRef, useState } from 'react'
-import dynamic from 'next/dynamic'
-import Image from 'next/image'
-import Link from 'next/link'
 import { useAuthStore } from '@/stores/useAuthStore'
 import { useWishListStore } from '@/stores/useWishListStore'
 import { Bell, CheckCircle, Loader2, Search } from 'lucide-react'
+import dynamic from 'next/dynamic'
+import Image from 'next/image'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import React, { useEffect, useRef, useState } from 'react'
 import { toast } from 'react-toastify'
 import Swal from 'sweetalert2'
 
-import { ICourse, IInstructorProfile } from '@/types'
 import { Role } from '@/constants/role'
-import echo from '@/lib/echo'
-import { cn } from '@/lib/utils'
 import { useLogOut } from '@/hooks/auth/useLogOut'
 import { useGetCategories } from '@/hooks/category/useCategory'
 import { useDebounce } from '@/hooks/debounce/useDebounce'
@@ -23,7 +21,12 @@ import {
 } from '@/hooks/notification/useNotification'
 import { useSearch } from '@/hooks/search/userSearch'
 import { useGetWishLists } from '@/hooks/wish-list/useWishList'
+import echo from '@/lib/echo'
+import { cn } from '@/lib/utils'
+import { ICourse, IInstructorProfile } from '@/types'
+import { ICategory } from '@/types/Category'
 
+import WishListIcon from '@/components/common/WishListIcon'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import {
@@ -32,7 +35,6 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 import { Separator } from '@/components/ui/separator'
-import WishListIcon from '@/components/common/WishListIcon'
 
 const MobileMenu = dynamic(() => import('./MobileMenu'), {
   ssr: false,
@@ -40,7 +42,6 @@ const MobileMenu = dynamic(() => import('./MobileMenu'), {
 
 const Header = () => {
   const [query, setQuery] = useState('')
-  const [categories, setCategories] = useState<any[]>([])
   const [inputWidth, setInputWidth] = useState(0)
   const [searchTerm, setSearchTerm] = useState('')
   const [notifications, setNotifications] = useState<
@@ -60,8 +61,18 @@ const Header = () => {
   const debouncedQuery = useDebounce(query, 300)
   const { data: searchResults, isLoading: searchLoading } =
     useSearch(debouncedQuery)
+  const router = useRouter()
 
   const inputRef = useRef<HTMLInputElement | null>(null)
+
+  const handleCategorySelect = (categorySlug: string) => {
+    const updatedFilters = { categories: [categorySlug] }
+    localStorage.setItem('courseFilters', JSON.stringify(updatedFilters))
+
+    window.dispatchEvent(new Event('courseFiltersUpdated'))
+
+    router.push('/courses')
+  }
 
   useEffect(() => {
     if (!isLoading && data) {
@@ -108,12 +119,6 @@ const Header = () => {
     }
   }, [wishListData, setWishList])
 
-  useEffect(() => {
-    if (categoryData) {
-      setCategories(categoryData?.data)
-    }
-  }, [categoryData])
-
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value)
   }
@@ -154,11 +159,66 @@ const Header = () => {
 
   const hasUnread = notifications.some((n) => !n.read_at)
 
+  const dropdownMenuLinks = [
+    {
+      content: (
+        <div className="flex items-center space-x-2">
+          <Avatar className="size-16">
+            <AvatarImage
+              src={user?.avatar || '/assets/images/avatar/user-1.png'}
+              alt="@shadcn"
+            />
+            <AvatarFallback>Avatar</AvatarFallback>
+          </Avatar>
+
+          <div className="space-y-1">
+            <div className="text-lg">{user?.name}</div>
+            <div className="text-sm text-gray-400">{user?.email}</div>
+          </div>
+        </div>
+      ),
+      href: '/me',
+      separator: true,
+    },
+    {
+      content: 'Học tập',
+      href: '/my-courses?tab=all',
+    },
+    {
+      content: 'Khóa học yêu thích',
+      href: '/my-courses?tab=wishlist',
+    },
+    {
+      content:
+        role === Role.INSTRUCTOR
+          ? 'Trang người hướng dẫn'
+          : 'Trở thành người hướng dẫn',
+      href: role === Role.INSTRUCTOR ? '/instructor' : '/become-an-instructor',
+      target: role === Role.INSTRUCTOR ? '_blank' : '_self',
+      separator: true,
+    },
+    {
+      content: 'Thông báo',
+      href: '#',
+    },
+    {
+      content: 'Tin nhắn',
+      href: '#',
+      separator: true,
+    },
+
+    {
+      content: 'Trợ giúp và Hỗ trợ',
+      href: '#',
+    },
+    {
+      content: 'Đăng xuất',
+      onClick: handleLogout,
+    },
+  ]
+
   return (
     <>
-      {/*<div className="preload preload-container">*/}
-      {/*  <div className="middle"></div>*/}
-      {/*</div>*/}
       <div className="tf-top-bar overflow-x-hidden">
         <p className="h-full animate-slide-loop whitespace-nowrap">
           Chào mừng bạn đến với nền tảng học tập trực tuyến tại CourseMeLy
@@ -190,9 +250,9 @@ const Header = () => {
                     <Link href="/">Trang chủ</Link>
                   </li>
                   <li className="has-children">
-                    <a href="javascript:void(0);">Danh mục</a>
+                    <a href="#">Danh mục</a>
                     <ul>
-                      {categories.map((category: any) => (
+                      {categoryData?.data?.map((category: ICategory) => (
                         <li key={category.id}>
                           <Link
                             style={{
@@ -202,7 +262,11 @@ const Header = () => {
                               overflow: 'hidden',
                               textOverflow: 'ellipsis',
                             }}
-                            href={`/categories/${category.slug}`}
+                            onClick={(e) => {
+                              e.preventDefault()
+                              handleCategorySelect(category?.slug)
+                            }}
+                            href={`/course/${category?.slug}`}
                           >
                             {category.name}
                           </Link>
@@ -347,141 +411,31 @@ const Header = () => {
                       </Avatar>
                     </a>
                     <ul
-                      className="dropdown-menu data-[popper-placement=bottom-start]:!-ml-5"
+                      className="dropdown-menu !py-0 data-[popper-placement=bottom-start]:!-ml-5"
                       aria-labelledby="dropdownMenuLink"
                     >
-                      <li>
-                        <Link href={'/me'}>
-                          <div className="flex items-center space-x-2 p-[16px]">
-                            <Avatar className="size-16">
-                              <AvatarImage
-                                src={
-                                  user?.avatar ||
-                                  '/assets/images/avatar/user-1.png'
-                                }
-                                alt="@shadcn"
-                              />
-                              <AvatarFallback>Avatar</AvatarFallback>
-                            </Avatar>
-
-                            <div className="space-y-1">
-                              <div className="text-lg">{user?.name}</div>
-                              <div className="text-sm text-gray-400">
-                                {user?.email}
-                              </div>
+                      {dropdownMenuLinks.map((link, index) => (
+                        <li key={index}>
+                          {link.href ? (
+                            <Link
+                              href={link.href}
+                              target={link.target}
+                              className="dropdown-item"
+                            >
+                              {link.content}
+                            </Link>
+                          ) : (
+                            <div
+                              onClick={link.onClick}
+                              className="dropdown-item cursor-pointer"
+                            >
+                              {link.content}
                             </div>
-                          </div>
-                        </Link>
-                      </li>
+                          )}
 
-                      <li
-                        style={{
-                          borderTop: '1px solid #0000002d',
-                        }}
-                      >
-                        <Link href="#" className="dropdown-item">
-                          Học tập
-                        </Link>
-                      </li>
-                      <li>
-                        <Link href="#" className="dropdown-item">
-                          Giỏ hàng của tôi
-                        </Link>
-                      </li>
-                      <li>
-                        <Link href="#" className="dropdown-item">
-                          Mong muốn
-                        </Link>
-                      </li>
-                      <li>
-                        {role === Role.INSTRUCTOR ? (
-                          <Link href="/instructor" className="dropdown-item">
-                            Trang người hướng dẫn
-                          </Link>
-                        ) : (
-                          <Link
-                            href="/become-an-instructor"
-                            className="dropdown-item"
-                          >
-                            Trở thành người hướng dẫn
-                          </Link>
-                        )}
-                      </li>
-
-                      <li
-                        style={{
-                          borderTop: '1px solid #0000002d',
-                        }}
-                      >
-                        <Link href="#" className="dropdown-item">
-                          Thông báo
-                        </Link>
-                      </li>
-                      <li>
-                        <Link href="#" className="dropdown-item">
-                          Tin nhắn
-                        </Link>
-                      </li>
-
-                      <li
-                        style={{
-                          borderTop: '1px solid #0000002d',
-                        }}
-                      >
-                        <Link href="#" className="dropdown-item">
-                          Cài đặt tài khoản
-                        </Link>
-                      </li>
-                      <li>
-                        <Link href="#" className="dropdown-item">
-                          Phương thức thanh toán
-                        </Link>
-                      </li>
-                      <li>
-                        <Link href="#" className="dropdown-item">
-                          Thuê bao
-                        </Link>
-                      </li>
-                      <li>
-                        <Link href="#" className="dropdown-item">
-                          Ưu đãi
-                        </Link>
-                      </li>
-                      <li>
-                        <Link href="#" className="dropdown-item">
-                          Lịch sử mua
-                        </Link>
-                      </li>
-
-                      <li
-                        style={{
-                          borderTop: '1px solid #0000002d',
-                        }}
-                      >
-                        <Link href="#" className="dropdown-item">
-                          Hồ sơ công khai
-                        </Link>
-                      </li>
-                      <li>
-                        <Link href="#" className="dropdown-item">
-                          Chỉnh sửa hồ sơ
-                        </Link>
-                      </li>
-
-                      <li
-                        style={{
-                          borderTop: '1px solid #0000002d',
-                        }}
-                      >
-                        <Link href="#" className="dropdown-item">
-                          Trợ giúp và Hỗ trợ
-                        </Link>
-                      </li>
-                      <li>
-                        <div onClick={handleLogout} className="dropdown-item">
-                          Đăng xuất
-                        </div>
-                      </li>
+                          {link.separator && <Separator />}
+                        </li>
+                      ))}
                     </ul>
                   </div>
                 </>

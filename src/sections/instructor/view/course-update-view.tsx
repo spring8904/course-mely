@@ -1,36 +1,13 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { CheckCircle, Loader2, XCircle } from 'lucide-react'
-
-import { Button } from '@/components/ui/button'
-
-import 'react-quill/dist/quill.snow.css'
-
-import { useRouter } from 'next/navigation'
-import { useAuthStore } from '@/stores/useAuthStore'
-import { buildStyles, CircularProgressbar } from 'react-circular-progressbar'
-
-import {
-  useGetCourseOverview,
-  useSubmitCourse,
-  useValidateCourse,
-} from '@/hooks/instructor/course/useCourse'
-
-import 'react-circular-progressbar/dist/styles.css'
-
-import Link from 'next/link'
-import { Accordion } from '@radix-ui/react-accordion'
-import Swal from 'sweetalert2'
-
-import { formatPercentage } from '@/lib/common'
-import { cn } from '@/lib/utils'
-
+import ModalLoading from '@/components/common/ModalLoading'
+import CourseStatusBadge from '@/components/shared/course-status-badge'
 import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion'
+import { Button } from '@/components/ui/button'
 import {
   Sheet,
   SheetContent,
@@ -38,13 +15,28 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet'
-import ModalLoading from '@/components/common/ModalLoading'
-import CourseStatusBadge from '@/components/shared/course-status-badge'
+import {
+  useGetCourseOverview,
+  useSubmitCourse,
+  useValidateCourse,
+} from '@/hooks/instructor/course/useCourse'
+import { formatPercentage } from '@/lib/common'
+import { cn } from '@/lib/utils'
 import CourseChapterTab from '@/sections/instructor/components/courses-update/course-chapter-tab'
 import CourseObjective from '@/sections/instructor/components/courses-update/course-objective'
 import CourseOverView from '@/sections/instructor/components/courses-update/course-over-view'
 import CourseStructure from '@/sections/instructor/components/courses-update/course-structure'
 import FilmEditing from '@/sections/instructor/components/courses-update/film'
+import { useAuthStore } from '@/stores/useAuthStore'
+import { Accordion } from '@radix-ui/react-accordion'
+import { CheckCircle, XCircle } from 'lucide-react'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
+import { buildStyles, CircularProgressbar } from 'react-circular-progressbar'
+import 'react-circular-progressbar/dist/styles.css'
+import 'react-quill/dist/quill.snow.css'
+import Swal from 'sweetalert2'
 
 type GroupId = 'planning' | 'content'
 
@@ -104,14 +96,6 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
     setProgress(validateData?.data.progress || 0)
   }, [user, courseOverviewData, isCourseOverviewLoading, router, validateData])
 
-  if (isCourseOverviewLoading || isValidateLoading) {
-    return (
-      <div className="mt-20">
-        <Loader2 className="mx-auto size-8 animate-spin" />
-      </div>
-    )
-  }
-
   const handleTabClick = (groupId: GroupId, tabId: string) => {
     setActiveGroup(groupId)
     setActiveTabs((prev) => ({
@@ -137,7 +121,7 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
     })
   }
 
-  if (isSubmitCoursePending) {
+  if (isCourseOverviewLoading || isValidateLoading || isSubmitCoursePending) {
     return <ModalLoading />
   }
 
@@ -197,46 +181,34 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
                 </div>
               ))}
             </div>
-            <div className="rounded-lg border-2 border-dashed p-4">
-              <div className="mb-4 flex items-center justify-between gap-2">
-                <h1 className="mb-4 text-base font-bold">Điều kiện</h1>
-                <div className="font-bold" style={{ width: 50, height: 50 }}>
-                  <CircularProgressbar
-                    value={validateData?.data.progress || 0}
-                    text={formatPercentage(validateData?.data.progress || 0)}
-                    strokeWidth={3}
-                    styles={buildStyles({
-                      pathColor: `#FA802B`,
-                      textColor: '#FA802B',
-                      trailColor: '#D6D6D6',
-                    })}
-                  />
-                </div>
-              </div>
-              <Sheet>
-                <SheetTrigger asChild>
-                  <Button
-                    disabled={progress === 100 || isSubmitCoursePending}
-                    type="button"
+            <div className="flex items-center justify-between gap-2 rounded-lg border-2 border-dashed p-4">
+              <div>
+                <h1 className="mb-2 text-base font-bold">Điều kiện</h1>
+                <Sheet>
+                  <SheetTrigger asChild>
+                    <Button
+                      disabled={progress === 100 || isSubmitCoursePending}
+                      type="button"
+                    >
+                      Xem chi tiết
+                    </Button>
+                  </SheetTrigger>
+                  <SheetContent
+                    aria-describedby={undefined}
+                    className="overflow-y-auto"
                   >
-                    Xem chi tiết
-                  </Button>
-                </SheetTrigger>
-                <SheetContent
-                  aria-describedby={undefined}
-                  className="overflow-y-auto"
-                >
-                  <SheetHeader>
-                    <SheetTitle>Các tiêu chí chưa hoàn thành</SheetTitle>
-                  </SheetHeader>
+                    <SheetHeader>
+                      <SheetTitle>Các tiêu chí chưa hoàn thành</SheetTitle>
+                    </SheetHeader>
 
-                  <Accordion
-                    type="single"
-                    collapsible
-                    className="space-y-4 py-4"
-                  >
-                    {Object?.entries(validateData?.data.completion_status).map(
-                      ([key, value]) => {
+                    <Accordion
+                      type="single"
+                      collapsible
+                      className="space-y-4 py-4"
+                    >
+                      {Object?.entries(
+                        validateData?.data.completion_status
+                      ).map(([key, value]) => {
                         const typedValue = value as {
                           status: boolean
                           errors: string[]
@@ -270,15 +242,28 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
                             </AccordionItem>
                           )
                         }
-                      }
-                    )}
-                  </Accordion>
-                </SheetContent>
-              </Sheet>
+                      })}
+                    </Accordion>
+                  </SheetContent>
+                </Sheet>
+              </div>
+              <div className="font-bold" style={{ width: 50, height: 50 }}>
+                <CircularProgressbar
+                  value={validateData?.data.progress || 0}
+                  text={formatPercentage(validateData?.data.progress || 0)}
+                  strokeWidth={3}
+                  styles={buildStyles({
+                    pathColor: `#FA802B`,
+                    textColor: '#FA802B',
+                    trailColor: '#D6D6D6',
+                  })}
+                />
+              </div>
             </div>
+
             <div className="mt-4 flex flex-wrap gap-2">
               <Link href="/instructor/courses/">
-                <Button variant="outline">Khoá học của tôi</Button>
+                <Button variant="outline">Quay trở lại</Button>
               </Link>
               <Button
                 disabled={
@@ -288,7 +273,9 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
                 }
                 onClick={courseHandleSubmit}
                 className={
-                  courseStatus === 'approved' ? 'bg-green-500 text-white' : ''
+                  courseStatus === 'approved'
+                    ? 'bg-green-500 text-white hover:bg-green-500/80'
+                    : ''
                 }
               >
                 {courseStatus === 'approved'

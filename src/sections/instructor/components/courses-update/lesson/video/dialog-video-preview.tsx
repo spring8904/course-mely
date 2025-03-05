@@ -21,17 +21,20 @@ const DialogVideoPreview: React.FC<VideoDialogProps> = ({
 }) => {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogContent className="max-w-lg">
+      <DialogContent className="max-w-screen-md">
         <DialogHeader>
           <DialogTitle>Video Bài Giảng</DialogTitle>
         </DialogHeader>
         {muxPlaybackId ? (
-          <MuxPlayer
-            loading="viewport"
-            playbackId={muxPlaybackId || ''}
-            autoPlay={false}
-            className="h-auto w-full rounded-lg"
-          />
+          <div className="aspect-video h-full">
+            <MuxPlayer
+              loading="viewport"
+              playbackId={muxPlaybackId || ''}
+              autoPlay={false}
+              className="h-full"
+              accentColor={'hsl(var(--primary))'}
+            />
+          </div>
         ) : (
           <DialogDescription>Chưa có video.</DialogDescription>
         )}

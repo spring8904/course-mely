@@ -1,12 +1,12 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 
 import { WithDrawalRequestPayload } from '@/validations/support-bank'
-import QUERY_KEY from '@/constants/query-key'
+import QueryKey from '@/constants/query-key'
 import { instructorWalletApi } from '@/services/wallet/wallet-api'
 
 export const useGetWallet = () => {
   return useQuery({
-    queryKey: [QUERY_KEY.INSTRUCTOR_WALLET],
+    queryKey: [QueryKey.INSTRUCTOR_WALLET],
     queryFn: () => instructorWalletApi.getWallet(),
   })
 }
@@ -16,14 +16,14 @@ export const useGetWithDrawalRequests = (filters?: {
   toDate?: string | undefined
 }) => {
   return useQuery({
-    queryKey: [QUERY_KEY.INSTRUCTOR_WITH_DRAW_REQUEST, filters],
+    queryKey: [QueryKey.INSTRUCTOR_WITH_DRAW_REQUEST, filters],
     queryFn: () => instructorWalletApi.getWithDrawRequests(filters),
   })
 }
 
 export const useGetWithDrawalRequest = (id: string) => {
   return useQuery({
-    queryKey: [QUERY_KEY.INSTRUCTOR_WITH_DRAW_REQUEST, id],
+    queryKey: [QueryKey.INSTRUCTOR_WITH_DRAW_REQUEST, id],
     queryFn: () => instructorWalletApi.getWithDrawRequest(id),
   })
 }

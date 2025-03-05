@@ -1,32 +1,11 @@
-import { ILesson, ILessonProcess, LearningPathChapterLesson } from '@/types'
-import { CodeSubmissionPayLoad } from '@/validations/code-submission'
-import { QuizSubmissionPayload } from '@/validations/quiz-submission'
 import api from '@/configs/api'
-
-export interface GetLessonsResponse {
-  course_name: string
-  total_lesson: number
-  chapter_lessons: LearningPathChapterLesson[]
-}
-
-interface GetLessonDetailResponse {
-  lesson: ILesson
-  next_lesson: ILesson | null
-  previous_lesson: ILesson | null
-  lesson_process: ILessonProcess
-}
-
-interface CompleteLessonPayload
-  extends Partial<CodeSubmissionPayLoad>,
-    Partial<QuizSubmissionPayload> {
-  lesson_id: number
-  current_time?: number
-}
-
-interface UpdateLastTimePayload {
-  lesson_id: number
-  last_time_video: number
-}
+import {
+  CompleteLessonPayload,
+  GetLessonDetailResponse,
+  GetLessonsResponse,
+  GetQuizSubmissionResponse,
+  UpdateLastTimePayload,
+} from '@/types/LearningPath'
 
 const prefix = 'learning-paths'
 
@@ -35,9 +14,11 @@ export const learningPathApi = {
     const response = await api.get(`${prefix}/${course}/lesson`)
     return response.data
   },
+
   getChapterFromLesson: async (lessonId: number) => {
     return await api.get(`${prefix}/${lessonId}/get-chapter-from-lesson`)
   },
+
   getLessonDetail: async (
     course: string,
     lesson: string
@@ -46,8 +27,28 @@ export const learningPathApi = {
     return response.data
   },
 
-  completeLesson: ({ lesson_id, ...payload }: CompleteLessonPayload) => {
-    return api.patch(`${prefix}/lesson/${lesson_id}/complete-lesson`, payload)
+  getQuizSubmission: async (
+    lessonId: number,
+    quizId: number
+  ): Promise<GetQuizSubmissionResponse> => {
+    const res = await api.get(
+      `${prefix}/lesson/${lessonId}/get-quiz-submission/${quizId}`
+    )
+    return res.data
+  },
+
+  getCodeSubmission: async (
+    lessonId: number,
+    codingId: number
+  ): Promise<any> => {
+    const res = await api.get(
+      `${prefix}/lesson/${lessonId}/get-coding-submission/${codingId}`
+    )
+    return res.data
+  },
+
+  completeLesson: (lessonId: number, payload: CompleteLessonPayload) => {
+    return api.patch(`${prefix}/lesson/${lessonId}/complete-lesson`, payload)
   },
 
   updateLastTime: ({ lesson_id, last_time_video }: UpdateLastTimePayload) => {

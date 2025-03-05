@@ -8,7 +8,7 @@ import { format } from 'date-fns'
 import { Eye, MoreVertical, SquarePen, Trash2 } from 'lucide-react'
 import { toast } from 'react-toastify'
 
-import QUERY_KEY from '@/constants/query-key'
+import QueryKey from '@/constants/query-key'
 import {
   useGetCoupons,
   useToggleStatus,
@@ -146,7 +146,7 @@ const CouponView = () => {
                 toast.success(res.message)
 
                 await queryClient.invalidateQueries({
-                  queryKey: [QUERY_KEY.INSTRUCTOR_COUPON],
+                  queryKey: [QueryKey.INSTRUCTOR_COUPON],
                 })
               },
               onError: (error: any) => {

@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 
-import QUERY_KEY from '@/constants/query-key'
+import QueryKey from '@/constants/query-key'
 import { instructorTransationApi } from '@/services/instructor/transaction/instructor-transaction-api'
 
 export const useGetParticipatedCourses = (filters?: {
@@ -8,7 +8,7 @@ export const useGetParticipatedCourses = (filters?: {
   toDate?: string | undefined
 }) => {
   return useQuery({
-    queryKey: [QUERY_KEY.INSTRUCTOR_GET_PARTICIPATED_COURSE, filters],
+    queryKey: [QueryKey.INSTRUCTOR_GET_PARTICIPATED_COURSE, filters],
     queryFn: () => instructorTransationApi.getParticipatedCourses(filters),
   })
 }

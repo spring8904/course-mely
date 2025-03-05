@@ -63,6 +63,8 @@ const LessonDocument = ({
   const { mutate: updateLessonDocument, isPending: isLessonDocumentupdating } =
     useUpdateLessonDocument()
 
+  const isApproved = courseStatus === 'approved'
+
   const form = useForm<LessonDocumentPayload>({
     resolver: zodResolver(lessonDocumentSchema),
     defaultValues: {
@@ -73,6 +75,7 @@ const LessonDocument = ({
       document_url: '',
       isEdit: false,
     },
+    disabled: isApproved,
   })
 
   useEffect(() => {
@@ -239,121 +242,131 @@ const LessonDocument = ({
               )}
             />
           </div>
-          <div className="my-4">
-            <FormField
-              control={form.control}
-              name="file_type"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Bạn có thể tải file tài liệu ở đây</FormLabel>
-                  <FormControl>
-                    <Select
-                      value={field.value}
-                      onValueChange={(value) => {
-                        setFileType(value as 'document_file' | 'document_url')
-                        form.setValue(
-                          'file_type',
-                          value as 'document_file' | 'document_url'
-                        )
-                        setSelectedFile(null)
-                        form.setValue('document_file', null as any)
-                      }}
-                    >
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Chọn loại tài liệu" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="document_file">
-                          Tải lên tệp
-                        </SelectItem>
-                        <SelectItem value="document_url">
-                          URL tài liệu
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-          {fileType === 'document_file' && (
-            <div className="my-2">
-              <div className="flex flex-col items-center justify-center gap-4 rounded-md border-2 border-dashed border-gray-300 p-5">
-                <span className="text-xs">
-                  Tải dữ liệu video hoặc kéo thả vào đây
-                </span>
-                <button
-                  type="button"
-                  className="rounded-lg border border-black p-4 font-medium transition-all duration-300 ease-in-out hover:bg-[#404040] hover:text-white"
-                  onClick={handleUploadClick}
-                >
-                  Tải lên tệp
-                </button>
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept=".pdf,.doc,.docx,"
-                  style={{ display: 'none' }}
-                  onChange={handleFileChange}
+          {!isApproved && (
+            <>
+              <div className="my-4">
+                <FormField
+                  control={form.control}
+                  name="file_type"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Bạn có thể tải file tài liệu ở đây</FormLabel>
+                      <FormControl>
+                        <Select
+                          value={field.value}
+                          onValueChange={(value) => {
+                            setFileType(
+                              value as 'document_file' | 'document_url'
+                            )
+                            form.setValue(
+                              'file_type',
+                              value as 'document_file' | 'document_url'
+                            )
+                            setSelectedFile(null)
+                            form.setValue('document_file', null as any)
+                          }}
+                        >
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Chọn loại tài liệu" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="document_file">
+                              Tải lên tệp
+                            </SelectItem>
+                            <SelectItem value="document_url">
+                              URL tài liệu
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
               </div>
-              <FormMessage>
-                {form.formState.errors.document_file && (
-                  <p className="mt-2 text-xs text-red-500">
-                    {String(form.formState.errors.document_file.message) ||
-                      undefined}
-                  </p>
-                )}
-              </FormMessage>
-            </div>
-          )}
-          {selectedFile && (
-            <div className="mt-2 flex w-full items-center justify-between">
-              <p className="text-left text-sm font-medium">
-                Đã chọn tài liệu: {selectedFile?.name || ''}
-              </p>
-              <button
-                onClick={handleResetClick}
-                type="button"
-                className="rounded-lg border bg-red-500 px-6 py-2 font-medium text-white hover:bg-red-600"
-              >
-                Tải lại
-              </button>
-            </div>
-          )}
-          {fileType === 'document_url' && (
-            <div className="my-2">
-              <FormField
-                control={form.control}
-                name="document_url"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>URL tài liệu</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="url"
-                        placeholder="Nhập URL tài liệu"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-          )}
-          <div className="mt-4 flex items-center justify-end">
-            <Button onClick={handleClose} className="mr-3" variant="secondary">
-              Huỷ
-            </Button>
-            <Button type="submit" disabled={isLessonDocumentCreating}>
-              {isLessonDocumentCreating && (
-                <Loader2 className="mr-2 size-4 animate-spin" />
+              {fileType === 'document_file' && (
+                <div className="my-2">
+                  <div className="flex flex-col items-center justify-center gap-4 rounded-md border-2 border-dashed border-gray-300 p-5">
+                    <span className="text-xs">
+                      Tải dữ liệu video hoặc kéo thả vào đây
+                    </span>
+                    <button
+                      type="button"
+                      className="rounded-lg border border-black p-4 font-medium transition-all duration-300 ease-in-out hover:bg-[#404040] hover:text-white"
+                      onClick={handleUploadClick}
+                    >
+                      Tải lên tệp
+                    </button>
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept=".pdf,.doc,.docx,"
+                      style={{ display: 'none' }}
+                      onChange={handleFileChange}
+                    />
+                  </div>
+                  <FormMessage>
+                    {form.formState.errors.document_file && (
+                      <p className="mt-2 text-xs text-red-500">
+                        {String(form.formState.errors.document_file.message) ||
+                          undefined}
+                      </p>
+                    )}
+                  </FormMessage>
+                </div>
               )}
-              {lessonId ? 'Lưu tài liệu' : 'Thêm   tài liệu'}
-            </Button>
-          </div>
+              {selectedFile && (
+                <div className="mt-2 flex w-full items-center justify-between">
+                  <p className="text-left text-sm font-medium">
+                    Đã chọn tài liệu: {selectedFile?.name || ''}
+                  </p>
+                  <button
+                    onClick={handleResetClick}
+                    type="button"
+                    className="rounded-lg border bg-red-500 px-6 py-2 font-medium text-white hover:bg-red-600"
+                  >
+                    Tải lại
+                  </button>
+                </div>
+              )}
+              {fileType === 'document_url' && (
+                <div className="my-2">
+                  <FormField
+                    control={form.control}
+                    name="document_url"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>URL tài liệu</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="url"
+                            placeholder="Nhập URL tài liệu"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              )}
+              <div className="mt-4 flex items-center justify-end">
+                <Button
+                  onClick={handleClose}
+                  className="mr-3"
+                  variant="secondary"
+                >
+                  Huỷ
+                </Button>
+                <Button type="submit" disabled={isLessonDocumentCreating}>
+                  {isLessonDocumentCreating && (
+                    <Loader2 className="mr-2 size-4 animate-spin" />
+                  )}
+                  {lessonId ? 'Lưu tài liệu' : 'Thêm   tài liệu'}
+                </Button>
+              </div>
+            </>
+          )}
         </form>
       </Form>
       <DialogDocumentPreview

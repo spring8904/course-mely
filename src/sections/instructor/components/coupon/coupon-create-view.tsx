@@ -10,7 +10,7 @@ import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 
 import { CouponPayload, couponSchema } from '@/validations/coupon'
-import QUERY_KEY from '@/constants/query-key'
+import QueryKey from '@/constants/query-key'
 import { generateRandomCode } from '@/lib/common'
 import { useCreateCoupon } from '@/hooks/instructor/coupon/useCoupon'
 import { useGetCourses } from '@/hooks/instructor/course/useCourse'
@@ -170,7 +170,7 @@ const CouponCreateView = () => {
         onSuccess: async (res: any) => {
           toast.success(res.message)
           await queryClient.invalidateQueries({
-            queryKey: [QUERY_KEY.INSTRUCTOR_COUPON],
+            queryKey: [QueryKey.INSTRUCTOR_COUPON],
           })
 
           router.push('/instructor/coupon')
