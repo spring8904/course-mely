@@ -64,13 +64,12 @@ const AddQuestionDialog = ({
     questionId as string
   )
 
-  console.log(courseStatus)
-  console.log(quizId)
-
   const { mutate: createQuestion, isPending: isQuestionCreatePending } =
     useCreateQuestion()
   const { mutate: updateQuestion, isPending: isQuestionUpdatePending } =
     useUpdateQuestion()
+
+  const isApproved = courseStatus === 'approved'
 
   const form = useForm<StoreQuestionPayload>({
     resolver: zodResolver(storeQuestionSchema),
@@ -86,6 +85,7 @@ const AddQuestionDialog = ({
       ],
       image: undefined,
     },
+    disabled: isApproved,
   })
 
   useEffect(() => {

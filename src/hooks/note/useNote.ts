@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
-import QUERY_KEY from '@/constants/query-key'
+import QueryKey from '@/constants/query-key'
 import { noteApi } from '@/services/note/note-api'
 import { toast } from 'react-toastify'
 import { UpdateNotePayload } from '@/validations/note'
@@ -10,7 +10,7 @@ export const useGetNotes = (
   filters?: { chapterId?: number | null; sortOrder?: 'asc' | 'desc' }
 ) => {
   return useQuery({
-    queryKey: [QUERY_KEY.NOTE_LESSON, slug, filters],
+    queryKey: [QueryKey.NOTE_LESSON, slug, filters],
     queryFn: () => noteApi.getNotes(slug!, filters),
     enabled: !!slug,
   })
@@ -22,7 +22,7 @@ export const useStoreNote = () => {
     mutationFn: noteApi.storeNote,
     onSuccess: (res) => {
       queryClient.invalidateQueries({
-        queryKey: [QUERY_KEY.NOTE_LESSON],
+        queryKey: [QueryKey.NOTE_LESSON],
       })
       toast.success(res.message)
     },

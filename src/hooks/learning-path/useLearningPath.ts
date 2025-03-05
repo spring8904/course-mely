@@ -1,42 +1,68 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
-import QUERY_KEY from '@/constants/query-key'
+import QueryKey from '@/constants/query-key'
 import { learningPathApi } from '@/services/learning-path/learning-path-api'
+import { CompleteLessonPayload } from '@/types/LearningPath'
 
 export const useGetLessons = (course: string) => {
   return useQuery({
-    queryKey: [QUERY_KEY.LEARNING_PATH_LESSON, course],
+    queryKey: [QueryKey.LEARNING_PATH_LESSON, course],
     queryFn: () => learningPathApi.getLessons(course),
-    enabled: !!course,
   })
 }
 
 export const useGetChapterFromLesson = (lessonId: number) => {
   return useQuery({
-    queryKey: [QUERY_KEY.NOTE_LESSON, lessonId],
-    queryFn: () => learningPathApi.getChapterFromLesson(lessonId!),
-    enabled: !!lessonId,
+    queryKey: [QueryKey.NOTE_LESSON, lessonId],
+    queryFn: () => learningPathApi.getChapterFromLesson(lessonId),
   })
 }
 
 export const useGetLessonDetail = (course: string, lesson: string) => {
   return useQuery({
-    queryKey: [QUERY_KEY.LEARNING_PATH_LESSON, course, lesson],
+    queryKey: [QueryKey.LEARNING_PATH_LESSON, course, lesson],
     queryFn: () => learningPathApi.getLessonDetail(course, lesson),
-    enabled: !!course && !!lesson,
   })
 }
 
-export const useCompleteLesson = () => {
+export const useGetQuizSubmission = (
+  isCompleted: boolean,
+  lessonId?: number,
+  quizId?: number
+) => {
+  return useQuery({
+    queryKey: [QueryKey.QUIZ_SUBMISSION, lessonId, quizId],
+    queryFn: () => learningPathApi.getQuizSubmission(lessonId!, quizId!),
+    enabled: isCompleted && !!lessonId && !!quizId,
+  })
+}
+
+export const useGetCodeSubmission = (
+  lessonId: number,
+  codingId: number,
+  isCompleted: boolean
+) => {
+  return useQuery({
+    queryKey: [QueryKey.CODING_SUBMISSION, lessonId, codingId],
+    queryFn: () => learningPathApi.getCodeSubmission(lessonId, codingId),
+    enabled: isCompleted,
+  })
+}
+
+export const useCompleteLesson = (lessonId: number) => {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: learningPathApi.completeLesson,
+    mutationFn: (payload: CompleteLessonPayload) => {
+      if (lessonId === undefined)
+        return Promise.reject(new Error('Lesson ID is required'))
+      return learningPathApi.completeLesson(lessonId, payload)
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: [QUERY_KEY.LEARNING_PATH_LESSON],
+        queryKey: [QueryKey.LEARNING_PATH_LESSON],
       })
       queryClient.invalidateQueries({
-        queryKey: [QUERY_KEY.COURSE_PROGRESS],
+        queryKey: [QueryKey.COURSE_PROGRESS],
       })
     },
   })

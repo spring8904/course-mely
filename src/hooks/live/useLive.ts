@@ -4,7 +4,7 @@ import {
   CreateLiveSessionMessagePayload,
   CreateLiveStreamPayload,
 } from '@/validations/live'
-import QUERY_KEY from '@/constants/query-key'
+import QueryKey from '@/constants/query-key'
 import { liveSteamApi } from '@/services/live/live'
 
 export const useGetLiveSessions = (filters?: {
@@ -12,7 +12,7 @@ export const useGetLiveSessions = (filters?: {
   toDate?: string | undefined
 }) => {
   return useQuery({
-    queryKey: [QUERY_KEY.INSTRUCTOR_LIVE_SESSIONS],
+    queryKey: [QueryKey.INSTRUCTOR_LIVE_SESSIONS],
     queryFn: () => liveSteamApi.getLiveSessions(filters),
     // keepPreviousData: true,
   })
@@ -20,7 +20,7 @@ export const useGetLiveSessions = (filters?: {
 
 export const useGetLiveSessionClient = () => {
   return useQuery({
-    queryKey: [QUERY_KEY.LIVE_SESSION_CLIENT],
+    queryKey: [QueryKey.LIVE_SESSION_CLIENT],
     queryFn: () => liveSteamApi.getLiveSessionClient(),
   })
 }
@@ -34,7 +34,7 @@ export const useCreateLiveSteam = () => {
 
 export const useLiveSessionInfo = (id: string) => {
   return useQuery({
-    queryKey: [QUERY_KEY.LIVE_SESSION_CLIENT, id],
+    queryKey: [QueryKey.LIVE_SESSION_CLIENT, id],
     queryFn: () => liveSteamApi.getLiveSession(id!),
     enabled: !!id,
   })

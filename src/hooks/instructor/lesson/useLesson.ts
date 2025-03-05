@@ -8,13 +8,13 @@ import {
   LessonQuizPayload,
   UpdateTitleLessonPayload,
 } from '@/validations/lesson'
-import QUERY_KEY from '@/constants/query-key'
+import QueryKey from '@/constants/query-key'
 import { instructorLessonApi } from '@/services/instructor/lesson/lesson-api'
 
 export const useGetLessonCoding = (lessonSlug: string, codingId: string) => {
   return useQuery({
     queryKey: [
-      QUERY_KEY.INSTRUCTOR_LESSON_CODING,
+      QueryKey.INSTRUCTOR_LESSON_CODING,
       {
         lessonSlug,
         codingId,
@@ -27,14 +27,14 @@ export const useGetLessonCoding = (lessonSlug: string, codingId: string) => {
 
 export const useGetLessonVideo = (chapterId: string, lessonId: string) => {
   return useQuery({
-    queryKey: [QUERY_KEY.INSTRUCTOR_LESSON_VIDEO],
+    queryKey: [QueryKey.INSTRUCTOR_LESSON_VIDEO],
     queryFn: () => instructorLessonApi.getLessonVideo(chapterId, lessonId),
     enabled: !!lessonId,
   })
 }
 export const useGetLessonDocument = (chapterId: string, lessonId: string) => {
   return useQuery({
-    queryKey: [QUERY_KEY.INSTRUCTOR_LESSON_DOCUMENT],
+    queryKey: [QueryKey.INSTRUCTOR_LESSON_DOCUMENT],
     queryFn: () => instructorLessonApi.getLessonDocument(chapterId, lessonId),
     enabled: !!lessonId,
   })
@@ -54,10 +54,10 @@ export const useCreateLessonVideo = () => {
     onSuccess: async () => {
       await Promise.all([
         queryClient.invalidateQueries({
-          queryKey: [QUERY_KEY.INSTRUCTOR_COURSE],
+          queryKey: [QueryKey.INSTRUCTOR_COURSE],
         }),
         queryClient.invalidateQueries({
-          queryKey: [QUERY_KEY.VALIDATE_COURSE],
+          queryKey: [QueryKey.VALIDATE_COURSE],
         }),
       ])
     },
@@ -80,10 +80,10 @@ export const useUpdateLessonVideo = () => {
     onSuccess: async () => {
       await Promise.all([
         queryClient.invalidateQueries({
-          queryKey: [QUERY_KEY.INSTRUCTOR_COURSE],
+          queryKey: [QueryKey.INSTRUCTOR_COURSE],
         }),
         queryClient.invalidateQueries({
-          queryKey: [QUERY_KEY.VALIDATE_COURSE],
+          queryKey: [QueryKey.VALIDATE_COURSE],
         }),
       ])
     },
@@ -104,10 +104,10 @@ export const useCreateLessonDocument = () => {
     onSuccess: async () => {
       await Promise.all([
         queryClient.invalidateQueries({
-          queryKey: [QUERY_KEY.INSTRUCTOR_COURSE],
+          queryKey: [QueryKey.INSTRUCTOR_COURSE],
         }),
         queryClient.invalidateQueries({
-          queryKey: [QUERY_KEY.VALIDATE_COURSE],
+          queryKey: [QueryKey.VALIDATE_COURSE],
         }),
       ])
     },
@@ -131,10 +131,10 @@ export const useUpdateLessonDocument = () => {
     onSuccess: async () => {
       await Promise.all([
         queryClient.invalidateQueries({
-          queryKey: [QUERY_KEY.INSTRUCTOR_COURSE],
+          queryKey: [QueryKey.INSTRUCTOR_COURSE],
         }),
         queryClient.invalidateQueries({
-          queryKey: [QUERY_KEY.VALIDATE_COURSE],
+          queryKey: [QueryKey.VALIDATE_COURSE],
         }),
       ])
     },
@@ -149,11 +149,11 @@ export const useCreateLesson = () => {
       instructorLessonApi.createLesson(data),
     onSuccess: async (res: any) => {
       await queryClient.invalidateQueries({
-        queryKey: [QUERY_KEY.INSTRUCTOR_COURSE],
+        queryKey: [QueryKey.INSTRUCTOR_COURSE],
       })
 
       await queryClient.invalidateQueries({
-        queryKey: [QUERY_KEY.VALIDATE_COURSE],
+        queryKey: [QueryKey.VALIDATE_COURSE],
       })
       toast.success(res.message)
     },
@@ -176,7 +176,7 @@ export const useCreateLessonCoding = () => {
     }) => instructorLessonApi.createLessonCoding(chapterId, payload),
     onSuccess: async () => {
       await queryClient.invalidateQueries({
-        queryKey: [QUERY_KEY.INSTRUCTOR_COURSE_VALIDATE],
+        queryKey: [QueryKey.INSTRUCTOR_COURSE_VALIDATE],
       })
     },
   })
@@ -197,10 +197,10 @@ export const useCreateLessonQuiz = () => {
     onSuccess: async () => {
       await Promise.all([
         queryClient.invalidateQueries({
-          queryKey: [QUERY_KEY.INSTRUCTOR_COURSE],
+          queryKey: [QueryKey.INSTRUCTOR_COURSE],
         }),
         queryClient.invalidateQueries({
-          queryKey: [QUERY_KEY.VALIDATE_COURSE],
+          queryKey: [QueryKey.VALIDATE_COURSE],
         }),
       ])
     },
@@ -222,7 +222,7 @@ export const useUpdateContentLesson = () => {
     }) => instructorLessonApi.updateContentLesson(chapterId, id, data),
     onSuccess: async (res: any) => {
       await queryClient.invalidateQueries({
-        queryKey: [QUERY_KEY.INSTRUCTOR_COURSE],
+        queryKey: [QueryKey.INSTRUCTOR_COURSE],
       })
       toast.success(res.message)
     },
@@ -248,10 +248,10 @@ export const useUpdateOrderLesson = () => {
     onSuccess: async (res: any) => {
       await Promise.all([
         queryClient.invalidateQueries({
-          queryKey: [QUERY_KEY.INSTRUCTOR_COURSE],
+          queryKey: [QueryKey.INSTRUCTOR_COURSE],
         }),
         queryClient.invalidateQueries({
-          queryKey: [QUERY_KEY.VALIDATE_COURSE],
+          queryKey: [QueryKey.VALIDATE_COURSE],
         }),
       ])
 
@@ -272,10 +272,10 @@ export const useDeleteLesson = () => {
     onSuccess: async (res: any) => {
       await Promise.all([
         queryClient.invalidateQueries({
-          queryKey: [QUERY_KEY.INSTRUCTOR_COURSE],
+          queryKey: [QueryKey.INSTRUCTOR_COURSE],
         }),
         queryClient.invalidateQueries({
-          queryKey: [QUERY_KEY.VALIDATE_COURSE],
+          queryKey: [QueryKey.VALIDATE_COURSE],
         }),
       ])
       toast.success(res.message)
@@ -301,7 +301,7 @@ export const useUpdateCodingLesson = () => {
     }) => instructorLessonApi.updateCodingLesson(chapterSlug, codingId, data),
     onSuccess: async (res: any) => {
       await queryClient.invalidateQueries({
-        queryKey: [QUERY_KEY.INSTRUCTOR_LESSON_CODING],
+        queryKey: [QueryKey.INSTRUCTOR_LESSON_CODING],
       })
       toast.success(res.message)
     },

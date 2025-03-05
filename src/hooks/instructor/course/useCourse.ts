@@ -7,19 +7,19 @@ import {
   UpdateCourseObjectivePayload,
   UpdateCourseOverViewPayload,
 } from '@/validations/course'
-import QUERY_KEY from '@/constants/query-key'
+import QueryKey from '@/constants/query-key'
 import { instructorCourseApi } from '@/services/instructor/course/course-api'
 
 export const useGetCourses = () => {
   return useQuery({
-    queryKey: [QUERY_KEY.INSTRUCTOR_COURSE],
+    queryKey: [QueryKey.INSTRUCTOR_COURSE],
     queryFn: () => instructorCourseApi.getCourses(),
   })
 }
 
 export const useGetCourseOverview = (slug?: string) => {
   return useQuery({
-    queryKey: [QUERY_KEY.INSTRUCTOR_COURSE, slug],
+    queryKey: [QueryKey.INSTRUCTOR_COURSE, slug],
     queryFn: () => instructorCourseApi.getCourseOverview(slug!),
     enabled: !!slug,
   })
@@ -27,7 +27,7 @@ export const useGetCourseOverview = (slug?: string) => {
 
 export const useGetCourseListOfUser = (slug?: string) => {
   return useQuery({
-    queryKey: [QUERY_KEY.INSTRUCTOR_COURSE, slug],
+    queryKey: [QueryKey.INSTRUCTOR_COURSE, slug],
     queryFn: () => instructorCourseApi.courseListOfUser(slug!),
     enabled: !!slug,
   })
@@ -42,7 +42,7 @@ export const useCreateCourse = () => {
       instructorCourseApi.createCourse(data),
     onSuccess: async (res: any) => {
       await queryClient.invalidateQueries({
-        queryKey: [QUERY_KEY.INSTRUCTOR_COURSE],
+        queryKey: [QueryKey.INSTRUCTOR_COURSE],
       })
 
       const courseSlug = res?.data.slug
@@ -74,10 +74,10 @@ export const useUpdateCourseObjective = () => {
     onSuccess: async (res: any) => {
       await Promise.all([
         queryClient.invalidateQueries({
-          queryKey: [QUERY_KEY.INSTRUCTOR_COURSE],
+          queryKey: [QueryKey.INSTRUCTOR_COURSE],
         }),
         queryClient.invalidateQueries({
-          queryKey: [QUERY_KEY.VALIDATE_COURSE],
+          queryKey: [QueryKey.VALIDATE_COURSE],
         }),
       ])
       toast.success(res.message)
@@ -157,10 +157,10 @@ export const useUpdateCourseOverView = () => {
     onSuccess: async (res: any) => {
       await Promise.all([
         queryClient.invalidateQueries({
-          queryKey: [QUERY_KEY.INSTRUCTOR_COURSE],
+          queryKey: [QueryKey.INSTRUCTOR_COURSE],
         }),
         queryClient.invalidateQueries({
-          queryKey: [QUERY_KEY.VALIDATE_COURSE],
+          queryKey: [QueryKey.VALIDATE_COURSE],
         }),
       ])
 
@@ -174,7 +174,7 @@ export const useUpdateCourseOverView = () => {
 
 export const useValidateCourse = (slug?: string) => {
   return useQuery({
-    queryKey: [QUERY_KEY.VALIDATE_COURSE, slug],
+    queryKey: [QueryKey.VALIDATE_COURSE, slug],
     queryFn: () => instructorCourseApi.validateCourse(slug!),
     enabled: !!slug,
   })
@@ -190,7 +190,7 @@ export const useSubmitCourse = () => {
       router.replace('/instructor/courses')
       toast.success(res.message)
       await queryClient.invalidateQueries({
-        queryKey: [QUERY_KEY.INSTRUCTOR_COURSE],
+        queryKey: [QueryKey.INSTRUCTOR_COURSE],
       })
     },
     onError: (error) => {

@@ -149,8 +149,8 @@ const CourseChapterTab = ({
                 asChild
               >
                 <AccordionItem value={`${chapter.id}`}>
-                  <AccordionTrigger className="rounded-lg">
-                    <div className="mr-4 flex w-full items-center justify-between gap-2">
+                  <AccordionTrigger className="space-x-4 rounded-lg">
+                    <div className="flex w-full items-center justify-between gap-2">
                       {chapterEdit === chapter.id ? (
                         <>
                           <div

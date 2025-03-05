@@ -47,7 +47,7 @@ const CodingLesson = ({ lesson, isCompleted }: Props) => {
     },
   })
 
-  const { mutate: completeLesson, isPending } = useCompleteLesson()
+  const { mutate: completeLesson, isPending } = useCompleteLesson(lesson.id!)
 
   const language = codeData?.language as Language
 
@@ -63,21 +63,14 @@ const CodingLesson = ({ lesson, isCompleted }: Props) => {
   }
 
   const onSubmit = (values: CodeSubmissionPayLoad) => {
-    completeLesson(
-      {
-        lesson_id: lesson.id!,
-        code: values.result,
+    completeLesson(values, {
+      onSuccess: (res: any) => {
+        toast.success(res.message)
       },
-
-      {
-        onSuccess: (res: any) => {
-          toast.success(res.message)
-        },
-        onError: (error) => {
-          toast.error(error.message)
-        },
-      }
-    )
+      onError: (error) => {
+        toast.error(error.message)
+      },
+    })
   }
 
   return (

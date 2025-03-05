@@ -2,10 +2,10 @@ import Cookies from 'js-cookie'
 import Echo from 'laravel-echo'
 import Pusher from 'pusher-js'
 
-import { StorageKeys } from '@/constants/storage-keys'
+import StorageKey from '@/constants/storage-key'
 ;(window as any).Pusher = Pusher
 
-const token = Cookies.get(StorageKeys.ACCESS_TOKEN)
+const token = Cookies.get(StorageKey.ACCESS_TOKEN)
 if (!token) {
   console.error('❌ Access token is missing. Please authenticate first.')
 } else {

@@ -1,16 +1,16 @@
-import { useMemo, useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2 } from 'lucide-react'
+import { useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 
+import { useCompleteLesson } from '@/hooks/learning-path/useLearningPath'
+import { formatDate } from '@/lib/common'
+import { cn } from '@/lib/utils'
 import { AnswerType, ILesson } from '@/types'
 import {
   QuizSubmissionPayload,
   quizSubmissionSchema,
 } from '@/validations/quiz-submission'
-import { formatDate } from '@/lib/common'
-import { cn } from '@/lib/utils'
-import { useCompleteLesson } from '@/hooks/learning-path/useLearningPath'
 
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -50,9 +50,22 @@ const QuizLesson = ({ lesson, isCompleted }: Props) => {
         answer_id: [],
       })),
     },
+    values: {
+      quiz_id: lesson.lessonable_id!,
+      answers: [
+        {
+          answer_id: 21,
+          question_id: 1,
+        },
+        {
+          answer_id: [5, 6, 7],
+          question_id: 2,
+        },
+      ],
+    },
   })
 
-  const { mutate: completeLesson, isPending } = useCompleteLesson()
+  const { mutate: completeLesson, isPending } = useCompleteLesson(lesson.id!)
 
   const handleAnswerChange = () => {
     setIsCorrect({
@@ -109,10 +122,7 @@ const QuizLesson = ({ lesson, isCompleted }: Props) => {
   }, [isCorrect, questions.length])
 
   const onSubmit = (values: QuizSubmissionPayload) => {
-    completeLesson({
-      lesson_id: lesson.id!,
-      ...values,
-    })
+    completeLesson(values)
   }
 
   if (!quizData || !questions.length) return <p>Không có câu hỏi nào.</p>
@@ -129,154 +139,160 @@ const QuizLesson = ({ lesson, isCompleted }: Props) => {
         </p>
       </div>
 
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
-          {quizData.questions?.map((question, questionIndex) => (
-            <div
-              key={question.id!}
-              className={cn(currentQuestion !== questionIndex && 'hidden')}
-            >
-              Câu hỏi {currentQuestion + 1}:{' '}
-              {question.answer_type === AnswerType.MultipleChoice && (
-                <span className="text-sm text-muted-foreground">
-                  (Chọn nhiều đáp án)
-                </span>
-              )}
-              <h3 className="text-lg font-semibold">{question.question}</h3>
-              <div className="mt-4">
-                {question.answer_type === AnswerType.OneChoice ? (
-                  <FormField
-                    control={form.control}
-                    name={`answers.${questionIndex}.answer_id`}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormControl>
-                          <RadioGroup
-                            className="gap-4"
-                            onValueChange={(value) => {
-                              field.onChange(parseInt(value))
-                              field.onBlur()
-                              handleAnswerChange()
-                            }}
-                            defaultValue={field.value?.toString()}
-                          >
-                            {question.answers.map(
-                              (answer, answerIndex: number) => (
-                                <FormItem key={answerIndex}>
-                                  <FormLabel
-                                    className={cn(
-                                      'flex cursor-pointer items-center space-x-4 rounded border p-4 font-normal',
-                                      answerStatus[currentQuestion]?.[
-                                        answer.id!
-                                      ]
-                                    )}
-                                  >
-                                    <FormControl>
-                                      <RadioGroupItem
-                                        value={answer.id!.toString()}
-                                      />
-                                    </FormControl>
-                                    <span>{answer.answer}</span>
-                                  </FormLabel>
-                                </FormItem>
-                              )
-                            )}
-                          </RadioGroup>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                ) : (
-                  <FormField
-                    control={form.control}
-                    name={`answers.${questionIndex}.answer_id`}
-                    render={() => (
-                      <FormItem className="space-y-4">
-                        {question.answers.map((answer) => (
-                          <FormField
-                            key={`${question.id}-${answer.id}`}
-                            control={form.control}
-                            name={`answers.${questionIndex}.answer_id`}
-                            render={({ field }) => {
-                              const value = field.value as number[]
-                              return (
-                                <FormItem key={`${question.id}-${answer.id}`}>
-                                  <FormLabel
-                                    className={cn(
-                                      'flex cursor-pointer items-center space-x-4 rounded border p-4 font-normal',
-                                      answerStatus[currentQuestion]?.[
-                                        answer.id!
-                                      ]
-                                    )}
-                                  >
-                                    <FormControl>
-                                      <Checkbox
-                                        checked={value.includes(answer.id!)}
-                                        onCheckedChange={(checked) => {
-                                          if (checked) {
-                                            field.onChange([
-                                              ...value,
-                                              answer.id,
-                                            ])
-                                          } else {
-                                            field.onChange(
-                                              value?.filter(
-                                                (value) => value !== answer.id
-                                              )
-                                            )
-                                          }
-                                          handleAnswerChange()
-                                          field.onBlur()
-                                        }}
-                                      />
-                                    </FormControl>
-                                    <span>{answer.answer}</span>
-                                  </FormLabel>
-                                </FormItem>
-                              )
-                            }}
-                          />
-                        ))}
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                )}
-              </div>
-            </div>
-          ))}
-          {/*  */}
-
-          <div className="mt-4 flex justify-between">
-            {currentQuestion > 0 && (
-              <Button
-                variant="secondary"
-                onClick={() => setCurrentQuestion(currentQuestion - 1)}
+      {false ? (
+        <Loader2 className="mx-auto size-8 animate-spin text-muted-foreground" />
+      ) : (
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)}>
+            {quizData.questions?.map((question, questionIndex) => (
+              <div
+                key={question.id!}
+                className={cn(currentQuestion !== questionIndex && 'hidden')}
               >
-                Quay lại
-              </Button>
-            )}
+                Câu hỏi {currentQuestion + 1}:{' '}
+                {question.answer_type === AnswerType.MultipleChoice && (
+                  <span className="text-sm text-muted-foreground">
+                    (Chọn nhiều đáp án)
+                  </span>
+                )}
+                <h3 className="text-lg font-semibold">{question.question}</h3>
+                <div className="mt-4">
+                  {question.answer_type === AnswerType.OneChoice ? (
+                    <FormField
+                      control={form.control}
+                      name={`answers.${questionIndex}.answer_id`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <RadioGroup
+                              className="gap-4"
+                              onValueChange={(value) => {
+                                field.onChange(parseInt(value))
+                                field.onBlur()
+                                handleAnswerChange()
+                              }}
+                              defaultValue={field.value?.toString()}
+                            >
+                              {question.answers.map(
+                                (answer, answerIndex: number) => (
+                                  <FormItem key={answerIndex}>
+                                    <FormLabel
+                                      className={cn(
+                                        'flex cursor-pointer items-center space-x-4 rounded border p-4 font-normal',
+                                        answerStatus[currentQuestion]?.[
+                                          answer.id!
+                                        ]
+                                      )}
+                                    >
+                                      <FormControl>
+                                        <RadioGroupItem
+                                          value={answer.id!.toString()}
+                                        />
+                                      </FormControl>
+                                      <span>{answer.answer}</span>
+                                    </FormLabel>
+                                  </FormItem>
+                                )
+                              )}
+                            </RadioGroup>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  ) : (
+                    <FormField
+                      control={form.control}
+                      name={`answers.${questionIndex}.answer_id`}
+                      render={() => (
+                        <FormItem className="space-y-4">
+                          {question.answers.map((answer) => (
+                            <FormField
+                              key={`${question.id}-${answer.id}`}
+                              control={form.control}
+                              name={`answers.${questionIndex}.answer_id`}
+                              render={({ field }) => {
+                                const value = field.value as number[]
+                                return (
+                                  <FormItem key={`${question.id}-${answer.id}`}>
+                                    <FormLabel
+                                      className={cn(
+                                        'flex cursor-pointer items-center space-x-4 rounded border p-4 font-normal',
+                                        answerStatus[currentQuestion]?.[
+                                          answer.id!
+                                        ]
+                                      )}
+                                    >
+                                      <FormControl>
+                                        <Checkbox
+                                          checked={value.includes(answer.id!)}
+                                          onCheckedChange={(checked) => {
+                                            if (checked) {
+                                              field.onChange([
+                                                ...value,
+                                                answer.id,
+                                              ])
+                                            } else {
+                                              field.onChange(
+                                                value?.filter(
+                                                  (value) => value !== answer.id
+                                                )
+                                              )
+                                            }
+                                            handleAnswerChange()
+                                            field.onBlur()
+                                          }}
+                                        />
+                                      </FormControl>
+                                      <span>{answer.answer}</span>
+                                    </FormLabel>
+                                  </FormItem>
+                                )
+                              }}
+                            />
+                          ))}
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  )}
+                </div>
+              </div>
+            ))}
+            {/*  */}
 
-            {isCorrect[currentQuestion] ? (
-              currentQuestion < questions.length - 1 && (
-                <Button onClick={() => setCurrentQuestion(currentQuestion + 1)}>
-                  Tiếp tục
+            <div className="mt-4 flex justify-between">
+              {currentQuestion > 0 && (
+                <Button
+                  variant="secondary"
+                  onClick={() => setCurrentQuestion(currentQuestion - 1)}
+                >
+                  Quay lại
                 </Button>
-              )
-            ) : (
-              <Button onClick={checkAnswer}>Kiểm tra đáp án</Button>
-            )}
+              )}
 
-            {!isCompleted && isCorrectAll && (
-              <Button type="submit" disabled={isPending}>
-                {isPending && <Loader2 className="animate-spin" />}
-                Nộp bài
-              </Button>
-            )}
-          </div>
-        </form>
-      </Form>
+              {isCorrect[currentQuestion] ? (
+                currentQuestion < questions.length - 1 && (
+                  <Button
+                    onClick={() => setCurrentQuestion(currentQuestion + 1)}
+                  >
+                    Tiếp tục
+                  </Button>
+                )
+              ) : (
+                <Button onClick={checkAnswer}>Kiểm tra đáp án</Button>
+              )}
+
+              {!isCompleted && isCorrectAll && (
+                <Button type="submit" disabled={isPending}>
+                  {isPending && <Loader2 className="animate-spin" />}
+                  Nộp bài
+                </Button>
+              )}
+            </div>
+          </form>
+        </Form>
+      )}
     </div>
   )
 }

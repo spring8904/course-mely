@@ -1,8 +1,18 @@
 'use client'
 
+import { useCreateWishList } from '@/hooks/wish-list/useWishList'
+import { formatCurrency } from '@/lib/common'
+import { ICourse } from '@/types'
+import { CreateWishListPayload } from '@/validations/wish-list'
+import { Loader2 } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
+import Swal from 'sweetalert2'
 import SwiperCore from 'swiper'
+import 'swiper/css'
+import 'swiper/css/navigation'
+import 'swiper/css/pagination'
+import 'swiper/css/scrollbar'
 import {
   A11y,
   Autoplay,
@@ -12,26 +22,13 @@ import {
 } from 'swiper/modules'
 import { Swiper, SwiperSlide } from 'swiper/react'
 
-import 'swiper/css'
-import 'swiper/css/navigation'
-import 'swiper/css/pagination'
-import 'swiper/css/scrollbar'
-
-import { Loader2 } from 'lucide-react'
-import Swal from 'sweetalert2'
-
-import { ICourses } from '@/types'
-import { CreateWishListPayload } from '@/validations/wish-list'
-import { useCreateWishList } from '@/hooks/wish-list/useWishList'
-import { formatCurrency } from '@/lib/common'
-
 SwiperCore.use([Navigation, Pagination, Autoplay])
 
 interface CourseListProps {
   className?: string
   title: string
   description?: string
-  courses: ICourses[]
+  courses: ICourse[]
   isLoading?: boolean
 }
 

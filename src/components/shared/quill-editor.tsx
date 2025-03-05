@@ -38,7 +38,7 @@ const QuillEditor = ({
       theme="snow"
       readOnly={disabled}
       modules={{
-        toolbar: fullToolbar ? toolbarOptions : undefined,
+        toolbar: disabled ? null : fullToolbar ? toolbarOptions : undefined,
       }}
       {...rest}
     />

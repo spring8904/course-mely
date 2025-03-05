@@ -1,18 +1,18 @@
 import { useQuery } from '@tanstack/react-query'
 
-import QUERY_KEY from '@/constants/query-key'
+import QueryKey from '@/constants/query-key'
 import { blogApi } from '@/services/blog/post-api'
 
 export const useGetBlogs = () => {
   return useQuery({
-    queryKey: [QUERY_KEY.BLOGS],
+    queryKey: [QueryKey.BLOGS],
     queryFn: () => blogApi.getBlogs(),
   })
 }
 
 export const useGetBlogBySlug = (slug?: string) => {
   return useQuery({
-    queryKey: [QUERY_KEY.BLOGS, slug],
+    queryKey: [QueryKey.BLOGS, slug],
     queryFn: () => blogApi.getBlogBySlug(slug!),
     enabled: !!slug,
   })

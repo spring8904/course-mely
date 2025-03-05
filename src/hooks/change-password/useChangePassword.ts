@@ -4,7 +4,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'react-toastify'
 
 import { ChangePasswordPayload } from '@/validations/change-password'
-import QUERY_KEY from '@/constants/query-key'
+import QueryKey from '@/constants/query-key'
 import { changePasswordApi } from '@/services/change-password/change-password'
 
 export const useChangePassword = () => {
@@ -16,7 +16,7 @@ export const useChangePassword = () => {
       changePasswordApi.changePassword(data),
     onSuccess: async (res: any) => {
       await queryClient.invalidateQueries({
-        queryKey: [QUERY_KEY.CHANGE_PASSWORD],
+        queryKey: [QueryKey.CHANGE_PASSWORD],
       })
       const successMessage = res?.message
       toast.success(successMessage)

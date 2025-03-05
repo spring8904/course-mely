@@ -86,24 +86,6 @@ export interface ILesson {
   chapter?: IChapter
 }
 
-export interface LearningPathChapterLesson {
-  chapter_id: number
-  chapter_title: string
-  total_chapter_duration: number
-  total_lessons: number
-  lessons: LearningPathLesson[]
-}
-
-export interface LearningPathLesson {
-  id: number
-  title: string
-  type: LessonType
-  is_completed: boolean
-  is_unlocked: boolean
-  order: number
-  lessonable: Lessonable
-}
-
 export interface Lessonable {
   id: number
   title: string

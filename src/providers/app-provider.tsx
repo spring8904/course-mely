@@ -24,7 +24,7 @@ const AppProvider = ({ children }: Props) => {
   return (
     <QueryProvider>
       {children}
-      <ToastContainer newestOnTop />
+      <ToastContainer newestOnTop closeOnClick />
       <Toaster
         position="top-center"
         toastOptions={{

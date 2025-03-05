@@ -5,7 +5,7 @@ const ModalLoading = () => {
   return (
     <AnimatePresence>
       <motion.div
-        className="relative z-[9999] flex h-screen w-screen flex-col items-center justify-center bg-black/30"
+        className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-background"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
@@ -24,7 +24,7 @@ const ModalLoading = () => {
             transition={{ repeat: Infinity, duration: 1, ease: 'linear' }}
           />
           <motion.p
-            className="mt-2 text-lg font-semibold text-white"
+            className="mt-2 text-lg font-semibold"
             initial={{ y: 10, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.2, duration: 0.3 }}

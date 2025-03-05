@@ -1,28 +1,7 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
-import Image from 'next/image'
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-import {
-  CheckCircle,
-  ChevronLeft,
-  ChevronRight,
-  Lock,
-  Notebook,
-} from 'lucide-react'
-
-import { LearningPathLesson } from '@/types'
-import { lessonTypeIcons } from '@/configs'
-import { formatDuration } from '@/lib/common'
-import { cn } from '@/lib/utils'
-import {
-  useGetLessonDetail,
-  useGetLessons,
-} from '@/hooks/learning-path/useLearningPath'
-import { useCheckCourseRatingState } from '@/hooks/rating/useRating'
-import { useDownloadCertificate, useGetProgress } from '@/hooks/user/useUser'
-
+import LearningProcess from '@/components/common/LearningProcess'
+import ModalLoading from '@/components/common/ModalLoading'
 import {
   Accordion,
   AccordionContent,
@@ -36,12 +15,31 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
-import LearningProcess from '@/components/common/LearningProcess'
-import ModalLoading from '@/components/common/ModalLoading'
+import { lessonTypeIcons } from '@/configs'
+import {
+  useGetLessonDetail,
+  useGetLessons,
+} from '@/hooks/learning-path/useLearningPath'
+import { useCheckCourseRatingState } from '@/hooks/rating/useRating'
+import { useDownloadCertificate, useGetProgress } from '@/hooks/user/useUser'
+import { formatDuration } from '@/lib/common'
+import { cn } from '@/lib/utils'
 import CommentLesson from '@/sections/learning-path/_components/comment-lesson'
 import EvaluationCourse from '@/sections/learning-path/_components/evaluation-course'
 import LessonContent from '@/sections/learning-path/_components/lesson-content'
 import NoteList from '@/sections/learning-path/_components/note-list'
+import { LearningPathLesson } from '@/types/LearningPath'
+import {
+  CheckCircle,
+  ChevronLeft,
+  ChevronRight,
+  Lock,
+  Notebook,
+} from 'lucide-react'
+import Image from 'next/image'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { useEffect, useMemo, useState } from 'react'
 
 type Props = {
   courseSlug: string
@@ -65,7 +63,10 @@ const LearningPathView = ({ courseSlug, lessonId }: Props) => {
 
   const { data: progress } = useGetProgress(courseSlug)
   const { data: checkCourseRatingState } = useCheckCourseRatingState(courseSlug)
-  const { data: downloadCertificate } = useDownloadCertificate(courseSlug)
+  const { data: downloadCertificate } = useDownloadCertificate(
+    courseSlug,
+    progress
+  )
 
   const getLessonDuration = (lesson: LearningPathLesson) => {
     switch (lesson.type) {

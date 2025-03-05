@@ -9,7 +9,7 @@ import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 
 import { CouponPayload, couponSchema } from '@/validations/coupon'
-import QUERY_KEY from '@/constants/query-key'
+import QueryKey from '@/constants/query-key'
 import { generateRandomCode } from '@/lib/common'
 import {
   useGetCoupon,
@@ -222,7 +222,7 @@ const CouponUpdateView = ({ id }: { id: string }) => {
         onSuccess: async (res: any) => {
           toast.success(res.message)
           await queryClient.invalidateQueries({
-            queryKey: [QUERY_KEY.INSTRUCTOR_COUPON],
+            queryKey: [QueryKey.INSTRUCTOR_COUPON],
           })
         },
         onError: (error: any) => {

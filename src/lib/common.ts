@@ -20,7 +20,9 @@ export const formatNumber = (value: number): string => {
   return new Intl.NumberFormat('vi-VN').format(value)
 }
 
-export const formatCurrency = (value: number): string => {
+export const formatCurrency = (
+  value: number | bigint | Intl.StringNumericLiteral
+): string => {
   return new Intl.NumberFormat('vi-VN', {
     style: 'currency',
     currency: 'VND',

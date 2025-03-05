@@ -5,7 +5,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'react-toastify'
 
 import { IAuthData } from '@/types'
-import QUERY_KEY from '@/constants/query-key'
+import QueryKey from '@/constants/query-key'
 import { authApi } from '@/services/auth/authApi'
 
 export const useSignUp = () => {
@@ -17,7 +17,7 @@ export const useSignUp = () => {
     onSuccess: async (res: any) => {
       router.push('/sign-in')
       toast.success(res.message)
-      await queryClient.invalidateQueries({ queryKey: [QUERY_KEY.AUTH] })
+      await queryClient.invalidateQueries({ queryKey: [QueryKey.AUTH] })
     },
     onError: (error) => {
       toast.error(error.message)

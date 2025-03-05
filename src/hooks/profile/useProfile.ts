@@ -1,20 +1,18 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'react-toastify'
 
-import { LessonCommentPayload } from '@/validations/comment'
+import QueryKey from '@/constants/query-key'
+import { profileApi } from '@/services/profile/profile-api'
 import {
   ProfileBioFormValues,
   UpdateCareerProfilePayload,
   UpdateCertificatesProfilePayload,
   UpdateProfilePayload,
 } from '@/validations/profile'
-import QUERY_KEY from '@/constants/query-key'
-import { commentLessonApi } from '@/services/comment-lesson/comment-lesson-api'
-import { profileApi } from '@/services/profile/profile-api'
 
 export const useGetProfile = () => {
   return useQuery({
-    queryKey: [QUERY_KEY.PROFILE],
+    queryKey: [QueryKey.PROFILE],
     queryFn: () => profileApi.getProfile(),
   })
 }
@@ -25,7 +23,7 @@ export const useUpdateProfile = () => {
     mutationFn: (data: UpdateProfilePayload) => profileApi.updateProfile(data),
     onSuccess: async (res: any) => {
       await queryClient.invalidateQueries({
-        queryKey: [QUERY_KEY.PROFILE],
+        queryKey: [QueryKey.PROFILE],
       })
       const successMessage = res?.message
       toast.success(successMessage)
@@ -42,7 +40,7 @@ export const useUpdateBioProfile = () => {
       profileApi.updateBioProfile(data),
 
     onSuccess: async (res: any) => {
-      await queryClient.invalidateQueries({ queryKey: [QUERY_KEY.PROFILE] })
+      await queryClient.invalidateQueries({ queryKey: [QueryKey.PROFILE] })
       toast.success(res?.message)
     },
     onError: (error) => {
@@ -58,7 +56,7 @@ export const useUpdateCertificatesProfile = () => {
       profileApi.updateCertificatesProfile(data),
 
     onSuccess: async (res: any) => {
-      await queryClient.invalidateQueries({ queryKey: [QUERY_KEY.PROFILE] })
+      await queryClient.invalidateQueries({ queryKey: [QueryKey.PROFILE] })
       toast.success(res?.message)
     },
     onError: (error) => {
@@ -73,7 +71,7 @@ export const useCreatCareers = () => {
     mutationFn: async (data: UpdateCareerProfilePayload) =>
       profileApi.createCareer(data),
     onSuccess: async (res: any) => {
-      await queryClient.invalidateQueries({ queryKey: [QUERY_KEY.PROFILE] })
+      await queryClient.invalidateQueries({ queryKey: [QueryKey.PROFILE] })
       toast.success(res?.message)
     },
     onError: (error) => {
@@ -93,7 +91,7 @@ export const useUpdateCareers = () => {
       careerId: string
     }) => profileApi.updateCareer(data, careerId),
     onSuccess: async (res: any) => {
-      await queryClient.invalidateQueries({ queryKey: [QUERY_KEY.PROFILE] })
+      await queryClient.invalidateQueries({ queryKey: [QueryKey.PROFILE] })
       toast.success(res?.message)
     },
     onError: (error) => {
@@ -109,7 +107,7 @@ export const useDeleteCareer = () => {
     mutationFn: async (careerId: string) => profileApi.deleteCareer(careerId),
 
     onSuccess: async (res: any) => {
-      await queryClient.invalidateQueries({ queryKey: [QUERY_KEY.PROFILE] })
+      await queryClient.invalidateQueries({ queryKey: [QueryKey.PROFILE] })
       toast.success(res?.message)
     },
 

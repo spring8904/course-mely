@@ -1,7 +1,7 @@
-import { StatisticView } from '@/sections/instructor/view/statistic-view'
+import StatisticsView from '@/sections/instructor/view/statistics-view'
 
 const page = () => {
-  return <StatisticView />
+  return <StatisticsView />
 }
 
 export default page

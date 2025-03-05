@@ -3,12 +3,12 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'react-toastify'
 
 import { CreateWishListPayload } from '@/validations/wish-list'
-import QUERY_KEY from '@/constants/query-key'
+import QueryKey from '@/constants/query-key'
 import { wishListApi } from '@/services/wish-list/wish-list-api'
 
 export const useGetWishLists = () => {
   return useQuery({
-    queryKey: [QUERY_KEY.WISH_LIST],
+    queryKey: [QueryKey.WISH_LIST],
     queryFn: () => wishListApi.getWishLists(),
   })
 }
@@ -22,7 +22,7 @@ export const useCreateWishList = () => {
       wishListApi.createWishList(data),
     onSuccess: async (res: any) => {
       await queryClient.invalidateQueries({
-        queryKey: [QUERY_KEY.WISH_LIST],
+        queryKey: [QueryKey.WISH_LIST],
       })
       addToWishList(res?.data.course_id)
 
@@ -43,7 +43,7 @@ export const useDeleteWishList = () => {
     mutationFn: (id: number) => wishListApi.deleteWishList(id),
     onSuccess: async (res: any) => {
       await queryClient.invalidateQueries({
-        queryKey: [QUERY_KEY.WISH_LIST],
+        queryKey: [QueryKey.WISH_LIST],
       })
 
       const successMessage = res?.message

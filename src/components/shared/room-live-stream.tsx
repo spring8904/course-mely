@@ -153,6 +153,7 @@ const RoomLiveStream = ({ id }: { id: string }) => {
             playbackId={liveSession?.data.mux_playback_id}
             // metadata={{ viewer_user_id: user?.id || 'anonymous' }}
             className="size-full"
+            accentColor={'hsl(var(--primary))'}
           />
 
           {joinNotification && (
