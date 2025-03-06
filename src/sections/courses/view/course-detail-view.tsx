@@ -17,7 +17,10 @@ import { toast } from 'react-toastify'
 
 import { IChapter } from '@/types'
 import { formatCurrency, formatDuration } from '@/lib/common'
-import { useGetCourseDetails } from '@/hooks/course/useCourse'
+import {
+  useGetCourseDetails,
+  useGetCoursesRelated,
+} from '@/hooks/course/useCourse'
 import { useEnrollFreeCourse } from '@/hooks/transation/useTransation'
 
 import {
@@ -29,75 +32,6 @@ import {
 import BuyCourseModal from '@/sections/courses/_components/buy-course-modal'
 
 import CourseSlide from '../_components/course-slide'
-
-const courses = [
-  {
-    id: 1,
-    image: '/assets/images/courses/courses-01.jpg',
-    title: 'Become a Certified Web Developer: HTML, CSS and JavaScript',
-    lessons: '11 Lessons',
-    hours: '16 hours',
-    rating: 4.9,
-    totalReviews: 230,
-    author: 'Carolyn Welborn',
-    price: '$89.29',
-  },
-  {
-    id: 2,
-    image: '/assets/images/courses/courses-02.jpg',
-    title: 'Advanced Python Programming: Mastering Python 3',
-    lessons: '15 Lessons',
-    hours: '20 hours',
-    rating: 4.7,
-    totalReviews: 150,
-    author: 'James Smith',
-    price: '$79.99',
-  },
-  {
-    id: 3,
-    image: '/assets/images/courses/courses-01.jpg',
-    title: 'Become a Certified Web Developer: HTML, CSS and JavaScript',
-    lessons: '11 Lessons',
-    hours: '16 hours',
-    rating: 4.9,
-    totalReviews: 230,
-    author: 'Carolyn Welborn',
-    price: '$89.29',
-  },
-  {
-    id: 4,
-    image: '/assets/images/courses/courses-02.jpg',
-    title: 'Advanced Python Programming: Mastering Python 3',
-    lessons: '15 Lessons',
-    hours: '20 hours',
-    rating: 4.7,
-    totalReviews: 150,
-    author: 'James Smith',
-    price: '$79.99',
-  },
-  {
-    id: 5,
-    image: '/assets/images/courses/courses-01.jpg',
-    title: 'Become a Certified Web Developer: HTML, CSS and JavaScript',
-    lessons: '11 Lessons',
-    hours: '16 hours',
-    rating: 4.9,
-    totalReviews: 230,
-    author: 'Carolyn Welborn',
-    price: '$89.29',
-  },
-  {
-    id: 6,
-    image: '/assets/images/courses/courses-02.jpg',
-    title: 'Advanced Python Programming: Mastering Python 3',
-    lessons: '15 Lessons',
-    hours: '20 hours',
-    rating: 4.7,
-    totalReviews: 150,
-    author: 'James Smith',
-    price: '$79.99',
-  },
-]
 
 const lessonTypeIcons = {
   video: <CirclePlay size={16} />,
@@ -126,6 +60,8 @@ const CourseDetailView = ({ slug }: { slug: string }) => {
   const { mutate: enrollFreeCourse } = useEnrollFreeCourse()
   const { data: courseDetails, isLoading: isCourseDetailsLoading } =
     useGetCourseDetails(slug)
+  const { data: coursesRelatedData, isLoading: isCoursesRelatedData } =
+    useGetCoursesRelated(slug)
 
   useEffect(() => {
     if (courseDetails?.updated_at) {
@@ -174,15 +110,13 @@ const CourseDetailView = ({ slug }: { slug: string }) => {
     }
   }, [isOpenIntro])
 
-  if (isCourseDetailsLoading) {
+  if (isCourseDetailsLoading || isCoursesRelatedData) {
     return (
       <div className="mt-20">
         <Loader2 className="mx-auto size-8 animate-spin" />
       </div>
     )
   }
-
-  console.log(courseDetails)
 
   return (
     <>
@@ -457,10 +391,14 @@ const CourseDetailView = ({ slug }: { slug: string }) => {
                         className="fw-5 text-22 wow fadeInUp"
                         data-wow-delay="0s"
                       >
-                        Khoá học khác của Trương Văn Tùng
+                        Khoá học khác của {courseDetails?.user?.name}
                       </h6>
                     </div>
-                    <CourseSlide courses={courses} />
+                    {coursesRelatedData?.related_courses && (
+                      <CourseSlide
+                        courses={coursesRelatedData?.related_courses}
+                      />
+                    )}
                   </div>
                   <div className="review-wrap">
                     <div className="review-title flex items-center justify-between">
@@ -956,34 +894,20 @@ const CourseDetailView = ({ slug }: { slug: string }) => {
                   </h2>
                   <div className="flex flex-wrap items-center justify-between gap-[10px]">
                     <div className="sub fs-15 wow fadeInUp" data-wow-delay="0s">
-                      Lorem ipsum dolor sit amet elit
+                      Những khoá học tương tự dành cho bạn
                     </div>
-                    <a
-                      href="blog-grid.html"
+                    <Link
+                      href="/courses"
                       className="tf-btn-arrow wow fadeInUp"
                       data-wow-delay="0.1s"
                     >
                       Xem thêm <i className="icon-arrow-top-right" />
-                    </a>
+                    </Link>
                   </div>
                 </div>
-                <CourseSlide courses={courses} />
-                <div
-                  className="swiper-button-prev btns-style-arrow courses5-prev swiper-button-disabled"
-                  tabIndex={-1}
-                  role="button"
-                  aria-label="Previous slide"
-                  aria-controls="swiper-wrapper-f92d32152cb8b62f"
-                  aria-disabled="true"
-                />
-                <div
-                  className="swiper-button-next btns-style-arrow courses5-next"
-                  tabIndex={0}
-                  role="button"
-                  aria-label="Next slide"
-                  aria-controls="swiper-wrapper-f92d32152cb8b62f"
-                  aria-disabled="false"
-                ></div>
+                {coursesRelatedData?.related_courses && (
+                  <CourseSlide courses={coursesRelatedData?.related_courses} />
+                )}
               </div>
             </div>
           </div>

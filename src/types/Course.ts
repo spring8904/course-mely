@@ -49,6 +49,7 @@ export interface ICourse {
   chapters?: IChapter[]
   lessons_count?: number
   chapters_count?: number
+  ratings_count?: number
   accepted?: Date | null
   user: IUser
   deleted_at?: Date | null
