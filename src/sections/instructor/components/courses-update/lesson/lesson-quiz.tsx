@@ -23,6 +23,7 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import AddQuestionDialog from '@/sections/instructor/components/courses-update/lesson/quiz/add-question-dialog'
+import { CourseStatus } from '@/types'
 
 type Props = {
   chapterId?: string
@@ -43,7 +44,9 @@ const LessonQuiz = ({
   const [editQuestion, setEditQuestion] = useState(false)
   const [, setQuestions] = useState<any[]>([])
   const [editQuestionId, setEditQuestionId] = useState<string | null>(null)
-  const isReadOnly = !(courseStatus === 'draft' || courseStatus === 'rejected')
+  const isReadOnly = !(
+    courseStatus === CourseStatus.Draft || courseStatus === CourseStatus.Reject
+  )
 
   const { data: questionData, isLoading: isQuestionLoading } = useGetQuiz(
     quizId as string
@@ -52,7 +55,7 @@ const LessonQuiz = ({
     useCreateLessonQuiz()
   const { mutate: deleteQuestion } = useDeleteQuestion()
 
-  const isApproved = courseStatus === 'approved'
+  const isApproved = courseStatus === CourseStatus.Approved
 
   const form = useForm<LessonQuizPayload>({
     resolver: zodResolver(lessonQuizSchema),
@@ -129,14 +132,16 @@ const LessonQuiz = ({
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <div className="mb-4 flex justify-between">
             <h2 className="font-semibold">
-              {courseStatus === 'draft' || courseStatus === 'rejected'
+              {courseStatus === CourseStatus.Draft ||
+              courseStatus === CourseStatus.Reject
                 ? isEdit
                   ? 'Cập nhật'
                   : 'Thêm'
                 : 'Thông tin'}{' '}
               bài ôn tập trắc nghiệm
             </h2>
-            {(courseStatus === 'draft' || courseStatus === 'rejected') && (
+            {(courseStatus === CourseStatus.Draft ||
+              courseStatus === CourseStatus.Reject) && (
               <div className="flex items-center justify-end">
                 <Button
                   onClick={handleClose}
@@ -205,7 +210,8 @@ const LessonQuiz = ({
                 <p className="text-sm">
                   {index + 1}. {question.question}
                 </p>
-                {(courseStatus === 'draft' || courseStatus === 'reject') && (
+                {(courseStatus === CourseStatus.Draft ||
+                  courseStatus === CourseStatus.Reject) && (
                   <div className="flex gap-2">
                     <div
                       onClick={() => {

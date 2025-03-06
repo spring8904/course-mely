@@ -31,6 +31,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import QuillEditor from '@/components/shared/quill-editor'
+import { CourseStatus } from '@/types'
 
 type Props = {
   isOpen: boolean
@@ -69,7 +70,7 @@ const AddQuestionDialog = ({
   const { mutate: updateQuestion, isPending: isQuestionUpdatePending } =
     useUpdateQuestion()
 
-  const isApproved = courseStatus === 'approved'
+  const isApproved = courseStatus === CourseStatus.Approved
 
   const form = useForm<StoreQuestionPayload>({
     resolver: zodResolver(storeQuestionSchema),
@@ -246,7 +247,8 @@ const AddQuestionDialog = ({
               <DialogHeader>
                 <div className="flex items-center justify-between pr-7">
                   <DialogTitle>
-                    {courseStatus === 'draft' || courseStatus === 'rejected'
+                    {courseStatus === CourseStatus.Draft ||
+                    courseStatus === CourseStatus.Reject
                       ? isEdit
                         ? 'Sửa'
                         : 'Tạo'
@@ -428,8 +430,8 @@ const AddQuestionDialog = ({
                         ))}
                       </div>
                       <FormMessage />
-                      {(courseStatus === 'draft' ||
-                        courseStatus === 'refject') && (
+                      {(courseStatus === CourseStatus.Draft ||
+                        courseStatus === CourseStatus.Reject) && (
                         <div className="mt-4">
                           {field.value.length < 5 && (
                             <Button
@@ -448,7 +450,7 @@ const AddQuestionDialog = ({
                   )}
                 />
               </div>
-              {/*{(courseStatus === 'draft' || courseStatus === 'refjected') && (*/}
+              {/*{(courseStatus === CourseStatus.Draft || courseStatus === 'refjected') && (*/}
               <div className="flex justify-end gap-2">
                 <Button
                   variant="outline"

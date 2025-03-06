@@ -23,6 +23,7 @@ import {
   useUpdateLessonDocument,
 } from '@/hooks/instructor/lesson/useLesson'
 import DialogDocumentPreview from '@/sections/instructor/components/courses-update/lesson/document/dialog-document-preview'
+import { CourseStatus } from '@/types'
 import {
   LessonDocumentPayload,
   lessonDocumentSchema,
@@ -63,7 +64,7 @@ const LessonDocument = ({
   const { mutate: updateLessonDocument, isPending: isLessonDocumentupdating } =
     useUpdateLessonDocument()
 
-  const isApproved = courseStatus === 'approved'
+  const isApproved = courseStatus === CourseStatus.Approved
 
   const form = useForm<LessonDocumentPayload>({
     resolver: zodResolver(lessonDocumentSchema),
@@ -197,7 +198,8 @@ const LessonDocument = ({
     <>
       <div className="mb-4 flex justify-between">
         <h2 className="font-semibold">
-          {courseStatus === 'draft' || courseStatus === 'rejected'
+          {courseStatus === CourseStatus.Draft ||
+          courseStatus === CourseStatus.Reject
             ? lessonId
               ? 'Cập nhật'
               : 'Thêm'

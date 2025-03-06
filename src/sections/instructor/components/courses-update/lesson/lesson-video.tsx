@@ -26,6 +26,7 @@ import { Switch } from '@/components/ui/switch'
 import ModalLoading from '@/components/common/ModalLoading'
 import QuillEditor from '@/components/shared/quill-editor'
 import DialogVideoPreview from '@/sections/instructor/components/courses-update/lesson/video/dialog-video-preview'
+import { CourseStatus } from '@/types'
 
 type Props = {
   chapterId?: string
@@ -57,7 +58,7 @@ const LessonVideo = ({
   const { mutate: updateLessonVideo, isPending: isLessonVideoUpdating } =
     useUpdateLessonVideo()
 
-  const isApproved = courseStatus === 'approved'
+  const isApproved = courseStatus === CourseStatus.Approved
 
   const form = useForm<LessonVideoPayload>({
     resolver: zodResolver(lessonVideoSchema),
@@ -207,7 +208,8 @@ const LessonVideo = ({
     <>
       <div className="mb-4 flex justify-between">
         <h2 className="font-semibold">
-          {courseStatus === 'draft' || courseStatus === 'rejected'
+          {courseStatus === CourseStatus.Draft ||
+          courseStatus === CourseStatus.Reject
             ? isEdit
               ? 'Cập nhật'
               : 'Thêm'
@@ -250,7 +252,7 @@ const LessonVideo = ({
               )}
             />
           </div>
-          {courseStatus !== 'approved' && (
+          {courseStatus !== CourseStatus.Approved && (
             <div className="mt-2">
               <FormField
                 control={form.control}
@@ -341,7 +343,7 @@ const LessonVideo = ({
               />
             </div>
           </div>
-          {courseStatus !== 'approved' && (
+          {courseStatus !== CourseStatus.Approved && (
             <div className="mt-4 flex items-center justify-end">
               <Button
                 onClick={handleClose}

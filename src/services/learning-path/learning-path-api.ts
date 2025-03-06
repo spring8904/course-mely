@@ -60,4 +60,9 @@ export const learningPathApi = {
       last_time_video,
     })
   },
+
+  getDraftCourse: async (slug: string) => {
+    const res = await api.get(`${prefix}/draft/${slug}`)
+    return res.data
+  },
 }
