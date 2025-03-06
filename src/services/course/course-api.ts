@@ -1,4 +1,10 @@
-import { ICourse, ICourseDataResponse, ICourseFilter } from '@/types'
+import {
+  ICourse,
+  ICourseDataResponse,
+  ICourseFilter,
+  ICourseOtherResponse,
+  ICourseRelatedResponse,
+} from '@/types'
 import api from '@/configs/api'
 
 const prefix = 'courses'
@@ -29,4 +35,17 @@ export const getCourses = async (
     params: dataFilters,
   })
   return data
+}
+
+export const getCoursesRelated = async (
+  slug: string
+): Promise<ICourseRelatedResponse> => {
+  const { data } = await api.get(`${prefix}/${slug}/related`)
+  return data
+}
+
+export const getCoursesOther = async (
+  slug: string
+): Promise<ICourseOtherResponse> => {
+  return await api.get(`${prefix}/${slug}/get-other-courses`)
 }

@@ -17,7 +17,11 @@ import { toast } from 'react-toastify'
 
 import { IChapter } from '@/types'
 import { formatCurrency, formatDuration } from '@/lib/common'
-import { useGetCourseDetails } from '@/hooks/course/useCourse'
+import {
+  useGetCourseDetails,
+  useGetCoursesOther,
+  useGetCoursesRelated,
+} from '@/hooks/course/useCourse'
 import { useEnrollFreeCourse } from '@/hooks/transation/useTransation'
 
 import {
@@ -29,75 +33,7 @@ import {
 import BuyCourseModal from '@/sections/courses/_components/buy-course-modal'
 
 import CourseSlide from '../_components/course-slide'
-
-const courses = [
-  {
-    id: 1,
-    image: '/assets/images/courses/courses-01.jpg',
-    title: 'Become a Certified Web Developer: HTML, CSS and JavaScript',
-    lessons: '11 Lessons',
-    hours: '16 hours',
-    rating: 4.9,
-    totalReviews: 230,
-    author: 'Carolyn Welborn',
-    price: '$89.29',
-  },
-  {
-    id: 2,
-    image: '/assets/images/courses/courses-02.jpg',
-    title: 'Advanced Python Programming: Mastering Python 3',
-    lessons: '15 Lessons',
-    hours: '20 hours',
-    rating: 4.7,
-    totalReviews: 150,
-    author: 'James Smith',
-    price: '$79.99',
-  },
-  {
-    id: 3,
-    image: '/assets/images/courses/courses-01.jpg',
-    title: 'Become a Certified Web Developer: HTML, CSS and JavaScript',
-    lessons: '11 Lessons',
-    hours: '16 hours',
-    rating: 4.9,
-    totalReviews: 230,
-    author: 'Carolyn Welborn',
-    price: '$89.29',
-  },
-  {
-    id: 4,
-    image: '/assets/images/courses/courses-02.jpg',
-    title: 'Advanced Python Programming: Mastering Python 3',
-    lessons: '15 Lessons',
-    hours: '20 hours',
-    rating: 4.7,
-    totalReviews: 150,
-    author: 'James Smith',
-    price: '$79.99',
-  },
-  {
-    id: 5,
-    image: '/assets/images/courses/courses-01.jpg',
-    title: 'Become a Certified Web Developer: HTML, CSS and JavaScript',
-    lessons: '11 Lessons',
-    hours: '16 hours',
-    rating: 4.9,
-    totalReviews: 230,
-    author: 'Carolyn Welborn',
-    price: '$89.29',
-  },
-  {
-    id: 6,
-    image: '/assets/images/courses/courses-02.jpg',
-    title: 'Advanced Python Programming: Mastering Python 3',
-    lessons: '15 Lessons',
-    hours: '20 hours',
-    rating: 4.7,
-    totalReviews: 150,
-    author: 'James Smith',
-    price: '$79.99',
-  },
-]
+import { InstructorDetail } from '@/sections/courses/_components/instructorDetail'
 
 const lessonTypeIcons = {
   video: <CirclePlay size={16} />,
@@ -126,6 +62,12 @@ const CourseDetailView = ({ slug }: { slug: string }) => {
   const { mutate: enrollFreeCourse } = useEnrollFreeCourse()
   const { data: courseDetails, isLoading: isCourseDetailsLoading } =
     useGetCourseDetails(slug)
+  const { data: coursesRelatedData, isLoading: isCoursesRelatedDataLoading } =
+    useGetCoursesRelated(slug)
+  const { data: coursesOtherData, isLoading: isCoursesOtherDataLoading } =
+    useGetCoursesOther(slug)
+
+  console.log('coursesOtherData', coursesOtherData)
 
   useEffect(() => {
     if (courseDetails?.updated_at) {
@@ -174,15 +116,17 @@ const CourseDetailView = ({ slug }: { slug: string }) => {
     }
   }, [isOpenIntro])
 
-  if (isCourseDetailsLoading) {
+  if (
+    isCourseDetailsLoading ||
+    isCoursesRelatedDataLoading ||
+    isCoursesOtherDataLoading
+  ) {
     return (
       <div className="mt-20">
         <Loader2 className="mx-auto size-8 animate-spin" />
       </div>
     )
   }
-
-  console.log(courseDetails)
 
   return (
     <>
@@ -367,100 +311,25 @@ const CourseDetailView = ({ slug }: { slug: string }) => {
                       )
                     )}
                   </div>
-                  <div className="page-instructor">
-                    <h2
-                      className="text-22 fw-5 wow fadeInUp"
-                      data-wow-delay="0s"
-                    >
-                      Người hướng dẫn
-                    </h2>
-                    <div className="instructors-item style-2">
-                      <div className="image-wrapper">
-                        <img
-                          className="lazyload"
-                          data-src="/assets/images/instructors/instructors-01.jpg"
-                          src="/assets/images/instructors/instructors-01.jpg"
-                          alt=""
-                        />
-                      </div>
-                      <div className="entry-content">
-                        <h5 className="entry-title">
-                          <a href="#">{courseDetails?.user?.name}</a>
-                        </h5>
-                        <p className="short-description">FrontEnd Developer</p>
-                        <ul className="entry-meta">
-                          <li>
-                            <div className="ratings">
-                              <div className="number">4.9</div>
-                              <i className="icon-star-1" />
-                              <i className="icon-star-1" />
-                              <i className="icon-star-1" />
-                              <i className="icon-star-1" />
-                              <svg
-                                width={12}
-                                height={11}
-                                viewBox="0 0 12 11"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                              >
-                                <path
-                                  d="M3.54831 7.10382L3.58894 6.85477L3.41273 6.67416L1.16841 4.37373L4.24914 3.90314L4.51288 3.86286L4.62625 3.62134L5.99989 0.694982L7.37398 3.62182L7.48735 3.86332L7.75108 3.9036L10.8318 4.37419L8.58749 6.67462L8.41128 6.85523L8.4519 7.10428L8.98079 10.3465L6.24201 8.8325L6.00014 8.69879L5.75826 8.83247L3.01941 10.3461L3.54831 7.10382ZM11.0444 4.15626L11.0442 4.15651L11.0444 4.15626Z"
-                                  stroke="#131836"
-                                />
-                              </svg>
-                              <div className="total">315,475 Reviews</div>
-                            </div>
-                          </li>
-                          <li>
-                            <i className="flaticon-user" />
-                            345 Students
-                          </li>
-                          <li>
-                            <i className="flaticon-play" />
-                            34 Course
-                          </li>
-                        </ul>
-                        <p className="description">
-                          Lorem ipsum dolor sit amet. Qui incidunt dolores non
-                          similique ducimus et debitis molestiae. Et autem quia
-                          eum reprehenderit voluptates est reprehenderit illo
-                          est enim perferendis est neque sunt.{' '}
-                        </p>
-                        <ul className="tf-social-icon flex items-center gap-[10px]">
-                          <li>
-                            <a href="#">
-                              <i className="flaticon-facebook-1" />
-                            </a>
-                          </li>
-                          <li>
-                            <a href="#">
-                              <i className="icon-twitter" />
-                            </a>
-                          </li>
-                          <li>
-                            <a href="#">
-                              <i className="flaticon-instagram" />
-                            </a>
-                          </li>
-                          <li>
-                            <a href="#">
-                              <i className="flaticon-linkedin-1" />
-                            </a>
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
+                  {coursesOtherData?.profile_instructor && (
+                    <InstructorDetail
+                      instructorDetail={coursesOtherData.profile_instructor}
+                    />
+                  )}
                   <div className="page-my-course">
                     <div className="heading-section">
                       <h6
                         className="fw-5 text-22 wow fadeInUp"
                         data-wow-delay="0s"
                       >
-                        Khoá học khác của Trương Văn Tùng
+                        Khoá học khác
                       </h6>
                     </div>
-                    <CourseSlide courses={courses} />
+                    {coursesOtherData?.get_other_courses && (
+                      <CourseSlide
+                        courses={coursesOtherData?.get_other_courses}
+                      />
+                    )}
                   </div>
                   <div className="review-wrap">
                     <div className="review-title flex items-center justify-between">
@@ -744,7 +613,7 @@ const CourseDetailView = ({ slug }: { slug: string }) => {
                       <>
                         <div className="relative inline-block cursor-pointer">
                           <img
-                            src={courseDetails?.thumbnail}
+                            src={courseDetails?.thumbnail ?? ''}
                             alt="Video thumbnail"
                             className="w-full max-w-md rounded-lg shadow-lg transition-opacity hover:opacity-50"
                             onClick={() => setIsOpenIntro(true)}
@@ -793,7 +662,7 @@ const CourseDetailView = ({ slug }: { slug: string }) => {
                       </>
                     ) : (
                       <img
-                        src={courseDetails?.thumbnail}
+                        src={courseDetails?.thumbnail ?? ''}
                         alt={courseDetails?.name}
                       />
                     )}
@@ -956,34 +825,20 @@ const CourseDetailView = ({ slug }: { slug: string }) => {
                   </h2>
                   <div className="flex flex-wrap items-center justify-between gap-[10px]">
                     <div className="sub fs-15 wow fadeInUp" data-wow-delay="0s">
-                      Lorem ipsum dolor sit amet elit
+                      Những khoá học tương tự dành cho bạn
                     </div>
-                    <a
-                      href="blog-grid.html"
+                    <Link
+                      href="/courses"
                       className="tf-btn-arrow wow fadeInUp"
                       data-wow-delay="0.1s"
                     >
                       Xem thêm <i className="icon-arrow-top-right" />
-                    </a>
+                    </Link>
                   </div>
                 </div>
-                <CourseSlide courses={courses} />
-                <div
-                  className="swiper-button-prev btns-style-arrow courses5-prev swiper-button-disabled"
-                  tabIndex={-1}
-                  role="button"
-                  aria-label="Previous slide"
-                  aria-controls="swiper-wrapper-f92d32152cb8b62f"
-                  aria-disabled="true"
-                />
-                <div
-                  className="swiper-button-next btns-style-arrow courses5-next"
-                  tabIndex={0}
-                  role="button"
-                  aria-label="Next slide"
-                  aria-controls="swiper-wrapper-f92d32152cb8b62f"
-                  aria-disabled="false"
-                ></div>
+                {coursesRelatedData?.related_courses && (
+                  <CourseSlide courses={coursesRelatedData?.related_courses} />
+                )}
               </div>
             </div>
           </div>
