@@ -1,6 +1,7 @@
 export interface IInstructorProfile {
   id?: number
   user_id?: number
+  code?: string
   phone?: string
   address?: string | null
   experience?: string | null

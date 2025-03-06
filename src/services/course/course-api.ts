@@ -2,6 +2,7 @@ import {
   ICourse,
   ICourseDataResponse,
   ICourseFilter,
+  ICourseOtherResponse,
   ICourseRelatedResponse,
 } from '@/types'
 import api from '@/configs/api'
@@ -41,4 +42,10 @@ export const getCoursesRelated = async (
 ): Promise<ICourseRelatedResponse> => {
   const { data } = await api.get(`${prefix}/${slug}/related`)
   return data
+}
+
+export const getCoursesOther = async (
+  slug: string
+): Promise<ICourseOtherResponse> => {
+  return await api.get(`${prefix}/${slug}/get-other-courses`)
 }

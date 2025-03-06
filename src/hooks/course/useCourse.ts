@@ -5,6 +5,7 @@ import QueryKey from '@/constants/query-key'
 import {
   getCourseDetailsBySlug,
   getCourses,
+  getCoursesOther,
   getCoursesRelated,
 } from '@/services/course/course-api'
 
@@ -27,5 +28,12 @@ export const useGetCoursesRelated = (slug: string) => {
   return useQuery({
     queryKey: [QueryKey.COURSES_RELATED, slug],
     queryFn: () => getCoursesRelated(slug),
+  })
+}
+
+export const useGetCoursesOther = (slug: string) => {
+  return useQuery({
+    queryKey: [QueryKey.COURSES_OTHER, slug],
+    queryFn: () => getCoursesOther(slug),
   })
 }

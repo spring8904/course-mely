@@ -30,18 +30,20 @@ export interface ICourse {
   user_id?: number
   category_id?: number
   category?: ICategory
-  code?: string
+  code: string
   name: string
-  slug?: string
-  thumbnail: string
+  slug: string
+  thumbnail?: string | null
   intro?: string | null
   price?: number | null
   price_sale?: number | null
   description?: string | null
   content?: string | null
   level?: string | null
-  duration?: number | null
+  duration?: number | string | null
   total_student?: number
+  total_lesson?: number
+  total_duration?: string
   requirements?: string | string[]
   benefits?: string | string[]
   qa?: { question: string; answer: string }[]
@@ -51,8 +53,12 @@ export interface ICourse {
   lessons_count?: number
   chapters_count?: number
   ratings_count?: number
+  avg_rating?: string
+  total_rating?: string
   accepted?: Date | null
   user: IUser
+  name_instructor: string
+  code_instructor: string
   deleted_at?: Date | null
   created_at?: Date | null
   updated_at?: Date | null
@@ -178,7 +184,7 @@ export interface ICourseDataResponse {
   prev_page_url?: string | null
   path: string
   per_page: number
-  total: 22
+  total: number
 }
 
 export interface ICourseRelatedResponse {
@@ -186,23 +192,8 @@ export interface ICourseRelatedResponse {
   related_courses: ICourse[]
 }
 
-export interface ICourseOther {
-  code: string
-  name_course: string
-  slug: string
-  price: string
-  price_sale: string
-  thumbnail?: string | null
-  name_instructor: string
-  code_instructor: string
-  total_lesson?: number
-  total_duration?: string
-  avg_rating?: string
-  total_rating?: string
-}
-
 export interface ICourseOtherResponse {
   message?: string
-  getOtherCourse: ICourseOther[]
+  get_other_courses: ICourse[]
   profile_instructor: IInstructorProfile
 }
