@@ -45,11 +45,9 @@ const InviteMember = ({
   channelId,
 }: InviteMemberDialogProps) => {
   const queryClient = useQueryClient()
-
   const [selectedMembers, setSelectedMembers] = useState<Member[]>([])
   const { data: members, isLoading } = useGetRemainingMembers(channelId)
   const { mutate: addMember, isPending } = useAddMemberGroupChat()
-
   const form = useForm<AddMemberGroupChatPayload>({
     resolver: zodResolver(addMemberGroupChatSchema),
     defaultValues: {
@@ -138,7 +136,8 @@ const InviteMember = ({
             <ScrollArea className="h-[300px]">
               {isLoading ? (
                 <p>Loading members...</p>
-              ) : members?.data.length === 0 ? (
+              ) : !Array.isArray(members?.data) &&
+                members?.data?.length === 0 ? (
                 <div className="flex h-full items-center justify-center text-gray-500">
                   Không có thành viên nào để thêm
                 </div>
@@ -149,7 +148,6 @@ const InviteMember = ({
                     name={`member-${member.id}`}
                     render={() => (
                       <FormItem className="flex items-center gap-4 border-b pb-2">
-                        {/* Member Avatar */}
                         <Avatar className="size-8">
                           <AvatarImage
                             src={member.avatar}
