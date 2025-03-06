@@ -241,7 +241,7 @@ const AddQuestionDialog = ({
           handleCloseOrCancel()
         }}
       >
-        <DialogContent className="w-full max-w-7xl">
+        <DialogContent className="w-full lg:max-w-4xl xl:max-w-7xl">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
               <DialogHeader>
@@ -451,7 +451,7 @@ const AddQuestionDialog = ({
                 />
               </div>
               {/*{(courseStatus === CourseStatus.Draft || courseStatus === 'refjected') && (*/}
-              <div className="flex justify-end gap-2">
+              <div className="mt-4 flex justify-end gap-2">
                 <Button
                   variant="outline"
                   onClick={() => {

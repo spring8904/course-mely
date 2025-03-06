@@ -1,4 +1,5 @@
 import api from '@/configs/api'
+import { DraftCourse } from '@/types/DraftCourse'
 import {
   CompleteLessonPayload,
   GetLessonDetailResponse,
@@ -61,7 +62,7 @@ export const learningPathApi = {
     })
   },
 
-  getDraftCourse: async (slug: string) => {
+  getDraftCourse: async (slug: string): Promise<DraftCourse> => {
     const res = await api.get(`${prefix}/draft/${slug}`)
     return res.data
   },
