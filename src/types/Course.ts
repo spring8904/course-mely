@@ -4,6 +4,7 @@ import { BadgeProps } from '@/components/ui/badge'
 
 import { ICategory } from './Category'
 import { IQuiz } from './Quiz'
+import { IInstructorProfile } from '@/types/Instructor'
 
 export enum CourseStatus {
   Draft = 'draft',
@@ -183,4 +184,25 @@ export interface ICourseDataResponse {
 export interface ICourseRelatedResponse {
   current_course: ICourse
   related_courses: ICourse[]
+}
+
+export interface ICourseOther {
+  code: string
+  name_course: string
+  slug: string
+  price: string
+  price_sale: string
+  thumbnail?: string | null
+  name_instructor: string
+  code_instructor: string
+  total_lesson?: number
+  total_duration?: string
+  avg_rating?: string
+  total_rating?: string
+}
+
+export interface ICourseOtherResponse {
+  message?: string
+  getOtherCourse: ICourseOther[]
+  profile_instructor: IInstructorProfile
 }
