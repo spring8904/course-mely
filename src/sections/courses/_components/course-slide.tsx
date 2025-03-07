@@ -9,9 +9,11 @@ import 'swiper/css/scrollbar'
 
 import Image from 'next/image'
 import { formatCurrency } from '@/lib/common'
+import { ICourse } from '@/types'
+import Link from 'next/link'
 
 type Props = {
-  courses: any[]
+  courses: ICourse[]
 }
 
 const CourseSlide = ({ courses }: Props) => {
@@ -25,16 +27,18 @@ const CourseSlide = ({ courses }: Props) => {
       }}
     >
       {courses.map((course) => (
-        <SwiperSlide key={course.id}>
+        <SwiperSlide key={course?.id}>
           <div className="course-item hover-img title-small wow fadeInUp">
-            <div className="features image-wrap">
+            <div
+              className="features image-wrap"
+              style={{ height: '150px', objectFit: 'cover' }}
+            >
               <Image
                 className="ls-is-cached lazyloaded"
-                data-src={course.image}
-                src={course.image}
-                alt={course.title}
-                width={206}
-                height={150}
+                data-src={course?.thumbnail ?? ''}
+                src={course?.thumbnail ?? ''}
+                alt={course?.thumbnail ?? ''}
+                fill
               />
               <div className="box-tags">
                 <a href="#" className="item best-seller">
@@ -49,40 +53,52 @@ const CourseSlide = ({ courses }: Props) => {
               <div className="meta">
                 <div className="meta-item">
                   <i className="flaticon-calendar" />
-                  <p>{course.lessons} Lessons</p>
+                  <p>{course?.lessons_count} Lessons</p>
                 </div>
                 <div className="meta-item">
                   <i className="flaticon-clock" />
-                  <p>{course.hours} hours</p>
+                  <p>24 hours</p>
                 </div>
               </div>
               <h6 className="fw-5 line-clamp-2">
-                <a href="#">{course.title}</a>
+                <Link href={`/courses/${course?.slug}`}>{course?.name}</Link>
               </h6>
               <div className="ratings pb-30">
-                <div className="number">{course.rating}</div>
-                {[...Array(5)].map((_, i) => (
+                <div className="number">{course?.ratings_count}</div>
+                {[...Array(course?.ratings_count)].map((_, i) => (
                   <i
                     key={i}
-                    className={`icon-star-1 ${i < Math.floor(course.rating) ? 'filled' : ''}`}
+                    className={`icon-star-1 ${i < Math.floor(course?.ratings_count ?? 0) ? 'filled' : ''}`}
                   />
                 ))}
-                <div className="total">({course.totalReviews})</div>
+                <div className="total">({course?.total_student})</div>
               </div>
               <div className="author">
                 By:
                 <a href="#" className="author">
-                  {course.author}
+                  {course?.user?.name}
                 </a>
               </div>
               <div className="bottom">
                 <div className="h6 price fw-5">
-                  {formatCurrency(course.price)}
+                  {course?.price_sale && course.price_sale > 0 ? (
+                    <div>
+                      <span>{formatCurrency(course.price_sale)}</span>
+                      <span className="ml-2 text-sm text-gray-500 line-through">
+                        {formatCurrency(course?.price ?? 0)}
+                      </span>
+                    </div>
+                  ) : (
+                    <span>{formatCurrency(course?.price ?? 0)}</span>
+                  )}
                 </div>
-                <a href="#" className="tf-btn-arrow">
-                  <span className="fw-5 fs-15">Enroll Course</span>
+                <Link
+                  href={`/courses/${course?.slug}`}
+                  className="tf-btn-arrow"
+                >
+                  <span className="fw-5 fs-15">Đăng ký</span>
                   <i className="icon-arrow-top-right" />
-                </a>
+                </Link>
               </div>
             </div>
           </div>

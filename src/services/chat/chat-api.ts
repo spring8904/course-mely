@@ -16,14 +16,17 @@ export const chatApi = {
   getGroupChats: async () => {
     return await api.get(`${prefixGroupChat}/get-group-chats`)
   },
+  getGroupStudent: async () => {
+    return await api.get(`${prefixGroupChat}/get-group-chats-student`)
+  },
   getInfoGroupChat: async (id: string) => {
     return await api.get(`${prefixGroupChat}/info-group-chat/${id}`)
   },
   getRemainingMembers: async (id: string) => {
     return await api.get(`${prefixGroupChat}/${id}/remaining-members`)
   },
-  getMessages: async (id: string) => {
-    const response = await api.get(`${prefix}/get-message/${id}`)
+  getMessages: async (conversation_id: number) => {
+    const response = await api.get(`${prefix}/get-message/${conversation_id}`)
     return response.data
   },
   createGroupChat: async (data: CreateGroupChatPayload) => {
@@ -36,6 +39,26 @@ export const chatApi = {
     )
   },
   sendMessage: async (data: MessagePayload) => {
-    return await api.post(`${prefix}/send-message`, data)
+    const formData = new FormData()
+
+    if (data.conversation_id) {
+      formData.append('conversation_id', data.conversation_id.toString())
+    }
+    if (data.content) {
+      formData.append('content', data.content)
+    }
+    if (data.type) {
+      formData.append('type', data.type)
+    }
+    if (data.file && data.file.length > 0) {
+      formData.append('file', data.file[0].blob)
+      formData.append('type', data.file[0].type)
+    }
+
+    return await api.post(`${prefix}/send-message`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    })
   },
 }

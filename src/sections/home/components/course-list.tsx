@@ -175,7 +175,7 @@ const CourseList = ({
                           {course.ratings?.count > 0 ? (
                             <>
                               <div className="number text-lg font-bold text-gray-800">
-                                {course.ratings.average.toFixed(1) || '0.0'}
+                                {course.ratings.average.fixed(1) || '0.0'}
                               </div>
                               <div className="stars flex items-center">
                                 {[...Array(5)].map((_, index) => (

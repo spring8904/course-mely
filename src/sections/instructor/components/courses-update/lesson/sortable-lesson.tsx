@@ -44,6 +44,7 @@ import LessonQuiz from '@/sections/instructor/components/courses-update/lesson/l
 import LessonVideo from '@/sections/instructor/components/courses-update/lesson/lesson-video'
 import AddQuestionDialog from '@/sections/instructor/components/courses-update/lesson/quiz/add-question-dialog'
 import ImportQuestion from '@/sections/instructor/components/courses-update/lesson/quiz/import-question'
+import { cn } from '@/lib/utils'
 
 export interface Props {
   chapter: IChapter
@@ -170,14 +171,17 @@ const SortableLesson = ({
                   value={`lesson-${lesson.id}`}
                 >
                   <AccordionTrigger
-                    className="space-x-4 rounded-lg py-2"
+                    className={cn(
+                      'space-x-4 rounded-lg py-2',
+                      lesson.type === 'coding' && 'cursor-default'
+                    )}
                     onClick={(e) => {
                       if (!lessonEdit || lessonEdit !== lesson.id) {
                         e.stopPropagation()
                         setLessonEdit(lesson.id as number)
                       }
                     }}
-                    disabled={lesson.type === 'coding'}
+                    // disabled={lesson.type === 'coding'}
                     hideArrow={lesson.type === 'coding'}
                   >
                     <div className="flex w-full items-center justify-between gap-2">

@@ -36,17 +36,17 @@ export const CategorySidebar = ({
       <ul className="tf-collapse-content">
         {categories.length > 0 ? (
           categories.map((category) => (
-            <li className="checkbox-item fl-item2" key={category.id}>
+            <li className="checkbox-item fl-item2" key={category?.id}>
               <label>
-                <p>{category.name}</p>
+                <p>{category?.name}</p>
                 <input
                   name="category"
                   type="checkbox"
-                  value={category.id}
+                  value={category?.id}
                   checked={
-                    dataFilters?.categories?.includes(category.slug) ?? false
+                    dataFilters?.categories?.includes(category?.slug) ?? false
                   }
-                  onChange={() => handleCategoryChange(category.slug)}
+                  onChange={() => handleCategoryChange(category?.slug)}
                 />
                 <span className="btn-checkbox" />
               </label>
