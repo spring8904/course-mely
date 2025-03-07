@@ -5,7 +5,7 @@ import { toast } from 'react-toastify'
 import { useRouter } from 'next/navigation'
 import { useAuthStore } from '@/stores/useAuthStore'
 import Cookies from 'js-cookie'
-import { StorageKeys } from '@/constants/storage-keys'
+import StorageKey from '@/constants/storage-key'
 
 export const useGoogleRedirect = () => {
   return useQuery({
@@ -28,7 +28,7 @@ export const useGoogleCallBack = () => {
       const user = res?.user
       const role = res.role
 
-      Cookies.get(StorageKeys.ACCESS_TOKEN)
+      Cookies.get(StorageKey.ACCESS_TOKEN)
 
       if (!token || !user) {
         toast.error('Đăng nhập thất bại, vui lòng thử lại')

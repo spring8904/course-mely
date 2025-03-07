@@ -60,6 +60,7 @@ import {
 } from '@/components/ui/form'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
+import { CourseStatus } from '@/types'
 
 type GroupId = 'planning' | 'content'
 
@@ -322,28 +323,30 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
               </Link>
               <Button
                 disabled={
-                  courseStatus === 'pending' ||
+                  courseStatus === CourseStatus.Pending ||
                   isSubmitCoursePending ||
-                  (courseStatus !== 'approved' && progress < 100) ||
+                  (courseStatus !== CourseStatus.Approved && progress < 100) ||
                   isRequestModifyContent ||
-                  courseStatus === 'modify_request'
+                  courseStatus === CourseStatus.ModifyRequest
                 }
                 onClick={
-                  courseStatus === 'approved' ? openDialog : courseHandleSubmit
+                  courseStatus === CourseStatus.Approved
+                    ? openDialog
+                    : courseHandleSubmit
                 }
                 className={
-                  courseStatus === 'approved'
+                  courseStatus === CourseStatus.Approved
                     ? 'bg-green-500 text-white hover:bg-green-500/80'
-                    : courseStatus === 'modify_request'
+                    : courseStatus === CourseStatus.ModifyRequest
                       ? 'bg-yellow-500 text-white'
                       : ''
                 }
               >
-                {courseStatus === 'approved'
+                {courseStatus === CourseStatus.Approved
                   ? 'Yêu cầu sửa đổi nội dung'
-                  : courseStatus === 'rejected'
+                  : courseStatus === CourseStatus.Reject
                     ? 'Gửi lại thông tin khoá học'
-                    : courseStatus === 'modify_request'
+                    : courseStatus === CourseStatus.ModifyRequest
                       ? 'Chờ duyệt'
                       : 'Gửi yêu cầu kiểm duyệt'}
               </Button>

@@ -8,7 +8,7 @@ import ProtectedRoute from '@/components/shared/protected-route'
 
 const layout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <ProtectedRoute roles={[Role.INSTRUCTOR, Role.ADMIN]}>
+    <ProtectedRoute roles={[Role.INSTRUCTOR]}>
       <DashboardLayout leftSidebarData={leftSidebarStudentData}>
         {children}
       </DashboardLayout>

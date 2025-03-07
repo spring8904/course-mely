@@ -1,7 +1,5 @@
 'use client'
 
-import Image from 'next/image'
-import Link from 'next/link'
 import { useAuthStore } from '@/stores/useAuthStore'
 import {
   AudioWaveform,
@@ -17,7 +15,10 @@ import {
   UsersRound,
   Wallet,
 } from 'lucide-react'
+import Image from 'next/image'
 
+import { NavMain } from '@/components/shared/nav-main'
+import { NavUser } from '@/components/shared/nav-user'
 import {
   Sidebar,
   SidebarContent,
@@ -28,8 +29,6 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from '@/components/ui/sidebar'
-import { NavMain } from '@/components/shared/nav-main'
-import { NavUser } from '@/components/shared/nav-user'
 
 const data = {
   user: {
@@ -126,20 +125,19 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <Link href="/" target="_blank">
-              <SidebarMenuButton
-                size="lg"
-                className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-              >
-                <Image
-                  src="/images/Logo.png"
-                  alt="CourseMeLy logo"
-                  width={40}
-                  height={40}
-                />
-                <h2 className="text-xl font-extrabold">CourseMeLy</h2>
-              </SidebarMenuButton>
-            </Link>
+            <SidebarMenuButton
+              onClick={() => (window.location.href = '/')}
+              size="lg"
+              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+            >
+              <Image
+                src="/images/Logo.png"
+                alt="CourseMeLy logo"
+                width={40}
+                height={40}
+              />
+              <h2 className="text-xl font-extrabold">CourseMeLy</h2>
+            </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>

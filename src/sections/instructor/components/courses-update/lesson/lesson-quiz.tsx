@@ -23,6 +23,7 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import AddQuestionDialog from '@/sections/instructor/components/courses-update/lesson/quiz/add-question-dialog'
+import { CourseStatus } from '@/types'
 
 type Props = {
   chapterId?: string
@@ -43,7 +44,9 @@ const LessonQuiz = ({
   const [editQuestion, setEditQuestion] = useState(false)
   const [, setQuestions] = useState<any[]>([])
   const [editQuestionId, setEditQuestionId] = useState<string | null>(null)
-  const isReadOnly = !(courseStatus === 'draft' || courseStatus === 'rejected')
+  const isReadOnly = !(
+    courseStatus === CourseStatus.Draft || courseStatus === CourseStatus.Reject
+  )
 
   const { data: questionData, isLoading: isQuestionLoading } = useGetQuiz(
     quizId as string
@@ -52,7 +55,7 @@ const LessonQuiz = ({
     useCreateLessonQuiz()
   const { mutate: deleteQuestion } = useDeleteQuestion()
 
-  const isApproved = courseStatus === 'approved'
+  const isApproved = courseStatus === CourseStatus.Approved
 
   const form = useForm<LessonQuizPayload>({
     resolver: zodResolver(lessonQuizSchema),
@@ -126,77 +129,75 @@ const LessonQuiz = ({
   return (
     <>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
-          <div className="mb-4 flex justify-between">
-            <h2 className="font-semibold">
-              {courseStatus === 'draft' || courseStatus === 'rejected'
-                ? isEdit
-                  ? 'Cập nhật'
-                  : 'Thêm'
-                : 'Thông tin'}{' '}
-              bài ôn tập trắc nghiệm
-            </h2>
-            {(courseStatus === 'draft' || courseStatus === 'rejected') && (
-              <div className="flex items-center justify-end">
-                <Button
-                  onClick={handleClose}
-                  className="mr-3"
-                  variant="secondary"
-                  type="button"
-                >
-                  Huỷ
-                </Button>
-                <Button type="submit" disabled={isLessonQuizCreatePending}>
-                  {isLessonQuizCreatePending && (
-                    <Loader2 className="mr-2 size-4 animate-spin" />
-                  )}
-                  {isEdit ? 'Cập nhật' : 'Thêm bài học'}
-                </Button>
-              </div>
-            )}
-          </div>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <h2 className="font-semibold">
+            {courseStatus === CourseStatus.Draft ||
+            courseStatus === CourseStatus.Reject
+              ? isEdit
+                ? 'Cập nhật'
+                : 'Thêm'
+              : 'Thông tin'}{' '}
+            bài ôn tập trắc nghiệm
+          </h2>
 
-          <div>
-            <FormField
-              control={form.control}
-              name="title"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Tiêu đề bài giảng</FormLabel>
-                  <FormControl>
-                    <Input
-                      readOnly={isReadOnly}
-                      placeholder="Nhập tiêu đề bài giảng"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-          <div className="my-2">
-            <FormField
-              control={form.control}
-              name="content"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Nội dung bài giảng</FormLabel>
-                  <FormControl>
-                    <QuillEditor
-                      disabled={isReadOnly}
-                      {...field}
-                      value={field.value || ''}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
+          <FormField
+            control={form.control}
+            name="title"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Tiêu đề bài giảng</FormLabel>
+                <FormControl>
+                  <Input
+                    readOnly={isReadOnly}
+                    placeholder="Nhập tiêu đề bài giảng"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="content"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Nội dung bài giảng</FormLabel>
+                <FormControl>
+                  <QuillEditor
+                    disabled={isReadOnly}
+                    {...field}
+                    value={field.value || ''}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {(courseStatus === CourseStatus.Draft ||
+            courseStatus === CourseStatus.Reject) && (
+            <div className="flex items-center justify-end">
+              <Button
+                onClick={handleClose}
+                className="mr-3"
+                variant="secondary"
+                type="button"
+              >
+                Huỷ
+              </Button>
+              <Button type="submit" disabled={isLessonQuizCreatePending}>
+                {isLessonQuizCreatePending && (
+                  <Loader2 className="mr-2 size-4 animate-spin" />
+                )}
+                {isEdit ? 'Cập nhật' : 'Thêm bài học'}
+              </Button>
+            </div>
+          )}
         </form>
       </Form>
-      {isEdit && (
+      {isEdit && questionData?.data.questions.length > 0 && (
         <div className="my-2">
           <h4 className="text-sm">Danh sách câu hỏi</h4>
           {questionData?.data.questions.map((question: any, index: number) => (
@@ -205,7 +206,8 @@ const LessonQuiz = ({
                 <p className="text-sm">
                   {index + 1}. {question.question}
                 </p>
-                {(courseStatus === 'draft' || courseStatus === 'reject') && (
+                {(courseStatus === CourseStatus.Draft ||
+                  courseStatus === CourseStatus.Reject) && (
                   <div className="flex gap-2">
                     <div
                       onClick={() => {
