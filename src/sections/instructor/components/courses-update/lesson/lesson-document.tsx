@@ -118,10 +118,6 @@ const LessonDocument = ({
     setSelectedFile(null)
   }, [form])
 
-  const handleClose = () => {
-    onHide()
-  }
-
   const onSubmit = (data: LessonDocumentPayload) => {
     if (!lessonId) {
       if (fileType === 'document_file' && !data.document_file) {
@@ -317,6 +313,9 @@ const LessonDocument = ({
                     onClick={handleResetClick}
                     type="button"
                     variant="destructive"
+                    disabled={
+                      isLessonDocumentCreating || isLessonDocumentUpdating
+                    }
                   >
                     Tải lại
                   </Button>
@@ -341,25 +340,18 @@ const LessonDocument = ({
                   )}
                 />
               )}
-              <div className="flex items-center justify-end">
-                <Button
-                  onClick={handleClose}
-                  className="mr-3"
-                  variant="secondary"
-                >
-                  Huỷ
-                </Button>
+
+              <div className="flex justify-end">
                 <Button
                   type="submit"
                   disabled={
                     isLessonDocumentCreating || isLessonDocumentUpdating
                   }
                 >
-                  {isLessonDocumentCreating ||
-                    (isLessonDocumentUpdating && (
-                      <Loader2 className="mr-2 size-4 animate-spin" />
-                    ))}
-                  {lessonId ? 'Lưu tài liệu' : 'Thêm   tài liệu'}
+                  {(isLessonDocumentCreating || isLessonDocumentUpdating) && (
+                    <Loader2 className="animate-spin" />
+                  )}
+                  {lessonId ? 'Lưu tài liệu' : 'Thêm tài liệu'}
                 </Button>
               </div>
             </>

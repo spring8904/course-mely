@@ -378,13 +378,12 @@ const SortableLesson = ({
         {addNewLesson &&
           (selectedLesson ? (
             <CreateLesson
-              onHide={() => setSelectedLesson(undefined)}
+              onHide={() => {
+                setSelectedLesson(undefined)
+                setAddNewLesson(false)
+              }}
               type={selectedLesson!}
               chapterId={String(chapter.id!)}
-              onSuccess={() => {
-                setAddNewLesson(false)
-                setSelectedLesson(undefined)
-              }}
               courseStatus={courseStatus}
             />
           ) : (

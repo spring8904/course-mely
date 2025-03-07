@@ -29,7 +29,7 @@ export const instructorLessonApi = {
       },
     })
   },
-  createLessonVideo: (chapterId: string, payload: FormData) => {
+  createLessonVideo: (chapterId: string, payload: FormData): Promise<any> => {
     return api.post(`${prefix}/${chapterId}/store-lesson-video`, payload, {
       headers: {
         'Content-Type': 'multipart/form-data',
@@ -43,7 +43,10 @@ export const instructorLessonApi = {
       },
     })
   },
-  createLessonQuiz: (chapterId: string, payload: LessonQuizPayload) => {
+  createLessonQuiz: (
+    chapterId: string,
+    payload: LessonQuizPayload
+  ): Promise<any> => {
     return api.post(`${prefix}/${chapterId}/store-lesson-quiz`, payload)
   },
   createLessonCoding: (chapterId: string, payload: LessonCodingPayload) => {
@@ -76,7 +79,7 @@ export const instructorLessonApi = {
     chapterId: string,
     lessonId: string,
     payload: FormData
-  ) => {
+  ): Promise<any> => {
     return api.post(
       `${prefix}/${chapterId}/${lessonId}/update-lesson-video`,
       payload,
@@ -114,5 +117,12 @@ export const instructorLessonApi = {
       `${prefix}/${lessonSlug}/${codingId}/coding-exercise`,
       payload
     )
+  },
+
+  updateQuizContent: (
+    quizId: string,
+    payload: LessonQuizPayload
+  ): Promise<any> => {
+    return api.put(`${prefix}/quiz/${quizId}/update-quiz-content`, payload)
   },
 }

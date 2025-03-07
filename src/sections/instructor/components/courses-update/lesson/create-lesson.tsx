@@ -11,7 +11,6 @@ type Props = {
   chapterId?: string
   type: LessonType
   onHide: () => void
-  onSuccess: () => void
   courseStatus?: string
 }
 

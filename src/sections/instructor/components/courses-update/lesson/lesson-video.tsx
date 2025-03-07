@@ -11,7 +11,6 @@ import {
 } from '@/hooks/instructor/lesson/useLesson'
 import { LessonVideoPayload, lessonVideoSchema } from '@/validations/lesson'
 
-import ModalLoading from '@/components/common/ModalLoading'
 import QuillEditor from '@/components/shared/quill-editor'
 import { Button } from '@/components/ui/button'
 import {
@@ -100,10 +99,6 @@ const LessonVideo = ({
     }
   }, [isEdit, lessonVideoData, form.reset, form])
 
-  const handleClose = () => {
-    onHide()
-  }
-
   const handleFileChange = (event: any) => {
     const file = event.target.files?.[0]
 
@@ -169,40 +164,22 @@ const LessonVideo = ({
     }
 
     if (isEdit) {
-      updateLessonVideo(
-        { chapterId, lessonId: String(lessonId), payload: formData },
-        {
-          onSuccess: async (res: any) => {
-            form.reset()
-            onHide()
-
-            toast.success(res.message)
-          },
-          onError: async (error: any) => {
-            toast.error(error.message || 'Có lỗi xảy ra')
-          },
-        }
-      )
+      updateLessonVideo({
+        chapterId,
+        lessonId: String(lessonId),
+        payload: formData,
+      })
     } else {
       createLessonVideo(
         { chapterId, payload: formData },
         {
-          onSuccess: async (res: any) => {
+          onSuccess: async () => {
             form.reset()
             onHide()
-
-            toast.success(res.message)
-          },
-          onError: async (error: any) => {
-            toast.error(error.message || 'Có lỗi xảy ra')
           },
         }
       )
     }
-  }
-
-  if (isLessonVideoUpdating || isLessonVideoCreating) {
-    return <ModalLoading />
   }
 
   return (
@@ -241,7 +218,7 @@ const LessonVideo = ({
                 <FormItem>
                   <FormLabel>Nội dung bài giảng</FormLabel>
                   <FormControl>
-                    <QuillEditor {...field} value={field.value || ''} />
+                    <QuillEditor placeholder="Nhập nội dung" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -249,32 +226,34 @@ const LessonVideo = ({
             />
 
             {!isApproved && (
-              <FormField
-                control={form.control}
-                name="video_file"
-                render={({ field }) => (
-                  <div className="mt-2">
-                    <h3 className="my-2 text-sm">Tải video cho bài giảng</h3>
-                    {videoUrl || muxPlaybackId ? (
-                      <div className="flex flex-col items-center justify-center gap-4 rounded-md border-2 border-dashed border-gray-300 p-5">
-                        {muxPlaybackId ? (
-                          <div className="aspect-video size-full">
-                            <MuxPlayer
-                              loading="viewport"
-                              playbackId={muxPlaybackId || ''}
-                              autoPlay={false}
-                              className="h-full"
-                              accentColor="hsl(var(--primary))"
-                            />
-                          </div>
-                        ) : (
-                          <video
-                            src={videoUrl}
-                            controls
-                            loop
-                            className="size-full rounded-lg object-cover"
-                          />
-                        )}
+              <div className="mt-2">
+                <h3 className="my-2 text-sm">Tải video cho bài giảng</h3>
+
+                <div className="flex flex-col items-center justify-center gap-4 rounded-md border-2 border-dashed border-gray-300 p-5">
+                  {muxPlaybackId ? (
+                    <MuxPlayer
+                      loading="page"
+                      playbackId={muxPlaybackId || ''}
+                      autoPlay={false}
+                      className="aspect-video"
+                      accentColor="hsl(var(--primary))"
+                    />
+                  ) : (
+                    videoUrl && (
+                      <video
+                        src={videoUrl}
+                        controls
+                        loop
+                        className="size-full rounded-lg object-cover"
+                      />
+                    )
+                  )}
+
+                  <FormField
+                    control={form.control}
+                    name="video_file"
+                    render={({ field }) =>
+                      videoUrl || muxPlaybackId ? (
                         <div className="flex w-full items-center justify-between">
                           {selectedFile && (
                             <p className="text-left text-sm font-medium">
@@ -289,39 +268,42 @@ const LessonVideo = ({
                             type="button"
                             variant="destructive"
                             className="ml-auto"
+                            disabled={
+                              isLessonVideoCreating || isLessonVideoUpdating
+                            }
                           >
                             Tải lại
                           </Button>
                         </div>
-                      </div>
-                    ) : (
-                      <div className="flex flex-col items-center justify-center gap-4 rounded-md border-2 border-dashed border-gray-300 p-5">
-                        <span className="text-xs">
-                          Tải dữ liệu video hoặc kéo thả vào đây
-                        </span>
-                        <button
-                          type="button"
-                          className="rounded-lg border border-black p-4 font-medium transition-all duration-300 ease-in-out hover:bg-[#404040] hover:text-white"
-                          onClick={handleUploadClick}
-                        >
-                          Upload a video
-                        </button>
-                        <input
-                          ref={fileInputRef}
-                          type="file"
-                          accept=".mp4,.avi,.mkv,.flv"
-                          style={{ display: 'none' }}
-                          onChange={(event) => {
-                            handleFileChange(event)
-                            field.onChange(event.target.files?.[0])
-                          }}
-                        />
-                        <FormMessage />
-                      </div>
-                    )}
-                  </div>
-                )}
-              />
+                      ) : (
+                        <>
+                          <span className="text-xs">
+                            Tải dữ liệu video hoặc kéo thả vào đây
+                          </span>
+                          <button
+                            type="button"
+                            className="rounded-lg border border-black p-4 font-medium transition-all duration-300 ease-in-out hover:bg-[#404040] hover:text-white"
+                            onClick={handleUploadClick}
+                          >
+                            Upload a video
+                          </button>
+                          <input
+                            ref={fileInputRef}
+                            type="file"
+                            accept=".mp4,.avi,.mkv,.flv"
+                            style={{ display: 'none' }}
+                            onChange={(event) => {
+                              handleFileChange(event)
+                              field.onChange(event.target.files?.[0])
+                            }}
+                          />
+                          <FormMessage />
+                        </>
+                      )
+                    }
+                  />
+                </div>
+              </div>
             )}
 
             <FormField
@@ -348,20 +330,14 @@ const LessonVideo = ({
             />
 
             {!isApproved && (
-              <div className="flex items-center justify-end">
-                <Button
-                  onClick={handleClose}
-                  className="mr-3"
-                  variant="secondary"
-                >
-                  Huỷ
-                </Button>
+              <div className="flex justify-end">
                 <Button
                   type="submit"
                   disabled={isLessonVideoCreating || isLessonVideoUpdating}
+                  className="float-right"
                 >
                   {(isLessonVideoCreating || isLessonVideoUpdating) && (
-                    <Loader2 className="mr-2 size-4 animate-spin" />
+                    <Loader2 className="animate-spin" />
                   )}
                   {isEdit ? 'Cập nhật' : 'Thêm bài học'}
                 </Button>

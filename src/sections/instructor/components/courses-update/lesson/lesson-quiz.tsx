@@ -1,13 +1,13 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useQueryClient } from '@tanstack/react-query'
 import { Check, Loader2, Pencil, Trash, X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { toast } from 'react-toastify'
 import Swal from 'sweetalert2'
 
-import QueryKey from '@/constants/query-key'
-import { useCreateLessonQuiz } from '@/hooks/instructor/lesson/useLesson'
+import {
+  useCreateLessonQuiz,
+  useUpdateQuizContent,
+} from '@/hooks/instructor/lesson/useLesson'
 import { useDeleteQuestion, useGetQuiz } from '@/hooks/instructor/quiz/useQuiz'
 import { LessonQuizPayload, lessonQuizSchema } from '@/validations/lesson'
 
@@ -40,7 +40,6 @@ const LessonQuiz = ({
   quizId,
   courseStatus,
 }: Props) => {
-  const queryClient = useQueryClient()
   const [editQuestion, setEditQuestion] = useState(false)
   const [, setQuestions] = useState<any[]>([])
   const [editQuestionId, setEditQuestionId] = useState<string | null>(null)
@@ -53,6 +52,9 @@ const LessonQuiz = ({
   )
   const { mutate: createLessonQuiz, isPending: isLessonQuizCreatePending } =
     useCreateLessonQuiz()
+  const { mutate: updateQuizContent, isPending: isUpdating } =
+    useUpdateQuizContent()
+
   const { mutate: deleteQuestion } = useDeleteQuestion()
 
   const isApproved = courseStatus === CourseStatus.Approved
@@ -64,7 +66,7 @@ const LessonQuiz = ({
       content: '',
     },
     values: questionData?.data,
-    disabled: isApproved,
+    disabled: isApproved || isLessonQuizCreatePending || isUpdating,
   })
 
   useEffect(() => {
@@ -78,10 +80,6 @@ const LessonQuiz = ({
       })
     }
   }, [isEdit, questionData, form])
-
-  const handleClose = () => {
-    onHide()
-  }
 
   const handleDeleteQuestion = (questionId: string) => {
     Swal.fire({
@@ -99,27 +97,31 @@ const LessonQuiz = ({
   }
 
   const onSubmit = (data: LessonQuizPayload) => {
-    createLessonQuiz(
-      {
-        chapterId: chapterId as string,
-        payload: data,
-      },
-      {
-        onSuccess: async (res: any) => {
-          await queryClient.invalidateQueries({
-            queryKey: [QueryKey.INSTRUCTOR_COURSE],
-          })
-          handleClose()
-          form.reset()
-          onHide()
+    const onSuccess = () => {
+      form.reset()
+      onHide()
+    }
 
-          toast.success(res.message)
+    if (isEdit)
+      updateQuizContent(
+        {
+          quizId: quizId as string,
+          payload: data,
         },
-        onError: (error: any) => {
-          toast.error(error.message || 'Có lỗi xảy ra')
+        {
+          onSuccess,
+        }
+      )
+    else
+      createLessonQuiz(
+        {
+          chapterId: chapterId as string,
+          payload: data,
         },
-      }
-    )
+        {
+          onSuccess,
+        }
+      )
   }
 
   if (isQuestionLoading) {
@@ -178,18 +180,14 @@ const LessonQuiz = ({
 
           {(courseStatus === CourseStatus.Draft ||
             courseStatus === CourseStatus.Reject) && (
-            <div className="flex items-center justify-end">
+            <div className="flex justify-end">
               <Button
-                onClick={handleClose}
-                className="mr-3"
-                variant="secondary"
-                type="button"
+                type="submit"
+                disabled={isLessonQuizCreatePending || isUpdating}
+                className="float-right"
               >
-                Huỷ
-              </Button>
-              <Button type="submit" disabled={isLessonQuizCreatePending}>
-                {isLessonQuizCreatePending && (
-                  <Loader2 className="mr-2 size-4 animate-spin" />
+                {(isLessonQuizCreatePending || isUpdating) && (
+                  <Loader2 className="animate-spin" />
                 )}
                 {isEdit ? 'Cập nhật' : 'Thêm bài học'}
               </Button>

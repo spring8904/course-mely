@@ -25,7 +25,7 @@ import {
 } from '@/lib/common'
 import { ILesson } from '@/types'
 import MuxPlayerElement from '@mux/mux-player'
-import MuxPlayer from '@mux/mux-player-react/lazy'
+import MuxPlayer from '@mux/mux-player-react'
 import { Plus } from 'lucide-react'
 import { useSearchParams } from 'next/navigation'
 import React, { useEffect, useRef, useState } from 'react'
@@ -260,8 +260,8 @@ const VideoLesson = ({ lesson, isCompleted, lastTimeVideo = 0 }: Props) => {
 
   return (
     <>
-      <div className="bg-black/95 px-16 lg:px-20 xl:px-40">
-        <div className="aspect-video">
+      <div className="aspect-[21/9] bg-black/95">
+        <div className="mx-auto aspect-video h-full">
           <MuxPlayer
             hotkeys="noarrowright"
             ref={muxPlayerRef}
