@@ -1,4 +1,5 @@
 import api from '@/configs/api'
+import { DraftCourse } from '@/types/DraftCourse'
 import {
   CompleteLessonPayload,
   GetLessonDetailResponse,
@@ -59,5 +60,10 @@ export const learningPathApi = {
     return api.put(`${prefix}/lesson/${lesson_id}/update-last-time-video`, {
       last_time_video,
     })
+  },
+
+  getDraftCourse: async (slug: string): Promise<DraftCourse> => {
+    const res = await api.get(`${prefix}/draft/${slug}`)
+    return res.data
   },
 }

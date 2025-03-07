@@ -5,7 +5,6 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogDescription,
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
@@ -22,10 +21,11 @@ import {
   addMemberGroupChatSchema,
 } from '@/validations/chat'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Loader2 } from 'lucide-react'
+import { Loader2, Search, UserRoundPlus, X } from 'lucide-react'
 import { toast } from 'react-toastify'
 import { useQueryClient } from '@tanstack/react-query'
 import QUERY_KEY from '@/constants/query-key'
+import { Input } from '@/components/ui/input'
 
 type Member = {
   id: number
@@ -36,7 +36,7 @@ type Member = {
 type InviteMemberDialogProps = {
   isOpen: boolean
   onClose: () => void
-  channelId: string
+  channelId: number
 }
 
 const InviteMember = ({
@@ -45,6 +45,8 @@ const InviteMember = ({
   channelId,
 }: InviteMemberDialogProps) => {
   const queryClient = useQueryClient()
+
+  const [searchQuery, setSearchQuery] = useState('')
   const [selectedMembers, setSelectedMembers] = useState<Member[]>([])
   const { data: members, isLoading } = useGetRemainingMembers(channelId)
   const { mutate: addMember, isPending } = useAddMemberGroupChat()
@@ -68,6 +70,10 @@ const InviteMember = ({
     }
   }
 
+  const filteredMembers = members?.data?.filter((member: any) =>
+    member.name.toLowerCase().includes(searchQuery.toLowerCase())
+  )
+
   const handleComplete = () => {
     const selectedIds = selectedMembers.map((member) => member.id.toString())
 
@@ -81,11 +87,13 @@ const InviteMember = ({
       {
         onSuccess: async (res: any) => {
           toast.success(res.message)
+          setSelectedMembers([])
+          onClose()
           await queryClient.invalidateQueries({
             queryKey: [QUERY_KEY.GROUP_CHAT, channelId],
           })
-          setSelectedMembers([])
-          onClose()
+
+          console.log(res)
         },
         onError: (error: any) => {
           toast.error(error.message)
@@ -96,74 +104,84 @@ const InviteMember = ({
 
   return (
     <AlertDialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <AlertDialogContent className="max-w-3xl">
-        <AlertDialogHeader>
-          <AlertDialogTitle>Thêm thành viên</AlertDialogTitle>
-          <AlertDialogDescription>
-            Hãy thêm thành viên vào nhóm của bạn bằng cách nhập thông tin dưới
-            đây.
-          </AlertDialogDescription>
+      <AlertDialogContent className="max-w-2xl">
+        <AlertDialogHeader className="space-y-4">
+          <div className="flex items-center justify-between">
+            <AlertDialogTitle className="flex items-center gap-2">
+              <UserRoundPlus className="size-5" />
+              Thêm thành viên
+            </AlertDialogTitle>
+            <Button variant="ghost" size="icon" onClick={onClose}>
+              <X className="size-4" />
+            </Button>
+          </div>
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              placeholder="Tìm kiếm thành viên..."
+              className="pl-9"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
         </AlertDialogHeader>
 
         {selectedMembers.length > 0 && (
-          <div className="mb-4">
-            <h4 className="mb-2 text-sm font-medium text-gray-600">Đã chọn:</h4>
+          <div className="rounded-lg bg-muted/50 p-4">
+            <h4 className="mb-3 text-sm font-medium text-muted-foreground">
+              Đã chọn {selectedMembers.length} thành viên
+            </h4>
             <div className="flex flex-wrap gap-2">
               {selectedMembers.map((member) => (
                 <div
-                  className="flex flex-col items-center gap-2"
                   key={member.id}
+                  className="flex items-center gap-2 rounded-full bg-background px-3 py-1 text-sm"
                 >
-                  <Avatar className="size-10">
-                    <AvatarImage
-                      src={member.avatar}
-                      alt={member.name}
-                      className="rounded-full"
-                    />
+                  <Avatar className="size-6">
+                    <AvatarImage src={member.avatar} />
                     <AvatarFallback>{member.name.charAt(0)}</AvatarFallback>
                   </Avatar>
-                  <span className="text-sm">{member.name}</span>
+                  <span>{member.name}</span>
+                  <X
+                    className="size-4 cursor-pointer hover:text-destructive"
+                    onClick={() => toggleMemberSelection(member)}
+                  />
                 </div>
               ))}
             </div>
           </div>
         )}
+
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(handleComplete)}
             className="space-y-4"
           >
-            <ScrollArea className="h-[300px]">
+            <ScrollArea className="h-[300px] rounded-md border p-2">
               {isLoading ? (
-                <p>Loading members...</p>
-              ) : !Array.isArray(members?.data) &&
-                members?.data?.length === 0 ? (
-                <div className="flex h-full items-center justify-center text-gray-500">
-                  Không có thành viên nào để thêm
+                <div className="flex h-full items-center justify-center">
+                  <Loader2 className="size-6 animate-spin text-muted-foreground" />
+                </div>
+              ) : !filteredMembers?.length ? (
+                <div className="flex h-full items-center justify-center text-sm text-muted-foreground">
+                  Không tìm thấy thành viên phù hợp
                 </div>
               ) : (
-                members?.data.map((member: any) => (
+                filteredMembers.map((member: any) => (
                   <FormField
                     key={member.id}
                     name={`member-${member.id}`}
                     render={() => (
-                      <FormItem className="flex items-center gap-4 border-b pb-2">
+                      <FormItem className="flex items-center gap-4 rounded-lg p-2 hover:bg-muted/50">
                         <Avatar className="size-8">
-                          <AvatarImage
-                            src={member.avatar}
-                            alt={member.name}
-                            className="rounded-full"
-                          />
+                          <AvatarImage src={member.avatar} />
                           <AvatarFallback>
                             {member.name.charAt(0)}
                           </AvatarFallback>
                         </Avatar>
-
-                        {/* Member Name */}
-                        <FormLabel className="flex-1 text-sm">
+                        <FormLabel className="flex-1 cursor-pointer font-normal">
                           {member.name}
                         </FormLabel>
-
                         <Checkbox
                           checked={selectedMembers.some(
                             (selected) => selected.id === member.id
@@ -183,19 +201,18 @@ const InviteMember = ({
               )}
             </ScrollArea>
 
-            <AlertDialogFooter className="flex justify-end">
-              <Button
-                disabled={isPending}
-                variant="destructive"
-                onClick={onClose}
-              >
+            <AlertDialogFooter>
+              <Button variant="outline" onClick={onClose} disabled={isPending}>
                 Hủy
               </Button>
-              <Button onClick={handleComplete} disabled={isPending}>
+              <Button
+                onClick={handleComplete}
+                disabled={isPending || selectedMembers.length === 0}
+              >
                 {isPending ? (
                   <>
-                    <Loader2 className="mr-2 size-4 animate-spin" /> Dang thêm
-                    ...
+                    <Loader2 className="mr-2 size-4 animate-spin" />
+                    Đang thêm...
                   </>
                 ) : (
                   'Thêm thành viên'

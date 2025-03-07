@@ -12,7 +12,7 @@ import {
 import { toast } from 'react-toastify'
 import Swal from 'sweetalert2'
 
-import { IChapter } from '@/types'
+import { CourseStatus, IChapter } from '@/types'
 import {
   useDeleteChapter,
   useUpdateChapter,
@@ -35,6 +35,7 @@ import {
 import SortableLesson from '@/sections/instructor/components/courses-update/lesson/sortable-lesson'
 
 import CreateChapter from './chapter/create-chapter'
+import Link from 'next/link'
 
 type Props = {
   chapters: IChapter[]
@@ -125,12 +126,21 @@ const CourseChapterTab = ({
 
   return (
     <div className="rounded-md">
-      <div>
-        <h1 className="text-xl font-bold">Chương trình giảng dạy</h1>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Bắt đầu xây dựng khoá học của bạn bằng cách tạo các phần bài giảng và
-          các hoạt động thực hành.
-        </p>
+      <div className="flex items-center justify-between gap-4">
+        <div>
+          <h1 className="text-xl font-bold">Chương trình giảng dạy</h1>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Bắt đầu xây dựng khoá học của bạn bằng cách tạo các phần bài giảng
+            và các hoạt động thực hành.
+          </p>
+        </div>
+
+        {(courseStatus === CourseStatus.Draft ||
+          courseStatus === CourseStatus.Reject) && (
+          <Button asChild>
+            <Link href={`/draft/${slug}`}>Xem trước</Link>
+          </Button>
+        )}
       </div>
       <div className="mt-4">
         <Accordion type="multiple" className="space-y-6">
@@ -193,8 +203,8 @@ const CourseChapterTab = ({
                             Chương {chapterIndex + 1}: {chapter.title}
                           </h3>
 
-                          {(courseStatus === 'draft' ||
-                            courseStatus === 'rejected') && (
+                          {(courseStatus === CourseStatus.Draft ||
+                            courseStatus === CourseStatus.Reject) && (
                             <div className="flex items-center gap-2">
                               <Button
                                 variant="outline"
@@ -247,7 +257,10 @@ const CourseChapterTab = ({
         ) : (
           <>
             <Button
-              disabled={courseStatus !== 'draft' && courseStatus !== 'rejected'}
+              disabled={
+                courseStatus !== CourseStatus.Draft &&
+                courseStatus !== CourseStatus.Reject
+              }
               onClick={() => setAddNewChapter(true)}
               className="mt-4"
             >

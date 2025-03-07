@@ -13,13 +13,7 @@ import { instructorLessonApi } from '@/services/instructor/lesson/lesson-api'
 
 export const useGetLessonCoding = (lessonSlug: string, codingId: string) => {
   return useQuery({
-    queryKey: [
-      QueryKey.INSTRUCTOR_LESSON_CODING,
-      {
-        lessonSlug,
-        codingId,
-      },
-    ],
+    queryKey: [QueryKey.INSTRUCTOR_LESSON_CODING, lessonSlug, codingId, ,],
     queryFn: () => instructorLessonApi.getLessonCoding(lessonSlug, codingId),
     enabled: !!codingId,
   })
@@ -27,14 +21,14 @@ export const useGetLessonCoding = (lessonSlug: string, codingId: string) => {
 
 export const useGetLessonVideo = (chapterId: string, lessonId: string) => {
   return useQuery({
-    queryKey: [QueryKey.INSTRUCTOR_LESSON_VIDEO],
+    queryKey: [QueryKey.INSTRUCTOR_LESSON_VIDEO, chapterId, lessonId],
     queryFn: () => instructorLessonApi.getLessonVideo(chapterId, lessonId),
     enabled: !!lessonId,
   })
 }
 export const useGetLessonDocument = (chapterId: string, lessonId: string) => {
   return useQuery({
-    queryKey: [QueryKey.INSTRUCTOR_LESSON_DOCUMENT],
+    queryKey: [QueryKey.INSTRUCTOR_LESSON_DOCUMENT, chapterId, lessonId],
     queryFn: () => instructorLessonApi.getLessonDocument(chapterId, lessonId),
     enabled: !!lessonId,
   })
@@ -84,6 +78,9 @@ export const useUpdateLessonVideo = () => {
         }),
         queryClient.invalidateQueries({
           queryKey: [QueryKey.VALIDATE_COURSE],
+        }),
+        queryClient.invalidateQueries({
+          queryKey: [QueryKey.INSTRUCTOR_LESSON_VIDEO],
         }),
       ])
     },
@@ -135,6 +132,9 @@ export const useUpdateLessonDocument = () => {
         }),
         queryClient.invalidateQueries({
           queryKey: [QueryKey.VALIDATE_COURSE],
+        }),
+        queryClient.invalidateQueries({
+          queryKey: [QueryKey.INSTRUCTOR_LESSON_DOCUMENT],
         }),
       ])
     },
@@ -223,6 +223,9 @@ export const useUpdateContentLesson = () => {
     onSuccess: async (res: any) => {
       await queryClient.invalidateQueries({
         queryKey: [QueryKey.INSTRUCTOR_COURSE],
+      })
+      await queryClient.invalidateQueries({
+        queryKey: [QueryKey.VALIDATE_COURSE],
       })
       toast.success(res.message)
     },

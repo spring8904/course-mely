@@ -36,7 +36,7 @@ export const useGetInfoGroupChat = (id: string) => {
   })
 }
 
-export const useGetRemainingMembers = (channelId: string) => {
+export const useGetRemainingMembers = (channelId: number) => {
   return useQuery({
     queryKey: [QUERY_KEY.GROUP_CHAT, channelId],
     queryFn: () => chatApi.getRemainingMembers(channelId!),
@@ -64,9 +64,16 @@ export const useAddMemberGroupChat = () => {
       id,
       data,
     }: {
-      id: string
+      id: number
       data: AddMemberGroupChatPayload
     }) => chatApi.addMemberGroupChat(id, data),
+  })
+}
+
+export const useStartDirectChat = () => {
+  return useMutation({
+    mutationFn: ({ recipient_id }: { recipient_id: number }) =>
+      chatApi.startDirectChat(recipient_id),
   })
 }
 

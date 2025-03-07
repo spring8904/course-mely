@@ -30,17 +30,10 @@ export function UserProfileModal({ open, onOpenChange }: Props) {
   >('profile')
   const [isEditing, setIsEditing] = useState(false)
   const { data: getProfile, isLoading } = useGetProfile()
-  if (isLoading) {
-    return (
-      <div>
-        <Loader2 className="animate-spin" />
-      </div>
-    )
-  }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-[1050px] overflow-hidden p-0">
+      <DialogContent className="overflow-hidden p-0 md:max-w-2xl lg:max-w-[1050px]">
         <DialogTitle className="sr-only">Account Settings</DialogTitle>
         <div className="flex h-[650px]">
           <div className="w-[280px] border-r bg-muted/30 p-6">
@@ -117,23 +110,29 @@ export function UserProfileModal({ open, onOpenChange }: Props) {
               {/*</Button>*/}
             </div>
 
-            <div className="hide-scrollbar flex-1 overflow-y-auto p-6">
-              {currentView === 'profile' ? (
-                <ProfileSection userData={getProfile?.data} />
-              ) : currentView === 'social' ? (
-                <SocialSection socialData={getProfile?.data} />
-              ) : currentView === 'careers' ? (
-                <CareersSection careersData={getProfile?.data?.user?.profile} />
-              ) : currentView === 'certificates' ? (
-                <CertificateSection
-                  certificateData={getProfile?.data?.user?.profile}
-                  isEditing={isEditing}
-                  setIsEditing={setIsEditing}
-                />
-              ) : (
-                <PasswordSection />
-              )}
-            </div>
+            {isLoading ? (
+              <Loader2 className="mx-auto mt-16 size-8 animate-spin text-muted-foreground" />
+            ) : (
+              <div className="hide-scrollbar flex-1 overflow-y-auto p-6">
+                {currentView === 'profile' ? (
+                  <ProfileSection userData={getProfile?.data} />
+                ) : currentView === 'social' ? (
+                  <SocialSection socialData={getProfile?.data} />
+                ) : currentView === 'careers' ? (
+                  <CareersSection
+                    careersData={getProfile?.data?.user?.profile}
+                  />
+                ) : currentView === 'certificates' ? (
+                  <CertificateSection
+                    certificateData={getProfile?.data?.user?.profile}
+                    isEditing={isEditing}
+                    setIsEditing={setIsEditing}
+                  />
+                ) : (
+                  <PasswordSection />
+                )}
+              </div>
+            )}
           </div>
         </div>
       </DialogContent>

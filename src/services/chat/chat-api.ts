@@ -22,8 +22,8 @@ export const chatApi = {
   getInfoGroupChat: async (id: string) => {
     return await api.get(`${prefixGroupChat}/info-group-chat/${id}`)
   },
-  getRemainingMembers: async (id: string) => {
-    return await api.get(`${prefixGroupChat}/${id}/remaining-members`)
+  getRemainingMembers: async (channelId: number) => {
+    return await api.get(`${prefixGroupChat}/${channelId}/remaining-members`)
   },
   getMessages: async (conversation_id: number) => {
     const response = await api.get(`${prefix}/get-message/${conversation_id}`)
@@ -32,11 +32,16 @@ export const chatApi = {
   createGroupChat: async (data: CreateGroupChatPayload) => {
     return await api.post(`${prefixGroupChat}/create-group-chat`, data)
   },
-  addMemberGroupChat: async (id: string, data: AddMemberGroupChatPayload) => {
+  addMemberGroupChat: async (id: number, data: AddMemberGroupChatPayload) => {
     return await api.post(
       `${prefixGroupChat}/add-member-group-chat/${id}`,
       data
     )
+  },
+  startDirectChat: async (recipient_id: number) => {
+    return await api.post(`${prefixDirectChat}/start-direct-chat`, {
+      recipient_id,
+    })
   },
   sendMessage: async (data: MessagePayload) => {
     const formData = new FormData()

@@ -47,6 +47,7 @@ import { MessagePayload } from '@/validations/chat'
 import { timeAgo } from '@/lib/common'
 import MessageContent from '@/components/shared/message-content'
 import { IChannel, IMessage } from '@/types/Chat'
+import { SidebarChatInfo } from '@/components/shared/sidebar-chat-info'
 
 interface User {
   id: number
@@ -79,7 +80,6 @@ const ChatUserView = () => {
 
   const [currentUser, setCurrentUser] = useState<number | null>(null)
 
-  const [selectedUser, setSelectedUser] = useState<User>()
   const [activeTab, setActiveTab] = useState<'chats' | 'contacts'>('chats')
   const [showSearch, setShowSearch] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
@@ -150,10 +150,6 @@ const ChatUserView = () => {
     setMessage((prev) => prev + emojiData.emoji)
   }
 
-  const handleUserSelect = (user: User) => {
-    setSelectedUser(user)
-  }
-
   const handleFileSelect = async (
     e: React.ChangeEvent<HTMLInputElement>,
     type: 'file' | 'image'
@@ -218,7 +214,7 @@ const ChatUserView = () => {
       const conversationId = selectedChannel.conversation_id
       const channel = echo.private(`conversation.${conversationId}`)
 
-      channel.listen('.MessageSent', (event: any) => {
+      const handleNewMessage = (event: any) => {
         setChats((prevChats) => ({
           ...prevChats,
           [conversationId]: [
@@ -238,7 +234,13 @@ const ChatUserView = () => {
             } satisfies IMessage,
           ],
         }))
-      })
+      }
+
+      channel.listen('.MessageSent', handleNewMessage)
+
+      return () => {
+        channel.stopListening('.MessageSent')
+      }
     }
   }, [selectedChannel])
 
@@ -353,10 +355,9 @@ const ChatUserView = () => {
                   <div
                     key={user.id}
                     className={`flex cursor-pointer items-center gap-3 rounded-lg p-2 hover:bg-secondary ${
-                      user.id === selectedUser?.id ? 'bg-secondary' : ''
+                      user.id === selectedChannel?.id ? 'bg-secondary' : ''
                     }`}
                     onClick={() => {
-                      handleUserSelect(user)
                       handleChannelSelect(user)
                     }}
                   >
@@ -438,7 +439,7 @@ const ChatUserView = () => {
                     </p>
                   ) : (
                     <p className="text-xs text-muted-foreground">
-                      {selectedUser?.online ? 'Online' : 'Offline'}
+                      {selectedChannel?.online ? 'Online' : 'Offline'}
                     </p>
                   )}
                 </p>
@@ -560,7 +561,6 @@ const ChatUserView = () => {
           </div>
         </ScrollArea>
 
-        {/* File Preview */}
         {filePreviews.length > 0 && (
           <div className="border-t bg-secondary p-2">
             <ScrollArea className="h-32">
@@ -620,7 +620,6 @@ const ChatUserView = () => {
           </div>
         )}
 
-        {/* Chat Input */}
         <div className="border-t bg-white p-4">
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-1.5">
@@ -704,36 +703,15 @@ const ChatUserView = () => {
         </div>
       </div>
 
-      <div className="w-[340px] border-l p-4">
-        <div className="flex flex-col items-center">
-          <Avatar className="size-20">
-            <AvatarImage src="https://github.com/shadcn.png" />
-            <AvatarFallback>CN</AvatarFallback>
-          </Avatar>
-          <div className="mt-2 space-y-4 text-center">
-            <h4 className="font-bold">Nhóm học tập</h4>
-            <p className="text-sm text-muted-foreground">
-              Hí anh em, chat vui vẻ nhé. Admin online 24/7 nên đừng xạo nha 😁
-              Telegram: @vietnam_laravel
-            </p>
-            <div className="flex items-center justify-center gap-4 *:cursor-pointer">
-              <div className="flex size-12 items-center justify-center rounded-full bg-gray-300 p-4">
-                <UserRoundPlus size={24} />
-              </div>
-              <div className="flex size-12 items-center justify-center rounded-full bg-gray-300 p-4">
-                <Bell size={24} />
-              </div>
-              <div className="flex size-12 items-center justify-center rounded-full bg-gray-300 p-4">
-                <Search size={24} />
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="mt-6">
-          <h4 className="font-medium">Thành viên trong đoạn chat</h4>
-          <h4 className="mt-2 font-medium">File phương tiện, liên kết</h4>
-        </div>
-      </div>
+      {selectedChannel && (
+        <SidebarChatInfo
+          selectedChannel={selectedChannel}
+          currentUser={currentUser}
+          user={user}
+          messages={chats[selectedChannel?.conversation_id] || []}
+          setSelectedChannel={setSelectedChannel}
+        />
+      )}
     </div>
   )
 }

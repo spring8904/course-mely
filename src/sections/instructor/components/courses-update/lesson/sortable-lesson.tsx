@@ -19,7 +19,7 @@ import {
 import { toast } from 'react-toastify'
 import Swal from 'sweetalert2'
 
-import { IChapter, ILesson, LessonType } from '@/types'
+import { CourseStatus, IChapter, ILesson, LessonType } from '@/types'
 import { instructorCourseApi } from '@/services/instructor/course/course-api'
 import {
   useDeleteLesson,
@@ -218,8 +218,8 @@ const SortableLesson = ({
                           {typeIndexMap[lesson?.type]}: {lesson.title}
                         </div>
                       </div>
-                      {(courseStatus === 'draft' ||
-                        courseStatus === 'rejected') && (
+                      {(courseStatus === CourseStatus.Draft ||
+                        courseStatus === CourseStatus.Reject) && (
                         <div className="flex items-center gap-2">
                           <Button
                             variant="outline"
@@ -283,7 +283,7 @@ const SortableLesson = ({
                             case 'quiz':
                               return (
                                 <>
-                                  {courseStatus !== 'approved' && (
+                                  {courseStatus !== CourseStatus.Approved && (
                                     <div className="flex w-full items-center gap-2">
                                       <Button
                                         onClick={(e) => {
@@ -354,7 +354,10 @@ const SortableLesson = ({
 
       <div className="mt-3 flex items-center gap-2">
         <Button
-          disabled={courseStatus !== 'draft' && courseStatus !== 'rejected'}
+          disabled={
+            courseStatus !== CourseStatus.Draft &&
+            courseStatus !== CourseStatus.Reject
+          }
           onClick={() => {
             setAddNewLesson((prev) => !prev)
             setSelectedLesson(undefined)
