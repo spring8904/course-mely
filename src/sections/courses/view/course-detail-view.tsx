@@ -717,6 +717,14 @@ const CourseDetailView = ({ slug }: { slug: string }) => {
                           return
                         }
 
+                        if (
+                          courseDetails?.user_id === user?.id ||
+                          courseDetails?.is_enrolled
+                        ) {
+                          router.push('/my-courses')
+                          return
+                        }
+
                         if (courseDetails?.is_free === 1) {
                           import('sweetalert2').then((Swal) => {
                             Swal.default

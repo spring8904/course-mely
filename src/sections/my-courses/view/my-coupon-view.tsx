@@ -29,7 +29,7 @@ const MyCouponView = () => {
   }
 
   return (
-    <section className="section-inner max-w-7xl py-12">
+    <section className="section-inner py-12">
       <div className="mb-6">
         <h2 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
           Mã giảm giá của tôi

@@ -21,6 +21,13 @@ export const useGetGroupChats = () => {
   })
 }
 
+export const useGetGroupStudent = () => {
+  return useQuery({
+    queryKey: [QUERY_KEY.GROUP_CHAT],
+    queryFn: () => chatApi.getGroupStudent(),
+  })
+}
+
 export const useGetInfoGroupChat = (id: string) => {
   return useQuery({
     queryKey: [QUERY_KEY.GROUP_CHAT, id],
@@ -29,11 +36,19 @@ export const useGetInfoGroupChat = (id: string) => {
   })
 }
 
-export const useGetMessage = (id: string) => {
+export const useGetRemainingMembers = (channelId: string) => {
   return useQuery({
-    queryKey: [QUERY_KEY.GROUP_CHAT, id],
-    queryFn: () => chatApi.getMessages(id!),
-    enabled: !!id,
+    queryKey: [QUERY_KEY.GROUP_CHAT, channelId],
+    queryFn: () => chatApi.getRemainingMembers(channelId!),
+    enabled: !!channelId,
+  })
+}
+
+export const useGetMessage = (conversation_id: number) => {
+  return useQuery({
+    queryKey: [QUERY_KEY.GROUP_CHAT, conversation_id],
+    queryFn: () => chatApi.getMessages(conversation_id!),
+    enabled: !!conversation_id,
   })
 }
 

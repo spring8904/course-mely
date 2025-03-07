@@ -11,9 +11,9 @@ export const addMemberGroupChatSchema = z.object({
 
 export const messageSchema = z.object({
   conversation_id: z
-    .string()
-    .nonempty('conversation_id là bắt buộc')
-    .regex(/^\d+$/, 'conversation_id phải tồn tại trong bảng conversations'),
+    .number()
+    .int('conversation_id phải là số nguyên')
+    .positive('conversation_id phải là số dương'),
   content: z
     .string({ invalid_type_error: 'content phải là chuỗi' })
     .max(255, 'content không được vượt quá 255 ký tự')

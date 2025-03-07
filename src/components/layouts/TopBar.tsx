@@ -76,7 +76,7 @@ const TopBar = () => {
 
   const filteredNotifications = notifications
     .filter((noti: any) =>
-      noti?.data?.message.toLowerCase().includes(searchTerm.toLowerCase())
+      noti?.data?.message?.toLowerCase().includes(searchTerm.toLowerCase())
     )
     .slice(0, 5)
 
