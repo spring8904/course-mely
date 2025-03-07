@@ -41,7 +41,7 @@ const QuillEditor = ({
       readOnly={disabled}
       placeholder={placeholder}
       modules={{
-        toolbar: disabled ? null : fullToolbar ? toolbarOptions : undefined,
+        toolbar: fullToolbar ? toolbarOptions : undefined,
       }}
       {...rest}
     />

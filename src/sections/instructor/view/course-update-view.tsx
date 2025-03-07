@@ -61,6 +61,7 @@ import {
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { CourseStatus } from '@/types'
+import { useCourseStatusStore } from '@/stores/use-course-status-store'
 
 type GroupId = 'planning' | 'content'
 
@@ -104,7 +105,7 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
   const openDialog = () => setIsDialogOpen(true)
   const closeDialog = () => setIsDialogOpen(false)
 
-  const [courseStatus, setCourseStatus] = useState<string>('draft')
+  const { courseStatus, setCourseStatus } = useCourseStatusStore()
   const [progress, setProgress] = useState<number>(0)
 
   const { data: courseOverviewData, isLoading: isCourseOverviewLoading } =
@@ -123,9 +124,17 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
     ) {
       router.push('/forbidden')
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [courseOverviewData?.data?.user_id, isCourseOverviewLoading, user?.id])
+
+  useEffect(() => {
     setCourseStatus(courseOverviewData?.data.status)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [courseOverviewData?.data.status])
+
+  useEffect(() => {
     setProgress(validateData?.data.progress || 0)
-  }, [user, courseOverviewData, isCourseOverviewLoading, router, validateData])
+  }, [validateData?.data.progress])
 
   const form = useForm<RequestModifyContentPayload>({
     resolver: zodResolver(requestModifyContentSchema),
@@ -370,7 +379,6 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
                 )}
                 {activeTabs.content === 'course_curriculum' && (
                   <CourseChapterTab
-                    courseStatus={courseStatus as string}
                     slug={slug}
                     chapters={courseOverviewData?.data.chapters}
                   />

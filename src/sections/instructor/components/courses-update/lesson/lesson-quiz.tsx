@@ -1,14 +1,15 @@
+'use client'
+
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Check, Loader2, Pencil, Trash, X } from 'lucide-react'
+import { Loader2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import Swal from 'sweetalert2'
 
 import {
   useCreateLessonQuiz,
   useUpdateQuizContent,
 } from '@/hooks/instructor/lesson/useLesson'
-import { useDeleteQuestion, useGetQuiz } from '@/hooks/instructor/quiz/useQuiz'
+import { useGetQuiz } from '@/hooks/instructor/quiz/useQuiz'
 import { LessonQuizPayload, lessonQuizSchema } from '@/validations/lesson'
 
 import QuillEditor from '@/components/shared/quill-editor'
@@ -22,30 +23,20 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import AddQuestionDialog from '@/sections/instructor/components/courses-update/lesson/quiz/add-question-dialog'
-import { CourseStatus } from '@/types'
+import ListQuestion from './quiz/list-question'
+import { useCourseStatusStore } from '@/stores/use-course-status-store'
 
 type Props = {
   chapterId?: string
   onHide: () => void
   isEdit?: boolean
   quizId?: string
-  courseStatus?: string
 }
 
-const LessonQuiz = ({
-  chapterId,
-  onHide,
-  isEdit,
-  quizId,
-  courseStatus,
-}: Props) => {
-  const [editQuestion, setEditQuestion] = useState(false)
+const LessonQuiz = ({ chapterId, onHide, isEdit, quizId }: Props) => {
+  const { isDraftOrRejected } = useCourseStatusStore()
+
   const [, setQuestions] = useState<any[]>([])
-  const [editQuestionId, setEditQuestionId] = useState<string | null>(null)
-  const isReadOnly = !(
-    courseStatus === CourseStatus.Draft || courseStatus === CourseStatus.Reject
-  )
 
   const { data: questionData, isLoading: isQuestionLoading } = useGetQuiz(
     quizId as string
@@ -55,10 +46,6 @@ const LessonQuiz = ({
   const { mutate: updateQuizContent, isPending: isUpdating } =
     useUpdateQuizContent()
 
-  const { mutate: deleteQuestion } = useDeleteQuestion()
-
-  const isApproved = courseStatus === CourseStatus.Approved
-
   const form = useForm<LessonQuizPayload>({
     resolver: zodResolver(lessonQuizSchema),
     defaultValues: {
@@ -66,7 +53,7 @@ const LessonQuiz = ({
       content: '',
     },
     values: questionData?.data,
-    disabled: isApproved || isLessonQuizCreatePending || isUpdating,
+    disabled: !isDraftOrRejected || isLessonQuizCreatePending || isUpdating,
   })
 
   useEffect(() => {
@@ -81,21 +68,6 @@ const LessonQuiz = ({
     }
   }, [isEdit, questionData, form])
 
-  const handleDeleteQuestion = (questionId: string) => {
-    Swal.fire({
-      title: 'Xác nhận xóa câu hỏi',
-      text: 'Bạn có chắc muốn xoá câu hỏi này?',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Xóa',
-      cancelButtonText: 'Hủy',
-    }).then(async (result: any) => {
-      if (result.isConfirmed) {
-        await deleteQuestion(questionId)
-      }
-    })
-  }
-
   const onSubmit = (data: LessonQuizPayload) => {
     const onSuccess = () => {
       form.reset()
@@ -103,15 +75,10 @@ const LessonQuiz = ({
     }
 
     if (isEdit)
-      updateQuizContent(
-        {
-          quizId: quizId as string,
-          payload: data,
-        },
-        {
-          onSuccess,
-        }
-      )
+      updateQuizContent({
+        quizId: quizId as string,
+        payload: data,
+      })
     else
       createLessonQuiz(
         {
@@ -133,12 +100,7 @@ const LessonQuiz = ({
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <h2 className="font-semibold">
-            {courseStatus === CourseStatus.Draft ||
-            courseStatus === CourseStatus.Reject
-              ? isEdit
-                ? 'Cập nhật'
-                : 'Thêm'
-              : 'Thông tin'}{' '}
+            {isDraftOrRejected ? (isEdit ? 'Cập nhật' : 'Thêm') : 'Thông tin'}{' '}
             bài ôn tập trắc nghiệm
           </h2>
 
@@ -149,11 +111,7 @@ const LessonQuiz = ({
               <FormItem>
                 <FormLabel>Tiêu đề bài giảng</FormLabel>
                 <FormControl>
-                  <Input
-                    readOnly={isReadOnly}
-                    placeholder="Nhập tiêu đề bài giảng"
-                    {...field}
-                  />
+                  <Input placeholder="Nhập tiêu đề bài giảng" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -167,24 +125,18 @@ const LessonQuiz = ({
               <FormItem>
                 <FormLabel>Nội dung bài giảng</FormLabel>
                 <FormControl>
-                  <QuillEditor
-                    disabled={isReadOnly}
-                    {...field}
-                    value={field.value || ''}
-                  />
+                  <QuillEditor {...field} value={field.value || ''} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
 
-          {(courseStatus === CourseStatus.Draft ||
-            courseStatus === CourseStatus.Reject) && (
+          {isDraftOrRejected && (
             <div className="flex justify-end">
               <Button
                 type="submit"
                 disabled={isLessonQuizCreatePending || isUpdating}
-                className="float-right"
               >
                 {(isLessonQuizCreatePending || isUpdating) && (
                   <Loader2 className="animate-spin" />
@@ -195,63 +147,12 @@ const LessonQuiz = ({
           )}
         </form>
       </Form>
-      {isEdit && questionData?.data.questions.length > 0 && (
-        <div className="my-2">
-          <h4 className="text-sm">Danh sách câu hỏi</h4>
-          {questionData?.data.questions.map((question: any, index: number) => (
-            <div key={index} className="mt-2 rounded-lg border p-2">
-              <div className="flex justify-between">
-                <p className="text-sm">
-                  {index + 1}. {question.question}
-                </p>
-                {(courseStatus === CourseStatus.Draft ||
-                  courseStatus === CourseStatus.Reject) && (
-                  <div className="flex gap-2">
-                    <div
-                      onClick={() => {
-                        setEditQuestion(true)
-                        setEditQuestionId(question.id)
-                      }}
-                      className="cursor-pointer rounded border bg-[#fff3] p-2 shadow hover:bg-[#ffffff54]"
-                    >
-                      <Pencil size={12} />
-                    </div>
-                    <div
-                      onClick={() => handleDeleteQuestion(question.id)}
-                      className="cursor-pointer rounded border bg-[#fff3] p-2 shadow hover:bg-[#ffffff54]"
-                    >
-                      <Trash size={12} />
-                    </div>
-                  </div>
-                )}
-              </div>
-              <div className="flex flex-col gap-2 text-xs">
-                {question.answers.map((answer: any, index: number) => (
-                  <div key={index} className="flex items-center gap-2">
-                    <span>
-                      {String.fromCharCode(65 + index)}. {answer.answer}
-                    </span>
-                    {answer.is_correct ? (
-                      <Check className="size-4 text-green-500" />
-                    ) : (
-                      <X className="size-4 text-red-500" />
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
 
-      {editQuestion && (
-        <AddQuestionDialog
-          courseStatus={courseStatus as string}
-          quizId={quizId as string}
-          isOpen={editQuestion}
-          isEdit={editQuestion}
-          onOpenChange={setEditQuestion as any}
-          questionId={editQuestionId as string}
+      {quizId && (
+        <ListQuestion
+          quizId={quizId}
+          isEdit={isEdit}
+          questions={questionData?.data.questions || []}
         />
       )}
     </>

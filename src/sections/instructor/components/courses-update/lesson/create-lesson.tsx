@@ -11,10 +11,9 @@ type Props = {
   chapterId?: string
   type: LessonType
   onHide: () => void
-  courseStatus?: string
 }
 
-const CreateLesson = ({ chapterId, onHide, type, courseStatus }: Props) => {
+const CreateLesson = ({ chapterId, onHide, type }: Props) => {
   const [isCodingDialogOpen, setIsCodingDialogOpen] = useState(true)
 
   return (
@@ -33,23 +32,11 @@ const CreateLesson = ({ chapterId, onHide, type, courseStatus }: Props) => {
           {(() => {
             switch (type) {
               case 'video':
-                return (
-                  <LessonVideo
-                    onHide={onHide}
-                    chapterId={chapterId}
-                    courseStatus={courseStatus}
-                  />
-                )
+                return <LessonVideo onHide={onHide} chapterId={chapterId} />
               case 'document':
                 return <LessonDocument onHide={onHide} chapterId={chapterId} />
               case 'quiz':
-                return (
-                  <LessonQuiz
-                    onHide={onHide}
-                    chapterId={chapterId}
-                    courseStatus={courseStatus}
-                  />
-                )
+                return <LessonQuiz onHide={onHide} chapterId={chapterId} />
               default:
                 return 'Thêm bài giảng'
             }

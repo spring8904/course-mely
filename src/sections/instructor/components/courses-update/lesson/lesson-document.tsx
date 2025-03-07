@@ -22,7 +22,7 @@ import {
   useUpdateLessonDocument,
 } from '@/hooks/instructor/lesson/useLesson'
 import DialogDocumentPreview from '@/sections/instructor/components/courses-update/lesson/document/dialog-document-preview'
-import { CourseStatus } from '@/types'
+import { useCourseStatusStore } from '@/stores/use-course-status-store'
 import {
   LessonDocumentPayload,
   lessonDocumentSchema,
@@ -36,16 +36,12 @@ import { toast } from 'react-toastify'
 type Props = {
   chapterId?: string | number
   onHide: () => void
-  courseStatus?: string
   lessonId?: string | number
 }
 
-const LessonDocument = ({
-  chapterId,
-  courseStatus,
-  lessonId,
-  onHide,
-}: Props) => {
+const LessonDocument = ({ chapterId, lessonId, onHide }: Props) => {
+  const { isDraftOrRejected } = useCourseStatusStore()
+
   const [isOpenDocumentPreview, setIsOpenDocumentPreview] = useState(false)
   const [documentFile, setDocumentFile] = useState<string | null>(null) // [document]
   const fileInputRef = useRef<HTMLInputElement | null>(null)
@@ -63,8 +59,6 @@ const LessonDocument = ({
   const { mutate: updateLessonDocument, isPending: isLessonDocumentUpdating } =
     useUpdateLessonDocument()
 
-  const isApproved = courseStatus === CourseStatus.Approved
-
   const form = useForm<LessonDocumentPayload>({
     resolver: zodResolver(lessonDocumentSchema),
     defaultValues: {
@@ -75,7 +69,7 @@ const LessonDocument = ({
       document_url: '',
       isEdit: false,
     },
-    disabled: isApproved,
+    disabled: !isDraftOrRejected,
   })
 
   useEffect(() => {
@@ -189,12 +183,7 @@ const LessonDocument = ({
     <>
       <div className="mb-4 flex justify-between">
         <h2 className="font-semibold">
-          {courseStatus === CourseStatus.Draft ||
-          courseStatus === CourseStatus.Reject
-            ? lessonId
-              ? 'Cập nhật'
-              : 'Thêm'
-            : 'Thông tin'}{' '}
+          {isDraftOrRejected ? (lessonId ? 'Cập nhật' : 'Thêm') : 'Thông tin'}{' '}
           tài liệu
         </h2>
         {documentFile && (
@@ -234,7 +223,7 @@ const LessonDocument = ({
             )}
           />
 
-          {!isApproved && (
+          {isDraftOrRejected && (
             <>
               <FormField
                 control={form.control}

@@ -24,24 +24,19 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Switch } from '@/components/ui/switch'
-import { CourseStatus } from '@/types'
+import { useCourseStatusStore } from '@/stores/use-course-status-store'
 import MuxPlayer from '@mux/mux-player-react/lazy'
 
 type Props = {
   chapterId?: string
   onHide: () => void
-  courseStatus?: string
   isEdit?: boolean
   lessonId?: string | number
 }
 
-const LessonVideo = ({
-  onHide,
-  chapterId,
-  courseStatus,
-  isEdit,
-  lessonId,
-}: Props) => {
+const LessonVideo = ({ onHide, chapterId, isEdit, lessonId }: Props) => {
+  const { isDraftOrRejected } = useCourseStatusStore()
+
   const fileInputRef = useRef<HTMLInputElement | null>(null)
   const [selectedFile, setSelectedFile] = useState<any>(null)
   const [videoUrl, setVideoUrl] = useState('')
@@ -55,8 +50,6 @@ const LessonVideo = ({
     useCreateLessonVideo()
   const { mutate: updateLessonVideo, isPending: isLessonVideoUpdating } =
     useUpdateLessonVideo()
-
-  const isApproved = courseStatus === CourseStatus.Approved
 
   const form = useForm<LessonVideoPayload>({
     resolver: zodResolver(lessonVideoSchema),
@@ -76,7 +69,8 @@ const LessonVideo = ({
             video_file: null as any,
             isEdit: false,
           },
-    disabled: isApproved || isLessonVideoCreating || isLessonVideoUpdating,
+    disabled:
+      !isDraftOrRejected || isLessonVideoCreating || isLessonVideoUpdating,
   })
 
   useEffect(() => {
@@ -185,13 +179,8 @@ const LessonVideo = ({
   return (
     <>
       <h2 className="mb-4 font-semibold">
-        {courseStatus === CourseStatus.Draft ||
-        courseStatus === CourseStatus.Reject
-          ? isEdit
-            ? 'Cập nhật'
-            : 'Thêm'
-          : 'Thông tin'}{' '}
-        bài giảng
+        {isDraftOrRejected ? (isEdit ? 'Cập nhật' : 'Thêm') : 'Thông tin'} bài
+        giảng
       </h2>
 
       {!isLoading ? (
@@ -225,7 +214,7 @@ const LessonVideo = ({
               )}
             />
 
-            {!isApproved && (
+            {isDraftOrRejected && (
               <div className="mt-2">
                 <h3 className="my-2 text-sm">Tải video cho bài giảng</h3>
 
@@ -329,12 +318,11 @@ const LessonVideo = ({
               )}
             />
 
-            {!isApproved && (
+            {isDraftOrRejected && (
               <div className="flex justify-end">
                 <Button
                   type="submit"
                   disabled={isLessonVideoCreating || isLessonVideoUpdating}
-                  className="float-right"
                 >
                   {(isLessonVideoCreating || isLessonVideoUpdating) && (
                     <Loader2 className="animate-spin" />

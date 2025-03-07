@@ -545,7 +545,7 @@ const Header = () => {
                                 >
                                   <Avatar>
                                     <AvatarImage
-                                      src={course?.thumbnail}
+                                      src={course?.thumbnail ?? undefined}
                                       alt={course?.name}
                                     />
                                     <AvatarFallback>
