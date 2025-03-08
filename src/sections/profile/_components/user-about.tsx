@@ -1,5 +1,6 @@
 import { BookCopy, Clock, Mail, MapPin, Phone, Users } from 'lucide-react'
 import { timeAgo } from '@/lib/common'
+import Link from 'next/link'
 
 type Props = {
   totalStudent: string
@@ -41,7 +42,11 @@ export const UserAbout = ({
       <div className="flex items-center space-x-1">
         <Clock size={20} />
         <p>
-          Tham gia <strong>CourseMely</strong> từ {timeAgo(`${timeJoined}`)}
+          Tham gia{' '}
+          <Link href="/">
+            <strong>CourseMely</strong>
+          </Link>{' '}
+          từ {timeAgo(`${timeJoined}`)}
         </p>
       </div>
 
