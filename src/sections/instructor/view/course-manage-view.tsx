@@ -49,6 +49,7 @@ import FormCombobox from '@/components/shared/form-combobox'
 
 const CourseManageView = () => {
   const [openDialog, setOpenDialog] = useState(false)
+  const [searchTerm, setSearchTerm] = useState('')
 
   const { data: courses, isLoading: isCoursesLoading } = useGetCourses()
   const { data: categories, isLoading: isCategoriesLoading } =
@@ -59,6 +60,13 @@ const CourseManageView = () => {
 
   const form = useForm<CreateCoursePayload>({
     resolver: zodResolver(createCourseSchema),
+  })
+
+  const filteredData = courses?.data?.filter((course: any) => {
+    const searchFields = ['code', 'name', 'description']
+    return searchFields.some((field) =>
+      course[field]?.toLowerCase()?.includes(searchTerm.toLowerCase())
+    )
   })
 
   const columns: ColumnDef<ICourse>[] = [
@@ -142,11 +150,16 @@ const CourseManageView = () => {
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Giá bán" />
       ),
-      cell: ({ row }) => (
-        <div className="font-medium">
-          {formatCurrency(row.getValue('price') || 0)}
-        </div>
-      ),
+      cell: ({ row }) => {
+        const isFree = row.original.is_free
+        const price = Number(row.getValue('price')) || 0
+
+        return (
+          <div className="font-medium">
+            {isFree || price === 0 ? 'Miễn phí' : formatCurrency(price)}
+          </div>
+        )
+      },
     },
     {
       accessorKey: 'total_student',
@@ -236,8 +249,9 @@ const CourseManageView = () => {
 
           <DataTable
             columns={columns}
-            data={courses?.data || []}
+            data={filteredData || []}
             isLoading={isCoursesLoading}
+            onSearchChange={setSearchTerm}
           />
         </div>
       </div>
