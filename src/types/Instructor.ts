@@ -1,14 +1,14 @@
 export interface IInstructorProfile {
   id?: number
   user_id?: number
-  code?: string
+  code: string
   phone?: string
   address?: string | null
   experience?: string | null
   bio?: string[] | null
   avatar?: string | null
   email?: string
-  name?: string
+  name: string
   about_me?: string | null
   avg_rating?: string | null
   total_student?: string | null
