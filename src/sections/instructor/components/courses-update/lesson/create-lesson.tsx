@@ -28,7 +28,7 @@ const CreateLesson = ({ chapterId, onHide, type }: Props) => {
           }}
         />
       ) : (
-        <div className="flex h-full flex-col justify-between rounded-lg border p-4">
+        <div className="flex h-full flex-col justify-between space-y-4 rounded-lg border p-4">
           {(() => {
             switch (type) {
               case 'video':

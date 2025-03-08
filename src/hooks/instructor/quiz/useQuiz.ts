@@ -13,10 +13,10 @@ export const useGetQuiz = (id: string) => {
   })
 }
 
-export const useGetQuestion = (id: string) => {
+export const useGetQuestion = (id?: string) => {
   return useQuery({
     queryKey: [QueryKey.INSTRUCTOR_QUESTION, id],
-    queryFn: () => instructorQuizApi.getQuestion(id),
+    queryFn: () => instructorQuizApi.getQuestion(id!),
     enabled: !!id,
   })
 }

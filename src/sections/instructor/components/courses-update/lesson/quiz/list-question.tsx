@@ -12,16 +12,14 @@ import Swal from 'sweetalert2'
 import ImportQuestion from './import-question'
 
 interface Props {
-  questions: any
-  isEdit?: boolean
+  questions?: any
   quizId: string
 }
 
-const ListQuestion = ({ questions, isEdit, quizId }: Props) => {
+const ListQuestion = ({ questions = [], quizId }: Props) => {
   const { isDraftOrRejected } = useCourseStatusStore()
 
-  const [editQuestion, setEditQuestion] = useState(false)
-  const [editQuestionId, setEditQuestionId] = useState<string | null>(null)
+  const [editQuestionId, setEditQuestionId] = useState<string>()
 
   const [isOpenAddQuestion, setIsOpenAddQuestion] = useState(false)
   const [isOpenImportQuestion, setIsOpenImportQuestion] = useState(false)
@@ -60,40 +58,42 @@ const ListQuestion = ({ questions, isEdit, quizId }: Props) => {
   }
   return (
     <>
-      <div className="flex items-center gap-2">
-        <Button
-          onClick={(e) => {
-            e.stopPropagation()
-            handleDownloadQuizForm()
-          }}
-          variant="default"
-          className="bg-[#FFF7ED] p-2 text-xs text-primary shadow hover:text-white"
-        >
-          Mẫu Import
-          <FileDown className="size-2" />
-        </Button>
-        <Button
-          onClick={(e) => {
-            e.stopPropagation()
-            setIsOpenImportQuestion(true)
-          }}
-          className="bg-[#FFF7ED] p-2 text-xs text-primary shadow hover:text-white"
-        >
-          Import câu hỏi
-          <FileUp className="size-2" />
-        </Button>
-        <Button
-          onClick={(e) => {
-            e.stopPropagation()
-            setIsOpenAddQuestion(true)
-          }}
-          className="rounded-lg border bg-[#FFF7ED] p-2 text-xs text-primary shadow hover:text-white"
-        >
-          Thêm câu hỏi
-        </Button>
-      </div>
+      {
+        <div className="flex items-center gap-2">
+          <Button
+            onClick={(e) => {
+              e.stopPropagation()
+              handleDownloadQuizForm()
+            }}
+            variant="default"
+            className="bg-[#FFF7ED] p-2 text-xs text-primary shadow hover:text-white"
+          >
+            Mẫu Import
+            <FileDown className="size-2" />
+          </Button>
+          <Button
+            onClick={(e) => {
+              e.stopPropagation()
+              setIsOpenImportQuestion(true)
+            }}
+            className="bg-[#FFF7ED] p-2 text-xs text-primary shadow hover:text-white"
+          >
+            Import câu hỏi
+            <FileUp className="size-2" />
+          </Button>
+          <Button
+            onClick={(e) => {
+              e.stopPropagation()
+              setIsOpenAddQuestion(true)
+            }}
+            className="rounded-lg border bg-[#FFF7ED] p-2 text-xs text-primary shadow hover:text-white"
+          >
+            Thêm câu hỏi
+          </Button>
+        </div>
+      }
 
-      {isEdit && questions.length > 0 && (
+      {questions.length > 0 && (
         <div className="my-2">
           <h4 className="text-sm">Danh sách câu hỏi</h4>
           {questions.map((question: any, index: number) => (
@@ -106,7 +106,6 @@ const ListQuestion = ({ questions, isEdit, quizId }: Props) => {
                   <div className="flex gap-2">
                     <div
                       onClick={() => {
-                        setEditQuestion(true)
                         setEditQuestionId(question.id)
                       }}
                       className="cursor-pointer rounded border bg-[#fff3] p-2 shadow hover:bg-[#ffffff54]"
@@ -141,24 +140,22 @@ const ListQuestion = ({ questions, isEdit, quizId }: Props) => {
         </div>
       )}
 
-      {editQuestion && (
-        <AddQuestionDialog
-          // courseStatus={courseStatus as string}
-          quizId={quizId as string}
-          isOpen={editQuestion}
-          isEdit={editQuestion}
-          onOpenChange={setEditQuestion as any}
-          questionId={editQuestionId as string}
-        />
-      )}
+      <AddQuestionDialog
+        isOpen={!!editQuestionId}
+        onOpenChange={(open) => {
+          if (!open) setEditQuestionId(undefined)
+        }}
+        questionId={editQuestionId}
+      />
 
       <AddQuestionDialog
         isOpen={isOpenAddQuestion}
         onOpenChange={setIsOpenAddQuestion}
-        quizId={quizId as string}
+        quizId={quizId}
       />
+
       <ImportQuestion
-        quizId={quizId as string}
+        quizId={quizId}
         isOpenImportQuestion={isOpenImportQuestion}
         setIsOpenImportQuestion={setIsOpenImportQuestion}
       />

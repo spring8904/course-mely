@@ -2,7 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2 } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 
 import {
@@ -23,8 +23,8 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import ListQuestion from './quiz/list-question'
 import { useCourseStatusStore } from '@/stores/use-course-status-store'
+import ListQuestion from './quiz/list-question'
 
 type Props = {
   chapterId?: string
@@ -36,11 +36,10 @@ type Props = {
 const LessonQuiz = ({ chapterId, onHide, isEdit, quizId }: Props) => {
   const { isDraftOrRejected } = useCourseStatusStore()
 
-  const [, setQuestions] = useState<any[]>([])
-
   const { data: questionData, isLoading: isQuestionLoading } = useGetQuiz(
     quizId as string
   )
+
   const { mutate: createLessonQuiz, isPending: isLessonQuizCreatePending } =
     useCreateLessonQuiz()
   const { mutate: updateQuizContent, isPending: isUpdating } =
@@ -52,18 +51,15 @@ const LessonQuiz = ({ chapterId, onHide, isEdit, quizId }: Props) => {
       title: '',
       content: '',
     },
-    values: questionData?.data,
+    values: questionData,
     disabled: !isDraftOrRejected || isLessonQuizCreatePending || isUpdating,
   })
 
   useEffect(() => {
-    if (questionData) {
-      setQuestions(questionData.data.questions)
-    }
     if (isEdit && questionData) {
       form.reset({
-        title: questionData.data.title || '',
-        content: questionData.data.content || '',
+        title: questionData.title || '',
+        content: questionData.content || '',
       })
     }
   }, [isEdit, questionData, form])
@@ -149,11 +145,7 @@ const LessonQuiz = ({ chapterId, onHide, isEdit, quizId }: Props) => {
       </Form>
 
       {quizId && (
-        <ListQuestion
-          quizId={quizId}
-          isEdit={isEdit}
-          questions={questionData?.data.questions || []}
-        />
+        <ListQuestion quizId={quizId} questions={questionData?.questions} />
       )}
     </>
   )

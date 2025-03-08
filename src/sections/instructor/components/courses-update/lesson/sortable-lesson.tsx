@@ -214,7 +214,7 @@ const SortableLesson = ({ chapter, slug }: Props) => {
                   {lessonEdit === lesson.id &&
                     lesson.type &&
                     lesson.type !== 'coding' && (
-                      <AccordionContent className="mt-2 space-y-3 rounded-lg p-4">
+                      <AccordionContent className="mt-2 space-y-4 rounded-lg p-4">
                         {(() => {
                           switch (lesson.type) {
                             case 'video':

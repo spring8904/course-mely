@@ -94,10 +94,13 @@ const CourseUpdateView = ({ slug }: { slug: string }) => {
   const { user } = useAuthStore()
   const router = useRouter()
 
-  const [activeGroup, setActiveGroup] = useState<GroupId>('planning')
+  // const [activeGroup, setActiveGroup] = useState<GroupId>('planning')
+  const [activeGroup, setActiveGroup] = useState<GroupId>('content')
   const [activeTabs, setActiveTabs] = useState<ActiveTabs>({
-    planning: 'course_objectives',
-    content: null,
+    // planning: 'course_objectives',
+    // content: null,
+    planning: null,
+    content: 'course_curriculum',
   })
 
   const [isDialogOpen, setIsDialogOpen] = useState(false)

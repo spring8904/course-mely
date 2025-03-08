@@ -50,7 +50,7 @@ const LessonDocument = ({ chapterId, lessonId, onHide }: Props) => {
   )
   const [selectedFile, setSelectedFile] = useState<any>(null)
 
-  const { data: lessonDocumentData } = useGetLessonDocument(
+  const { data: lessonDocumentData, isLoading } = useGetLessonDocument(
     chapterId as string,
     lessonId as string
   )
@@ -69,7 +69,10 @@ const LessonDocument = ({ chapterId, lessonId, onHide }: Props) => {
       document_url: '',
       isEdit: false,
     },
-    disabled: !isDraftOrRejected,
+    disabled:
+      !isDraftOrRejected ||
+      isLessonDocumentCreating ||
+      isLessonDocumentUpdating,
   })
 
   useEffect(() => {
@@ -179,9 +182,12 @@ const LessonDocument = ({ chapterId, lessonId, onHide }: Props) => {
     }
   }
 
+  if (isLoading)
+    return <Loader2 className="mx-auto animate-spin text-muted-foreground" />
+
   return (
     <>
-      <div className="mb-4 flex justify-between">
+      <div className="flex justify-between">
         <h2 className="font-semibold">
           {isDraftOrRejected ? (lessonId ? 'Cập nhật' : 'Thêm') : 'Thông tin'}{' '}
           tài liệu
@@ -347,6 +353,7 @@ const LessonDocument = ({ chapterId, lessonId, onHide }: Props) => {
           )}
         </form>
       </Form>
+
       <DialogDocumentPreview
         isOpen={isOpenDocumentPreview}
         setIsOpen={setIsOpenDocumentPreview}
