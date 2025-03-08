@@ -48,6 +48,7 @@ import { timeAgo } from '@/lib/common'
 import MessageContent from '@/components/shared/message-content'
 import { IChannel, IMessage } from '@/types/Chat'
 import { SidebarChatInfo } from '@/components/shared/sidebar-chat-info'
+import Image from 'next/image'
 
 interface FilePreview {
   name: string
@@ -68,6 +69,7 @@ const ChatView = () => {
       return saved ? JSON.parse(saved) : null
     }
   )
+
   const [currentUser, setCurrentUser] = useState<number | null>(null)
 
   const [activeTab, setActiveTab] = useState<'chats' | 'contacts'>('chats')
@@ -89,14 +91,12 @@ const ChatView = () => {
     useSendMessage()
 
   useEffect(() => {
-    if (
-      getMessageData &&
-      selectedChannel &&
-      Array.isArray(getMessageData.messages)
-    ) {
+    if (getMessageData && selectedChannel) {
       const conversationId = selectedChannel?.conversation_id
 
-      const formattedMessages = getMessageData.messages.map((msg: any) => ({
+      const messages = getMessageData?.messages || []
+
+      const formattedMessages = messages.map((msg: any) => ({
         id: msg.id,
         senderId: msg.sender_id,
         text: msg.content,
@@ -269,6 +269,8 @@ const ChatView = () => {
     setFilePreviews([])
   }
 
+  console.log(selectedChannel)
+
   return (
     <>
       <div className="flex h-[650px] bg-white">
@@ -293,13 +295,6 @@ const ChatView = () => {
           <div className="border-b p-4">
             <div className="mb-4 flex items-center justify-between">
               <h2 className="text-xl font-semibold">Chats</h2>
-              <Button
-                onClick={() => setAddGroupChat(true)}
-                size="icon"
-                variant="ghost"
-              >
-                <Plus className="size-5" />
-              </Button>
             </div>
             <div className="relative">
               <Search className="absolute left-2 top-2.5 size-4 text-muted-foreground" />
@@ -337,9 +332,6 @@ const ChatView = () => {
                   <h3 className="text-sm font-medium text-muted-foreground">
                     Liên hệ gần đây
                   </h3>
-                  <Button size="icon" variant="ghost" className="size-4">
-                    <Plus className="size-4" />
-                  </Button>
                 </div>
 
                 {isLoadingDirectChatData ? (
@@ -359,11 +351,12 @@ const ChatView = () => {
                     >
                       <div className="relative">
                         <Avatar className="size-8">
-                          <img
+                          <AvatarImage
                             src={user.avatar}
                             alt={user.name}
                             className="object-cover"
                           />
+                          <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
                         </Avatar>
                         {user.online && (
                           <span className="absolute bottom-0 right-0 size-2.5 rounded-full bg-green-500 ring-2 ring-white" />
@@ -380,13 +373,17 @@ const ChatView = () => {
                     </div>
                   ))
                 )}
-
                 <div className="mt-6">
                   <div className="mb-2 flex items-center justify-between">
                     <h3 className="text-sm font-medium text-muted-foreground">
                       Nhóm của tôi
                     </h3>
-                    <Button size="icon" variant="ghost" className="size-4">
+                    <Button
+                      onClick={() => setAddGroupChat(true)}
+                      size="icon"
+                      variant="ghost"
+                      className="size-4"
+                    >
                       <Plus className="size-4" />
                     </Button>
                   </div>
@@ -522,6 +519,9 @@ const ChatView = () => {
                 selectedChannel?.conversation_id !== undefined &&
                 chats[selectedChannel.conversation_id]?.map((msg: IMessage) => {
                   const isCurrentUser = msg.senderId === currentUser
+                  const isGroupChat = selectedChannel?.type === 'group'
+                  const isTextMessage = msg.type === 'text'
+
                   return (
                     <div
                       key={msg.id}
@@ -539,11 +539,20 @@ const ChatView = () => {
                         </Avatar>
                       )}
                       <div className={`${isCurrentUser ? 'text-right' : ''}`}>
+                        {isGroupChat && !isCurrentUser && (
+                          <div className="mb-1 text-sm font-medium text-gray-600">
+                            {msg.sender.name}
+                          </div>
+                        )}
                         <div
-                          className={`rounded-lg p-3 ${
-                            isCurrentUser
-                              ? 'bg-orange-500 text-white'
-                              : 'bg-gray-200'
+                          className={`rounded-lg ${
+                            isTextMessage
+                              ? `p-3 ${
+                                  isCurrentUser
+                                    ? 'bg-orange-500 text-white'
+                                    : 'bg-gray-200'
+                                }`
+                              : ''
                           }`}
                         >
                           <MessageContent message={msg} />
@@ -568,10 +577,12 @@ const ChatView = () => {
                     <div key={index} className="relative">
                       {preview.type === 'image' ? (
                         <div className="group relative">
-                          <img
+                          <Image
                             src={preview.url}
                             alt={preview.name}
-                            className="h-24 w-full rounded-lg object-cover"
+                            fill
+                            className="rounded-lg object-cover"
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                           />
                           <div className="absolute inset-0 flex items-center justify-center rounded-lg bg-black/40 opacity-0 transition-opacity group-hover:opacity-100">
                             <Button
@@ -705,17 +716,17 @@ const ChatView = () => {
         {selectedChannel && (
           <SidebarChatInfo
             selectedChannel={selectedChannel}
-            currentUser={currentUser}
-            user={user}
             messages={chats[selectedChannel?.conversation_id] || []}
             setSelectedChannel={setSelectedChannel}
           />
         )}
       </div>
-      <DialogAddGroupChat
-        onClose={() => setAddGroupChat(false)}
-        open={addGroupChat}
-      />
+      {addGroupChat && (
+        <DialogAddGroupChat
+          onClose={() => setAddGroupChat(false)}
+          open={addGroupChat}
+        />
+      )}
     </>
   )
 }

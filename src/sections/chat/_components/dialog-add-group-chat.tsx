@@ -73,12 +73,12 @@ const DialogAddGroupChat = ({ open, onClose }: DialogAddGroupChatProps) => {
   const onSubmit = (data: CreateGroupChatPayload) => {
     createGroupChat(data, {
       onSuccess: async (res: any) => {
+        form.reset()
+        onClose()
         toast.success(res.message)
         await queryClient.invalidateQueries({
           queryKey: [QUERY_KEY.GROUP_CHAT],
         })
-        onClose()
-        form.reset()
       },
       onError: (error: any) => {
         toast.error(error.message)

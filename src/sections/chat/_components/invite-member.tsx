@@ -50,6 +50,7 @@ const InviteMember = ({
   const [selectedMembers, setSelectedMembers] = useState<Member[]>([])
   const { data: members, isLoading } = useGetRemainingMembers(channelId)
   const { mutate: addMember, isPending } = useAddMemberGroupChat()
+
   const form = useForm<AddMemberGroupChatPayload>({
     resolver: zodResolver(addMemberGroupChatSchema),
     defaultValues: {

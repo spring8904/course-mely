@@ -9,3 +9,17 @@ export const useGetLearners = () => {
     queryFn: () => instructorLearnerApi.getLearners(),
   })
 }
+
+export const useGetLearnerProcess = (
+  learner: string,
+  params?: {
+    start_date?: string
+    end_date?: string
+  }
+) => {
+  return useQuery({
+    queryKey: [QueryKey.INSTRUCTOR_LEARNER, learner, params],
+    queryFn: () => instructorLearnerApi.getLearnerProcess(learner, params),
+    enabled: !!learner,
+  })
+}

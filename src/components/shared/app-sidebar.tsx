@@ -71,7 +71,7 @@ const data = {
         },
         {
           title: 'Quản lý học viên',
-          url: '#',
+          url: '/instructor/learner-manage',
         },
         {
           title: 'Theo dõi tiến độ',

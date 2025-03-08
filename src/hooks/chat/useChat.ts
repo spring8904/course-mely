@@ -38,7 +38,7 @@ export const useGetInfoGroupChat = (id: string) => {
 
 export const useGetRemainingMembers = (channelId: number) => {
   return useQuery({
-    queryKey: [QUERY_KEY.GROUP_CHAT, channelId],
+    queryKey: [QUERY_KEY.REMAINING_MEMBER, channelId],
     queryFn: () => chatApi.getRemainingMembers(channelId!),
     enabled: !!channelId,
   })

@@ -53,6 +53,7 @@ enum QueryKey {
   CODING_SUBMISSION = 'coding-submission',
   BANNERS = 'banners',
   GROUP_CHAT = 'group-chat',
+  REMAINING_MEMBER = 'remaining-members',
   GROUP_DIRECT = 'direct-chat',
   GOOGLE_REDIRECT = 'google-redirect',
   DRAFT_COURSE = 'draft-course',

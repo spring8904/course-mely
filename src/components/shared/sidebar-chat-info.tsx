@@ -11,7 +11,6 @@ import {
   UserRoundPlus,
 } from 'lucide-react'
 import { IChannel, IMessage } from '@/types/Chat'
-import { IUser } from '@/types'
 
 import {
   Collapsible,
@@ -32,29 +31,30 @@ import { useStartDirectChat } from '@/hooks/chat/useChat'
 import { useQueryClient } from '@tanstack/react-query'
 import QUERY_KEY from '@/constants/query-key'
 import InviteMember from '@/sections/chat/_components/invite-member'
+import { useAuthStore } from '@/stores/useAuthStore'
 
 interface ChannelInfoPanelProps {
   selectedChannel: IChannel
-  currentUser?: number | null
-  user: IUser | null
   messages?: IMessage[]
   setSelectedChannel: (channel: IChannel | null) => void
 }
 
 export const SidebarChatInfo = ({
   selectedChannel,
-  currentUser,
-  user,
   messages,
   setSelectedChannel,
 }: ChannelInfoPanelProps) => {
   const queryClient = useQueryClient()
+  const { user } = useAuthStore()
 
   const [isInviteDialogOpen, setIsInviteDialogOpen] = useState(false)
   const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(
     null
   )
   const isGroup = selectedChannel?.type === 'group'
+
+  console.log(isGroup)
+
   const mediaMessages =
     messages?.filter(
       (msg) =>
@@ -79,7 +79,7 @@ export const SidebarChatInfo = ({
               src={
                 isGroup
                   ? 'https://github.com/shadcn.png'
-                  : currentUser === selectedChannel?.id
+                  : user?.id === selectedChannel?.id
                     ? user?.avatar || ''
                     : selectedChannel?.avatar || ''
               }
@@ -87,7 +87,7 @@ export const SidebarChatInfo = ({
             <AvatarFallback>
               {isGroup
                 ? 'CN'
-                : currentUser === selectedChannel?.id
+                : user?.id === selectedChannel?.id
                   ? user?.name?.charAt(0)
                   : selectedChannel?.name?.charAt(0)}
             </AvatarFallback>
@@ -97,20 +97,20 @@ export const SidebarChatInfo = ({
             <h4 className="font-bold">
               {isGroup
                 ? selectedChannel.name
-                : currentUser === selectedChannel?.id
+                : user?.id === selectedChannel?.id
                   ? user?.name
                   : selectedChannel?.name}
             </h4>
             <p className="text-sm text-muted-foreground">
               {isGroup
                 ? 'Hí anh em, chat vui vẻ nhé. Admin online 24/7 nên đừng xạo nha 😁 Telegram: @vietnam_laravel'
-                : currentUser === selectedChannel?.id
+                : user?.id === selectedChannel?.id
                   ? 'Đây là thông tin của bạn'
                   : `Bạn đang chat với ${selectedChannel?.name}`}
             </p>
 
             <div className="flex items-center justify-center gap-4 *:cursor-pointer">
-              {isGroup && currentUser === selectedChannel.owner_id && (
+              {isGroup && user?.id === selectedChannel.owner_id && (
                 <div
                   className="flex size-12 items-center justify-center rounded-full bg-gray-300 p-4"
                   onClick={() => setIsInviteDialogOpen(true)}
@@ -164,7 +164,7 @@ export const SidebarChatInfo = ({
                           </span>
                         </div>
                       </div>
-                      {currentUser === selectedChannel.owner_id &&
+                      {user?.id === selectedChannel.owner_id &&
                         member.id !== selectedChannel.owner_id && (
                           <DropdownMenu>
                             <DropdownMenuTrigger className="focus:outline-none">

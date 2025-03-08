@@ -5,7 +5,6 @@ import EmojiPicker, { EmojiClickData } from 'emoji-picker-react'
 import { Button } from '@/components/ui/button'
 import {
   Archive,
-  Bell,
   Info,
   Loader2,
   Mic,
@@ -16,7 +15,6 @@ import {
   Send,
   Smile,
   Trash2,
-  UserRoundPlus,
   Volume2,
   X,
 } from 'lucide-react'
@@ -48,15 +46,6 @@ import { timeAgo } from '@/lib/common'
 import MessageContent from '@/components/shared/message-content'
 import { IChannel, IMessage } from '@/types/Chat'
 import { SidebarChatInfo } from '@/components/shared/sidebar-chat-info'
-
-interface User {
-  id: number
-  name: string
-  avatar: string
-  online?: boolean
-  messages?: number
-  initials?: string
-}
 
 interface FilePreview {
   name: string
@@ -363,11 +352,8 @@ const ChatUserView = () => {
                   >
                     <div className="relative">
                       <Avatar className="size-8">
-                        <img
-                          src={user.avatar}
-                          alt={user.name}
-                          className="object-cover"
-                        />
+                        <AvatarImage src={user.avatar} alt={user.name} />
+                        <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
                       </Avatar>
                       {user.online && (
                         <span className="absolute bottom-0 right-0 size-2.5 rounded-full bg-green-500 ring-2 ring-white" />
@@ -523,6 +509,9 @@ const ChatUserView = () => {
               selectedChannel?.conversation_id !== undefined &&
               chats[selectedChannel.conversation_id]?.map((msg: IMessage) => {
                 const isCurrentUser = msg.senderId === currentUser
+                const isGroupChat = selectedChannel?.type === 'group'
+                const isTextMessage = msg.type === 'text'
+
                 return (
                   <div
                     key={msg.id}
@@ -540,11 +529,20 @@ const ChatUserView = () => {
                       </Avatar>
                     )}
                     <div className={`${isCurrentUser ? 'text-right' : ''}`}>
+                      {isGroupChat && !isCurrentUser && (
+                        <div className="mb-1 text-sm font-medium text-gray-600">
+                          {msg.sender.name}
+                        </div>
+                      )}
                       <div
-                        className={`rounded-lg p-3 ${
-                          isCurrentUser
-                            ? 'bg-orange-500 text-white'
-                            : 'bg-gray-200'
+                        className={`rounded-lg ${
+                          isTextMessage
+                            ? `p-3 ${
+                                isCurrentUser
+                                  ? 'bg-orange-500 text-white'
+                                  : 'bg-gray-200'
+                              }`
+                            : ''
                         }`}
                       >
                         <MessageContent message={msg} />
@@ -706,8 +704,6 @@ const ChatUserView = () => {
       {selectedChannel && (
         <SidebarChatInfo
           selectedChannel={selectedChannel}
-          currentUser={currentUser}
-          user={user}
           messages={chats[selectedChannel?.conversation_id] || []}
           setSelectedChannel={setSelectedChannel}
         />
