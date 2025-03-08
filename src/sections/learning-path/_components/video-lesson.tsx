@@ -15,7 +15,14 @@ import {
   useCompleteLesson,
   useUpdateLastTime,
 } from '@/hooks/learning-path/useLearningPath'
-import { formatDate, formatDuration } from '@/lib/common'
+import {
+  formatDate,
+  formatDuration,
+  generateRandomCode,
+  getLocalStorage,
+  removeLocalStorage,
+  setLocalStorage,
+} from '@/lib/common'
 import { ILesson } from '@/types'
 import MuxPlayerElement from '@mux/mux-player'
 import MuxPlayer from '@mux/mux-player-react/lazy'
@@ -43,10 +50,137 @@ const VideoLesson = ({ lesson, isCompleted, lastTimeVideo = 0 }: Props) => {
 
   const [openWarningSeeking, setOpenWarningSeeking] = useState(false)
   const [openAddNote, setOpenAddNote] = useState(false)
+  const [openWarningMultiTab, setOpenWarningMultiTab] = useState(false)
+  const currentTabId = useRef<string>(generateRandomCode(10))
 
   const { mutate: completeLesson } = useCompleteLesson(lesson.id!)
   const { mutate: updateLastTime, isPending: isLastTimeUpdating } =
     useUpdateLastTime()
+
+  useEffect(() => {
+    if (!lesson.id) return
+
+    const storageKey = `active-tab-lesson-${lesson.id}`
+
+    const tabInfo = {
+      tabId: currentTabId.current,
+      timeStamp: new Date().getTime(),
+    }
+
+    const savedTabInfoStr = getLocalStorage(storageKey)
+
+    if (savedTabInfoStr) {
+      try {
+        const savedTabInfo = JSON.parse(savedTabInfoStr as string)
+
+        if (
+          savedTabInfo.tabId !== currentTabId.current &&
+          new Date().getTime() - savedTabInfo.timestamp < 5 * 60 * 1000
+        ) {
+          setOpenWarningMultiTab(true)
+          if (muxPlayerRef.current && !muxPlayerRef.current.paused) {
+            muxPlayerRef.current.pause()
+          }
+        } else {
+          setLocalStorage(storageKey, JSON.stringify(tabInfo))
+        }
+      } catch (e: any) {
+        console.log(e)
+        setLocalStorage(storageKey, JSON.stringify(tabInfo))
+      }
+    } else {
+      setLocalStorage(storageKey, JSON.stringify(tabInfo))
+    }
+
+    const intervalId = setInterval(() => {
+      checkMultipleTabs()
+    }, 5000)
+
+    return () => {
+      clearInterval(intervalId)
+      if (getLocalStorage(storageKey)) {
+        const savedInfo = JSON.parse(getLocalStorage(storageKey) || '{}')
+        if (savedInfo.tabId === currentTabId.current) {
+          removeLocalStorage(storageKey)
+        }
+      }
+    }
+  }, [lesson.id])
+
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      const isHidden =
+        document.hidden ||
+        (document as any).webkitHidden ||
+        (document as any).msHidden ||
+        (document as any).mozHidden
+
+      if (isHidden) {
+        if (muxPlayerRef.current && !muxPlayerRef.current.paused) {
+          muxPlayerRef.current.pause()
+          updateLastTime({
+            lesson_id: lesson.id!,
+            last_time_video: videoState.currentTime,
+          })
+        }
+      } else if (document.visibilityState === 'visible') {
+        if (muxPlayerRef.current && muxPlayerRef.current.paused) {
+          muxPlayerRef.current.play()
+        }
+      }
+    }
+
+    const visibilityEvents = [
+      'visibilitychange',
+      'webkitvisibilitychange',
+      'msvisibilitychange',
+      'mozvisibilitychange',
+    ]
+
+    visibilityEvents.forEach((event) => {
+      document.addEventListener(event, handleVisibilityChange)
+    })
+
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+    return () => {
+      visibilityEvents.forEach((event) => {
+        document.removeEventListener(event, handleVisibilityChange)
+      })
+    }
+  }, [videoState.currentTime, lesson.id, updateLastTime])
+
+  const checkMultipleTabs = () => {
+    if (!lesson.id) return
+
+    const storageKey = `active-tab-lesson-${lesson.id}`
+
+    const savedTabInfoStr = getLocalStorage(storageKey)
+
+    if (savedTabInfoStr) {
+      try {
+        const savedTabInfo = JSON.parse(savedTabInfoStr as string)
+
+        if (
+          savedTabInfo.tabId !== currentTabId.current &&
+          new Date().getTime() - savedTabInfo.timestamp < 5 * 60 * 1000
+        ) {
+          if (muxPlayerRef.current && !muxPlayerRef.current.paused) {
+            muxPlayerRef.current.pause()
+            setOpenWarningMultiTab(true)
+          }
+        } else {
+          const tabInfo = {
+            tabId: currentTabId.current,
+            timestamp: new Date().getTime(),
+          }
+          localStorage.setItem(storageKey, JSON.stringify(tabInfo))
+          setLocalStorage(storageKey, JSON.stringify(tabInfo))
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    }
+  }
 
   const handleTimeUpdate = (e: Event) => {
     const { currentTime, duration } = e.target as MuxPlayerElement
@@ -108,6 +242,21 @@ const VideoLesson = ({ lesson, isCompleted, lastTimeVideo = 0 }: Props) => {
       muxPlayerRef.current.currentTime = +time
     }
   }, [time])
+
+  const handleContinueInCurrentTab = () => {
+    setOpenWarningMultiTab(false)
+
+    const storageKey = `active-tab-lesson-${lesson.id}`
+    const tabInfo = {
+      tabId: currentTabId.current,
+      timestamp: new Date().getTime(),
+    }
+    setLocalStorage(storageKey, JSON.stringify(tabInfo))
+
+    if (muxPlayerRef.current) {
+      muxPlayerRef.current.play()
+    }
+  }
 
   return (
     <>
@@ -189,6 +338,27 @@ const VideoLesson = ({ lesson, isCompleted, lastTimeVideo = 0 }: Props) => {
           <AlertDialogFooter>
             <AlertDialogAction onClick={() => muxPlayerRef.current?.play()}>
               Đã hiểu
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog
+        open={openWarningMultiTab}
+        onOpenChange={setOpenWarningMultiTab}
+      >
+        <AlertDialogContent className="max-w-sm">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Phát hiện nhiều tab</AlertDialogTitle>
+            <AlertDialogDescription>
+              Chúng tôi phát hiện bạn đang mở nhiều tab cùng một bài học. Để đảm
+              bảo chất lượng học tập, vui lòng chỉ xem bài học này trong một tab
+              duy nhất.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogAction onClick={handleContinueInCurrentTab}>
+              Tiếp tục ở tab này
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
