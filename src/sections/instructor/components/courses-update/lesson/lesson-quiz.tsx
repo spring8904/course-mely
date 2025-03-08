@@ -95,10 +95,25 @@ const LessonQuiz = ({ chapterId, onHide, isEdit, quizId }: Props) => {
     <>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          <h2 className="font-semibold">
-            {isDraftOrRejected ? (isEdit ? 'Cập nhật' : 'Thêm') : 'Thông tin'}{' '}
-            bài ôn tập trắc nghiệm
-          </h2>
+          <div className="flex items-center justify-between gap-4">
+            <h2 className="font-semibold">
+              {isDraftOrRejected ? (isEdit ? 'Cập nhật' : 'Thêm') : 'Thông tin'}{' '}
+              bài ôn tập trắc nghiệm
+            </h2>
+            {isDraftOrRejected && (
+              <div className="flex justify-end">
+                <Button
+                  type="submit"
+                  disabled={isLessonQuizCreatePending || isUpdating}
+                >
+                  {(isLessonQuizCreatePending || isUpdating) && (
+                    <Loader2 className="animate-spin" />
+                  )}
+                  {isEdit ? 'Cập nhật' : 'Thêm bài học'}
+                </Button>
+              </div>
+            )}
+          </div>
 
           <FormField
             control={form.control}
@@ -127,20 +142,6 @@ const LessonQuiz = ({ chapterId, onHide, isEdit, quizId }: Props) => {
               </FormItem>
             )}
           />
-
-          {isDraftOrRejected && (
-            <div className="flex justify-end">
-              <Button
-                type="submit"
-                disabled={isLessonQuizCreatePending || isUpdating}
-              >
-                {(isLessonQuizCreatePending || isUpdating) && (
-                  <Loader2 className="animate-spin" />
-                )}
-                {isEdit ? 'Cập nhật' : 'Thêm bài học'}
-              </Button>
-            </div>
-          )}
         </form>
       </Form>
 

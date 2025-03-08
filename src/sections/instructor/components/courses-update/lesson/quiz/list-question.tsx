@@ -5,7 +5,15 @@ import { useDeleteQuestion } from '@/hooks/instructor/quiz/useQuiz'
 import AddQuestionDialog from '@/sections/instructor/components/courses-update/lesson/quiz/add-question-dialog'
 import { instructorCourseApi } from '@/services/instructor/course/course-api'
 import { useCourseStatusStore } from '@/stores/use-course-status-store'
-import { Check, FileDown, FileUp, Pencil, Trash, X } from 'lucide-react'
+import {
+  Check,
+  FileDown,
+  FileUp,
+  Loader2,
+  Pencil,
+  Trash,
+  X,
+} from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'react-toastify'
 import Swal from 'sweetalert2'
@@ -24,7 +32,7 @@ const ListQuestion = ({ questions = [], quizId }: Props) => {
   const [isOpenAddQuestion, setIsOpenAddQuestion] = useState(false)
   const [isOpenImportQuestion, setIsOpenImportQuestion] = useState(false)
 
-  const { mutate: deleteQuestion } = useDeleteQuestion()
+  const { mutate: deleteQuestion, isPending } = useDeleteQuestion()
 
   const handleDeleteQuestion = (questionId: string) => {
     Swal.fire({
@@ -108,13 +116,17 @@ const ListQuestion = ({ questions = [], quizId }: Props) => {
                       onClick={() => {
                         setEditQuestionId(question.id)
                       }}
-                      className="cursor-pointer rounded border bg-[#fff3] p-2 shadow hover:bg-[#ffffff54]"
+                      className={`cursor-pointer rounded border bg-[#fff3] p-2 shadow hover:bg-[#ffffff54] ${
+                        isPending ? 'cursor-not-allowed opacity-50' : ''
+                      }`}
                     >
                       <Pencil size={12} />
                     </div>
                     <div
                       onClick={() => handleDeleteQuestion(question.id)}
-                      className="cursor-pointer rounded border bg-[#fff3] p-2 shadow hover:bg-[#ffffff54]"
+                      className={`cursor-pointer rounded border bg-[#fff3] p-2 shadow hover:bg-[#ffffff54] ${
+                        isPending ? 'cursor-not-allowed opacity-50' : ''
+                      }`}
                     >
                       <Trash size={12} />
                     </div>

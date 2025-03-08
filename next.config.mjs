@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
+    domains: ['127.0.0.1'],
     remotePatterns: [
       {
         protocol: 'https',
@@ -8,7 +9,7 @@ const nextConfig = {
       },
     ],
   },
-  // reactStrictMode: false,
+  reactStrictMode: false,
 }
 
 export default nextConfig

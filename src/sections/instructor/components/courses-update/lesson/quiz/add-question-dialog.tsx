@@ -509,8 +509,7 @@ const AddQuestionDialog = ({
                                       name: 'Hình ảnh',
                                       size: 0,
                                       // preview: image as string,
-                                      preview:
-                                        'https://images.pexels.com/photos/276267/pexels-photo-276267.jpeg?auto=compress&cs=tinysrgb&w=600',
+                                      preview: `${process.env.NEXT_PUBLIC_STORAGE}/${image}`,
                                       type: 'image/*',
                                     } as unknown as File)
                               }
