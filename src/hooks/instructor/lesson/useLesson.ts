@@ -45,7 +45,7 @@ export const useCreateLessonVideo = () => {
       chapterId: string
       payload: FormData
     }) => instructorLessonApi.createLessonVideo(chapterId, payload),
-    onSuccess: async () => {
+    onSuccess: async (res) => {
       await Promise.all([
         queryClient.invalidateQueries({
           queryKey: [QueryKey.INSTRUCTOR_COURSE],
@@ -54,6 +54,11 @@ export const useCreateLessonVideo = () => {
           queryKey: [QueryKey.VALIDATE_COURSE],
         }),
       ])
+
+      toast.success(res.message)
+    },
+    onError: (error) => {
+      toast.error(error.message)
     },
   })
 }
@@ -71,7 +76,7 @@ export const useUpdateLessonVideo = () => {
       lessonId: string
       payload: FormData
     }) => instructorLessonApi.updateLessonVideo(chapterId, lessonId, payload),
-    onSuccess: async () => {
+    onSuccess: async (res) => {
       await Promise.all([
         queryClient.invalidateQueries({
           queryKey: [QueryKey.INSTRUCTOR_COURSE],
@@ -83,6 +88,11 @@ export const useUpdateLessonVideo = () => {
           queryKey: [QueryKey.INSTRUCTOR_LESSON_VIDEO],
         }),
       ])
+
+      toast.success(res.message)
+    },
+    onError: (error) => {
+      toast.error(error.message)
     },
   })
 }
@@ -194,7 +204,7 @@ export const useCreateLessonQuiz = () => {
       payload: LessonQuizPayload
     }) => instructorLessonApi.createLessonQuiz(chapterId, payload),
 
-    onSuccess: async () => {
+    onSuccess: async (res) => {
       await Promise.all([
         queryClient.invalidateQueries({
           queryKey: [QueryKey.INSTRUCTOR_COURSE],
@@ -203,6 +213,43 @@ export const useCreateLessonQuiz = () => {
           queryKey: [QueryKey.VALIDATE_COURSE],
         }),
       ])
+
+      toast.success(res.message)
+    },
+    onError: (error) => {
+      toast.error(error.message)
+    },
+  })
+}
+
+export const useUpdateQuizContent = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({
+      quizId,
+      payload,
+    }: {
+      quizId: string
+      payload: LessonQuizPayload
+    }) => instructorLessonApi.updateQuizContent(quizId, payload),
+
+    onSuccess: async (res) => {
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: [QueryKey.INSTRUCTOR_COURSE],
+        }),
+        queryClient.invalidateQueries({
+          queryKey: [QueryKey.VALIDATE_COURSE],
+        }),
+        queryClient.invalidateQueries({
+          queryKey: [QueryKey.INSTRUCTOR_QUIZ, res.data.id],
+        }),
+      ])
+      toast.success(res.message)
+    },
+    onError: (error) => {
+      toast.error(error.message)
     },
   })
 }

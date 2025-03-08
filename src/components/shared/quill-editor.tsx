@@ -7,6 +7,7 @@ interface QuillEditorProps {
   onChange?: (value: string) => void
   fullToolbar?: boolean
   className?: string
+  placeholder?: string
   [key: string]: any
 }
 
@@ -31,14 +32,16 @@ const QuillEditor = ({
   ref,
   fullToolbar = false,
   disabled,
+  placeholder = 'Nhập nội dung',
   ...rest
 }: QuillEditorProps) => {
   return (
     <ReactQuill
       theme="snow"
       readOnly={disabled}
+      placeholder={placeholder}
       modules={{
-        toolbar: disabled ? null : fullToolbar ? toolbarOptions : undefined,
+        toolbar: fullToolbar ? toolbarOptions : undefined,
       }}
       {...rest}
     />

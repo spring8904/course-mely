@@ -32,3 +32,25 @@ export interface IUserQuizSubmission {
   createdAt?: Date | null
   updatedAt?: Date | null
 }
+
+export interface GetQuizResponse {
+  id: number
+  title: string
+  content: string
+  questions: Question[]
+}
+
+export interface Question {
+  id: number
+  quiz_id: number
+  question: string
+  type: string
+  image: null
+  description: null | string
+  answers: Answer[]
+}
+
+export interface Answer {
+  answer: string
+  is_correct: number
+}

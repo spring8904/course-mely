@@ -1,22 +1,25 @@
-import React, { useEffect, useState } from 'react'
-import Image from 'next/image'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Check, ImagePlus, Loader2, Plus, Trash2, X } from 'lucide-react'
-import { useForm } from 'react-hook-form'
+import { ImagePlus, Loader2, Plus, Trash2 } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { useFieldArray, useForm, useWatch } from 'react-hook-form'
 
-import { StoreQuestionPayload, storeQuestionSchema } from '@/validations/lesson'
 import {
   useCreateQuestion,
   useGetQuestion,
   useUpdateQuestion,
 } from '@/hooks/instructor/quiz/useQuiz'
+import { StoreQuestionPayload, storeQuestionSchema } from '@/validations/lesson'
 
+import FileCard from '@/components/shared/file-card'
+import QuillEditor from '@/components/shared/quill-editor'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
@@ -29,461 +32,516 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import QuillEditor from '@/components/shared/quill-editor'
-import { CourseStatus } from '@/types'
+import { Sortable, SortableItem } from '@/components/ui/sortable'
+import { Switch } from '@/components/ui/switch'
+import { Textarea } from '@/components/ui/textarea'
+import { cn } from '@/lib/utils'
+import { useCourseStatusStore } from '@/stores/use-course-status-store'
+import { AnswerType } from '@/types'
 
 type Props = {
   isOpen: boolean
   onOpenChange: (open: boolean) => void
-  isEdit?: boolean
   questionId?: string
-  quizId: string
-  courseStatus?: string
+  quizId?: string
 }
 
 const colors = [
-  'bg-[#2196F3]',
-  'bg-[#26A69A]',
-  'bg-[#FFA726]',
-  'bg-[#EF5350]',
-  'bg-[#AB47BC]',
+  'bg-cyan-500',
+  'bg-green-500',
+  'bg-yellow-500',
+  'bg-purple-500',
+  'bg-rose-400',
 ]
 
 const AddQuestionDialog = ({
   isOpen,
-  isEdit,
   quizId,
   onOpenChange,
   questionId,
-  courseStatus,
 }: Props) => {
-  const [image, setImage] = useState<string | null>(null)
-  const [modalOpen, setModalOpen] = useState(false)
+  const { isDraftOrRejected } = useCourseStatusStore()
+  const [allowMove, setAllowMove] = useState(false)
 
-  const { data: questionData, isLoading: isQuestionLoading } = useGetQuestion(
-    questionId as string
-  )
+  const { data: questionData, isLoading: isQuestionLoading } =
+    useGetQuestion(questionId)
+
+  console.log('questionData >>>', questionData)
 
   const { mutate: createQuestion, isPending: isQuestionCreatePending } =
     useCreateQuestion()
   const { mutate: updateQuestion, isPending: isQuestionUpdatePending } =
     useUpdateQuestion()
 
-  const isApproved = courseStatus === CourseStatus.Approved
+  const defaultValues: StoreQuestionPayload = {
+    question: '',
+    description: '',
+    answer_type: AnswerType.OneChoice,
+    options: Array.from({ length: 4 }, () => ({
+      answer: '',
+      is_correct: 0,
+    })),
+    image: undefined,
+  }
 
   const form = useForm<StoreQuestionPayload>({
     resolver: zodResolver(storeQuestionSchema),
-    defaultValues: {
-      question: '',
-      description: '',
-      answer_type: 'single_choice',
-      options: [
-        { answer: '', is_correct: false },
-        { answer: '', is_correct: false },
-        { answer: '', is_correct: false },
-        { answer: '', is_correct: false },
-      ],
-      image: undefined,
-    },
-    disabled: isApproved,
+    defaultValues,
+    disabled:
+      !isDraftOrRejected || isQuestionCreatePending || isQuestionUpdatePending,
+  })
+
+  const {
+    formState: { errors, disabled },
+  } = form
+
+  const answerType = useWatch({ control: form.control, name: 'answer_type' })
+  const image = useWatch({ control: form.control, name: 'image' })
+
+  const { fields, append, remove, move } = useFieldArray({
+    control: form.control,
+    name: 'options',
   })
 
   useEffect(() => {
-    if (isEdit && questionData?.data) {
-      const options = questionData.data.answers.map((opt: any) => ({
+    if (questionData) {
+      const options = questionData.answers.map((opt: any) => ({
         answer: opt.answer,
-        is_correct: !!opt.is_correct,
-      })) || [
-        { answer: '', is_correct: false },
-        { answer: '', is_correct: false },
-        { answer: '', is_correct: false },
-        { answer: '', is_correct: false },
-      ]
+        is_correct: opt.is_correct,
+      }))
 
       form.reset({
-        question: questionData.data.question,
-        description: questionData.data.description,
-        answer_type: questionData.data.answer_type,
+        question: questionData.question,
+        description: questionData.description,
+        answer_type: questionData.answer_type,
         options,
-        image: questionData.data.image,
+        image: questionData.image,
       })
-
-      setImage(questionData.data.image)
     }
-  }, [isEdit, questionData, form])
-
-  useEffect(() => {
-    if (form.getValues('answer_type') === 'single_choice') {
-      const options = form.getValues('options').map((opt) => ({
-        ...opt,
-        is_correct: false,
-      }))
-      form.setValue('options', options, { shouldValidate: true })
-    }
-  }, [form])
-
-  const handleChangeOption = (optionIndex: number, value: string) => {
-    const options = form.getValues('options')
-    options[optionIndex].answer = value
-    form.setValue('options', [...options])
-  }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [questionData])
 
   const handleSelectCorrectAnswer = (selectedIndex: number) => {
     const options = form.getValues('options').map((opt, i) => ({
       ...opt,
-      is_correct: i === selectedIndex,
+      is_correct: i === selectedIndex ? 1 : 0,
     }))
 
-    form.setValue('options', options, { shouldValidate: true })
+    form.setValue('options', options)
   }
 
-  const handleToggleCorrectAnswer = (optionIndex: number) => {
-    const options = form.getValues('options')
-
-    if (form.getValues('answer_type') === 'single_choice') {
-      options.forEach((opt, i) => {
-        opt.is_correct = i === optionIndex
-      })
-    } else {
-      options[optionIndex].is_correct = !options[optionIndex].is_correct
-    }
-
-    form.setValue('options', [...options], { shouldValidate: true })
-  }
-
-  const handleAddAnswer = () => {
-    const options = form.getValues('options')
-    if (options.length < 5) {
-      const newOption = { answer: '', is_correct: false }
-      form.setValue('options', [...options, newOption])
-    }
-  }
-
-  const handleDeleteAnswer = (optionIndex: number) => {
-    const options = form.getValues('options')
-    if (options.length > 1) {
-      const newOptions = options.filter((_, i) => i !== optionIndex)
-      form.setValue('options', newOptions)
-    }
-  }
-
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (file) {
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        setImage(reader.result as string)
-      }
-      reader.readAsDataURL(file)
-    }
-  }
-
-  const handleDeleteImage = () => {
-    setImage(null)
-  }
-
-  const openImageModal = () => {
-    setModalOpen(true)
-  }
-
-  const closeImageModal = () => {
-    setModalOpen(false)
-  }
-
-  const handleCloseOrCancel = () => {
-    form.reset()
-    setImage(null)
-  }
-
-  const onSubmit = (data: StoreQuestionPayload) => {
+  const onSubmit = (payload: StoreQuestionPayload) => {
     if (isQuestionCreatePending) return
 
-    if (isEdit && questionData?.data) {
+    const onSuccess = () => onOpenChange(false)
+
+    if (questionId) {
       updateQuestion(
         {
-          questionId: questionData.data.id,
-          payload: data,
+          questionId,
+          payload,
         },
         {
-          onSuccess: () => {
-            handleCloseOrCancel()
-            onOpenChange(false)
-          },
+          onSuccess,
         }
       )
-    } else {
+    } else if (quizId) {
       createQuestion(
         {
           quizId,
-          payload: data,
+          payload,
         },
         {
-          onSuccess: () => {
-            handleCloseOrCancel()
-            onOpenChange(false)
-          },
+          onSuccess,
         }
       )
     }
   }
 
-  if (isQuestionLoading) {
-    return <Loader2 />
-  }
+  useEffect(() => {
+    if (answerType === AnswerType.OneChoice) {
+      const options = form.getValues('options').map((opt) => ({
+        ...opt,
+        is_correct: 0,
+      }))
+      form.setValue('options', options)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [answerType])
 
   return (
     <>
       <Dialog
         open={isOpen}
-        onOpenChange={() => {
-          onOpenChange(false)
-          handleCloseOrCancel()
+        onOpenChange={(open) => {
+          if (!open) {
+            form.reset()
+            setAllowMove(false)
+          }
+
+          onOpenChange(open)
         }}
       >
         <DialogContent className="w-full lg:max-w-4xl xl:max-w-7xl">
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)}>
-              <DialogHeader>
-                <div className="flex items-center justify-between pr-7">
-                  <DialogTitle>
-                    {courseStatus === CourseStatus.Draft ||
-                    courseStatus === CourseStatus.Reject
-                      ? isEdit
-                        ? 'Sửa'
-                        : 'Tạo'
-                      : 'Thông tin'}{' '}
-                    câu hỏi trắc nghiệm
-                  </DialogTitle>
+          <DialogHeader>
+            <DialogTitle>
+              {isDraftOrRejected ? (questionId ? 'Sửa' : 'Tạo') : 'Thông tin'}{' '}
+              câu hỏi trắc nghiệm
+            </DialogTitle>
+            <DialogDescription>
+              Câu hỏi trắc nghiệm giúp học viên kiểm tra kiến thức.
+            </DialogDescription>
+          </DialogHeader>
 
-                  <DialogTitle>
-                    {image ? (
-                      <div className="relative">
-                        <div onClick={openImageModal}>
-                          <Image
-                            src={image || ''}
-                            width={40}
-                            height={40}
-                            className="size-12 cursor-pointer rounded-lg object-cover"
-                            alt="Image description"
-                          />
-                        </div>
-                        <button
-                          className="absolute right-0 top-0 rounded-full bg-black/50 p-1 text-white"
-                          onClick={handleDeleteImage}
-                        >
-                          <X size={12} />
-                        </button>
-                      </div>
-                    ) : (
-                      <label>
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={handleImageChange}
-                          className="hidden"
-                        />
-                        <ImagePlus className="cursor-pointer" size={16} />
-                      </label>
-                    )}
-                  </DialogTitle>
-                </div>
-                <DialogDescription>
-                  Câu hỏi trắc nghiệm giúp học viên kiểm tra kiến thức.
-                </DialogDescription>
-              </DialogHeader>
-              <div className="space-y-4">
-                <FormField
-                  control={form.control}
-                  name={`question`}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Câu hỏi</FormLabel>
-                      <FormControl>
-                        <Input {...field} placeholder="Nhập câu hỏi" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name={`description`}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Mô tả</FormLabel>
-                      <FormControl>
-                        <QuillEditor {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name={`answer_type`}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Loại đáp án</FormLabel>
-                      <FormControl>
-                        <RadioGroup
-                          value={field.value}
-                          onValueChange={field.onChange}
-                          className="flex gap-4"
-                        >
-                          <Button
-                            type="button"
-                            variant={
-                              field.value === 'single_choice'
-                                ? 'default'
-                                : 'outline'
-                            }
-                            onClick={() => field.onChange('single_choice')}
-                          >
-                            Một đáp án
-                          </Button>
-                          <Button
-                            type="button"
-                            variant={
-                              field.value === 'multiple_choice'
-                                ? 'default'
-                                : 'outline'
-                            }
-                            onClick={() => field.onChange('multiple_choice')}
-                          >
-                            Nhiều đáp án
-                          </Button>
-                        </RadioGroup>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name={`options`}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Đáp án</FormLabel>
-                      <div className="flex gap-4">
-                        {field.value.map((option, optionIndex) => (
-                          <div
-                            key={optionIndex}
-                            className={`${colors[optionIndex]} relative min-h-[120px] rounded-lg p-6 text-white shadow-lg transition-transform hover:scale-[1.02]`}
-                            style={{
-                              flex: '1 1 0',
-                              minWidth: 'calc(20% - 1rem)',
-                            }}
-                          >
-                            {field.value.length > 2 && (
-                              <button
-                                className="absolute left-1 top-2 rounded bg-[#fff3] p-1 text-white/80 transition-colors hover:bg-[#ffffff54] hover:text-white"
-                                onClick={() => handleDeleteAnswer(optionIndex)}
-                                aria-label="Delete answer"
-                              >
-                                <Trash2 className="size-4" />
-                              </button>
-                            )}
-                            {form.watch(`answer_type`) === 'single_choice' ? (
-                              <RadioGroup
-                                value={String(
-                                  field.value.findIndex((opt) => opt.is_correct) // Tìm index của đáp án đúng
-                                )}
-                                onValueChange={(value) =>
-                                  handleSelectCorrectAnswer(Number(value))
-                                }
-                                className="absolute right-2 top-2"
-                              >
-                                <RadioGroupItem
-                                  value={String(optionIndex)}
-                                  id={`option-${optionIndex}`}
-                                  className="border-white text-white data-[state=checked]:bg-white"
-                                />
-                              </RadioGroup>
-                            ) : (
-                              <Checkbox
-                                checked={option.is_correct}
-                                onCheckedChange={() =>
-                                  handleToggleCorrectAnswer(optionIndex)
-                                }
-                                className="absolute right-2 top-2 flex size-5 items-center justify-center rounded border border-white/80 transition-colors hover:border-white"
-                              >
-                                {option.is_correct && (
-                                  <Check className="size-4" />
-                                )}
-                              </Checkbox>
-                            )}
-                            <div className="flex h-full flex-col items-center justify-center">
-                              <textarea
-                                value={option.answer}
-                                onChange={(e) =>
-                                  handleChangeOption(
-                                    optionIndex,
-                                    e.target.value
-                                  )
-                                }
-                                className="size-full resize-none bg-transparent text-center text-lg font-light text-white [-ms-overflow-style:none] [scrollbar-width:none] placeholder:text-white/90 focus:outline-none [&::-webkit-scrollbar]:hidden"
-                                placeholder="Nhập đáp án"
-                              />
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                      <FormMessage />
-                      {(courseStatus === CourseStatus.Draft ||
-                        courseStatus === CourseStatus.Reject) && (
-                        <div className="mt-4">
-                          {field.value.length < 5 && (
-                            <Button
-                              type="button"
-                              onClick={() => handleAddAnswer()}
-                              variant="outline"
-                              className="mx-auto flex items-center gap-2"
-                            >
-                              <Plus className="size-4" />
-                              Thêm đáp án
-                            </Button>
-                          )}
-                        </div>
+          {!isQuestionLoading ? (
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-4"
+              >
+                <div className="max-h-[70vh] overflow-y-auto px-1 pb-1">
+                  <div className="space-y-4">
+                    <FormField
+                      control={form.control}
+                      name={`question`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Câu hỏi</FormLabel>
+                          <FormControl>
+                            <Input {...field} placeholder="Nhập câu hỏi" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
                       )}
-                    </FormItem>
-                  )}
-                />
-              </div>
-              {/*{(courseStatus === CourseStatus.Draft || courseStatus === 'refjected') && (*/}
-              <div className="mt-4 flex justify-end gap-2">
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    handleCloseOrCancel()
-                    // onOpenChange(false)
-                  }}
-                >
-                  Hủy
-                </Button>
-                <Button
-                  disabled={isQuestionCreatePending || isQuestionUpdatePending}
-                  type="submit"
-                >
-                  {(isQuestionCreatePending || isQuestionUpdatePending) && (
-                    <Loader2 className="mr-2 size-4 animate-spin" />
-                  )}
-                  {isEdit ? 'Cập nhật' : 'Thêm câu hỏi'}
-                </Button>
-              </div>
-              {/*)}*/}
-            </form>
-          </Form>
-        </DialogContent>
-      </Dialog>
-      <Dialog open={modalOpen} onOpenChange={closeImageModal}>
-        <DialogContent className="h-[200px] w-full">
-          <Image
-            src={image || ''}
-            alt="Modal Preview"
-            layout="fill"
-            className="h-[200px] w-full rounded-lg object-contain"
-          />
+                    />
+                    <FormField
+                      control={form.control}
+                      name={`description`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Mô tả</FormLabel>
+                          <FormControl>
+                            <QuillEditor {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="answer_type"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Loại câu hỏi</FormLabel>
+                          <FormControl>
+                            <RadioGroup
+                              onValueChange={field.onChange}
+                              value={field.value}
+                              className="flex gap-8"
+                              disabled={field.disabled}
+                            >
+                              <FormItem className="flex items-center space-x-3 space-y-0">
+                                <FormControl>
+                                  <RadioGroupItem
+                                    value={AnswerType.OneChoice}
+                                  />
+                                </FormControl>
+                                <FormLabel className="font-normal">
+                                  Một đáp án
+                                </FormLabel>
+                              </FormItem>
+                              <FormItem className="flex items-center space-x-3 space-y-0">
+                                <FormControl>
+                                  <RadioGroupItem
+                                    value={AnswerType.MultipleChoice}
+                                  />
+                                </FormControl>
+                                <FormLabel className="font-normal">
+                                  Nhiều đáp án
+                                </FormLabel>
+                              </FormItem>
+                            </RadioGroup>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <div className="space-y-2">
+                      <Label
+                        className={cn(
+                          form.formState.errors.options && 'text-destructive'
+                        )}
+                      >
+                        Đáp án
+                      </Label>
+                      <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-4">
+                        <Sortable
+                          value={fields}
+                          onMove={({ activeIndex, overIndex }) => {
+                            move(activeIndex, overIndex)
+
+                            console.log(fields)
+                          }}
+                          orientation="mixed"
+                        >
+                          {fields.map((option, index) => (
+                            <SortableItem
+                              key={option.id}
+                              value={option.id}
+                              asChild
+                              asTrigger={allowMove}
+                            >
+                              <div className={cn('relative')}>
+                                <FormField
+                                  control={form.control}
+                                  name={`options.${index}.answer`}
+                                  render={({ field }) => (
+                                    <FormItem>
+                                      <div>
+                                        <FormControl>
+                                          <Textarea
+                                            {...field}
+                                            placeholder="Nhập đáp án"
+                                            className={cn(
+                                              'min-h-32 resize-none border-0 px-8 py-4 text-center text-white md:text-lg',
+                                              '[scrollbar-width:none] placeholder:text-white/80',
+                                              colors[index],
+                                              allowMove && 'cursor-grab'
+                                            )}
+                                          />
+                                        </FormControl>
+
+                                        <Button
+                                          size="icon"
+                                          variant="ghost"
+                                          className="absolute left-1 top-1 size-6 bg-white/10 text-lg text-white/80 hover:bg-white/20 hover:text-white"
+                                          disabled={
+                                            fields.length < 3 ||
+                                            field.disabled ||
+                                            allowMove
+                                          }
+                                          onClick={() => remove(index)}
+                                        >
+                                          <Trash2 />
+                                        </Button>
+                                      </div>
+
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                                />
+
+                                {answerType === AnswerType.OneChoice ? (
+                                  <FormField
+                                    control={form.control}
+                                    name={`options.${index}.is_correct`}
+                                    render={({ field }) => (
+                                      <FormItem>
+                                        <FormControl>
+                                          <RadioGroup
+                                            onValueChange={(value) => {
+                                              handleSelectCorrectAnswer(
+                                                Number(value)
+                                              )
+                                              if (errors.options) {
+                                                form.trigger('options')
+                                              }
+                                            }}
+                                            value={
+                                              field.value ? String(index) : ''
+                                            }
+                                            disabled={
+                                              field.disabled || allowMove
+                                            }
+                                            className="absolute right-1 top-1"
+                                          >
+                                            <FormItem>
+                                              <FormControl>
+                                                <RadioGroupItem
+                                                  value={String(index)}
+                                                  className="border-white"
+                                                />
+                                              </FormControl>
+                                            </FormItem>
+                                          </RadioGroup>
+                                        </FormControl>
+                                        <FormMessage />
+                                      </FormItem>
+                                    )}
+                                  />
+                                ) : (
+                                  <FormField
+                                    control={form.control}
+                                    name={`options.${index}.is_correct`}
+                                    render={({ field }) => (
+                                      <FormItem>
+                                        <FormControl>
+                                          <Checkbox
+                                            checked={field.value === 1}
+                                            onCheckedChange={(value) => {
+                                              field.onChange(value ? 1 : 0)
+                                              if (errors.options) {
+                                                form.trigger('options')
+                                              }
+                                            }}
+                                            disabled={
+                                              field.disabled || allowMove
+                                            }
+                                            className="absolute right-1 top-1 border-white"
+                                          />
+                                        </FormControl>
+                                      </FormItem>
+                                    )}
+                                  />
+                                )}
+                              </div>
+                            </SortableItem>
+                          ))}
+                        </Sortable>
+                      </div>
+
+                      {errors.options?.root && (
+                        <p
+                          className={cn(
+                            'text-[0.8rem] font-medium text-destructive'
+                          )}
+                        >
+                          {errors.options.root?.message}
+                        </p>
+                      )}
+
+                      <div className="!mt-4 flex items-center justify-between space-x-2">
+                        <div className="flex items-center space-x-2">
+                          <Switch
+                            checked={allowMove}
+                            onCheckedChange={setAllowMove}
+                            disabled={disabled}
+                            id="allow-move"
+                          />
+                          <Label
+                            className="cursor-pointer"
+                            htmlFor="allow-move"
+                          >
+                            Thay đổi vị trí
+                          </Label>
+                        </div>
+
+                        {isDraftOrRejected && fields.length < 5 && (
+                          <Button
+                            type="button"
+                            onClick={() =>
+                              append({
+                                answer: '',
+                                is_correct: 0,
+                              })
+                            }
+                            variant="outline"
+                            disabled={disabled}
+                          >
+                            <Plus className="size-4" />
+                            Thêm đáp án
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+
+                    <FormField
+                      control={form.control}
+                      name="image"
+                      render={({
+                        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                        field: { value, onChange, ...fieldProps },
+                      }) => (
+                        <FormItem>
+                          <FormLabel>Hình ảnh</FormLabel>
+                          <div>
+                            <FormControl>
+                              <Input
+                                {...fieldProps}
+                                type="file"
+                                onChange={(e) => {
+                                  if (e.target.files && e.target.files[0]) {
+                                    const file = e.target.files[0]
+
+                                    Object.assign(file, {
+                                      preview: URL.createObjectURL(file),
+                                    })
+
+                                    onChange(file)
+                                  }
+                                }}
+                                accept="image/*"
+                                className="hidden"
+                              />
+                            </FormControl>
+                          </div>
+
+                          {!image && (
+                            <div className="flex items-center gap-2">
+                              <Button
+                                type="button"
+                                variant="outline"
+                                onClick={() => {
+                                  document
+                                    .querySelector<HTMLInputElement>(
+                                      'input[type="file"]'
+                                    )
+                                    ?.click()
+                                }}
+                                disabled={disabled}
+                              >
+                                <ImagePlus className="size-4" />
+                                Thêm hình ảnh
+                              </Button>
+                            </div>
+                          )}
+
+                          {image && (
+                            <FileCard
+                              file={
+                                image instanceof File
+                                  ? image
+                                  : ({
+                                      name: 'Hình ảnh',
+                                      size: 0,
+                                      // preview: image as string,
+                                      preview: `${process.env.NEXT_PUBLIC_STORAGE}/${image}`,
+                                      type: 'image/*',
+                                    } as unknown as File)
+                              }
+                              onRemove={() => onChange(undefined)}
+                              disabled={disabled}
+                            />
+                          )}
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                </div>
+
+                <DialogFooter>
+                  <DialogClose asChild>
+                    <Button variant="secondary">Hủy</Button>
+                  </DialogClose>
+                  <Button disabled={disabled} type="submit">
+                    {(isQuestionCreatePending || isQuestionUpdatePending) && (
+                      <Loader2 className="mr-2 size-4 animate-spin" />
+                    )}
+                    {questionId ? 'Cập nhật' : 'Thêm câu hỏi'}
+                  </Button>
+                </DialogFooter>
+              </form>
+            </Form>
+          ) : (
+            <div className="flex min-h-60 items-center justify-center">
+              <Loader2 className="size-8 animate-spin text-primary" />
+            </div>
+          )}
         </DialogContent>
       </Dialog>
     </>

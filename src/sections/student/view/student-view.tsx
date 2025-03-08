@@ -1,7 +1,7 @@
 import { cn } from '@/lib/utils'
 
-import { courseData } from '@/sections/home/data/data'
-import CourseCard from '@/sections/student/_components/course-card'
+// import { courseData } from '@/sections/home/data/data'
+// import CourseCard from '@/sections/student/_components/course-card'
 
 const StudentView = () => {
   return (
@@ -15,9 +15,9 @@ const StudentView = () => {
             'lg:grid-cols-3 lg:gap-6'
           )}
         >
-          {courseData?.map((course) => (
+          {/* {courseData?.map((course) => (
             <CourseCard key={course.id} course={course} />
-          ))}
+          ))} */}
         </div>
       </div>
     </div>
