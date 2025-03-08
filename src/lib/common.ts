@@ -75,6 +75,10 @@ export const removeVietnameseTones = (str: string) => {
     .replace(/Đ/g, 'D')
 }
 
+export const formatStringToCurrency = (amount: number | string): string => {
+  return `${Number(amount).toLocaleString('vi-VN')}đ`
+}
+
 export const timeAgo = (dataTime: string) => {
   const now = new Date()
   const time = new Date(dataTime)
