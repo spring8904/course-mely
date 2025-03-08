@@ -113,7 +113,7 @@ const LearnerManageView = () => {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem asChild>
-                <Link href={`/instructor/learner-manage/info/${learner.id}`}>
+                <Link href={`/instructor/learner-manage/info/${learner.code}`}>
                   <Eye /> Xem
                 </Link>
               </DropdownMenuItem>

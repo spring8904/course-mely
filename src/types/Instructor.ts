@@ -1,15 +1,20 @@
 export interface IInstructorProfile {
   id?: number
-  userId?: number
+  user_id?: number
+  code: string
   phone?: string
   address?: string | null
   experience?: string | null
-  bio?: string[]
+  bio?: string[] | null
   avatar?: string | null
   email?: string
-  name?: string
-  createdAt?: Date | null
-  updatedAt?: Date | null
+  name: string
+  about_me?: string | null
+  avg_rating?: string | null
+  total_student?: string | null
+  total_courses?: number | null
+  created_at: Date
+  updated_at: Date
 }
 
 export interface IInstructorResponse {

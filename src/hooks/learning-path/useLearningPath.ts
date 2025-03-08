@@ -73,3 +73,10 @@ export const useUpdateLastTime = () => {
     mutationFn: learningPathApi.updateLastTime,
   })
 }
+
+export const useGetDraftCourse = (slug: string) => {
+  return useQuery({
+    queryKey: [QueryKey.DRAFT_COURSE, slug],
+    queryFn: () => learningPathApi.getDraftCourse(slug),
+  })
+}

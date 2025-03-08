@@ -3,6 +3,8 @@ enum QueryKey {
   PROFILE = 'profile',
   CHANGE_PASSWORD = 'change-password',
   ORDER = 'order',
+  COURSES_RELATED = 'related-courses',
+  COURSES_OTHER = 'other-courses',
   COURSES_DISCOUNTED = 'discounted-courses',
   COURSES_FREE = 'free-courses',
   INSTRUCTOR_ALL = 'instructor-all',
@@ -51,8 +53,10 @@ enum QueryKey {
   CODING_SUBMISSION = 'coding-submission',
   BANNERS = 'banners',
   GROUP_CHAT = 'group-chat',
+  REMAINING_MEMBER = 'remaining-members',
   GROUP_DIRECT = 'direct-chat',
   GOOGLE_REDIRECT = 'google-redirect',
+  DRAFT_COURSE = 'draft-course',
 }
 
 export default QueryKey

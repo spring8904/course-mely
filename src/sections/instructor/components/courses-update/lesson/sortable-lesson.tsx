@@ -19,7 +19,7 @@ import {
 import { toast } from 'react-toastify'
 import Swal from 'sweetalert2'
 
-import { IChapter, ILesson, LessonType } from '@/types'
+import { CourseStatus, IChapter, ILesson, LessonType } from '@/types'
 import { instructorCourseApi } from '@/services/instructor/course/course-api'
 import {
   useDeleteLesson,
@@ -44,6 +44,7 @@ import LessonQuiz from '@/sections/instructor/components/courses-update/lesson/l
 import LessonVideo from '@/sections/instructor/components/courses-update/lesson/lesson-video'
 import AddQuestionDialog from '@/sections/instructor/components/courses-update/lesson/quiz/add-question-dialog'
 import ImportQuestion from '@/sections/instructor/components/courses-update/lesson/quiz/import-question'
+import { cn } from '@/lib/utils'
 
 export interface Props {
   chapter: IChapter
@@ -170,14 +171,17 @@ const SortableLesson = ({
                   value={`lesson-${lesson.id}`}
                 >
                   <AccordionTrigger
-                    className="space-x-4 rounded-lg py-2"
+                    className={cn(
+                      'space-x-4 rounded-lg py-2',
+                      lesson.type === 'coding' && 'cursor-default'
+                    )}
                     onClick={(e) => {
                       if (!lessonEdit || lessonEdit !== lesson.id) {
                         e.stopPropagation()
                         setLessonEdit(lesson.id as number)
                       }
                     }}
-                    disabled={lesson.type === 'coding'}
+                    // disabled={lesson.type === 'coding'}
                     hideArrow={lesson.type === 'coding'}
                   >
                     <div className="flex w-full items-center justify-between gap-2">
@@ -214,8 +218,8 @@ const SortableLesson = ({
                           {typeIndexMap[lesson?.type]}: {lesson.title}
                         </div>
                       </div>
-                      {(courseStatus === 'draft' ||
-                        courseStatus === 'rejected') && (
+                      {(courseStatus === CourseStatus.Draft ||
+                        courseStatus === CourseStatus.Reject) && (
                         <div className="flex items-center gap-2">
                           <Button
                             variant="outline"
@@ -279,7 +283,7 @@ const SortableLesson = ({
                             case 'quiz':
                               return (
                                 <>
-                                  {courseStatus !== 'approved' && (
+                                  {courseStatus !== CourseStatus.Approved && (
                                     <div className="flex w-full items-center gap-2">
                                       <Button
                                         onClick={(e) => {
@@ -350,7 +354,10 @@ const SortableLesson = ({
 
       <div className="mt-3 flex items-center gap-2">
         <Button
-          disabled={courseStatus !== 'draft' && courseStatus !== 'rejected'}
+          disabled={
+            courseStatus !== CourseStatus.Draft &&
+            courseStatus !== CourseStatus.Reject
+          }
           onClick={() => {
             setAddNewLesson((prev) => !prev)
             setSelectedLesson(undefined)

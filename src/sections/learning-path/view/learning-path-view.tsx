@@ -75,6 +75,10 @@ const LearningPathView = ({ courseSlug, lessonId }: Props) => {
     switch (lesson.type) {
       case 'video':
         return lesson.lessonable?.duration as number
+      case 'coding':
+        return 300
+      case 'quiz':
+        return 180
       default:
         return 10
     }
@@ -202,22 +206,25 @@ const LearningPathView = ({ courseSlug, lessonId }: Props) => {
             )}
           </div>
 
-          <div className="col-span-3 overflow-y-auto">
-            <div className="border-l p-4 font-semibold">
-              <h2 className="font-bold">Nội dung khoá học</h2>
-            </div>
+          <div className="col-span-3 overflow-y-auto border-l-2">
+            <h2 className="border-b-2 p-4 font-bold">Nội dung khoá học</h2>
 
             <Accordion
               type="multiple"
               defaultValue={[`chapter-${lessonDetail?.lesson?.chapter_id}`]}
             >
               {chapter_lessons?.map((chapter, chapterIndex) => {
+                const duration = chapter?.lessons.reduce(
+                  (acc, lesson) => acc + getLessonDuration(lesson),
+                  0
+                )
                 return (
                   <AccordionItem
                     key={chapterIndex}
                     value={`chapter-${chapter.chapter_id}`}
+                    className="border-b-2"
                   >
-                    <AccordionTrigger className="hover:bg-gray-200">
+                    <AccordionTrigger className="border-0 hover:bg-gray-200">
                       <div>
                         <h3 className="font-semibold">
                           {chapterIndex + 1}. {chapter.chapter_title}
@@ -225,15 +232,13 @@ const LearningPathView = ({ courseSlug, lessonId }: Props) => {
                         <p className="mt-1 text-xs font-light">
                           {getChapterProgress(chapter.lessons)}/
                           {chapter?.lessons.length} |{' '}
-                          {formatDuration(
-                            chapter.total_chapter_duration,
-                            'colon'
-                          )}
+                          {formatDuration(duration, 'colon')}
                         </p>
                       </div>
                     </AccordionTrigger>
-                    <AccordionContent className="m-0 p-0">
+                    <AccordionContent className="m-0 border-0 p-0">
                       {chapter?.lessons?.map((lesson, lessonIndex) => {
+                        if (lesson.type === 'quiz') console.log(lesson)
                         const isSelected =
                           lesson?.id === lessonDetail?.lesson?.id
                         return (
@@ -245,7 +250,7 @@ const LearningPathView = ({ courseSlug, lessonId }: Props) => {
                                 )
                             }}
                             className={cn(
-                              `flex cursor-default items-center space-x-3 border-b p-3 pr-4 transition-colors duration-300`,
+                              `flex cursor-default items-center space-x-3 border-t-2 p-3 pr-4 transition-colors duration-300`,
                               isSelected
                                 ? 'bg-orange-100'
                                 : lesson.is_unlocked
