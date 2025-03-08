@@ -1,3 +1,4 @@
+import { AnswerType } from '@/types'
 import { z } from 'zod'
 
 export const createLessonSchema = z.object({
@@ -210,12 +211,15 @@ export const storeQuestionSchema = z
   .object({
     question: z.string().nonempty('Câu hỏi không được để trống'),
     description: z.string().optional(),
-    answer_type: z.enum(['single_choice', 'multiple_choice']),
+    answer_type: z.enum([AnswerType.OneChoice, AnswerType.MultipleChoice]),
     options: z
       .array(
         z.object({
-          answer: z.string().nonempty('Đáp án không được để trống'),
-          is_correct: z.boolean(),
+          answer: z
+            .string()
+            .min(1, 'Đáp án không được để trống')
+            .max(255, 'Đáp án quá dài'),
+          is_correct: z.number().int().min(0).max(1),
         })
       )
       .min(2, 'Phải có ít nhất 2 đáp án')
@@ -223,22 +227,14 @@ export const storeQuestionSchema = z
         (options) => options.some((option) => option.is_correct),
         'Phải có ít nhất một đáp án đúng'
       ),
-    image: z.any().optional(),
+    image: z.union([z.instanceof(File), z.string()]).optional(),
   })
   .superRefine((question, ctx) => {
-    if (question.options.some((opt) => !opt.answer)) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: 'Tất cả đáp án phải có nội dung',
-        path: ['options'],
-      })
-    }
-
     const correctAnswers = question.options.filter(
       (opt) => opt.is_correct
     ).length
 
-    if (question.answer_type === 'single_choice' && correctAnswers !== 1) {
+    if (question.answer_type === AnswerType.OneChoice && correctAnswers !== 1) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message: 'Vui lòng chọn một đáp án đúng',
@@ -246,7 +242,10 @@ export const storeQuestionSchema = z
       })
     }
 
-    if (question.answer_type === 'multiple_choice' && correctAnswers < 1) {
+    if (
+      question.answer_type === AnswerType.MultipleChoice &&
+      correctAnswers < 1
+    ) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message: 'Câu hỏi phải có ít nhất một đáp án đúng',

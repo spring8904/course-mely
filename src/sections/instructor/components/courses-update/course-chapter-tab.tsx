@@ -36,22 +36,20 @@ import SortableLesson from '@/sections/instructor/components/courses-update/less
 
 import CreateChapter from './chapter/create-chapter'
 import Link from 'next/link'
+import { useCourseStatusStore } from '@/stores/use-course-status-store'
 
 type Props = {
   chapters: IChapter[]
   slug: string
-  courseStatus?: string
 }
 
-const CourseChapterTab = ({
-  chapters: chapterList,
-  slug,
-  courseStatus,
-}: Props) => {
+const CourseChapterTab = ({ chapters: chapterList, slug }: Props) => {
   const [chapters, setChapters] = useState<IChapter[]>([])
   const [addNewChapter, setAddNewChapter] = useState(false)
   const [chapterEdit, setChapterEdit] = useState<number | null>(null)
   const [editTitle, setEditTitle] = useState<string>('')
+
+  const { courseStatus, isDraftOrRejected } = useCourseStatusStore()
 
   const { mutate: updateChapter } = useUpdateChapter()
   const { mutate: deleteChapter } = useDeleteChapter()
@@ -135,8 +133,7 @@ const CourseChapterTab = ({
           </p>
         </div>
 
-        {(courseStatus === CourseStatus.Draft ||
-          courseStatus === CourseStatus.Reject) && (
+        {isDraftOrRejected && (
           <Button asChild>
             <Link href={`/draft/${slug}`}>Xem trước</Link>
           </Button>
@@ -203,8 +200,7 @@ const CourseChapterTab = ({
                             Chương {chapterIndex + 1}: {chapter.title}
                           </h3>
 
-                          {(courseStatus === CourseStatus.Draft ||
-                            courseStatus === CourseStatus.Reject) && (
+                          {isDraftOrRejected && (
                             <div className="flex items-center gap-2">
                               <Button
                                 variant="outline"
@@ -240,11 +236,7 @@ const CourseChapterTab = ({
                     </div>
                   </AccordionTrigger>
                   <AccordionContent className="mt-3 rounded-lg p-4">
-                    <SortableLesson
-                      courseStatus={courseStatus}
-                      chapter={chapter}
-                      slug={slug}
-                    />
+                    <SortableLesson chapter={chapter} slug={slug} />
                   </AccordionContent>
                 </AccordionItem>
               </SortableItem>

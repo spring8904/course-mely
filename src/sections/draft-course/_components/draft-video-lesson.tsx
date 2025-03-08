@@ -10,8 +10,8 @@ type Props = {
 const DraftVideoLesson = ({ lesson }: Props) => {
   return (
     <>
-      <div className="bg-black/95 px-16 lg:px-20 xl:px-40">
-        <div className="aspect-video">
+      <div className="aspect-[21/9] bg-black/95">
+        <div className="mx-auto aspect-video h-full">
           <MuxPlayer
             playbackId={lesson?.mux_playback_id}
             accentColor={'hsl(var(--primary))'}
