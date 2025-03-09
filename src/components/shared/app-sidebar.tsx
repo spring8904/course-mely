@@ -29,6 +29,7 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from '@/components/ui/sidebar'
+import Link from 'next/link'
 
 const data = {
   user: {
@@ -125,23 +126,28 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton
-              onClick={() => (window.location.href = '/')}
-              size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-            >
-              <Image
-                src="/images/Logo.png"
-                alt="CourseMeLy logo"
-                width={40}
-                height={40}
-              />
-              <h2 className="text-xl font-extrabold">CourseMeLy</h2>
+            <SidebarMenuButton size="lg" className="hover:bg-inherit" asChild>
+              <Link href="/instructor">
+                <div className="flex aspect-square size-8 rounded-lg">
+                  <Image
+                    src="/images/Logo.png"
+                    alt="CourseMeLy logo"
+                    width={32}
+                    height={32}
+                    className="size-8"
+                  />
+                </div>
+                <div className="grid flex-1 text-left text-sm leading-tight">
+                  <span className="truncate text-xl font-extrabold">
+                    CourseMeLy
+                  </span>
+                </div>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
-      <SidebarContent className="mt-6 *:text-base">
+      <SidebarContent>
         <NavMain items={data.navMain} />
       </SidebarContent>
       <SidebarFooter>
