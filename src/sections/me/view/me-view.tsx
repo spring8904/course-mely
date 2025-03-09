@@ -10,8 +10,8 @@ const MeView = () => {
   return (
     <div>
       <MeBanner />
-      <div className="main-content pt-0">
-        <div className="page-inner tf-spacing-1">
+      <div className="mt-10 pt-0">
+        <div className="page-inner tf-spacing-">
           <div className="tf-container">
             <div className="row">
               <div className="col-xl-3 col-lg-12">
