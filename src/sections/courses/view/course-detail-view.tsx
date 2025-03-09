@@ -6,16 +6,18 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useAuthStore } from '@/stores/useAuthStore'
 import {
+  ChevronDown,
+  ChevronUp,
   CircleHelp,
   CirclePlay,
   CircleX,
+  Eye,
   FileCode2,
   Loader2,
   ScrollText,
 } from 'lucide-react'
 import { toast } from 'react-toastify'
 
-import { IChapter } from '@/types'
 import { formatCurrency, formatDuration } from '@/lib/common'
 import {
   useGetCourseDetails,
@@ -24,22 +26,22 @@ import {
 } from '@/hooks/course/useCourse'
 import { useEnrollFreeCourse } from '@/hooks/transation/useTransation'
 
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@/components/ui/accordion'
 import BuyCourseModal from '@/sections/courses/_components/buy-course-modal'
 
 import CourseSlide from '../_components/course-slide'
 import { InstructorDetail } from '@/sections/courses/_components/instructorDetail'
+import { LessonPreviewModal } from '@/sections/courses/_components/course-list-sidebar/preview-model'
+import { IChapter } from '@/types'
 
 const lessonTypeIcons = {
   video: <CirclePlay size={16} />,
   document: <ScrollText size={16} />,
   quiz: <CircleHelp size={16} />,
   coding: <FileCode2 size={16} />,
+}
+const lessonTypeLabels: Record<string, string> = {
+  video: 'Video Bài',
+  quiz: 'Quiz',
 }
 
 const truncateText = (text: string, maxLength: number) => {
@@ -56,6 +58,9 @@ const CourseDetailView = ({ slug }: { slug: string }) => {
   const [requirementsColumn2, setRequirementsColumn2] = useState<string[]>([])
   const [isOpenIntro, setIsOpenIntro] = useState<boolean>(false)
   const [isOpenBuyCourse, setIsOpenBuyCourse] = useState<boolean>(false)
+  const [selectedLesson, setSelectedLesson] = useState(null)
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false)
+  const [expandedChapters, setExpandedChapters] = useState<number[]>([])
 
   const { user, isAuthenticated } = useAuthStore()
 
@@ -68,6 +73,7 @@ const CourseDetailView = ({ slug }: { slug: string }) => {
     useGetCoursesOther(slug)
 
   console.log('coursesOtherData', coursesOtherData)
+  console.log('courseDetails', courseDetails)
 
   useEffect(() => {
     if (courseDetails?.updated_at) {
@@ -115,6 +121,19 @@ const CourseDetailView = ({ slug }: { slug: string }) => {
       }
     }
   }, [isOpenIntro])
+
+  const handlePreviewClick = (lesson: any) => {
+    setSelectedLesson(lesson)
+    setIsPreviewOpen(true)
+  }
+
+  const toggleChapter = (chapterId: number) => {
+    setExpandedChapters((prev) =>
+      prev.includes(chapterId)
+        ? prev.filter((id) => id !== chapterId)
+        : [...prev, chapterId]
+    )
+  }
 
   if (
     isCourseDetailsLoading ||
@@ -273,43 +292,109 @@ const CourseDetailView = ({ slug }: { slug: string }) => {
                       </ul>
                     </div>
                   </div>
-                  <div className="page-course-content">
-                    <h2
-                      className="text-22 fw-5 wow fadeInUp"
-                      data-wow-delay="0s"
-                    >
-                      Nội dung khoá học
-                    </h2>
-                    {courseDetails?.chapters?.map(
-                      (chapter: IChapter, chapterIndex: any) => (
-                        <Accordion
-                          type="single"
-                          collapsible
-                          key={chapterIndex}
-                          className="mb-6"
-                        >
-                          <AccordionItem value={`item-${chapter.id}`}>
-                            <AccordionTrigger className="rounded-lg p-4 text-xl">
-                              {chapter?.title}
-                            </AccordionTrigger>
-                            <AccordionContent className="rounded-lg">
-                              {chapter?.lessons?.map((lesson, lessonIndex) => (
-                                <div
-                                  className="mb-3 flex items-center gap-2 pb-2 text-base font-medium"
-                                  key={lessonIndex}
-                                >
-                                  {lessonTypeIcons[lesson?.type]}
-                                  {lesson?.title}
-                                  <span className="ml-auto shrink-0 text-base font-semibold">
-                                    0 phút
+                  <div className="container mx-auto px-4 py-8">
+                    <div className="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-900/5">
+                      <div className="mb-6 flex items-center justify-between">
+                        <h2 className="text-2xl font-semibold text-gray-900">
+                          Nội dung khóa học
+                        </h2>
+                        <div className="text-sm text-gray-500">
+                          {courseDetails?.chapters?.length || 0} chương học
+                        </div>
+                      </div>
+                      <div className="space-y-4">
+                        {courseDetails?.chapters?.map(
+                          (chapter: IChapter, chapterIndex) => (
+                            <div
+                              key={chapter.id}
+                              className="overflow-hidden rounded-lg border border-gray-200 bg-white transition-all duration-200 ease-in-out"
+                            >
+                              <button
+                                onClick={() => toggleChapter(chapter.id!)}
+                                className="flex w-full items-center justify-between bg-gray-50 px-6 py-4 transition hover:bg-gray-100"
+                              >
+                                <div className="flex items-center gap-4">
+                                  <span className="flex size-8 items-center justify-center rounded-full bg-blue-100 text-sm font-medium text-blue-600">
+                                    {chapterIndex + 1}
                                   </span>
+                                  <div className="text-left">
+                                    <h3 className="text-lg font-medium text-gray-900">
+                                      {chapter.title}
+                                    </h3>
+                                    <p className="text-sm text-gray-500">
+                                      {chapter.lessons_count} bài học
+                                    </p>
+                                  </div>
                                 </div>
-                              ))}
-                            </AccordionContent>
-                          </AccordionItem>
-                        </Accordion>
-                      )
-                    )}
+                                {expandedChapters.includes(chapter.id!) ? (
+                                  <ChevronUp className="size-5 text-gray-400" />
+                                ) : (
+                                  <ChevronDown className="size-5 text-gray-400" />
+                                )}
+                              </button>
+
+                              {expandedChapters.includes(chapter.id!) && (
+                                <div className="divide-y divide-gray-100">
+                                  {chapter.lessons?.map(
+                                    (lesson, lessonIndex) => (
+                                      <div
+                                        key={lesson.id}
+                                        className="flex items-center gap-4 px-6 py-4 transition hover:bg-gray-50"
+                                      >
+                                        <div className="flex min-w-0 flex-1 items-center gap-4">
+                                          <span className="text-sm font-medium text-gray-400">
+                                            {lessonIndex + 1}
+                                          </span>
+                                          {lessonTypeIcons[lesson.type]}
+                                          <div className="min-w-0 flex-1">
+                                            <div className="flex items-center justify-between">
+                                              <h4 className="truncate text-base font-medium text-gray-900">
+                                                {lesson.title}
+                                              </h4>
+                                            </div>
+                                            <p className="text-sm text-gray-500">
+                                              {lessonTypeLabels[lesson.type]}
+                                            </p>
+                                          </div>
+                                        </div>
+
+                                        {lesson.is_free_preview === 1 && (
+                                          <button
+                                            onClick={() =>
+                                              handlePreviewClick(lesson)
+                                            }
+                                            className="flex items-center gap-2 rounded-full bg-blue-50 px-4 py-1.5 text-sm font-medium text-blue-600 transition hover:bg-blue-100"
+                                          >
+                                            <Eye size={16} />
+                                            Xem trước
+                                          </button>
+                                        )}
+                                        <div>
+                                          {lesson.type === 'video' &&
+                                            lesson.lessonable?.duration && (
+                                              <span className="text-sm text-gray-500">
+                                                {formatDuration(
+                                                  lesson.lessonable.duration
+                                                )}
+                                              </span>
+                                            )}
+                                        </div>
+                                      </div>
+                                    )
+                                  )}
+                                </div>
+                              )}
+                            </div>
+                          )
+                        )}
+                      </div>
+                    </div>
+
+                    <LessonPreviewModal
+                      isOpen={isPreviewOpen}
+                      onClose={() => setIsPreviewOpen(false)}
+                      lesson={selectedLesson}
+                    />
                   </div>
                   {coursesOtherData?.profile_instructor && (
                     <InstructorDetail
