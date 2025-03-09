@@ -2,7 +2,7 @@ import { UserProfile } from '@/sections/profile/_components/user-profile'
 import { FollowButton } from '@/sections/profile/_components/follow-button'
 import { UserAbout } from '@/sections/profile/_components/user-about'
 import { CourseItem } from '@/sections/profile/_components/course-item'
-import { ICourse, IInstructorProfile } from '@/types'
+import { IInstructorProfile } from '@/types'
 import { BookText } from 'lucide-react'
 
 type Props = {
@@ -33,7 +33,7 @@ const fakeInstructorProfile: IInstructorProfile = {
   updated_at: new Date('2025-03-07T12:00:00Z'),
 }
 
-const fakeCourses: ICourse[] = Array.from({ length: 16 }, (_, index) => ({
+const fakeCourses: any = Array.from({ length: 16 }, (_, index) => ({
   id: index + 1,
   user_id: fakeInstructorProfile.user_id,
   category_id: Math.floor(Math.random() * 5) + 1,
@@ -135,7 +135,7 @@ export const ProfileView = ({ code }: Props) => {
 
         <div className="mt-5 grid grid-cols-3 gap-6">
           {fakeCourses && fakeCourses?.length > 0 ? (
-            fakeCourses.map((course) => (
+            fakeCourses.map((course: any) => (
               <CourseItem course={course} key={course.id} />
             ))
           ) : (

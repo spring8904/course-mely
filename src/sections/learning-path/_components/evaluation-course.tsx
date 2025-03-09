@@ -40,8 +40,6 @@ const EvaluationCourse = ({ courseSlug }: { courseSlug: string }) => {
       content: feedback,
     }
 
-    console.log(payload)
-
     mutate(payload, {
       onSuccess: (res: any) => {
         toast.success(res.message)

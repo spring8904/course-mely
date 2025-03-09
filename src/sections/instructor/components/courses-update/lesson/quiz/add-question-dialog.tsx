@@ -68,8 +68,6 @@ const AddQuestionDialog = ({
   const { data: questionData, isLoading: isQuestionLoading } =
     useGetQuestion(questionId)
 
-  console.log('questionData >>>', questionData)
-
   const { mutate: createQuestion, isPending: isQuestionCreatePending } =
     useCreateQuestion()
   const { mutate: updateQuestion, isPending: isQuestionUpdatePending } =

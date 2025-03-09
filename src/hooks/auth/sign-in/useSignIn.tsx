@@ -25,8 +25,6 @@ export const useSignIn = () => {
       const user = res?.user
       const role = res.role
 
-      console.log(role)
-
       const currentToken = Cookies.get(StorageKey.ACCESS_TOKEN)
 
       if (token && currentToken !== token) {

@@ -36,7 +36,7 @@ const TopBar = () => {
   const { mutate: markAsRead } = useMarkAsRead()
   const notifications = data?.pages.flatMap((page) => page.notifications) || []
 
-  console.log('Active Channels:', echo.connector.channels)
+  // console.log('Active Channels:', echo.connector.channels)
 
   useEffect(() => {
     if (!user?.id) return
@@ -44,7 +44,7 @@ const TopBar = () => {
     const privateChannel = echo.private(`instructor.${user?.id}`)
 
     privateChannel.notification((notification: any) => {
-      console.log('🔔 Notification for Instructor:', notification)
+      // console.log('🔔 Notification for Instructor:', notification)
       toast.info(notification.message)
 
       queryClient.invalidateQueries({

@@ -37,8 +37,6 @@ const WithDrawRequestView = () => {
   const { data: withDrawRequestData, isLoading } =
     useGetWithDrawalRequests(formattedFilters)
 
-  console.log(withDrawRequestData)
-
   const columns: ColumnDef<any[]>[] = [
     {
       header: 'STT',

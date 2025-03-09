@@ -11,6 +11,7 @@ import {
   FileUp,
   Loader2,
   Pencil,
+  PlusCircle,
   Trash,
   X,
 } from 'lucide-react'
@@ -76,30 +77,33 @@ const ListQuestion = ({ questions = [], quizId }: Props) => {
               e.stopPropagation()
               handleDownloadQuizForm()
             }}
-            variant="default"
-            className="bg-[#FFF7ED] p-2 text-xs text-primary shadow hover:text-white"
+            size="sm"
+            className="bg-primary/10 text-primary hover:text-primary-foreground"
           >
             Mẫu Import
-            <FileDown className="size-2" />
+            <FileDown />
           </Button>
           <Button
             onClick={(e) => {
               e.stopPropagation()
               setIsOpenImportQuestion(true)
             }}
-            className="bg-[#FFF7ED] p-2 text-xs text-primary shadow hover:text-white"
+            size="sm"
+            className="bg-primary/10 text-primary hover:text-primary-foreground"
           >
             Import câu hỏi
-            <FileUp className="size-2" />
+            <FileUp />
           </Button>
           <Button
             onClick={(e) => {
               e.stopPropagation()
               setIsOpenAddQuestion(true)
             }}
-            className="rounded-lg border bg-[#FFF7ED] p-2 text-xs text-primary shadow hover:text-white"
+            size="sm"
+            className="bg-primary/10 text-primary hover:text-primary-foreground"
           >
             Thêm câu hỏi
+            <PlusCircle />
           </Button>
         </div>
       }

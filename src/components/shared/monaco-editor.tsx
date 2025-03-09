@@ -71,6 +71,7 @@ const MonacoEditor = ({
         onSuccess: (res) => {
           onExecute?.(res.run.output)
 
+          // Keep
           console.log(
             `File group run: ${activeFileGroup}`,
             `Output: ${res.run.output}`

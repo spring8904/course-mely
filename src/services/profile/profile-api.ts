@@ -69,7 +69,6 @@ export const profileApi = {
   createCareer: async (data: UpdateCareerProfilePayload) => {
     const formData = new FormData()
     const career = data.careers
-    console.log('data updateCareer', data)
     if (career) {
       Object.entries(career).forEach(([key, value]) => {
         if (value !== undefined && value !== null) {
@@ -83,7 +82,6 @@ export const profileApi = {
   updateCareer: async (data: UpdateCareerProfilePayload, careerId: string) => {
     const formData = new FormData()
     const career = data.careers
-    console.log('data updateCareer', data)
     if (career) {
       Object.entries(career).forEach(([key, value]) => {
         if (value !== undefined && value !== null) {

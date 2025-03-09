@@ -126,8 +126,7 @@ const CourseManageView = () => {
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Ngày tạo" />
       ),
-      cell: ({ row }) => {
-        console.log(row.original)
+      cell: () => {
         return (
           <div className="space-y-1">
             <div className="font-medium">
