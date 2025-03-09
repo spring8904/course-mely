@@ -14,3 +14,15 @@ export interface StudentPurchaseStatistics {
     total_students: number
   }
 }
+
+export interface CourseRevenueStatistics {
+  id: number
+  name: string
+  price: string
+  price_sale: string
+  slug: string
+  total_revenue: string
+  total_student: number
+  avg_progress: string
+  avg_rating: string
+}

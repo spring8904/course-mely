@@ -1,3 +1,4 @@
+import CourseDashboardTable from '../components/statistics/course-dashboard-table'
 import OverviewStatistics from '../components/statistics/overview-statistics'
 import RevenueChart from '../components/statistics/revenue-chart'
 import StudentPurchaseChart from '../components/statistics/student-purchase-chart'
@@ -25,6 +26,8 @@ const StatisticsView = () => {
         </div>
 
         <StudentPurchaseChart />
+
+        <CourseDashboardTable />
       </div>
     </>
   )

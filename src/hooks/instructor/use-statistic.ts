@@ -29,3 +29,10 @@ export const useGetStudentPurchaseStatistics = (year: number) => {
     enabled: year > 0,
   })
 }
+
+export const useGetCourseRevenueStatistics = () => {
+  return useQuery({
+    queryKey: [QueryKey.INSTRUCTOR_STATISTICS_COURSE_REVENUE],
+    queryFn: instructorStatisticApi.getCourseRevenueStatistics,
+  })
+}
