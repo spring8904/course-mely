@@ -9,8 +9,8 @@ const nextConfig = {
       },
     ],
   },
-  reactStrictMode: false,
-  ignoreDuringBuilds: true,
+//   reactStrictMode: false,
+//   ignoreDuringBuilds: true,
 }
 
 export default nextConfig

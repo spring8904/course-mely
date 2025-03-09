@@ -521,6 +521,8 @@ const sidebarMenuButtonVariants = cva(
         default: 'hover:bg-sidebar-accent hover:text-sidebar-accent-foreground',
         outline:
           'bg-background shadow-[0_0_0_1px_hsl(var(--sidebar-border))] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground hover:shadow-[0_0_0_1px_hsl(var(--sidebar-accent))]',
+        primary:
+          'hover:bg-primary/10 hover:text-primary data-[state=open]:hover:bg-primary/10 data-[state=open]:hover:text-primary',
       },
       size: {
         default: 'h-8 text-sm',
@@ -564,6 +566,7 @@ const SidebarMenuButton = React.forwardRef<
         data-sidebar="menu-button"
         data-size={size}
         data-active={isActive}
+        data-variant={variant}
         className={cn(sidebarMenuButtonVariants({ variant, size }), className)}
         {...props}
       />
