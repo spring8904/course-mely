@@ -12,8 +12,6 @@ import {
 import {
   ChartConfig,
   ChartContainer,
-  ChartLegend,
-  ChartLegendContent,
   ChartTooltip,
   ChartTooltipContent,
 } from '@/components/ui/chart'
@@ -25,9 +23,9 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { useGetMonthlyRevenueStatistics } from '@/hooks/instructor/use-statistic'
-import { useState } from 'react'
 import { formatCurrency } from '@/lib/common'
 import { Loader2 } from 'lucide-react'
+import { useState } from 'react'
 
 const chartConfig = {
   revenue: {
@@ -52,7 +50,7 @@ const RevenueChart = () => {
 
   return (
     <Card>
-      <CardHeader className="flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row">
+      <CardHeader className="flex items-center gap-4 space-y-0 border-b py-5 sm:flex-row">
         <div className="grid flex-1 gap-1 text-center sm:text-left">
           <CardTitle>Doanh thu hàng tháng</CardTitle>
           <CardDescription>
@@ -63,12 +61,12 @@ const RevenueChart = () => {
         <Select value={year} onValueChange={setYear}>
           <SelectTrigger
             className="w-fit rounded-lg"
-            aria-label="Select a value"
+            aria-label="Chọn năm"
             hideArrow
           >
             <SelectValue placeholder={currentYear} />
           </SelectTrigger>
-          <SelectContent className="rounded-xl" align="end">
+          <SelectContent className="min-w-fit" align="end">
             {Array.from({ length: 5 }, (_, i) => currentYear - i).map((y) => (
               <SelectItem key={y} value={y + ''} className="rounded-lg">
                 {y}
@@ -87,7 +85,10 @@ const RevenueChart = () => {
               <Loader2 className="size-8 animate-spin text-primary" />
             </div>
           ) : (
-            <AreaChart data={chartData} margin={{ right: 24, left: 32 }}>
+            <AreaChart
+              data={chartData}
+              margin={{ right: 24, left: 32, bottom: 8 }}
+            >
               <defs>
                 <linearGradient id="fillRevenue" x1="0" y1="0" x2="0" y2="1">
                   <stop
@@ -125,11 +126,7 @@ const RevenueChart = () => {
                 labelFormatter={(value) => `Tháng ${value}`}
                 formatter={(value) => (
                   <div className="flex w-full flex-wrap items-stretch gap-2">
-                    <div
-                      className={
-                        'size-2.5 shrink-0 rounded-sm bg-[--color-revenue]'
-                      }
-                    />
+                    <div className="w-1 shrink-0 rounded-[2px] bg-[--color-revenue]" />
 
                     <div
                       className={
@@ -153,7 +150,6 @@ const RevenueChart = () => {
                 stroke="var(--color-revenue)"
                 stackId="a"
               />
-              <ChartLegend content={<ChartLegendContent />} />
             </AreaChart>
           )}
         </ChartContainer>

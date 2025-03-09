@@ -86,12 +86,12 @@ const Header = () => {
     const privateChannel = echo.private(`member.${user?.id}`)
 
     privateChannel.notification((notification: any) => {
-      console.log('🔔 Notification for Member:', notification)
+      // console.log('🔔 Notification for Member:', notification)
       toast.info(notification.message)
 
       setNotifications((prev) => {
         if (prev.some((noti) => noti.id === notification.id)) {
-          console.log('Duplicate notification detected:', notification.id)
+          // console.log('Duplicate notification detected:', notification.id)
           return prev
         }
         return [
@@ -545,7 +545,7 @@ const Header = () => {
                                 >
                                   <Avatar>
                                     <AvatarImage
-                                      src={course?.thumbnail}
+                                      src={course?.thumbnail ?? undefined}
                                       alt={course?.name}
                                     />
                                     <AvatarFallback>

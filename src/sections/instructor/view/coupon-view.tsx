@@ -132,7 +132,6 @@ const CouponView = () => {
       cell: ({ row }: any) => {
         const coupon = row.original
 
-        console.log(coupon.status)
         const handleToggle = (checked: boolean) => {
           const action = checked ? 'enable' : 'disable'
 

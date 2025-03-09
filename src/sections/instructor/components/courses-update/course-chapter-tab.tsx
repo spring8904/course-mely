@@ -6,6 +6,7 @@ import {
   CircleCheck,
   CircleX,
   GripVertical,
+  Loader2,
   SquarePen,
   Trash2,
 } from 'lucide-react'
@@ -36,25 +37,23 @@ import SortableLesson from '@/sections/instructor/components/courses-update/less
 
 import CreateChapter from './chapter/create-chapter'
 import Link from 'next/link'
+import { useCourseStatusStore } from '@/stores/use-course-status-store'
 
 type Props = {
   chapters: IChapter[]
   slug: string
-  courseStatus?: string
 }
 
-const CourseChapterTab = ({
-  chapters: chapterList,
-  slug,
-  courseStatus,
-}: Props) => {
+const CourseChapterTab = ({ chapters: chapterList, slug }: Props) => {
   const [chapters, setChapters] = useState<IChapter[]>([])
   const [addNewChapter, setAddNewChapter] = useState(false)
   const [chapterEdit, setChapterEdit] = useState<number | null>(null)
   const [editTitle, setEditTitle] = useState<string>('')
 
+  const { courseStatus, isDraftOrRejected } = useCourseStatusStore()
+
   const { mutate: updateChapter } = useUpdateChapter()
-  const { mutate: deleteChapter } = useDeleteChapter()
+  const { mutate: deleteChapter, isPending: isDeleting } = useDeleteChapter()
   const { mutate: updateChapterOrder, isPending: isUpdateOrder } =
     useUpdateChapterOrder()
 
@@ -93,9 +92,14 @@ const CourseChapterTab = ({
       showCancelButton: true,
       confirmButtonText: 'Xóa',
       cancelButtonText: 'Hủy',
-    }).then(async (result) => {
+    }).then((result) => {
       if (result.isConfirmed) {
-        deleteChapter({ slug, id })
+        deleteChapter(
+          { slug, id },
+          {
+            onSettled: () => setChapterEdit(null),
+          }
+        )
       }
     })
   }
@@ -135,8 +139,7 @@ const CourseChapterTab = ({
           </p>
         </div>
 
-        {(courseStatus === CourseStatus.Draft ||
-          courseStatus === CourseStatus.Reject) && (
+        {isDraftOrRejected && (
           <Button asChild>
             <Link href={`/draft/${slug}`}>Xem trước</Link>
           </Button>
@@ -203,8 +206,7 @@ const CourseChapterTab = ({
                             Chương {chapterIndex + 1}: {chapter.title}
                           </h3>
 
-                          {(courseStatus === CourseStatus.Draft ||
-                            courseStatus === CourseStatus.Reject) && (
+                          {isDraftOrRejected && (
                             <div className="flex items-center gap-2">
                               <Button
                                 variant="outline"
@@ -226,12 +228,18 @@ const CourseChapterTab = ({
                                 variant="outline"
                                 size="icon"
                                 className="text-destructive hover:text-destructive/80"
+                                disabled={isDeleting}
                                 onClick={(e) => {
                                   e.stopPropagation()
+                                  setChapterEdit(chapter.id as number)
                                   handleDeleteChapter(chapter.id as number)
                                 }}
                               >
-                                <Trash2 />
+                                {isDeleting && chapterEdit === chapter.id ? (
+                                  <Loader2 className="animate-spin" />
+                                ) : (
+                                  <Trash2 />
+                                )}
                               </Button>
                             </div>
                           )}
@@ -240,11 +248,7 @@ const CourseChapterTab = ({
                     </div>
                   </AccordionTrigger>
                   <AccordionContent className="mt-3 rounded-lg p-4">
-                    <SortableLesson
-                      courseStatus={courseStatus}
-                      chapter={chapter}
-                      slug={slug}
-                    />
+                    <SortableLesson chapter={chapter} slug={slug} />
                   </AccordionContent>
                 </AccordionItem>
               </SortableItem>

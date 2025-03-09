@@ -1,14 +1,15 @@
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useQueryClient } from '@tanstack/react-query'
-import { Check, Loader2, Pencil, Trash, X } from 'lucide-react'
-import { useEffect, useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { toast } from 'react-toastify'
-import Swal from 'sweetalert2'
+'use client'
 
-import QueryKey from '@/constants/query-key'
-import { useCreateLessonQuiz } from '@/hooks/instructor/lesson/useLesson'
-import { useDeleteQuestion, useGetQuiz } from '@/hooks/instructor/quiz/useQuiz'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { Loader2 } from 'lucide-react'
+import { useEffect } from 'react'
+import { useForm } from 'react-hook-form'
+
+import {
+  useCreateLessonQuiz,
+  useUpdateQuizContent,
+} from '@/hooks/instructor/lesson/useLesson'
+import { useGetQuiz } from '@/hooks/instructor/quiz/useQuiz'
 import { LessonQuizPayload, lessonQuizSchema } from '@/validations/lesson'
 
 import QuillEditor from '@/components/shared/quill-editor'
@@ -22,40 +23,27 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import AddQuestionDialog from '@/sections/instructor/components/courses-update/lesson/quiz/add-question-dialog'
-import { CourseStatus } from '@/types'
+import { useCourseStatusStore } from '@/stores/use-course-status-store'
+import ListQuestion from './quiz/list-question'
 
 type Props = {
   chapterId?: string
   onHide: () => void
   isEdit?: boolean
   quizId?: string
-  courseStatus?: string
 }
 
-const LessonQuiz = ({
-  chapterId,
-  onHide,
-  isEdit,
-  quizId,
-  courseStatus,
-}: Props) => {
-  const queryClient = useQueryClient()
-  const [editQuestion, setEditQuestion] = useState(false)
-  const [, setQuestions] = useState<any[]>([])
-  const [editQuestionId, setEditQuestionId] = useState<string | null>(null)
-  const isReadOnly = !(
-    courseStatus === CourseStatus.Draft || courseStatus === CourseStatus.Reject
-  )
+const LessonQuiz = ({ chapterId, onHide, isEdit, quizId }: Props) => {
+  const { isDraftOrRejected } = useCourseStatusStore()
 
   const { data: questionData, isLoading: isQuestionLoading } = useGetQuiz(
     quizId as string
   )
+
   const { mutate: createLessonQuiz, isPending: isLessonQuizCreatePending } =
     useCreateLessonQuiz()
-  const { mutate: deleteQuestion } = useDeleteQuestion()
-
-  const isApproved = courseStatus === CourseStatus.Approved
+  const { mutate: updateQuizContent, isPending: isUpdating } =
+    useUpdateQuizContent()
 
   const form = useForm<LessonQuizPayload>({
     resolver: zodResolver(lessonQuizSchema),
@@ -63,63 +51,40 @@ const LessonQuiz = ({
       title: '',
       content: '',
     },
-    values: questionData?.data,
-    disabled: isApproved,
+    values: questionData,
+    disabled: !isDraftOrRejected || isLessonQuizCreatePending || isUpdating,
   })
 
   useEffect(() => {
-    if (questionData) {
-      setQuestions(questionData.data.questions)
-    }
     if (isEdit && questionData) {
       form.reset({
-        title: questionData.data.title || '',
-        content: questionData.data.content || '',
+        title: questionData.title || '',
+        content: questionData.content || '',
       })
     }
   }, [isEdit, questionData, form])
 
-  const handleClose = () => {
-    onHide()
-  }
-
-  const handleDeleteQuestion = (questionId: string) => {
-    Swal.fire({
-      title: 'Xác nhận xóa câu hỏi',
-      text: 'Bạn có chắc muốn xoá câu hỏi này?',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Xóa',
-      cancelButtonText: 'Hủy',
-    }).then(async (result: any) => {
-      if (result.isConfirmed) {
-        await deleteQuestion(questionId)
-      }
-    })
-  }
-
   const onSubmit = (data: LessonQuizPayload) => {
-    createLessonQuiz(
-      {
-        chapterId: chapterId as string,
-        payload: data,
-      },
-      {
-        onSuccess: async (res: any) => {
-          await queryClient.invalidateQueries({
-            queryKey: [QueryKey.INSTRUCTOR_COURSE],
-          })
-          handleClose()
-          form.reset()
-          onHide()
+    const onSuccess = () => {
+      form.reset()
+      onHide()
+    }
 
-          toast.success(res.message)
+    if (isEdit)
+      updateQuizContent({
+        quizId: quizId as string,
+        payload: data,
+      })
+    else
+      createLessonQuiz(
+        {
+          chapterId: chapterId as string,
+          payload: data,
         },
-        onError: (error: any) => {
-          toast.error(error.message || 'Có lỗi xảy ra')
-        },
-      }
-    )
+        {
+          onSuccess,
+        }
+      )
   }
 
   if (isQuestionLoading) {
@@ -130,15 +95,25 @@ const LessonQuiz = ({
     <>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          <h2 className="font-semibold">
-            {courseStatus === CourseStatus.Draft ||
-            courseStatus === CourseStatus.Reject
-              ? isEdit
-                ? 'Cập nhật'
-                : 'Thêm'
-              : 'Thông tin'}{' '}
-            bài ôn tập trắc nghiệm
-          </h2>
+          <div className="flex items-center justify-between gap-4">
+            <h2 className="font-semibold">
+              {isDraftOrRejected ? (isEdit ? 'Cập nhật' : 'Thêm') : 'Thông tin'}{' '}
+              bài ôn tập trắc nghiệm
+            </h2>
+            {isDraftOrRejected && (
+              <div className="flex justify-end">
+                <Button
+                  type="submit"
+                  disabled={isLessonQuizCreatePending || isUpdating}
+                >
+                  {(isLessonQuizCreatePending || isUpdating) && (
+                    <Loader2 className="animate-spin" />
+                  )}
+                  {isEdit ? 'Cập nhật' : 'Thêm bài học'}
+                </Button>
+              </div>
+            )}
+          </div>
 
           <FormField
             control={form.control}
@@ -147,11 +122,7 @@ const LessonQuiz = ({
               <FormItem>
                 <FormLabel>Tiêu đề bài giảng</FormLabel>
                 <FormControl>
-                  <Input
-                    readOnly={isReadOnly}
-                    placeholder="Nhập tiêu đề bài giảng"
-                    {...field}
-                  />
+                  <Input placeholder="Nhập tiêu đề bài giảng" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -165,96 +136,17 @@ const LessonQuiz = ({
               <FormItem>
                 <FormLabel>Nội dung bài giảng</FormLabel>
                 <FormControl>
-                  <QuillEditor
-                    disabled={isReadOnly}
-                    {...field}
-                    value={field.value || ''}
-                  />
+                  <QuillEditor {...field} value={field.value || ''} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-
-          {(courseStatus === CourseStatus.Draft ||
-            courseStatus === CourseStatus.Reject) && (
-            <div className="flex items-center justify-end">
-              <Button
-                onClick={handleClose}
-                className="mr-3"
-                variant="secondary"
-                type="button"
-              >
-                Huỷ
-              </Button>
-              <Button type="submit" disabled={isLessonQuizCreatePending}>
-                {isLessonQuizCreatePending && (
-                  <Loader2 className="mr-2 size-4 animate-spin" />
-                )}
-                {isEdit ? 'Cập nhật' : 'Thêm bài học'}
-              </Button>
-            </div>
-          )}
         </form>
       </Form>
-      {isEdit && questionData?.data.questions.length > 0 && (
-        <div className="my-2">
-          <h4 className="text-sm">Danh sách câu hỏi</h4>
-          {questionData?.data.questions.map((question: any, index: number) => (
-            <div key={index} className="mt-2 rounded-lg border p-2">
-              <div className="flex justify-between">
-                <p className="text-sm">
-                  {index + 1}. {question.question}
-                </p>
-                {(courseStatus === CourseStatus.Draft ||
-                  courseStatus === CourseStatus.Reject) && (
-                  <div className="flex gap-2">
-                    <div
-                      onClick={() => {
-                        setEditQuestion(true)
-                        setEditQuestionId(question.id)
-                      }}
-                      className="cursor-pointer rounded border bg-[#fff3] p-2 shadow hover:bg-[#ffffff54]"
-                    >
-                      <Pencil size={12} />
-                    </div>
-                    <div
-                      onClick={() => handleDeleteQuestion(question.id)}
-                      className="cursor-pointer rounded border bg-[#fff3] p-2 shadow hover:bg-[#ffffff54]"
-                    >
-                      <Trash size={12} />
-                    </div>
-                  </div>
-                )}
-              </div>
-              <div className="flex flex-col gap-2 text-xs">
-                {question.answers.map((answer: any, index: number) => (
-                  <div key={index} className="flex items-center gap-2">
-                    <span>
-                      {String.fromCharCode(65 + index)}. {answer.answer}
-                    </span>
-                    {answer.is_correct ? (
-                      <Check className="size-4 text-green-500" />
-                    ) : (
-                      <X className="size-4 text-red-500" />
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
 
-      {editQuestion && (
-        <AddQuestionDialog
-          courseStatus={courseStatus as string}
-          quizId={quizId as string}
-          isOpen={editQuestion}
-          isEdit={editQuestion}
-          onOpenChange={setEditQuestion as any}
-          questionId={editQuestionId as string}
-        />
+      {quizId && (
+        <ListQuestion quizId={quizId} questions={questionData?.questions} />
       )}
     </>
   )

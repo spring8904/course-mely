@@ -85,7 +85,6 @@ const LearnerManageView = () => {
         <DataTableColumnHeader column={column} title="Đã tham gia" />
       ),
       cell: ({ row }) => {
-        console.log(row.original)
         return (
           <div className="space-y-1">
             <div className="font-medium">

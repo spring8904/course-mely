@@ -232,8 +232,6 @@ const CouponUpdateView = ({ id }: { id: string }) => {
     )
   }
 
-  console.log(form.formState.errors)
-
   if (isCouponLoading) return <ModalLoading />
 
   return (

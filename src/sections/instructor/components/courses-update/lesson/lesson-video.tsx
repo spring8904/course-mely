@@ -11,7 +11,6 @@ import {
 } from '@/hooks/instructor/lesson/useLesson'
 import { LessonVideoPayload, lessonVideoSchema } from '@/validations/lesson'
 
-import ModalLoading from '@/components/common/ModalLoading'
 import QuillEditor from '@/components/shared/quill-editor'
 import { Button } from '@/components/ui/button'
 import {
@@ -25,24 +24,19 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Switch } from '@/components/ui/switch'
-import { CourseStatus } from '@/types'
+import { useCourseStatusStore } from '@/stores/use-course-status-store'
 import MuxPlayer from '@mux/mux-player-react/lazy'
 
 type Props = {
   chapterId?: string
   onHide: () => void
-  courseStatus?: string
   isEdit?: boolean
   lessonId?: string | number
 }
 
-const LessonVideo = ({
-  onHide,
-  chapterId,
-  courseStatus,
-  isEdit,
-  lessonId,
-}: Props) => {
+const LessonVideo = ({ onHide, chapterId, isEdit, lessonId }: Props) => {
+  const { isDraftOrRejected } = useCourseStatusStore()
+
   const fileInputRef = useRef<HTMLInputElement | null>(null)
   const [selectedFile, setSelectedFile] = useState<any>(null)
   const [videoUrl, setVideoUrl] = useState('')
@@ -56,8 +50,6 @@ const LessonVideo = ({
     useCreateLessonVideo()
   const { mutate: updateLessonVideo, isPending: isLessonVideoUpdating } =
     useUpdateLessonVideo()
-
-  const isApproved = courseStatus === CourseStatus.Approved
 
   const form = useForm<LessonVideoPayload>({
     resolver: zodResolver(lessonVideoSchema),
@@ -77,7 +69,8 @@ const LessonVideo = ({
             video_file: null as any,
             isEdit: false,
           },
-    disabled: isApproved || isLessonVideoCreating || isLessonVideoUpdating,
+    disabled:
+      !isDraftOrRejected || isLessonVideoCreating || isLessonVideoUpdating,
   })
 
   useEffect(() => {
@@ -99,10 +92,6 @@ const LessonVideo = ({
       }
     }
   }, [isEdit, lessonVideoData, form.reset, form])
-
-  const handleClose = () => {
-    onHide()
-  }
 
   const handleFileChange = (event: any) => {
     const file = event.target.files?.[0]
@@ -169,133 +158,116 @@ const LessonVideo = ({
     }
 
     if (isEdit) {
-      updateLessonVideo(
-        { chapterId, lessonId: String(lessonId), payload: formData },
-        {
-          onSuccess: async (res: any) => {
-            form.reset()
-            onHide()
-
-            toast.success(res.message)
-          },
-          onError: async (error: any) => {
-            toast.error(error.message || 'Có lỗi xảy ra')
-          },
-        }
-      )
+      updateLessonVideo({
+        chapterId,
+        lessonId: String(lessonId),
+        payload: formData,
+      })
     } else {
       createLessonVideo(
         { chapterId, payload: formData },
         {
-          onSuccess: async (res: any) => {
+          onSuccess: async () => {
             form.reset()
             onHide()
-
-            toast.success(res.message)
-          },
-          onError: async (error: any) => {
-            toast.error(error.message || 'Có lỗi xảy ra')
           },
         }
       )
     }
   }
 
-  if (isLessonVideoUpdating || isLessonVideoCreating) {
-    return <ModalLoading />
-  }
+  if (isLoading)
+    return <Loader2 className="mx-auto animate-spin text-muted-foreground" />
 
   return (
     <>
-      <h2 className="mb-4 font-semibold">
-        {courseStatus === CourseStatus.Draft ||
-        courseStatus === CourseStatus.Reject
-          ? isEdit
-            ? 'Cập nhật'
-            : 'Thêm'
-          : 'Thông tin'}{' '}
-        bài giảng
+      <h2 className="font-semibold">
+        {isDraftOrRejected ? (isEdit ? 'Cập nhật' : 'Thêm') : 'Thông tin'} bài
+        giảng
       </h2>
 
-      {!isLoading ? (
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onsubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="title"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Tiêu đề bài giảng</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Nhập tiêu đề bài giảng" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onsubmit)} className="space-y-4">
+          <FormField
+            control={form.control}
+            name="title"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Tiêu đề bài giảng</FormLabel>
+                <FormControl>
+                  <Input placeholder="Nhập tiêu đề bài giảng" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-            <FormField
-              control={form.control}
-              name="content"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Nội dung bài giảng</FormLabel>
-                  <FormControl>
-                    <QuillEditor {...field} value={field.value || ''} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+          <FormField
+            control={form.control}
+            name="content"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Nội dung bài giảng</FormLabel>
+                <FormControl>
+                  <QuillEditor placeholder="Nhập nội dung" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-            {!isApproved && (
-              <FormField
-                control={form.control}
-                name="video_file"
-                render={({ field }) => (
-                  <div className="mt-2">
-                    <h3 className="my-2 text-sm">Tải video cho bài giảng</h3>
-                    {videoUrl || muxPlaybackId ? (
-                      <div className="flex flex-col items-center justify-center gap-4 rounded-md border-2 border-dashed border-gray-300 p-5">
-                        {muxPlaybackId ? (
-                          <div className="aspect-video size-full">
-                            <MuxPlayer
-                              loading="viewport"
-                              playbackId={muxPlaybackId || ''}
-                              autoPlay={false}
-                              className="h-full"
-                              accentColor="hsl(var(--primary))"
-                            />
-                          </div>
-                        ) : (
-                          <video
-                            src={videoUrl}
-                            controls
-                            loop
-                            className="size-full rounded-lg object-cover"
-                          />
+          {isDraftOrRejected && (
+            <div className="mt-2">
+              <h3 className="my-2 text-sm">Tải video cho bài giảng</h3>
+
+              <div className="flex flex-col items-center justify-center gap-4 rounded-md border-2 border-dashed border-gray-300 p-5">
+                {muxPlaybackId ? (
+                  <MuxPlayer
+                    loading="page"
+                    playbackId={muxPlaybackId || ''}
+                    autoPlay={false}
+                    className="aspect-video"
+                    accentColor="hsl(var(--primary))"
+                  />
+                ) : (
+                  videoUrl && (
+                    <video
+                      src={videoUrl}
+                      controls
+                      loop
+                      className="size-full rounded-lg object-cover"
+                    />
+                  )
+                )}
+
+                <FormField
+                  control={form.control}
+                  name="video_file"
+                  render={({ field }) =>
+                    videoUrl || muxPlaybackId ? (
+                      <div className="flex w-full items-center justify-between">
+                        {selectedFile && (
+                          <p className="text-left text-sm font-medium">
+                            Đã chọn video: {selectedFile?.name || ''}
+                          </p>
                         )}
-                        <div className="flex w-full items-center justify-between">
-                          {selectedFile && (
-                            <p className="text-left text-sm font-medium">
-                              Đã chọn video: {selectedFile?.name || ''}
-                            </p>
-                          )}
-                          <Button
-                            onClick={() => {
-                              handleResetClick()
-                              field.onChange(undefined) // Reset field
-                            }}
-                            type="button"
-                            variant="destructive"
-                            className="ml-auto"
-                          >
-                            Tải lại
-                          </Button>
-                        </div>
+                        <Button
+                          onClick={() => {
+                            handleResetClick()
+                            field.onChange(undefined) // Reset field
+                          }}
+                          type="button"
+                          variant="destructive"
+                          className="ml-auto"
+                          disabled={
+                            isLessonVideoCreating || isLessonVideoUpdating
+                          }
+                        >
+                          Tải lại
+                        </Button>
                       </div>
                     ) : (
-                      <div className="flex flex-col items-center justify-center gap-4 rounded-md border-2 border-dashed border-gray-300 p-5">
+                      <>
                         <span className="text-xs">
                           Tải dữ liệu video hoặc kéo thả vào đây
                         </span>
@@ -317,61 +289,52 @@ const LessonVideo = ({
                           }}
                         />
                         <FormMessage />
-                      </div>
-                    )}
-                  </div>
-                )}
-              />
-            )}
-
-            <FormField
-              control={form.control}
-              name="is_free_preview"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
-                  <div className="space-y-0.5">
-                    <FormLabel>Cho phép xem trước</FormLabel>
-                    <FormDescription>
-                      Học viên có thể xem trước nội dung bài học
-                    </FormDescription>
-                  </div>
-                  <FormControl>
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                      disabled={field.disabled}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {!isApproved && (
-              <div className="flex items-center justify-end">
-                <Button
-                  onClick={handleClose}
-                  className="mr-3"
-                  variant="secondary"
-                >
-                  Huỷ
-                </Button>
-                <Button
-                  type="submit"
-                  disabled={isLessonVideoCreating || isLessonVideoUpdating}
-                >
-                  {(isLessonVideoCreating || isLessonVideoUpdating) && (
-                    <Loader2 className="mr-2 size-4 animate-spin" />
-                  )}
-                  {isEdit ? 'Cập nhật' : 'Thêm bài học'}
-                </Button>
+                      </>
+                    )
+                  }
+                />
               </div>
+            </div>
+          )}
+
+          <FormField
+            control={form.control}
+            name="is_free_preview"
+            render={({ field }) => (
+              <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                <div className="space-y-0.5">
+                  <FormLabel>Cho phép xem trước</FormLabel>
+                  <FormDescription>
+                    Học viên có thể xem trước nội dung bài học
+                  </FormDescription>
+                </div>
+                <FormControl>
+                  <Switch
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                    disabled={field.disabled}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
             )}
-          </form>
-        </Form>
-      ) : (
-        <Loader2 className="mx-auto size-8 animate-spin text-muted-foreground" />
-      )}
+          />
+
+          {isDraftOrRejected && (
+            <div className="flex justify-end">
+              <Button
+                type="submit"
+                disabled={isLessonVideoCreating || isLessonVideoUpdating}
+              >
+                {(isLessonVideoCreating || isLessonVideoUpdating) && (
+                  <Loader2 className="animate-spin" />
+                )}
+                {isEdit ? 'Cập nhật' : 'Thêm bài học'}
+              </Button>
+            </div>
+          )}
+        </form>
+      </Form>
     </>
   )
 }

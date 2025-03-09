@@ -59,9 +59,6 @@ const RoomLiveStream = ({ id }: { id: string }) => {
         })
       )
 
-      console.log(liveSession)
-      console.log(oldMessages)
-
       setChatMessages(oldMessages)
     }
   }, [liveSession])
@@ -137,7 +134,7 @@ const RoomLiveStream = ({ id }: { id: string }) => {
   }
 
   if (isLoading) return <ModalLoading />
-  console.log(liveSession?.data.mux_playback_id)
+
   return (
     <div className="flex h-screen bg-gray-100">
       <div className="relative flex w-2/3 flex-col border-r border-gray-300">

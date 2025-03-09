@@ -35,7 +35,7 @@ import { DataTablePagination } from '@/components/shared/data-table-pagination'
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
-  data: TData[]
+  data?: TData[]
   isLoading?: boolean
   enableDateFilter?: boolean
   onDateFilterChange?: (filters: {
@@ -50,7 +50,7 @@ interface DataTableProps<TData, TValue> {
 
 export function DataTable<TData, TValue>({
   columns,
-  data,
+  data = [],
   isLoading = false,
   enableDateFilter = false,
   onDateFilterChange,
@@ -101,50 +101,56 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-        <Input
-          placeholder="Tìm kiếm..."
-          value={searchTerm}
-          onChange={handleSearchChange}
-          className="max-w-sm"
-        />
+      {(onSearchChange || enableDateFilter) && (
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+          {onSearchChange && (
+            <Input
+              placeholder="Tìm kiếm..."
+              value={searchTerm}
+              onChange={handleSearchChange}
+              className="max-w-sm"
+            />
+          )}
 
-        {enableDateFilter && (
-          <div className="flex items-center gap-4">
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button variant="outline">
-                  {fromDate ? format(fromDate, 'dd/MM/yyyy') : 'Từ ngày'}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent align="start" className="p-0">
-                <Calendar
-                  mode="single"
-                  selected={fromDate || undefined}
-                  onSelect={(date: any) => handleDateFilterChange(date, toDate)}
-                />
-              </PopoverContent>
-            </Popover>
+          {enableDateFilter && (
+            <div className="flex items-center gap-4">
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="outline">
+                    {fromDate ? format(fromDate, 'dd/MM/yyyy') : 'Từ ngày'}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent align="start" className="p-0">
+                  <Calendar
+                    mode="single"
+                    selected={fromDate || undefined}
+                    onSelect={(date: any) =>
+                      handleDateFilterChange(date, toDate)
+                    }
+                  />
+                </PopoverContent>
+              </Popover>
 
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button variant="outline">
-                  {toDate ? format(toDate, 'dd/MM/yyyy') : 'Đến ngày'}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent align="start" className="p-0">
-                <Calendar
-                  mode="single"
-                  selected={toDate || undefined}
-                  onSelect={(date: any) =>
-                    handleDateFilterChange(fromDate, date)
-                  }
-                />
-              </PopoverContent>
-            </Popover>
-          </div>
-        )}
-      </div>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="outline">
+                    {toDate ? format(toDate, 'dd/MM/yyyy') : 'Đến ngày'}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent align="start" className="p-0">
+                  <Calendar
+                    mode="single"
+                    selected={toDate || undefined}
+                    onSelect={(date: any) =>
+                      handleDateFilterChange(fromDate, date)
+                    }
+                  />
+                </PopoverContent>
+              </Popover>
+            </div>
+          )}
+        </div>
+      )}
 
       <div className="rounded-md border">
         <Table>

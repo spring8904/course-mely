@@ -257,10 +257,7 @@ const ChatView = () => {
     }
 
     senderMessage(newMessage, {
-      onSuccess: (response: any) => {
-        console.log('Message sent successfully', response.data)
-        setMessage('')
-      },
+      onSuccess: () => setMessage(''),
     })
 
     filePreviews.forEach((preview) => {

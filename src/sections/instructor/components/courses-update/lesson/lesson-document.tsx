@@ -22,7 +22,7 @@ import {
   useUpdateLessonDocument,
 } from '@/hooks/instructor/lesson/useLesson'
 import DialogDocumentPreview from '@/sections/instructor/components/courses-update/lesson/document/dialog-document-preview'
-import { CourseStatus } from '@/types'
+import { useCourseStatusStore } from '@/stores/use-course-status-store'
 import {
   LessonDocumentPayload,
   lessonDocumentSchema,
@@ -36,16 +36,12 @@ import { toast } from 'react-toastify'
 type Props = {
   chapterId?: string | number
   onHide: () => void
-  courseStatus?: string
   lessonId?: string | number
 }
 
-const LessonDocument = ({
-  chapterId,
-  courseStatus,
-  lessonId,
-  onHide,
-}: Props) => {
+const LessonDocument = ({ chapterId, lessonId, onHide }: Props) => {
+  const { isDraftOrRejected } = useCourseStatusStore()
+
   const [isOpenDocumentPreview, setIsOpenDocumentPreview] = useState(false)
   const [documentFile, setDocumentFile] = useState<string | null>(null) // [document]
   const fileInputRef = useRef<HTMLInputElement | null>(null)
@@ -54,7 +50,7 @@ const LessonDocument = ({
   )
   const [selectedFile, setSelectedFile] = useState<any>(null)
 
-  const { data: lessonDocumentData } = useGetLessonDocument(
+  const { data: lessonDocumentData, isLoading } = useGetLessonDocument(
     chapterId as string,
     lessonId as string
   )
@@ -62,8 +58,6 @@ const LessonDocument = ({
     useCreateLessonDocument()
   const { mutate: updateLessonDocument, isPending: isLessonDocumentUpdating } =
     useUpdateLessonDocument()
-
-  const isApproved = courseStatus === CourseStatus.Approved
 
   const form = useForm<LessonDocumentPayload>({
     resolver: zodResolver(lessonDocumentSchema),
@@ -75,7 +69,10 @@ const LessonDocument = ({
       document_url: '',
       isEdit: false,
     },
-    disabled: isApproved,
+    disabled:
+      !isDraftOrRejected ||
+      isLessonDocumentCreating ||
+      isLessonDocumentUpdating,
   })
 
   useEffect(() => {
@@ -117,10 +114,6 @@ const LessonDocument = ({
     form.setValue('document_file', null as unknown as File)
     setSelectedFile(null)
   }, [form])
-
-  const handleClose = () => {
-    onHide()
-  }
 
   const onSubmit = (data: LessonDocumentPayload) => {
     if (!lessonId) {
@@ -189,16 +182,14 @@ const LessonDocument = ({
     }
   }
 
+  if (isLoading)
+    return <Loader2 className="mx-auto animate-spin text-muted-foreground" />
+
   return (
     <>
-      <div className="mb-4 flex justify-between">
+      <div className="flex justify-between">
         <h2 className="font-semibold">
-          {courseStatus === CourseStatus.Draft ||
-          courseStatus === CourseStatus.Reject
-            ? lessonId
-              ? 'Cập nhật'
-              : 'Thêm'
-            : 'Thông tin'}{' '}
+          {isDraftOrRejected ? (lessonId ? 'Cập nhật' : 'Thêm') : 'Thông tin'}{' '}
           tài liệu
         </h2>
         {documentFile && (
@@ -238,7 +229,7 @@ const LessonDocument = ({
             )}
           />
 
-          {!isApproved && (
+          {isDraftOrRejected && (
             <>
               <FormField
                 control={form.control}
@@ -317,6 +308,9 @@ const LessonDocument = ({
                     onClick={handleResetClick}
                     type="button"
                     variant="destructive"
+                    disabled={
+                      isLessonDocumentCreating || isLessonDocumentUpdating
+                    }
                   >
                     Tải lại
                   </Button>
@@ -341,31 +335,25 @@ const LessonDocument = ({
                   )}
                 />
               )}
-              <div className="flex items-center justify-end">
-                <Button
-                  onClick={handleClose}
-                  className="mr-3"
-                  variant="secondary"
-                >
-                  Huỷ
-                </Button>
+
+              <div className="flex justify-end">
                 <Button
                   type="submit"
                   disabled={
                     isLessonDocumentCreating || isLessonDocumentUpdating
                   }
                 >
-                  {isLessonDocumentCreating ||
-                    (isLessonDocumentUpdating && (
-                      <Loader2 className="mr-2 size-4 animate-spin" />
-                    ))}
-                  {lessonId ? 'Lưu tài liệu' : 'Thêm   tài liệu'}
+                  {(isLessonDocumentCreating || isLessonDocumentUpdating) && (
+                    <Loader2 className="animate-spin" />
+                  )}
+                  {lessonId ? 'Lưu tài liệu' : 'Thêm tài liệu'}
                 </Button>
               </div>
             </>
           )}
         </form>
       </Form>
+
       <DialogDocumentPreview
         isOpen={isOpenDocumentPreview}
         setIsOpen={setIsOpenDocumentPreview}

@@ -33,6 +33,7 @@ import {
   CheckCircle,
   ChevronLeft,
   ChevronRight,
+  CircleHelp,
   Lock,
   Notebook,
 } from 'lucide-react'
@@ -41,6 +42,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useMemo, useState } from 'react'
 import Swal from 'sweetalert2'
+import LearningTour from '@/components/shared/learning-tour'
 
 type Props = {
   courseSlug: string
@@ -49,9 +51,10 @@ type Props = {
 
 const LearningPathView = ({ courseSlug, lessonId }: Props) => {
   const router = useRouter()
-  const [hasAlerted, setHasAlerted] = useState(false)
 
+  const [hasAlerted, setHasAlerted] = useState(false)
   const [isSheetOpen, setIsSheetOpen] = useState(false)
+  const [runTour, setRunTour] = useState(false)
 
   const { data: lessons, isLoading: isLessonLoading } =
     useGetLessons(courseSlug)
@@ -148,6 +151,7 @@ const LearningPathView = ({ courseSlug, lessonId }: Props) => {
 
   return (
     <>
+      <LearningTour isRunning={runTour} onClose={() => setRunTour(false)} />
       <div className="relative flex min-h-screen flex-col">
         <div className="fixed inset-x-0 top-0 z-10 h-16 bg-[#292f3b] text-primary-foreground">
           <div className="mx-16 flex h-full items-center justify-between">
@@ -156,10 +160,10 @@ const LearningPathView = ({ courseSlug, lessonId }: Props) => {
                 <ChevronLeft />
               </Link>
               <Image src="/images/Logo.png" alt="logo" width={36} height={36} />
-              <p className="font-bold">{course_name}</p>
+              <p className="course-title font-bold">{course_name}</p>
             </div>
             <div className="flex items-center gap-6">
-              <div className="flex items-center gap-1">
+              <div className="learning-progress flex items-center gap-1">
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger>
@@ -186,17 +190,24 @@ const LearningPathView = ({ courseSlug, lessonId }: Props) => {
               </div>
               <div
                 onClick={() => setIsSheetOpen(true)}
-                className="flex cursor-pointer items-center gap-1 opacity-75 hover:opacity-100"
+                className="note-button flex cursor-pointer items-center gap-1 opacity-75 hover:opacity-100"
               >
                 <Notebook size={18} />
                 <span className="text-sm font-normal">Ghi chú</span>
+              </div>
+              <div
+                onClick={() => setRunTour(true)}
+                className="flex cursor-pointer items-center gap-1 opacity-75 hover:opacity-100"
+              >
+                <CircleHelp size={18} />
+                <span className="text-sm font-normal">Hướng dẫn</span>
               </div>
             </div>
           </div>
         </div>
 
         <div className="fixed inset-x-0 inset-y-16 grid grid-cols-12 overflow-hidden">
-          <div className="col-span-9 overflow-y-auto">
+          <div className="lesson-content col-span-9 overflow-y-auto">
             {lessonDetail && (
               <LessonContent
                 lesson={lessonDetail.lesson}
@@ -206,7 +217,7 @@ const LearningPathView = ({ courseSlug, lessonId }: Props) => {
             )}
           </div>
 
-          <div className="col-span-3 overflow-y-auto border-l-2">
+          <div className="course-content col-span-3 overflow-y-auto border-l-2">
             <h2 className="border-b-2 p-4 font-bold">Nội dung khoá học</h2>
 
             <Accordion
@@ -238,7 +249,6 @@ const LearningPathView = ({ courseSlug, lessonId }: Props) => {
                     </AccordionTrigger>
                     <AccordionContent className="m-0 border-0 p-0">
                       {chapter?.lessons?.map((lesson, lessonIndex) => {
-                        if (lesson.type === 'quiz') console.log(lesson)
                         const isSelected =
                           lesson?.id === lessonDetail?.lesson?.id
                         return (
@@ -291,7 +301,7 @@ const LearningPathView = ({ courseSlug, lessonId }: Props) => {
           </div>
         </div>
 
-        <div className="fixed inset-x-0 bottom-0 z-10 h-16 bg-accent">
+        <div className="navigation-buttons fixed inset-x-0 bottom-0 z-10 h-16 bg-accent">
           <div className="container mx-auto flex h-full items-center justify-center gap-4">
             <Button
               variant="outline"

@@ -71,7 +71,6 @@ const CourseDetailView = ({ slug }: { slug: string }) => {
     useGetCoursesRelated(slug)
   const { data: coursesOtherData, isLoading: isCoursesOtherDataLoading } =
     useGetCoursesOther(slug)
-
   console.log('coursesOtherData', coursesOtherData)
   console.log('courseDetails', courseDetails)
 

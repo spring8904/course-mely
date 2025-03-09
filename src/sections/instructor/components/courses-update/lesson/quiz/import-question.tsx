@@ -13,6 +13,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
+import { useQueryClient } from '@tanstack/react-query'
+import QueryKey from '@/constants/query-key'
 
 interface ImportQuestionProps {
   quizId: string
@@ -25,7 +27,7 @@ const ImportQuestion: React.FC<ImportQuestionProps> = ({
   setIsOpenImportQuestion,
   isOpenImportQuestion,
 }) => {
-  console.log(quizId)
+  const queryClient = useQueryClient()
 
   const [file, setFile] = useState<File | null>(null)
   const { mutate: importMutation, isPending } = useImportQuestion()
@@ -57,9 +59,12 @@ const ImportQuestion: React.FC<ImportQuestionProps> = ({
     importMutation(
       { quizId, data: formData },
       {
-        onSuccess: () => {
+        onSuccess: async () => {
           setIsOpenImportQuestion(false)
           setFile(null)
+          await queryClient.invalidateQueries({
+            queryKey: [QueryKey.INSTRUCTOR_QUIZ, Number(quizId)], // hoặc key tương ứng với useQuery của quiz
+          })
         },
       }
     )
