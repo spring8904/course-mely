@@ -28,6 +28,7 @@ const ListQuestion = ({ questions = [], quizId }: Props) => {
   const { isDraftOrRejected } = useCourseStatusStore()
 
   const [editQuestionId, setEditQuestionId] = useState<string>()
+  const [openEditQuestion, setOpenEditQuestion] = useState(false)
 
   const [isOpenAddQuestion, setIsOpenAddQuestion] = useState(false)
   const [isOpenImportQuestion, setIsOpenImportQuestion] = useState(false)
@@ -42,9 +43,11 @@ const ListQuestion = ({ questions = [], quizId }: Props) => {
       showCancelButton: true,
       confirmButtonText: 'Xóa',
       cancelButtonText: 'Hủy',
-    }).then(async (result: any) => {
+    }).then((result: any) => {
       if (result.isConfirmed) {
-        await deleteQuestion(questionId)
+        deleteQuestion(questionId, {
+          onSettled: () => setEditQuestionId(undefined),
+        })
       }
     })
   }
@@ -67,7 +70,7 @@ const ListQuestion = ({ questions = [], quizId }: Props) => {
   return (
     <>
       {
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <Button
             onClick={(e) => {
               e.stopPropagation()
@@ -105,31 +108,41 @@ const ListQuestion = ({ questions = [], quizId }: Props) => {
         <div className="my-2">
           <h4 className="text-sm">Danh sách câu hỏi</h4>
           {questions.map((question: any, index: number) => (
-            <div key={index} className="mt-2 rounded-lg border p-2">
-              <div className="flex justify-between">
+            <div key={index} className="mt-2 space-y-2 rounded-lg border p-2">
+              <div className="flex items-center justify-between gap-2">
                 <p className="text-sm">
                   {index + 1}. {question.question}
                 </p>
                 {isDraftOrRejected && (
                   <div className="flex gap-2">
-                    <div
+                    <Button
+                      variant="secondary"
+                      size="icon"
+                      className="size-7 [&_svg]:size-3"
+                      disabled={isPending && editQuestionId === question.id}
                       onClick={() => {
                         setEditQuestionId(question.id)
+                        setOpenEditQuestion(true)
                       }}
-                      className={`cursor-pointer rounded border bg-[#fff3] p-2 shadow hover:bg-[#ffffff54] ${
-                        isPending ? 'cursor-not-allowed opacity-50' : ''
-                      }`}
                     >
-                      <Pencil size={12} />
-                    </div>
-                    <div
-                      onClick={() => handleDeleteQuestion(question.id)}
-                      className={`cursor-pointer rounded border bg-[#fff3] p-2 shadow hover:bg-[#ffffff54] ${
-                        isPending ? 'cursor-not-allowed opacity-50' : ''
-                      }`}
+                      <Pencil />
+                    </Button>
+                    <Button
+                      variant="secondary"
+                      size="icon"
+                      className="size-7 [&_svg]:size-3"
+                      disabled={isPending && editQuestionId === question.id}
+                      onClick={() => {
+                        setEditQuestionId(question.id)
+                        handleDeleteQuestion(question.id)
+                      }}
                     >
-                      <Trash size={12} />
-                    </div>
+                      {isPending && editQuestionId === question.id ? (
+                        <Loader2 className="animate-spin" />
+                      ) : (
+                        <Trash />
+                      )}
+                    </Button>
                   </div>
                 )}
               </div>
@@ -153,9 +166,10 @@ const ListQuestion = ({ questions = [], quizId }: Props) => {
       )}
 
       <AddQuestionDialog
-        isOpen={!!editQuestionId}
+        isOpen={openEditQuestion}
         onOpenChange={(open) => {
           if (!open) setEditQuestionId(undefined)
+          setOpenEditQuestion(open)
         }}
         questionId={editQuestionId}
       />

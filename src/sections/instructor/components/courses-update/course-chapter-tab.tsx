@@ -6,6 +6,7 @@ import {
   CircleCheck,
   CircleX,
   GripVertical,
+  Loader2,
   SquarePen,
   Trash2,
 } from 'lucide-react'
@@ -52,7 +53,7 @@ const CourseChapterTab = ({ chapters: chapterList, slug }: Props) => {
   const { courseStatus, isDraftOrRejected } = useCourseStatusStore()
 
   const { mutate: updateChapter } = useUpdateChapter()
-  const { mutate: deleteChapter } = useDeleteChapter()
+  const { mutate: deleteChapter, isPending: isDeleting } = useDeleteChapter()
   const { mutate: updateChapterOrder, isPending: isUpdateOrder } =
     useUpdateChapterOrder()
 
@@ -91,9 +92,14 @@ const CourseChapterTab = ({ chapters: chapterList, slug }: Props) => {
       showCancelButton: true,
       confirmButtonText: 'Xóa',
       cancelButtonText: 'Hủy',
-    }).then(async (result) => {
+    }).then((result) => {
       if (result.isConfirmed) {
-        deleteChapter({ slug, id })
+        deleteChapter(
+          { slug, id },
+          {
+            onSettled: () => setChapterEdit(null),
+          }
+        )
       }
     })
   }
@@ -222,12 +228,18 @@ const CourseChapterTab = ({ chapters: chapterList, slug }: Props) => {
                                 variant="outline"
                                 size="icon"
                                 className="text-destructive hover:text-destructive/80"
+                                disabled={isDeleting}
                                 onClick={(e) => {
                                   e.stopPropagation()
+                                  setChapterEdit(chapter.id as number)
                                   handleDeleteChapter(chapter.id as number)
                                 }}
                               >
-                                <Trash2 />
+                                {isDeleting && chapterEdit === chapter.id ? (
+                                  <Loader2 className="animate-spin" />
+                                ) : (
+                                  <Trash2 />
+                                )}
                               </Button>
                             </div>
                           )}
