@@ -46,12 +46,17 @@ export const useAuthStore = create<UserState>((set) => ({
   },
 
   setRole: (role) => {
-    if (role) {
-      Cookies.set(StorageKey.ROLE, role, { expires: 7 })
-    } else {
-      Cookies.remove(StorageKey.ROLE)
-    }
-    set({ role })
+    set((state) => {
+      if (state.role === role) {
+        return state
+      }
+      if (role) {
+        Cookies.set(StorageKey.ROLE, role, { expires: 7 })
+      } else {
+        Cookies.remove(StorageKey.ROLE)
+      }
+      return { ...state, role }
+    })
   },
 
   logout: () => {

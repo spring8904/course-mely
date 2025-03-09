@@ -48,7 +48,6 @@ import { timeAgo } from '@/lib/common'
 import MessageContent from '@/components/shared/message-content'
 import { IChannel, IMessage } from '@/types/Chat'
 import { SidebarChatInfo } from '@/components/shared/sidebar-chat-info'
-import Image from 'next/image'
 
 interface FilePreview {
   name: string
@@ -121,23 +120,27 @@ const ChatView = () => {
     }
   }, [getMessageData, selectedChannel, user?.id])
 
+  const handleChannelSelect = (channel: any) => {
+    setSelectedChannel(channel)
+    localStorage.setItem('selectedChannel', JSON.stringify(channel))
+  }
+
   useEffect(() => {
     if (showSearch && searchInputRef.current) {
       searchInputRef.current.focus()
     }
   }, [showSearch])
 
-  useEffect(() => {
+  const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [chats, selectedChannel])
+  }
+
+  useEffect(() => {
+    scrollToBottom()
+  }, [chats])
 
   const onEmojiClick = (emojiData: EmojiClickData) => {
     setMessage((prev) => prev + emojiData.emoji)
-  }
-
-  const handleChannelSelect = (channel: any) => {
-    setSelectedChannel(channel)
-    localStorage.setItem('selectedChannel', JSON.stringify(channel))
   }
 
   const handleFileSelect = async (
@@ -175,6 +178,13 @@ const ChatView = () => {
       newPreviews.splice(index, 1)
       return newPreviews
     })
+  }
+
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault()
+      sendMessage()
+    }
   }
 
   useEffect(() => {
@@ -227,13 +237,6 @@ const ChatView = () => {
     }
   }, [selectedChannel])
 
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault()
-      sendMessage()
-    }
-  }
-
   const sendMessage = () => {
     if (!message.trim() && filePreviews.length === 0) return
     if (!selectedChannel?.conversation_id) return
@@ -257,7 +260,10 @@ const ChatView = () => {
     }
 
     senderMessage(newMessage, {
-      onSuccess: () => setMessage(''),
+      onSuccess: (response: any) => {
+        console.log('Message sent successfully', response.data)
+        setMessage('')
+      },
     })
 
     filePreviews.forEach((preview) => {
@@ -574,12 +580,10 @@ const ChatView = () => {
                     <div key={index} className="relative">
                       {preview.type === 'image' ? (
                         <div className="group relative">
-                          <Image
+                          <img
                             src={preview.url}
                             alt={preview.name}
-                            fill
-                            className="rounded-lg object-cover"
-                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                            className="h-24 w-full rounded-lg object-cover"
                           />
                           <div className="absolute inset-0 flex items-center justify-center rounded-lg bg-black/40 opacity-0 transition-opacity group-hover:opacity-100">
                             <Button

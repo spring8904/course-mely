@@ -102,7 +102,7 @@ const Header = () => {
     })
 
     return () => {
-      echo.leave(`instructor.${user.id}`)
+      echo.leave(`member.${user.id}`)
     }
   }, [user?.id])
 

@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2, Plus, Trash } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useFieldArray, useForm } from 'react-hook-form'
 
 import { questions } from '@/constants/common'
@@ -37,12 +37,14 @@ import { useRouter } from 'next/navigation'
 import { useAuthStore } from '@/stores/useAuthStore'
 import Swal from 'sweetalert2'
 import { getLocalStorage } from '@/lib/common'
+import echo from '@/lib/echo'
 
 const BecomeAnInstructor = () => {
+  const { user, isAuthenticated, role, setRole } = useAuthStore()
   const router = useRouter()
-  const [step, setStep] = useState(1)
 
-  const { user, isAuthenticated } = useAuthStore()
+  const [step, setStep] = useState(1)
+  const [isWaitingForRealtime, setIsWaitingForRealtime] = useState(false)
 
   const { data: qaSystems, isLoading } = useGetQaSystems()
   const { mutate: registerInstructor, isPending } = useInstructorRegister()
@@ -58,7 +60,7 @@ const BecomeAnInstructor = () => {
         options: question.options,
         selected_options: [],
       })),
-      certificates: [],
+      certificates: [{ file: undefined }],
     },
     disabled: isPending,
   })
@@ -68,9 +70,73 @@ const BecomeAnInstructor = () => {
     name: 'certificates',
   })
 
+  useEffect(() => {
+    if (!user) return
+
+    const privateChannel = echo.private(`member.${user?.id}`)
+    privateChannel.listen('InstructorApproved', (data: any) => {
+      const { new_role } = data
+      setRole(new_role)
+
+      if (isWaitingForRealtime) {
+        Swal.fire({
+          title: 'Chúc mừng!',
+          html: '<div class="text-center"><p>Bạn đã chính thức trở thành giảng viên của CourseMeLy.</p><p>Hãy bắt đầu hành trình chia sẻ kiến thức và xây dựng khóa học đầu tiên của bạn!</p></div>',
+          icon: 'success',
+          confirmButtonText: 'Bắt đầu ngay',
+          allowOutsideClick: false,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            router.push('/instructor')
+          }
+        })
+
+        setIsWaitingForRealtime(false)
+      }
+    })
+
+    return () => {
+      echo.leave(`member.${user.id}`)
+    }
+  }, [isWaitingForRealtime, router, setRole, user])
+
+  const showReviewingModal = () => {
+    const timerInterval: NodeJS.Timeout | undefined = undefined
+
+    Swal.fire({
+      title: 'Đang xử lý hồ sơ của bạn',
+      html: '<div class="text-center"><p>Hệ thống đang tự động đánh giá thông tin của bạn.</p><p>Quá trình này chỉ mất vài giây...</p></div>',
+      icon: 'info',
+      timer: 8000,
+      allowOutsideClick: false,
+      showConfirmButton: false,
+      willOpen: () => {
+        Swal.showLoading()
+      },
+      willClose: () => {
+        if (timerInterval) clearInterval(timerInterval)
+      },
+    })
+  }
+
   const onSubmit = (values: RegisterInstructorPayload) => {
+    showReviewingModal()
+    setIsWaitingForRealtime(true)
     registerInstructor(values, {
-      onSuccess: () => router.push('/'),
+      onError: () => {
+        Swal.fire({
+          title: 'Hồ sơ đang được xem xét',
+          html: '<div class="text-center"><p>Cảm ơn bạn đã đăng ký làm giảng viên tại CourseMeLy!</p><p>Đội ngũ của chúng tôi đang xem xét hồ sơ của bạn. Bạn sẽ nhận được thông báo ngay khi quá trình xét duyệt hoàn tất.</p></div>',
+          icon: 'info',
+          confirmButtonText: 'Đã hiểu',
+          allowOutsideClick: false,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            router.push('/')
+          }
+        })
+        setIsWaitingForRealtime(false)
+      },
     })
   }
 
@@ -78,6 +144,10 @@ const BecomeAnInstructor = () => {
 
   if (!user || !isAuthenticated) {
     router.push('/login')
+  }
+
+  if (role === 'instructor') {
+    router.push('/instructor')
   }
 
   if (!checkProfile) {
@@ -285,19 +355,20 @@ const BecomeAnInstructor = () => {
                                 className="pr-10"
                               />
                             </FormControl>
-
-                            <Button
-                              variant="ghost"
-                              type="button"
-                              size="icon"
-                              className="absolute right-0 top-0 text-destructive hover:bg-transparent hover:text-destructive/80"
-                              onClick={() => {
-                                remove(index)
-                              }}
-                              disabled={fieldProps.disabled}
-                            >
-                              <Trash />
-                            </Button>
+                            {index > 0 && (
+                              <Button
+                                variant="ghost"
+                                type="button"
+                                size="icon"
+                                className="absolute right-0 top-0 text-destructive hover:bg-transparent hover:text-destructive/80"
+                                onClick={() => {
+                                  remove(index)
+                                }}
+                                disabled={fieldProps.disabled}
+                              >
+                                <Trash />
+                              </Button>
+                            )}
                           </div>
                           <FormMessage />
                         </FormItem>
@@ -332,6 +403,7 @@ const BecomeAnInstructor = () => {
             <div className="flex h-20 w-full items-center justify-between">
               {step > 1 && (
                 <Button
+                  disabled={isPending}
                   type="button"
                   variant="outline"
                   onClick={() => setStep(step - 1)}
