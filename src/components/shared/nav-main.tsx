@@ -17,6 +17,8 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from '@/components/ui/sidebar'
+import { usePathname } from 'next/navigation'
+import { cn } from '@/lib/utils'
 
 export function NavMain({
   items,
@@ -32,6 +34,7 @@ export function NavMain({
     }[]
   }[]
 }) {
+  const pathname = usePathname()
   return (
     <SidebarGroup>
       <SidebarMenu>
@@ -45,11 +48,16 @@ export function NavMain({
             <SidebarMenuItem>
               {!item.items?.length ? (
                 <SidebarMenuButton
-                  className="h-10 text-base font-medium"
-                  asChild
+                  variant="primary"
                   tooltip={item.title}
+                  asChild
                 >
-                  <Link prefetch href={item.url}>
+                  <Link
+                    href={item.url}
+                    className={cn(
+                      pathname === item.url && 'bg-primary/5 text-primary'
+                    )}
+                  >
                     {item.icon && <item.icon />}
                     <span>{item.title}</span>
                   </Link>
@@ -58,8 +66,42 @@ export function NavMain({
                 <>
                   <CollapsibleTrigger asChild>
                     <SidebarMenuButton
-                      className="h-10 text-base font-medium"
-                      tooltip={item.title}
+                      variant="primary"
+                      className={cn(
+                        item.items.some(({ url }) => pathname === url) &&
+                          'bg-primary/5 text-primary'
+                      )}
+                      tooltip={{
+                        children: (
+                          <>
+                            <div className="pb-2 pr-2 text-lg font-medium text-sidebar-foreground">
+                              {item.title}
+                            </div>
+                            <SidebarMenuSub className="mx-0 border-l-2 pl-2 pr-0">
+                              {item.items.map((subItem) => (
+                                <SidebarMenuSubItem key={subItem.title}>
+                                  <SidebarMenuSubButton
+                                    className="hover:bg-primary/10 hover:text-primary"
+                                    asChild
+                                  >
+                                    <Link
+                                      href={subItem.url}
+                                      className={cn(
+                                        pathname === subItem.url &&
+                                          '!text-primary'
+                                      )}
+                                    >
+                                      <span>{subItem.title}</span>
+                                    </Link>
+                                  </SidebarMenuSubButton>
+                                </SidebarMenuSubItem>
+                              ))}
+                            </SidebarMenuSub>
+                          </>
+                        ),
+                        className: 'bg-sidebar border shadow-md',
+                        align: 'start',
+                      }}
                     >
                       {item.icon && <item.icon />}
                       <span>{item.title}</span>
@@ -71,10 +113,15 @@ export function NavMain({
                       {item.items.map((subItem) => (
                         <SidebarMenuSubItem key={subItem.title}>
                           <SidebarMenuSubButton
-                            className="h-10 text-base font-medium"
+                            className="hover:bg-primary/10 hover:text-primary"
                             asChild
                           >
-                            <Link href={subItem.url}>
+                            <Link
+                              href={subItem.url}
+                              className={cn(
+                                pathname === subItem.url && '!text-primary'
+                              )}
+                            >
                               <span>{subItem.title}</span>
                             </Link>
                           </SidebarMenuSubButton>
