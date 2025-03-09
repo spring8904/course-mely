@@ -67,8 +67,6 @@ const CourseDetailView = ({ slug }: { slug: string }) => {
   const { data: coursesOtherData, isLoading: isCoursesOtherDataLoading } =
     useGetCoursesOther(slug)
 
-  console.log('coursesOtherData', coursesOtherData)
-
   useEffect(() => {
     if (courseDetails?.updated_at) {
       const date = new Date(courseDetails.updated_at)

@@ -53,8 +53,6 @@ export const SidebarChatInfo = ({
   )
   const isGroup = selectedChannel?.type === 'group'
 
-  console.log(isGroup)
-
   const mediaMessages =
     messages?.filter(
       (msg) =>

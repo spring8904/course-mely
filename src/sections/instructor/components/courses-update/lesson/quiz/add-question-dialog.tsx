@@ -52,8 +52,8 @@ const colors = [
   'bg-cyan-500',
   'bg-green-500',
   'bg-yellow-500',
-  'bg-purple-500',
   'bg-rose-400',
+  'bg-purple-500',
 ]
 
 const AddQuestionDialog = ({
@@ -67,8 +67,6 @@ const AddQuestionDialog = ({
 
   const { data: questionData, isLoading: isQuestionLoading } =
     useGetQuestion(questionId)
-
-  console.log('questionData >>>', questionData)
 
   const { mutate: createQuestion, isPending: isQuestionCreatePending } =
     useCreateQuestion()
@@ -281,11 +279,9 @@ const AddQuestionDialog = ({
                       <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-4">
                         <Sortable
                           value={fields}
-                          onMove={({ activeIndex, overIndex }) => {
+                          onMove={({ activeIndex, overIndex }) =>
                             move(activeIndex, overIndex)
-
-                            console.log(fields)
-                          }}
+                          }
                           orientation="mixed"
                         >
                           {fields.map((option, index) => (
@@ -506,9 +502,8 @@ const AddQuestionDialog = ({
                                 image instanceof File
                                   ? image
                                   : ({
-                                      name: 'Hình ảnh',
-                                      size: 0,
-                                      // preview: image as string,
+                                      name:
+                                        questionData?.question || 'Hình ảnh',
                                       preview: `${process.env.NEXT_PUBLIC_STORAGE}/${image}`,
                                       type: 'image/*',
                                     } as unknown as File)

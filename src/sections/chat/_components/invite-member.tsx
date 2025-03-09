@@ -93,8 +93,6 @@ const InviteMember = ({
           await queryClient.invalidateQueries({
             queryKey: [QUERY_KEY.GROUP_CHAT, channelId],
           })
-
-          console.log(res)
         },
         onError: (error: any) => {
           toast.error(error.message)

@@ -249,7 +249,6 @@ const LearningPathView = ({ courseSlug, lessonId }: Props) => {
                     </AccordionTrigger>
                     <AccordionContent className="m-0 border-0 p-0">
                       {chapter?.lessons?.map((lesson, lessonIndex) => {
-                        if (lesson.type === 'quiz') console.log(lesson)
                         const isSelected =
                           lesson?.id === lessonDetail?.lesson?.id
                         return (

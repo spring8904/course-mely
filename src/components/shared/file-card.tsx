@@ -11,6 +11,7 @@ import { FileText, X } from 'lucide-react'
 import Image from 'next/image'
 import { Button } from '../ui/button'
 import { Progress } from '../ui/progress'
+import { AspectRatio } from '../ui/aspect-ratio'
 
 interface FileCardProps {
   file: File
@@ -20,7 +21,6 @@ interface FileCardProps {
 }
 
 const FileCard = ({ file, progress, onRemove, disabled }: FileCardProps) => {
-  console.log('file', file)
   return (
     <div className="relative flex items-center gap-2.5">
       <div className="flex flex-1 gap-2.5">
@@ -31,9 +31,11 @@ const FileCard = ({ file, progress, onRemove, disabled }: FileCardProps) => {
               {file.name}
             </p>
 
-            <p className="text-xs text-muted-foreground">
-              {formatBytes(file.size)}
-            </p>
+            {file.size ? (
+              <p className="text-xs text-muted-foreground">
+                {formatBytes(file.size)}
+              </p>
+            ) : null}
           </div>
           {progress ? <Progress value={progress} /> : null}
         </div>
@@ -56,10 +58,7 @@ const FileCard = ({ file, progress, onRemove, disabled }: FileCardProps) => {
 }
 
 const isFileWithPreview = (file: File): file is File & { preview: string } => {
-  return (
-    // file instanceof File &&
-    'preview' in file && typeof file.preview === 'string'
-  )
+  return 'preview' in file && typeof file.preview === 'string'
 }
 
 interface FilePreviewProps {
@@ -87,15 +86,15 @@ function FilePreview({ file }: FilePreviewProps) {
           <DialogHeader>
             <DialogTitle>{file.name}</DialogTitle>
           </DialogHeader>
-          <div className="relative aspect-video">
+          <AspectRatio ratio={16 / 9}>
             <Image
               src={file.preview}
               alt={file.name}
               fill
               loading="lazy"
-              className="shrink-0 rounded-md object-contain"
+              className="shrink-0 object-contain"
             />
-          </div>
+          </AspectRatio>
         </DialogContent>
       </Dialog>
     )

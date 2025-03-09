@@ -7,6 +7,7 @@ import {
   CircleX,
   FileCode2,
   GripVertical,
+  Loader2,
   ScrollText,
   SquarePen,
   Trash2,
@@ -60,7 +61,7 @@ const SortableLesson = ({ chapter, slug }: Props) => {
 
   const { mutate: updateLessonOrder, isPending: isUpdateOrder } =
     useUpdateOrderLesson()
-  const { mutate: deleteLesson } = useDeleteLesson()
+  const { mutate: deleteLesson, isPending: isDeleting } = useDeleteLesson()
 
   useEffect(() => {
     setLessons(chapter?.lessons || [])
@@ -94,12 +95,17 @@ const SortableLesson = ({ chapter, slug }: Props) => {
       showCancelButton: true,
       confirmButtonText: 'Xóa',
       cancelButtonText: 'Hủy',
-    }).then(async (result) => {
+    }).then((result) => {
       if (result.isConfirmed) {
-        deleteLesson({
-          chapterId: chapter.id as number,
-          id,
-        })
+        deleteLesson(
+          {
+            chapterId: chapter.id as number,
+            id,
+          },
+          {
+            onSettled: () => setLessonEdit(null),
+          }
+        )
       }
     })
   }
@@ -177,21 +183,19 @@ const SortableLesson = ({ chapter, slug }: Props) => {
                       </div>
                       {isDraftOrRejected && (
                         <div className="flex items-center gap-2">
-                          <Button
-                            variant="outline"
-                            size="icon"
-                            onClick={() => {
-                              setLessonEdit(lesson.id as number)
-                              if (lesson.type === 'coding') {
+                          {lesson.type === 'coding' && (
+                            <Button
+                              variant="outline"
+                              size="icon"
+                              onClick={() => {
                                 router.push(
                                   `/course/${lesson.slug}/coding-exercise?coding=${lesson.lessonable_id}`
                                 )
-                              }
-                            }}
-                          >
-                            <SquarePen />
-                          </Button>
-
+                              }}
+                            >
+                              <SquarePen />
+                            </Button>
+                          )}
                           <SortableDragHandle>
                             <GripVertical />
                           </SortableDragHandle>
@@ -202,10 +206,16 @@ const SortableLesson = ({ chapter, slug }: Props) => {
                             className="text-destructive hover:text-destructive/80"
                             onClick={(e) => {
                               e.stopPropagation()
+                              setLessonEdit(lesson.id as number)
                               handleDeleteLesson(lesson.id as number)
                             }}
+                            disabled={isDeleting && lessonEdit === lesson.id}
                           >
-                            <Trash2 />
+                            {isDeleting && lessonEdit === lesson.id ? (
+                              <Loader2 className="animate-spin" />
+                            ) : (
+                              <Trash2 />
+                            )}
                           </Button>
                         </div>
                       )}
