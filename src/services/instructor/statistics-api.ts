@@ -1,5 +1,9 @@
 import api from '@/configs/api'
-import { OverviewStatistics, RevenueStatistics } from '@/types/Statistics'
+import {
+  OverviewStatistics,
+  RevenueStatistics,
+  StudentPurchaseStatistics,
+} from '@/types/Statistics'
 
 const prefix = '/instructor/statistics'
 
@@ -13,6 +17,17 @@ export const instructorStatisticApi = {
     year: number
   ): Promise<RevenueStatistics> => {
     const res = await api.get(`${prefix}/get-month-revenue`, {
+      params: {
+        year,
+      },
+    })
+    return res.data
+  },
+
+  getStudentPurchaseStatistics: async (
+    year: number
+  ): Promise<StudentPurchaseStatistics> => {
+    const res = await api.get(`${prefix}/get-monthly-course-statistics`, {
       params: {
         year,
       },

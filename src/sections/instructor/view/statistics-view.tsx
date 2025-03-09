@@ -1,12 +1,11 @@
-'use client'
-
 import OverviewStatistics from '../components/statistics/overview-statistics'
 import RevenueChart from '../components/statistics/revenue-chart'
+import StudentPurchaseChart from '../components/statistics/student-purchase-chart'
 
 const StatisticsView = () => {
   return (
     <>
-      <div className="container mx-auto mt-5 space-y-8 px-5 xl:px-8">
+      <div className="container mx-auto mt-5 space-y-8 px-5 pb-20 xl:px-8">
         <div className="flex flex-col justify-center gap-2">
           <h1 className="text-xl font-medium leading-none">
             Thống kê khóa học & doanh thu
@@ -24,6 +23,8 @@ const StatisticsView = () => {
             <RevenueChart />
           </div>
         </div>
+
+        <StudentPurchaseChart />
       </div>
     </>
   )

@@ -8,3 +8,9 @@ export interface OverviewStatistics {
 export interface RevenueStatistics {
   [key: string]: null | string
 }
+export interface StudentPurchaseStatistics {
+  [key: string]: {
+    total_purchases: number
+    total_students: number
+  }
+}
