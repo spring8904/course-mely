@@ -134,14 +134,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     alt="CourseMeLy logo"
                     width={32}
                     height={32}
-                    className="size-8"
                   />
                 </div>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate text-xl font-extrabold">
-                    CourseMeLy
-                  </span>
-                </div>
+                <span className="truncate text-lg font-extrabold">
+                  CourseMeLy
+                </span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>

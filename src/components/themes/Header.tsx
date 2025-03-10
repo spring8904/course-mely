@@ -102,7 +102,7 @@ const Header = () => {
     })
 
     return () => {
-      echo.leave(`instructor.${user.id}`)
+      echo.leave(`member.${user.id}`)
     }
   }, [user?.id])
 
@@ -231,17 +231,20 @@ const Header = () => {
               <a
                 className="mobile-nav-toggler mobile-button d-lg-none flex"
                 href="#menu"
-              ></a>
+              />
               <div id="site-logo">
-                <Link href="/" rel="home">
-                  <Image
-                    id="logo-header"
-                    src="/images/logo/logo.svg"
-                    width={100}
-                    height={100}
-                    style={{ width: '100%' }}
-                    alt=""
-                  />
+                <Link href="/" rel="home" className="flex items-center gap-2">
+                  <div className="flex aspect-square size-10 rounded-lg">
+                    <Image
+                      src="/images/Logo.png"
+                      alt="CourseMeLy logo"
+                      width={40}
+                      height={40}
+                    />
+                  </div>
+                  <span className="truncate text-xl font-extrabold">
+                    CourseMeLy
+                  </span>
                 </Link>
               </div>
               <nav className="main-menu">

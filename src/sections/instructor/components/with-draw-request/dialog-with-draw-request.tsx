@@ -78,8 +78,12 @@ const DialogWithDrawRequest = ({
             queryKey: [QueryKey.INSTRUCTOR_WITH_DRAW_REQUEST],
           })
         },
-        onError: (error: any) => {
+        onError: async (error: any) => {
           toast.error(error?.message)
+
+          await queryClient.invalidateQueries({
+            queryKey: [QueryKey.INSTRUCTOR_WITH_DRAW_REQUEST],
+          })
         },
       }
     )

@@ -21,8 +21,12 @@ export interface CourseRevenueStatistics {
   price: string
   price_sale: string
   slug: string
-  total_revenue: string
+  thumbnail: string
   total_student: number
-  avg_progress: string
+  name_category: string
+  slug_category: string
+  icon_category: null
+  total_revenue: string
+  avg_progress: string | null
   avg_rating: string
 }

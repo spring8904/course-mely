@@ -14,7 +14,7 @@ const MeSetting = () => {
 
   return (
     <div>
-      <div className="section-setting-right section-right">
+      <div className="section-setting-right">
         <div className="box">
           <div className="widget-tabs style-small">
             {/* Tab Menu */}

@@ -1,5 +1,6 @@
 'use client'
 
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { useCreateWishList } from '@/hooks/wish-list/useWishList'
 import { formatCurrency, formatDuration } from '@/lib/common'
 import { ICourse } from '@/types'
@@ -175,7 +176,7 @@ const CourseList = ({
                           {course.ratings?.count > 0 ? (
                             <>
                               <div className="number text-lg font-bold text-gray-800">
-                                {course.ratings.average.fixed(1) || '0.0'}
+                                {course.ratings.average || '0.0'}
                               </div>
                               <div className="stars flex items-center">
                                 {[...Array(5)].map((_, index) => (
@@ -190,7 +191,7 @@ const CourseList = ({
                                 ))}
                               </div>
                               <div className="total text-sm text-gray-500">
-                                ({course.ratings.count} lượt đánh giá)
+                                ({course.ratings.count})
                               </div>
                             </>
                           ) : (
@@ -199,25 +200,34 @@ const CourseList = ({
                             </div>
                           )}
                         </div>
-                        <div className="author">
-                          By:
-                          <a href="#" className="author">
-                            {course.user.name}
-                          </a>
-                        </div>
+
+                        <Link
+                          href="#"
+                          className="author flex items-center gap-2"
+                        >
+                          <Avatar className="size-5">
+                            <AvatarImage
+                              src={course.user.avatar}
+                              alt={course.user.name}
+                            />
+                            <AvatarFallback>{course.user.name}</AvatarFallback>
+                          </Avatar>
+                          {course.user.name}
+                        </Link>
+
                         <div className="bottom">
                           <div className="h6 price fw-5">
                             {course.is_free ? (
-                              <span className="text-orange-500">Miễn phí</span>
+                              <span className="text-primary">Miễn phí</span>
                             ) : course.price_sale > 0 ? (
-                              <div>
-                                <span className="font-bold text-red-500">
+                              <>
+                                <span className="text-lg font-bold text-primary">
                                   {formatCurrency(course.price_sale)}
                                 </span>
                                 <span className="ml-2 text-gray-500 line-through">
                                   {formatCurrency(course.price)}
                                 </span>
-                              </div>
+                              </>
                             ) : (
                               <span>{formatCurrency(course.price)}</span>
                             )}

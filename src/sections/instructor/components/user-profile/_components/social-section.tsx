@@ -83,6 +83,7 @@ export function SocialSection({ socialData }: Props) {
       linkedin: '',
       instagram: '',
     },
+    disabled: isPending,
   })
 
   useEffect(() => {
@@ -93,8 +94,11 @@ export function SocialSection({ socialData }: Props) {
   }, [socialData, form])
 
   function onSubmit(data: ProfileBioFormValues) {
-    mutate(data)
-    setIsEditing(false)
+    mutate(data, {
+      onSuccess: () => {
+        setIsEditing(false)
+      },
+    })
   }
 
   const currentData = socialData?.user?.profile?.bio

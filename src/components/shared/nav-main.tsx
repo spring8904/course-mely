@@ -49,7 +49,11 @@ export function NavMain({
               {!item.items?.length ? (
                 <SidebarMenuButton
                   variant="primary"
-                  tooltip={item.title}
+                  tooltip={{
+                    children: item.title,
+                    className:
+                      'bg-sidebar text-sidebar-foreground border shadow-md text-sm py-0 h-7 flex items-center ',
+                  }}
                   asChild
                 >
                   <Link
@@ -59,7 +63,7 @@ export function NavMain({
                     )}
                   >
                     {item.icon && <item.icon />}
-                    <span>{item.title}</span>
+                    <span className="text-base font-medium">{item.title}</span>
                   </Link>
                 </SidebarMenuButton>
               ) : (
@@ -74,14 +78,14 @@ export function NavMain({
                       tooltip={{
                         children: (
                           <>
-                            <div className="pb-2 pr-2 text-lg font-medium text-sidebar-foreground">
+                            <div className="pb-1 pr-2 text-base font-medium text-sidebar-accent-foreground">
                               {item.title}
                             </div>
-                            <SidebarMenuSub className="mx-0 border-l-2 pl-2 pr-0">
+                            <SidebarMenuSub className="mx-0 my-0.5 border-l-2 border-l-primary/35 p-0 pl-2">
                               {item.items.map((subItem) => (
                                 <SidebarMenuSubItem key={subItem.title}>
                                   <SidebarMenuSubButton
-                                    className="hover:bg-primary/10 hover:text-primary"
+                                    className="hover:bg-sidebar hover:text-primary"
                                     asChild
                                   >
                                     <Link
@@ -104,16 +108,18 @@ export function NavMain({
                       }}
                     >
                       {item.icon && <item.icon />}
-                      <span>{item.title}</span>
+                      <span className="whitespace-nowrap text-base font-medium">
+                        {item.title}
+                      </span>
                       <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
                     </SidebarMenuButton>
                   </CollapsibleTrigger>
                   <CollapsibleContent>
-                    <SidebarMenuSub>
+                    <SidebarMenuSub className="my-0.5 border-l-2 border-l-primary/35 py-0">
                       {item.items.map((subItem) => (
                         <SidebarMenuSubItem key={subItem.title}>
                           <SidebarMenuSubButton
-                            className="hover:bg-primary/10 hover:text-primary"
+                            className="hover:bg-sidebar hover:text-primary"
                             asChild
                           >
                             <Link

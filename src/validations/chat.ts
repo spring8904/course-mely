@@ -33,7 +33,7 @@ export const messageSchema = z.object({
       if (!file) return true
       if (file instanceof File && file.size <= 10 * 1024 * 1024) return true
       return false
-    }, 'File phải có kích thước tối đa 10MB')
+    }, 'File có kích thước tối đa 10MB')
     .optional(),
 })
 
