@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import { useAuthStore } from '@/stores/useAuthStore'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { getLocalStorage } from '@/lib/common'
@@ -6,12 +6,12 @@ import Swal from 'sweetalert2'
 import { useRouter } from 'next/navigation'
 
 const MeBanner = () => {
-  const { user } = useAuthStore()
+  const { user, role } = useAuthStore()
   const router = useRouter()
 
-  const checkProfile = getLocalStorage('checkProfile') === 'true'
+  const handleBecomeInstructor = useCallback(() => {
+    const checkProfile = getLocalStorage('checkProfile') === 'true'
 
-  const handleBecomeInstructor = () => {
     if (!checkProfile) {
       Swal.fire({
         title: 'Thông báo',
@@ -21,8 +21,14 @@ const MeBanner = () => {
       })
       return
     }
+
+    if (role === 'instructor') {
+      router.push('/instructor')
+      return
+    }
+
     router.push('/become-an-instructor')
-  }
+  }, [role, router])
 
   return (
     <div className="page-title style-7 bg-5">
