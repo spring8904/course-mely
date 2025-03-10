@@ -1,5 +1,5 @@
 'use client'
-
+import CountUp from 'react-countup'
 import { Card, CardContent } from '@/components/ui/card'
 import { useGetOverviewStatistics } from '@/hooks/instructor/use-statistic'
 import { formatCurrency } from '@/lib/common'
@@ -26,7 +26,7 @@ const OverviewStatistics = () => {
             {isLoading ? (
               <Loader2 className="mb-3 ml-3 animate-spin text-muted-foreground" />
             ) : (
-              overviewStatistics?.totalCourse
+              <CountUp end={overviewStatistics?.totalCourse ?? 0} />
             )}
           </span>
           <span className="text-sm font-normal text-muted-foreground">
@@ -44,11 +44,15 @@ const OverviewStatistics = () => {
             {isLoading ? (
               <Loader2 className="mb-3 ml-3 animate-spin text-muted-foreground" />
             ) : (
-              formatCurrency(
-                overviewStatistics?.totalRevenue
-                  ? +overviewStatistics.totalRevenue
-                  : 0
-              )
+              <CountUp
+                end={
+                  overviewStatistics?.totalRevenue
+                    ? +overviewStatistics.totalRevenue
+                    : 0
+                }
+                formattingFn={(value) => formatCurrency(value)}
+                separator="."
+              />
             )}
           </span>
           <span className="text-sm font-normal text-muted-foreground">
@@ -67,7 +71,10 @@ const OverviewStatistics = () => {
             {isLoading ? (
               <Loader2 className="mb-3 ml-3 animate-spin text-muted-foreground" />
             ) : (
-              overviewStatistics?.totalEnrollments
+              <CountUp
+                end={overviewStatistics?.totalEnrollments ?? 0}
+                separator="."
+              />
             )}
           </span>
           <span className="text-sm font-normal text-muted-foreground">
@@ -86,7 +93,15 @@ const OverviewStatistics = () => {
             {isLoading ? (
               <Loader2 className="mb-3 ml-3 animate-spin text-muted-foreground" />
             ) : (
-              overviewStatistics?.averageRating
+              <CountUp
+                end={
+                  overviewStatistics?.averageRating
+                    ? +overviewStatistics.averageRating
+                    : 0
+                }
+                decimals={1}
+                decimal=","
+              />
             )}
           </span>
           <span className="text-sm font-normal text-muted-foreground">

@@ -91,7 +91,6 @@ function FilePreview({ file }: FilePreviewProps) {
               src={file.preview}
               alt={file.name}
               fill
-              loading="lazy"
               className="shrink-0 object-contain"
             />
           </AspectRatio>

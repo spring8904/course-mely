@@ -23,6 +23,7 @@ import { CourseRevenueStatistics } from '@/types/Statistics'
 import { ColumnDef } from '@tanstack/react-table'
 import { Eye, MoreVertical, Star } from 'lucide-react'
 import Link from 'next/link'
+import Image from 'next/image'
 
 const CourseDashboardTable = () => {
   const { data, isLoading } = useGetCourseRevenueStatistics()
@@ -34,6 +35,26 @@ const CourseDashboardTable = () => {
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Khóa học" />
       ),
+      cell: ({ row }) => {
+        const course = row.original
+        return (
+          <div className="flex min-w-80 items-center gap-4">
+            <Image
+              alt={course.name ?? ''}
+              className="size-16 rounded-lg object-cover"
+              height={128}
+              width={128}
+              src={course?.thumbnail ?? ''}
+            />
+            <div className="flex-1 space-y-1">
+              <h3 className="line-clamp-2 font-semibold">{course.name}</h3>
+              <h4 className="text-xs text-muted-foreground">
+                {course.name_category}
+              </h4>
+            </div>
+          </div>
+        )
+      },
     },
 
     {
@@ -95,7 +116,9 @@ const CourseDashboardTable = () => {
         <DataTableColumnHeader column={column} title="Tỉ lệ hoàn thành" />
       ),
       cell: ({ row }) => {
-        return formatPercentage(+row.original.avg_progress)
+        return formatPercentage(
+          row.original.avg_progress ? +row.original.avg_progress : 0
+        )
       },
     },
     {
