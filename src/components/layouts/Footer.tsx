@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import Link from 'next/link'
 
 type ContactInfo = {
   phone: string
@@ -61,19 +62,19 @@ const Footer = () => {
                         <div className="icon">
                           <i className="flaticon-call" />
                         </div>
-                        <p>Điện thoai: {contactInfo.phone}</p>
+                        <p>{contactInfo.phone}</p>
                       </li>
                       <li className="flex items-center gap-[10px]">
                         <div className="icon">
                           <i className="flaticon-mail-1" />
                         </div>
-                        <p>Email: {contactInfo.email}</p>
+                        <p>{contactInfo.email}</p>
                       </li>
                       <li className="flex items-center gap-[10px]">
                         <div className="icon">
                           <i className="flaticon-location" />
                         </div>
-                        <p>Địa chỉ: {contactInfo.address}</p>
+                        <p>{contactInfo.address}</p>
                       </li>
                     </ul>
                     <ul className="tf-social-icon flex items-center gap-[10px]">
@@ -106,7 +107,7 @@ const Footer = () => {
                     <h5 className="fw-5">Về chúng tôi</h5>
                     <ul>
                       <li>
-                        <a href="#">Giới thiệu</a>
+                        <Link href="/about-us">Giới thiệu</Link>
                       </li>
                       <li>
                         <a href="#">Liên hệ</a>
