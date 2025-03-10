@@ -59,6 +59,7 @@ export function ProfileSection({ userData }: Props) {
       address: userData?.user.profile.address || '',
       about_me: userData?.user.profile.about_me || '',
     },
+    disabled: isPending,
   })
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -314,6 +315,7 @@ export function ProfileSection({ userData }: Props) {
 
                     <div className="flex justify-end gap-3">
                       <Button
+                        disabled={isPending}
                         type="button"
                         variant="outline"
                         className="border-gray-200"
