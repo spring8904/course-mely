@@ -48,6 +48,7 @@ export function CertificateSection({
       certificates: [],
       existingCertificates: [],
     },
+    disabled: isPending,
   })
 
   const parseCertificates = (certificatesData: any): string[] => {
@@ -145,8 +146,8 @@ export function CertificateSection({
 
   const getFileName = (url: string): string => {
     try {
-      const fileName = url.split('/').pop() || ''
-      return fileName.split('?')[0]
+      const fullUrl = `${process.env.NEXT_PUBLIC_STORAGE}/${url}`
+      return fullUrl.split('/').pop()?.split('?')[0] || 'certificate'
     } catch {
       return 'certificate'
     }
@@ -154,7 +155,8 @@ export function CertificateSection({
 
   const getFileExtension = (url: string): string => {
     try {
-      const fileName = getFileName(url)
+      const fullUrl = `${process.env.NEXT_PUBLIC_STORAGE}/${url}`
+      const fileName = fullUrl.split('/').pop() || ''
       return fileName.split('.').pop()?.toLowerCase() || ''
     } catch {
       return ''
@@ -164,10 +166,12 @@ export function CertificateSection({
   const getFileIcon = (url: string) => {
     const ext = getFileExtension(url)
     if (['jpg', 'jpeg', 'png', 'webp'].includes(ext)) {
+      const fullUrl = `${process.env.NEXT_PUBLIC_STORAGE}/${url}`
+
       return (
         <div className="relative overflow-hidden rounded-xl">
           <Image
-            src={url}
+            src={fullUrl}
             alt={'Certificate preview'}
             className="aspect-[3/2] w-full object-cover transition-transform hover:scale-105"
             width={300}
@@ -215,7 +219,7 @@ export function CertificateSection({
                     </Badge>
                   </div>
                   <a
-                    href={cert}
+                    href={`${process.env.NEXT_PUBLIC_STORAGE}/${cert}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-1 text-sm text-primary hover:underline"
@@ -328,7 +332,7 @@ export function CertificateSection({
                         </div>
                         <div className="flex-1 space-y-1">
                           <a
-                            href={cert}
+                            href={`${process.env.NEXT_PUBLIC_STORAGE}/${cert}`}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="font-medium text-gray-900 hover:text-primary"
@@ -409,6 +413,7 @@ export function CertificateSection({
                   )}
                 </Button>
                 <Button
+                  disabled={isPending}
                   type="button"
                   variant="outline"
                   onClick={() => {
@@ -435,6 +440,7 @@ export function CertificateSection({
                   </p>
                 </div>
                 <Button
+                  disabled={isPending}
                   variant="outline"
                   onClick={() => setIsEditing(true)}
                   className="bg-white shadow-sm hover:bg-primary hover:text-white"
