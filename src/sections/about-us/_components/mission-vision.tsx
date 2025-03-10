@@ -14,9 +14,9 @@ const data = [
   },
 ]
 
-export const MissionVison = () => {
+export const MissionVision = () => {
   return (
-    <section>
+    <section className="mx-auto max-w-7xl">
       <h2 className="mb-4 text-3xl font-semibold text-gray-800">
         Sứ mệnh & Tầm nhìn
       </h2>

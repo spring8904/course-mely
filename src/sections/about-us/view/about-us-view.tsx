@@ -1,5 +1,8 @@
-import { MissionVison } from '@/sections/about-us/_components/mission-vision'
+import { MissionVision } from '@/sections/about-us/_components/mission-vision'
 import { FoundingTeam } from '@/sections/about-us/_components/founding-team'
+import { StatisticsOverview } from '@/sections/about-us/_components/statistics-overview'
+import { StudentTestimonials } from '@/sections/about-us/_components/student-testimonials'
+import Link from 'next/link'
 
 const members = [
   {
@@ -41,9 +44,9 @@ const members = [
 
 export const AboutUsView = () => {
   return (
-    <div className="mx-auto max-w-7xl space-y-16 px-4 py-12 sm:px-6 lg:px-8">
+    <div className="space-y-16 py-12">
       {/* Hero Section */}
-      <section className="mb-16 text-center">
+      <section className="mx-auto max-w-7xl text-center">
         <h1 className="text-4xl font-bold text-gray-900">Về CourseMely</h1>
         <p className="mt-4 text-lg text-gray-600">
           Kết nối tri thức, nâng tầm tương lai.
@@ -51,19 +54,27 @@ export const AboutUsView = () => {
       </section>
 
       {/* Sứ mệnh & Tầm nhìn */}
-      <MissionVison />
+      <MissionVision />
+
+      {/* Tổng quan số liệu */}
+      <StatisticsOverview />
 
       {/* Đội ngũ sáng lập */}
       <FoundingTeam members={members} />
+
+      {/* Học viên nói gì về CourseMely */}
+      <StudentTestimonials />
 
       {/* CTA */}
       <section className="text-center">
         <h2 className="text-2xl font-semibold text-gray-800">
           Tham gia CourseMely ngay hôm nay!
         </h2>
-        <button className="mt-4 rounded-lg bg-blue-600 px-6 py-3 font-semibold text-white shadow-md transition hover:bg-blue-700">
-          Đăng ký ngay
-        </button>
+        <Link href="/sign-up">
+          <button className="mt-4 rounded-lg bg-primary px-6 py-3 font-semibold text-white shadow-md transition hover:bg-orange-500">
+            Đăng ký ngay
+          </button>
+        </Link>
       </section>
     </div>
   )

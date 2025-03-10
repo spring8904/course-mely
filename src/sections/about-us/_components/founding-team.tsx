@@ -12,7 +12,7 @@ type Props = {
 
 export const FoundingTeam = ({ members }: Props) => {
   return (
-    <section>
+    <section className="mx-auto max-w-7xl">
       <h2 className="mb-4 text-3xl font-semibold text-gray-800">
         Đội ngũ sáng lập
       </h2>

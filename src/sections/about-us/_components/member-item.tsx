@@ -14,7 +14,7 @@ export const MemberItem = ({ member }: Props) => (
       height={224}
       className="size-full rounded-xl object-cover"
     />
-    <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/70 opacity-0 transition-opacity group-hover:opacity-100">
+    <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/70 opacity-0 transition-opacity duration-500 ease-in-out group-hover:opacity-100">
       <h3 className="text-lg font-semibold text-white">{member.name}</h3>
       <p className="text-sm text-gray-300">{member.role}</p>
     </div>
