@@ -1,66 +1,32 @@
 'use client'
 
-import { useState } from 'react'
+import { ColumnDef } from '@tanstack/react-table'
+import { Eye, MoreVertical, SquarePen, Trash2 } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { ColumnDef } from '@tanstack/react-table'
-import { Eye, Loader2, MoreVertical, SquarePen, Trash2 } from 'lucide-react'
-import { useForm } from 'react-hook-form'
+import { useState } from 'react'
 
-import { ICourse } from '@/types'
-import { ICategory } from '@/types/Category'
-import { CreateCoursePayload, createCourseSchema } from '@/validations/course'
+import { useGetCourses } from '@/hooks/instructor/course/useCourse'
 import { formatCurrency, formatDate } from '@/lib/common'
-import { useGetCategories } from '@/hooks/category/useCategory'
-import {
-  useCreateCourse,
-  useGetCourses,
-} from '@/hooks/instructor/course/useCourse'
+import { ICourse } from '@/types'
 
+import CourseStatusBadge from '@/components/shared/course-status-badge'
+import { DataTable } from '@/components/shared/data-table'
+import { DataTableColumnHeader } from '@/components/shared/data-table-column-header'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import CourseStatusBadge from '@/components/shared/course-status-badge'
-import { DataTable } from '@/components/shared/data-table'
-import { DataTableColumnHeader } from '@/components/shared/data-table-column-header'
-import FormCombobox from '@/components/shared/form-combobox'
+import CreateCourseDialog from '../components/course-management/create-course-dialog'
 
 const CourseManageView = () => {
-  const [openDialog, setOpenDialog] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
 
   const { data: courses, isLoading: isCoursesLoading } = useGetCourses()
-  const { data: categories, isLoading: isCategoriesLoading } =
-    useGetCategories()
-
-  const { mutate: createCourse, isPending: isCourseCreating } =
-    useCreateCourse()
-
-  const form = useForm<CreateCoursePayload>({
-    resolver: zodResolver(createCourseSchema),
-  })
 
   const filteredData = courses?.data?.filter((course: any) => {
     const searchFields = ['code', 'name', 'description']
@@ -216,34 +182,13 @@ const CourseManageView = () => {
     },
   ]
 
-  const categoryOptions = categories?.data.map((category: ICategory) => ({
-    label: category.name,
-    value: category.id,
-  }))
-
-  const onSubmit = (values: CreateCoursePayload) => {
-    if (isCourseCreating) return
-
-    createCourse(values, {
-      onSuccess: () => {
-        setOpenDialog(false)
-      },
-    })
-  }
-
   return (
     <>
       <div className="px-5 py-6">
         <div className="mt-2 space-y-6">
           <div className="flex items-center justify-between">
             <h1 className="text-xl font-bold">Quản lý khóa học</h1>
-            <Button
-              onClick={() => {
-                setOpenDialog(true)
-              }}
-            >
-              Tạo khoá học mới
-            </Button>
+            <CreateCourseDialog />
           </div>
 
           <DataTable
@@ -254,61 +199,6 @@ const CourseManageView = () => {
           />
         </div>
       </div>
-
-      <Dialog open={openDialog} onOpenChange={setOpenDialog}>
-        <DialogContent className="max-w-lg">
-          <DialogHeader>
-            <DialogTitle>
-              Thêm tiêu đề và chọn danh mục cho khoá học
-            </DialogTitle>
-            <DialogDescription>
-              Bạn có thể thêm tiêu đề và chọn danh mục cho khoá học của mình.
-            </DialogDescription>
-          </DialogHeader>
-
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Tiêu đề khoá học</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Nhập tiêu đề cho khoá học"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormCombobox
-                form={form}
-                name="category_id"
-                label="Danh mục khóa học"
-                options={categoryOptions}
-                isLoading={isCategoriesLoading}
-                placeholder="Chọn danh mục cho khóa học"
-              />
-              <div className="mt-3 flex justify-end">
-                <Button
-                  type="submit"
-                  className="bg-primary"
-                  disabled={isCourseCreating}
-                >
-                  {isCourseCreating ? (
-                    <Loader2 className="size-4 animate-spin" />
-                  ) : (
-                    'Tiếp tục tạo khoá học'
-                  )}
-                </Button>
-              </div>
-            </form>
-          </Form>
-        </DialogContent>
-      </Dialog>
     </>
   )
 }
