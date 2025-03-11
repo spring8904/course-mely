@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useAuthStore } from '@/stores/useAuthStore'
@@ -14,10 +14,13 @@ import FormField from '@/components/common/FormField'
 import PageImage from '@/components/common/PageImage'
 import SocialLogin from '@/components/common/SocialLogin'
 import SubmitButton from '@/components/common/SubmitButton'
+import ForgotPasswordDialog from '@/sections/signin/_components/forgot-password-dialog'
 
 const SigninView = () => {
   const router = useRouter()
   const { isAuthenticated } = useAuthStore()
+
+  const [isForgotPasswordOpen, setIsForgotPasswordOpen] = useState(false)
 
   const {
     register,
@@ -84,19 +87,15 @@ const SigninView = () => {
                       />
                     )
                   )}
-                  <div className="checkbox-item">
-                    <label className="wow fadeInUp" data-wow-delay="0s">
-                      <p className="fs-15">Ghi nhớ đăng nhập</p>
-                      <input type="checkbox" />
-                      <span className="btn-checkbox" />
-                    </label>
-                    <Link
-                      href="#"
-                      className="fs-15 wow fadeInUp"
+                  <div className="mb-6 flex justify-end">
+                    <button
+                      onClick={() => setIsForgotPasswordOpen(true)}
+                      type="button"
+                      className="fs-15 wow fadeInUp t"
                       data-wow-delay="0.1s"
                     >
                       Quên mật khẩu?
-                    </Link>
+                    </button>
                   </div>
                   <SubmitButton text="Đăng nhập" disabled={isPending} />
                 </form>
@@ -109,6 +108,10 @@ const SigninView = () => {
           </div>
         </div>
         {/* <div class="login-wrap-content"></div> */}
+        <ForgotPasswordDialog
+          open={isForgotPasswordOpen}
+          onOpenChange={setIsForgotPasswordOpen}
+        />
       </section>
     </div>
   )

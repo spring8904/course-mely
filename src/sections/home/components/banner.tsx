@@ -18,13 +18,15 @@ const Banner = () => {
   const [scrollPosition, setScrollPosition] = useState(0)
 
   useEffect(() => {
-    if (BannerData?.data) {
-      const sorted = [...BannerData.data].sort(
+    if (BannerData?.data.banners) {
+      const sorted = [...BannerData.data.banners].sort(
         (a: BannerData, b: BannerData) => a.order - b.order
       )
       setSortedBanners(sorted)
     }
   }, [BannerData])
+
+  console.log(BannerData)
 
   useEffect(() => {
     if (!autoplay || !sortedBanners.length) return
@@ -325,12 +327,16 @@ const Banner = () => {
                     <div className="absolute -bottom-2 -right-2 size-12 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 opacity-0 blur-xl transition-opacity duration-300 group-hover:opacity-50"></div>
                   </div>
                   <div className="group relative overflow-hidden rounded-lg bg-white/10 p-4 text-center backdrop-blur-sm transition-transform duration-300 hover:scale-105 hover:bg-white/15 hover:shadow-[0_0_15px_rgba(255,255,255,0.2)]">
-                    <div className="text-2xl font-bold text-white">50+</div>
+                    <div className="text-2xl font-bold text-white">
+                      {BannerData?.data.total_courses ?? '50'}+
+                    </div>
                     <div className="text-xs text-gray-300">Khóa học</div>
                     <div className="absolute -bottom-2 -right-2 size-12 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 opacity-0 blur-xl transition-opacity duration-300 group-hover:opacity-50"></div>
                   </div>
                   <div className="group relative overflow-hidden rounded-lg bg-white/10 p-4 text-center backdrop-blur-sm transition-transform duration-300 hover:scale-105 hover:bg-white/15 hover:shadow-[0_0_15px_rgba(255,255,255,0.2)]">
-                    <div className="text-2xl font-bold text-white">4.9</div>
+                    <div className="text-2xl font-bold text-white">
+                      {BannerData?.data.system_average_rating ?? '4.9'}
+                    </div>
                     <div className="text-xs text-gray-300">Đánh giá</div>
                     <div className="absolute -bottom-2 -right-2 size-12 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 opacity-0 blur-xl transition-opacity duration-300 group-hover:opacity-50"></div>
                   </div>

@@ -29,6 +29,7 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar'
 import { UserProfileModal } from '@/sections/instructor/components/user-profile/user-profile'
+import Link from 'next/link'
 
 export function NavUser({
   user,
@@ -102,14 +103,16 @@ export function NavUser({
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuGroup>
+            <DropdownMenuGroup className="*:cursor-pointer">
               <DropdownMenuItem onClick={() => setOpenModal(true)}>
                 <BadgeCheck />
                 Thông tin cá nhân
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <CreditCard />
-                Ví của bạn
+              <DropdownMenuItem asChild>
+                <Link href={'/instructor/wallet'} className="cursor-pointer">
+                  <CreditCard />
+                  Ví của bạn
+                </Link>
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <Bell />
