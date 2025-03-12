@@ -1,4 +1,5 @@
 import React from 'react'
+import Link from 'next/link'
 
 const BlogListBanner = () => {
   return (
@@ -9,23 +10,17 @@ const BlogListBanner = () => {
             <div className="content text-center">
               <ul className="breadcrumbs flex items-center justify-center gap-[10px]">
                 <li>
-                  <a href="index.html" className="flex">
+                  <Link href="/" className="flex">
                     <i className="icon-home"></i>
-                  </a>
+                  </Link>
                 </li>
                 <li>
                   <i className="icon-arrow-right"></i>
                 </li>
-                <li>Pages</li>
-                <li>
-                  <i className="icon-arrow-right"></i>
-                </li>
-                <li>Shop</li>
+                <li>Bài viết</li>
               </ul>
-              <h2 className="fw-7">Danh sách Blog</h2>
-              <h6>
-                Products that help beginner designers become true unicorns.
-              </h6>
+              <h2 className="fw-7">Danh sách bài biết</h2>
+              <h6>Các khóa học giúp học viên trở thành chuyên gia thực thụ.</h6>
             </div>
           </div>
         </div>

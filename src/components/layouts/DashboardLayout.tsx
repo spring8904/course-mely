@@ -19,10 +19,12 @@ const DashboardLayout = async ({ children }: LayoutProps) => {
   return (
     <SidebarProvider defaultOpen={defaultOpen}>
       <AppSidebar />
-      <SidebarInset className="overflow-auto">
+      <SidebarInset className="flex h-screen flex-col overflow-hidden">
         <TopBar />
-        <ProgressBar />
-        <div className="gap-4pt-0 flex flex-1 flex-col">{children}</div>
+        <div className="flex-1 overflow-auto">
+          <ProgressBar />
+          <div className="flex flex-1 flex-col gap-4 pt-0">{children}</div>
+        </div>
       </SidebarInset>
     </SidebarProvider>
   )

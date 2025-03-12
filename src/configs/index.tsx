@@ -24,9 +24,14 @@ export const signupFormFieldList: IFormControl[] = [
     label: 'Họ và tên',
     rules: {
       required: 'Tên là bắt buộc.',
-      pattern: {
-        value: /^[A-Za-z\s]+$/,
-        message: 'Tên chỉ được phép chứa chữ cái và khoảng trắng.',
+      validate: (value) => {
+        if (!value?.trim()) {
+          return 'Tên không được chỉ chứa khoảng trắng.'
+        }
+        if (!/^[\p{L}\s]+$/u.test(value)) {
+          return 'Tên chỉ được phép chứa chữ cái và khoảng trắng.'
+        }
+        return true
       },
       minLength: { value: 2, message: 'Tên phải có ít nhất 2 ký tự' },
       maxLength: { value: 255, message: 'Tên không được vượt quá 255 ký tự' },

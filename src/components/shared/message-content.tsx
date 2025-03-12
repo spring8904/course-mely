@@ -1,10 +1,39 @@
-import React from 'react'
-import { Download, FileText, PlayCircle } from 'lucide-react'
+import React, { useRef, useState } from 'react'
+import { Download, FileText, Pause, PlayCircle, Reply, X } from 'lucide-react'
 import Image from 'next/image'
 import { IMessage } from '@/types/Chat'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
+import { useAuthStore } from '@/stores/useAuthStore'
+
+interface MessageItemProps {
+  message: IMessage
+  isCurrentUser: boolean
+  isGroupChat: boolean
+  onReply: (message: IMessage) => void
+}
 
 const MessageContent = ({ message }: { message: IMessage }) => {
+  const [isPlaying, setIsPlaying] = useState(false)
+  const videoRef = useRef<HTMLVideoElement>(null)
+
   if (!message.meta_data && !message.content) return null
+
+  const handleVideoClick = () => {
+    if (videoRef.current) {
+      if (isPlaying) {
+        videoRef.current.pause()
+      } else {
+        videoRef.current.play()
+      }
+      setIsPlaying(!isPlaying)
+    }
+  }
 
   switch (message.type) {
     case 'image':
@@ -37,29 +66,47 @@ const MessageContent = ({ message }: { message: IMessage }) => {
     case 'video':
       return (
         <div className="group relative max-w-[350px] overflow-hidden rounded-lg bg-black/5 shadow-sm">
-          <div className="relative aspect-video">
+          <div
+            className="relative aspect-video cursor-pointer"
+            onClick={handleVideoClick}
+          >
             <video
+              ref={videoRef}
               className="size-full object-cover"
-              poster={`${process.env.NEXT_PUBLIC_STORAGE}/${message.meta_data?.thumbnail}`}
+              onPlay={() => setIsPlaying(true)}
+              onPause={() => setIsPlaying(false)}
+              onEnded={() => setIsPlaying(false)}
             >
               <source
                 src={`${process.env.NEXT_PUBLIC_STORAGE}/${message.meta_data?.file_path}`}
                 type="video/mp4"
               />
             </video>
-            <div className="absolute inset-0 flex items-center justify-center bg-black/20">
-              <PlayCircle className="size-12 text-white/90 transition-transform duration-200 group-hover:scale-110" />
-            </div>
+            {!isPlaying && (
+              <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+                <PlayCircle className="size-12 text-white/90 transition-transform duration-200 group-hover:scale-110" />
+              </div>
+            )}
           </div>
           <div className="flex items-center justify-between p-2">
             <span className="text-sm text-gray-600">Video</span>
-            <a
-              href={`${process.env.NEXT_PUBLIC_STORAGE}/${message.meta_data?.file_path}`}
-              download
-              className="rounded-full bg-white/90 p-1.5 text-gray-600 hover:bg-white hover:text-gray-900"
-            >
-              <Download className="size-4" />
-            </a>
+            <div className="flex items-center gap-2">
+              {isPlaying && (
+                <button
+                  onClick={handleVideoClick}
+                  className="rounded-full bg-white/90 p-1.5 text-gray-600 hover:bg-white hover:text-gray-900"
+                >
+                  <Pause className="size-4" />
+                </button>
+              )}
+              <a
+                href={`${process.env.NEXT_PUBLIC_STORAGE}/${message.meta_data?.file_path}`}
+                download
+                className="rounded-full bg-white/90 p-1.5 text-gray-600 hover:bg-white hover:text-gray-900"
+              >
+                <Download className="size-4" />
+              </a>
+            </div>
           </div>
         </div>
       )
@@ -100,3 +147,161 @@ const MessageContent = ({ message }: { message: IMessage }) => {
 }
 
 export default MessageContent
+
+const getTextMessageWidth = (text: string) => {
+  if (!text) return 'auto'
+
+  const length = text.length
+  if (length <= 10) return 'auto'
+  if (length < 20) return 'max-w-[200px]'
+  if (length < 50) return 'max-w-[250px]'
+  return 'max-w-[65%]'
+}
+
+const ReplyToPreview = ({ parent }: { parent: IMessage }) => {
+  const { user } = useAuthStore()
+
+  if (!parent) return null
+
+  const isSelfReply = parent.sender.id === user?.id
+
+  return (
+    <div className="mb-1 max-w-xs rounded-lg px-3 py-1.5 text-xs text-gray-600">
+      <div className="flex items-center gap-2">
+        <div className="h-4 w-0.5 rounded bg-gray-300"></div>
+        <div className="flex flex-1 items-center gap-1 overflow-hidden">
+          <span className="font-medium">
+            {isSelfReply
+              ? 'Bạn đã trả lời chính mình'
+              : `${parent.sender.name}`}
+          </span>
+          <span className="truncate">
+            {parent.type === 'text' && parent.content}
+            {parent.type === 'image' && 'Hình ảnh'}
+            {parent.type === 'video' && 'Video'}
+            {parent.type === 'file' &&
+              (parent.meta_data?.file_name || 'File đính kèm')}
+          </span>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+const EnhancedMessageItem = ({
+  message,
+  isCurrentUser,
+  isGroupChat,
+  onReply,
+}: MessageItemProps) => {
+  const [showReplyButton, setShowReplyButton] = useState(false)
+  const isTextMessage = message.type === 'text'
+  const textWidth = isTextMessage ? getTextMessageWidth(message.text) : ''
+  const hasReplyTo = message.parent !== null
+
+  return (
+    <div
+      className={`mr-4 flex items-start gap-3 ${isCurrentUser ? 'justify-end' : ''}`}
+      onMouseEnter={() => setShowReplyButton(true)}
+      onMouseLeave={() => setShowReplyButton(false)}
+    >
+      {!isCurrentUser && (
+        <Avatar className="size-8">
+          <AvatarImage src={message.sender.avatar} alt={message.sender.name} />
+          <AvatarFallback>{message.sender.name.charAt(0)}</AvatarFallback>
+        </Avatar>
+      )}
+      <div
+        className={`flex flex-col ${isCurrentUser ? 'items-end' : 'items-start'} ${textWidth}`}
+      >
+        {isGroupChat && !isCurrentUser && (
+          <div className="mb-1 text-sm font-medium text-gray-600">
+            {message.sender.name}
+          </div>
+        )}
+
+        {hasReplyTo && <ReplyToPreview parent={message?.parent} />}
+
+        <div
+          className={`relative rounded-2xl ${
+            isTextMessage
+              ? `px-3 py-2 ${
+                  isCurrentUser
+                    ? 'min-w-[36px] bg-orange-500 text-center text-white'
+                    : 'min-w-[36px] border border-gray-100 bg-gray-100 text-center text-gray-800'
+                }`
+              : ''
+          }`}
+        >
+          <MessageContent message={message} />
+
+          {showReplyButton && (
+            <div
+              className={`absolute ${isCurrentUser ? 'left-0 -translate-x-full' : 'right-0 translate-x-full'} top-1/2 -translate-y-1/2`}
+            >
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      onClick={() => onReply(message)}
+                      className="flex size-6 items-center justify-center rounded-full bg-secondary shadow-sm hover:bg-secondary/80"
+                    >
+                      <Reply className="size-4 text-muted-foreground" />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent side={isCurrentUser ? 'left' : 'right'}>
+                    <p>Phản hồi</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
+          )}
+        </div>
+
+        <span className="mt-2 text-xs text-gray-500">{message.timestamp}</span>
+      </div>
+    </div>
+  )
+}
+
+interface ReplyPreviewProps {
+  message: IMessage | null
+  onClear: () => void
+  isReplyingToSelf: boolean
+}
+
+const ReplyPreview = ({
+  message,
+  onClear,
+  isReplyingToSelf,
+}: ReplyPreviewProps) => {
+  if (!message) return null
+
+  return (
+    <div className="flex items-center justify-between rounded bg-secondary/50 p-2 px-3">
+      <div className="flex items-center gap-2">
+        <div className="h-full w-1 rounded bg-orange-500"></div>
+        <div>
+          <p className="text-xs text-muted-foreground">
+            Đang phản hồi{' '}
+            <span className="font-medium text-gray-700">
+              {isReplyingToSelf ? 'tin nhắn của bạn' : message.sender.name}
+            </span>
+          </p>
+          <p className="max-w-lg truncate text-sm">
+            {message.type === 'text' && message.text}
+            {message.type === 'image' && 'Hình ảnh'}
+            {message.type === 'video' && 'Video'}
+            {message.type === 'file' &&
+              (message.meta_data?.file_name || 'File đính kèm')}
+          </p>
+        </div>
+      </div>
+      <button onClick={onClear} className="rounded-full p-1 hover:bg-gray-200">
+        <X size="12" />
+      </button>
+    </div>
+  )
+}
+
+export { EnhancedMessageItem, ReplyPreview }

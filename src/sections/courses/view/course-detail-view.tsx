@@ -32,6 +32,7 @@ import CourseSlide from '../_components/course-slide'
 import { InstructorDetail } from '@/sections/courses/_components/instructorDetail'
 import { LessonPreviewModal } from '@/sections/courses/_components/course-list-sidebar/preview-model'
 import { IChapter } from '@/types'
+import CourseSlideRelated from '@/sections/courses/_components/course-slide-related'
 
 const lessonTypeIcons = {
   video: <CirclePlay size={16} />,
@@ -177,35 +178,39 @@ const CourseDetailView = ({ slug }: { slug: string }) => {
                   ></p>
 
                   <ul className="entry-meta mt-4">
-                    <li>
-                      <div className="ratings">
-                        <div className="number">4.9</div>
-                        <i className="icon-star-1" />
-                        <i className="icon-star-1" />
-                        <i className="icon-star-1" />
-                        <i className="icon-star-1" />
-                        <svg
-                          width={12}
-                          height={11}
-                          viewBox="0 0 12 11"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M3.54831 7.10382L3.58894 6.85477L3.41273 6.67416L1.16841 4.37373L4.24914 3.90314L4.51288 3.86286L4.62625 3.62134L5.99989 0.694982L7.37398 3.62182L7.48735 3.86332L7.75108 3.9036L10.8318 4.37419L8.58749 6.67462L8.41128 6.85523L8.4519 7.10428L8.98079 10.3465L6.24201 8.8325L6.00014 8.69879L5.75826 8.83247L3.01941 10.3461L3.54831 7.10382ZM11.0444 4.15626L11.0442 4.15651L11.0444 4.15626Z"
-                            stroke="#131836"
-                          />
-                        </svg>
-                        <p className="total fs-15">315,475 rating</p>
-                      </div>
-                    </li>
+                    {(courseDetails?.ratings_count ?? 0) > 0 && (
+                      <li>
+                        <div className="ratings">
+                          <div className="number">
+                            {courseDetails?.avg_rating}
+                          </div>
+                          {Array.from({ length: 5 }, (_, index) => (
+                            <i
+                              key={index}
+                              className={`icon-star-1 ${
+                                index <
+                                Math.round(
+                                  Number(courseDetails?.avg_rating ?? 0)
+                                )
+                                  ? 'text-yellow-500'
+                                  : 'text-gray-300'
+                              }`}
+                            ></i>
+                          ))}
+                          <p className="total fs-15">
+                            {' '}
+                            {courseDetails?.ratings_count} đánh giá
+                          </p>
+                        </div>
+                      </li>
+                    )}
                     <li>
                       <i className="flaticon-book" />
                       <p>{courseDetails?.chapters_count}</p>
                     </li>
                     <li>
                       <i className="flaticon-user" />
-                      <p>{courseDetails?.total_student} Students</p>
+                      <p>{courseDetails?.total_student} Học viên</p>
                     </li>
                     <li>
                       <i className="flaticon-clock" />
@@ -313,16 +318,23 @@ const CourseDetailView = ({ slug }: { slug: string }) => {
                                 className="flex w-full items-center justify-between bg-gray-50 px-6 py-4 transition hover:bg-gray-100"
                               >
                                 <div className="flex items-center gap-4">
-                                  <span className="flex size-8 items-center justify-center rounded-full bg-blue-100 text-sm font-medium text-blue-600">
+                                  <span className="flex size-8 items-center justify-center rounded-full bg-blue-100 text-sm font-medium text-orange-500">
                                     {chapterIndex + 1}
                                   </span>
                                   <div className="text-left">
                                     <h3 className="text-lg font-medium text-gray-900">
                                       {chapter.title}
                                     </h3>
-                                    <p className="text-sm text-gray-500">
-                                      {chapter.lessons_count} bài học
-                                    </p>
+                                    <div className="flex gap-2">
+                                      <p className="text-sm text-gray-500">
+                                        {chapter.lessons_count} bài học
+                                      </p>
+                                      <p className="text-sm text-gray-500">
+                                        {formatDuration(
+                                          chapter.total_video_duration ?? 0
+                                        )}
+                                      </p>
+                                    </div>
                                   </div>
                                 </div>
                                 {expandedChapters.includes(chapter.id!) ? (
@@ -362,7 +374,7 @@ const CourseDetailView = ({ slug }: { slug: string }) => {
                                             onClick={() =>
                                               handlePreviewClick(lesson)
                                             }
-                                            className="flex items-center gap-2 rounded-full bg-blue-50 px-4 py-1.5 text-sm font-medium text-blue-600 transition hover:bg-blue-100"
+                                            className="flex items-center gap-2 rounded-full bg-blue-50 px-4 py-1.5 text-sm font-medium text-orange-600 transition hover:bg-blue-100"
                                           >
                                             <Eye size={16} />
                                             Xem trước
@@ -904,15 +916,12 @@ const CourseDetailView = ({ slug }: { slug: string }) => {
         </section>
         {/* / section page inner */}
         {/* section courses*/}
-        <section className="tf-spacing-1 section-course pt-0">
+        <section className="tf-spacing-9 section-course pt-0">
           <div className="tf-container">
             <div className="row">
               <div className="col-12">
                 <div className="heading-section">
-                  <h2
-                    className="fw-7 font-cardo wow fadeInUp"
-                    data-wow-delay="0s"
-                  >
+                  <h2 className="fw-7 wow fadeInUp" data-wow-delay="0s">
                     Khoá học có thể phù hợp với bạn
                   </h2>
                   <div className="flex flex-wrap items-center justify-between gap-[10px]">
@@ -929,7 +938,9 @@ const CourseDetailView = ({ slug }: { slug: string }) => {
                   </div>
                 </div>
                 {coursesRelatedData?.related_courses && (
-                  <CourseSlide courses={coursesRelatedData?.related_courses} />
+                  <CourseSlideRelated
+                    courses={coursesRelatedData?.related_courses}
+                  />
                 )}
               </div>
             </div>

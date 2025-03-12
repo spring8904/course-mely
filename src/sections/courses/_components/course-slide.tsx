@@ -20,7 +20,7 @@ const CourseSlide = ({ courses }: Props) => {
   return (
     <Swiper
       spaceBetween={25}
-      slidesPerView={4}
+      slidesPerView={3}
       loop={true}
       pagination={{
         clickable: true,
@@ -41,9 +41,19 @@ const CourseSlide = ({ courses }: Props) => {
                 fill
               />
               <div className="box-tags">
-                <a href="#" className="item best-seller">
-                  Best Seller
-                </a>
+                {course?.is_free ? (
+                  <Link href="#" className="item free best-seller">
+                    Miễn phí
+                  </Link>
+                ) : course?.price_sale && course.price_sale > 0 ? (
+                  <Link href="#" className="item sale best-seller">
+                    Đang giảm giá
+                  </Link>
+                ) : (
+                  <Link href="#" className="item best-seller">
+                    Best Seller
+                  </Link>
+                )}
               </div>
               <div className="box-wishlist tf-action-btns">
                 <i className="flaticon-heart" />
@@ -53,7 +63,7 @@ const CourseSlide = ({ courses }: Props) => {
               <div className="meta">
                 <div className="meta-item">
                   <i className="flaticon-calendar" />
-                  <p>{course?.lessons_count} Lessons</p>
+                  <p>{course?.total_lesson} Lessons</p>
                 </div>
                 <div className="meta-item">
                   <i className="flaticon-clock" />
@@ -61,35 +71,62 @@ const CourseSlide = ({ courses }: Props) => {
                 </div>
               </div>
               <h6 className="fw-5 line-clamp-2">
-                <Link href={`/courses/${course?.slug}`}>{course?.name}</Link>
+                <Link
+                  style={{
+                    display: 'block',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                  }}
+                  href={`/courses/${course?.slug}`}
+                >
+                  {course?.name}
+                </Link>
               </h6>
               <div className="ratings pb-30">
-                <div className="number">{course?.ratings_count}</div>
-                {[...Array(course?.ratings_count)].map((_, i) => (
-                  <i
-                    key={i}
-                    className={`icon-star-1 ${i < Math.floor(course?.ratings_count ?? 0) ? 'filled' : ''}`}
-                  />
-                ))}
-                <div className="total">({course?.total_student})</div>
+                {Number(course?.total_rating ?? 0) > 0 ? (
+                  <>
+                    <div className="stars flex items-center">
+                      {Array.from({ length: 5 }, (_, index) => (
+                        <i
+                          key={index}
+                          className={`icon-star-1 ${
+                            index < Math.round(Number(course?.avg_rating ?? 0))
+                              ? 'text-yellow-500'
+                              : 'text-gray-300'
+                          }`}
+                        ></i>
+                      ))}
+                    </div>
+                    <div className="total text-sm text-gray-500">
+                      ({course?.total_rating} lượt đánh giá)
+                    </div>
+                  </>
+                ) : (
+                  <div className="text-sm text-gray-500">
+                    Chưa có lượt đánh giá
+                  </div>
+                )}
               </div>
               <div className="author">
                 By:
                 <a href="#" className="author">
-                  {course?.user?.name}
+                  {course?.name_instructor}
                 </a>
               </div>
               <div className="bottom">
                 <div className="h6 price fw-5">
-                  {course?.price_sale && course.price_sale > 0 ? (
+                  {course?.is_free === 1 ? (
+                    <span>Miễn phí</span>
+                  ) : course?.price_sale && Number(course.price_sale) > 0 ? (
                     <div>
-                      <span>{formatCurrency(course.price_sale)}</span>
+                      <span>{formatCurrency(Number(course.price_sale))}</span>
                       <span className="ml-2 text-sm text-gray-500 line-through">
-                        {formatCurrency(course?.price ?? 0)}
+                        {formatCurrency(Number(course?.price ?? 0))}
                       </span>
                     </div>
                   ) : (
-                    <span>{formatCurrency(course?.price ?? 0)}</span>
+                    <span>{formatCurrency(Number(course?.price ?? 0))}</span>
                   )}
                 </div>
                 <Link

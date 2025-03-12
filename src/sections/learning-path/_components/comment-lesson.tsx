@@ -4,7 +4,14 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useAuthStore } from '@/stores/useAuthStore'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useQueryClient } from '@tanstack/react-query'
-import { Loader2, MessageCircleMore, Send, Smile, Trash2 } from 'lucide-react'
+import {
+  Loader2,
+  MessageCircleMore,
+  MessageCircleX,
+  Send,
+  Smile,
+  Trash2,
+} from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { FiMoreHorizontal } from 'react-icons/fi'
 import { toast } from 'react-toastify'
@@ -51,6 +58,7 @@ const reactionEmojis = [
   { emoji: '😢', name: 'Buồn' },
   { emoji: '😡', name: 'Phẫn nộ' },
 ]
+
 const CommentLesson = ({ lessonId }: { lessonId: string }) => {
   const queryClient = useQueryClient()
   const { user } = useAuthStore()
@@ -198,12 +206,12 @@ const CommentLesson = ({ lessonId }: { lessonId: string }) => {
     setReplyTargetName(targetName)
     setReplyContent(`@${targetName} `)
 
-    if (type === 'comment' && !visibleReplies[id]) {
-      setVisibleReplies((prev) => ({
-        ...prev,
-        [id]: true,
-      }))
-    }
+    // if (type === 'comment' && !visibleReplies[id]) {
+    //   setVisibleReplies((prev) => ({
+    //     ...prev,
+    //     [id]: true,
+    //   }))
+    // }
   }
 
   const handleDeleteComment = (id: string, type: 'comment' | 'reply') => {
@@ -248,8 +256,11 @@ const CommentLesson = ({ lessonId }: { lessonId: string }) => {
       { commentId, data: payload },
       {
         onSuccess: async (res: any) => {
+          setActiveReplyEditor(null)
           toast.success(res.message || 'Đã phản hồi bình luận thành công')
+
           setReplyContent('')
+          setReplyContent(`@${replyTargetName} `)
 
           await queryClient.invalidateQueries({
             queryKey: [QueryKey.LESSON_COMMENT, lessonId],
@@ -258,8 +269,6 @@ const CommentLesson = ({ lessonId }: { lessonId: string }) => {
           await queryClient.invalidateQueries({
             queryKey: [QueryKey.LESSON_COMMENT, commentId],
           })
-
-          setReplyContent(`@${replyTargetName} `)
         },
         onError: (error: any) => {
           toast.error(error.message || 'Có lỗi xảy ra khi phản hồi bình luận')
@@ -290,8 +299,17 @@ const CommentLesson = ({ lessonId }: { lessonId: string }) => {
       repliesData.length === 0
     ) {
       return (
-        <div className="ml-12 mt-2 text-sm text-gray-500">
-          Chưa có phản hồi nào
+        <div className="ml-12 mt-2 flex items-center gap-2 rounded-lg bg-gray-50 p-3 text-sm text-gray-500">
+          <MessageCircleX className="size-4 text-gray-400" />
+          <span>Chưa có phản hồi nào</span>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="ml-auto rounded-full text-xs font-medium text-blue-600 hover:bg-blue-50"
+            onClick={() => handleReplyClick(comment.id, 'comment')}
+          >
+            Phản hồi đầu tiên
+          </Button>
         </div>
       )
     }

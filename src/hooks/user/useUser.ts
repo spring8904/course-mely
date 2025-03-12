@@ -22,6 +22,8 @@ export const useGetCouponUser = () => {
   return useQuery({
     queryKey: [QueryKey.USER_GET_MY_COUPONS],
     queryFn: () => userApi.getCouponUser(),
+    staleTime: 5 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
   })
 }
 
@@ -37,6 +39,8 @@ export const useGetCertificates = () => {
   return useQuery({
     queryKey: [QueryKey.CERTIFICATE],
     queryFn: () => userApi.getCertificate(),
+    staleTime: 5 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
   })
 }
 

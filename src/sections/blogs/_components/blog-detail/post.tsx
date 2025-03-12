@@ -6,12 +6,13 @@ interface BlogDetailPostProps {
 }
 
 const BlogDetailPost = ({ initialBlogDetail }: BlogDetailPostProps) => {
+  console.log('initialBlogDetail', initialBlogDetail)
   return (
     <div className="blog-single-content">
       <div className="meta wow fadeInUp">
         <div className="meta-item">
           <i className="flaticon-calendar"></i>
-          <p>{initialBlogDetail.published_at}</p>
+          <p>{initialBlogDetail?.published_at}</p>
         </div>
         <div className="meta-item">
           <i className="flaticon-message"></i>
@@ -124,7 +125,7 @@ const BlogDetailPost = ({ initialBlogDetail }: BlogDetailPostProps) => {
       </ul>
       <div className="image-wrap">
         <div className="image-item wow fadeInLeft">
-          <Image
+          <img
             className="lazyload"
             data-src="/assets/images/blog/blog-12.jpg"
             src="/assets/images/blog/blog-12.jpg"

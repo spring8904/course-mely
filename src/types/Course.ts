@@ -74,6 +74,7 @@ export interface IChapter {
   order?: number | null
   lessons?: ILesson[]
   lessons_count?: number
+  total_video_duration?: number
   createdAt?: Date | null
   updatedAt?: Date | null
 }
