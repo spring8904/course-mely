@@ -37,16 +37,20 @@ export const CourseItem = ({ course }: Props) => {
           </h3>
 
           <div>
-            {course?.price === 0 ? (
+            {Number(course?.price) === 0 ? (
               <span className="font-bold text-green-500">Miễn phí</span>
             ) : course?.price_sale ? (
               <div className="space-x-2">
                 <span className="text-gray-400 line-through">
                   {formatStringToCurrency(course?.price ?? 0)}
                 </span>
-                <span className="font-bold text-red-500">
-                  {formatStringToCurrency(course?.price_sale ?? 0)}
-                </span>
+                {Number(course?.price_sale) > 0 ? (
+                  <span className="font-bold text-red-500">
+                    {formatStringToCurrency(course?.price_sale ?? 0)}
+                  </span>
+                ) : (
+                  <span className="font-bold text-red-500">Miễn phí</span>
+                )}
               </div>
             ) : (
               <span className="font-bold text-black">
