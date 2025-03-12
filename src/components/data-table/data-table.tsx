@@ -1,7 +1,7 @@
 import { type Table as TanstackTable, flexRender } from '@tanstack/react-table'
 import type * as React from 'react'
 
-import { DataTablePagination } from '@/components/data-table/data-table-pagination'
+import { DataTableFooter } from '@/components/data-table/data-table-footer'
 import {
   Table,
   TableBody,
@@ -96,7 +96,7 @@ export function DataTable<TData>({
                   colSpan={table.getAllColumns().length}
                   className="h-24 text-center"
                 >
-                  No results.
+                  Không có dữ liệu
                 </TableCell>
               </TableRow>
             )}
@@ -104,7 +104,7 @@ export function DataTable<TData>({
         </Table>
       </div>
       <div className="flex flex-col gap-2.5">
-        <DataTablePagination table={table} />
+        <DataTableFooter table={table} />
         {table.getFilteredSelectedRowModel().rows.length > 0 && floatingBar}
       </div>
     </div>

@@ -1,6 +1,6 @@
 'use client'
 
-import type { DataTableAdvancedFilterField } from '@/types'
+import type { DataTableAdvancedFilterField } from '@/types/data-table.ts'
 import type { Table } from '@tanstack/react-table'
 import type * as React from 'react'
 
@@ -46,20 +46,12 @@ interface DataTableAdvancedToolbarProps<TData>
    * @default 300
    */
   debounceMs?: number
-
-  /**
-   * Shallow mode keeps query states client-side, avoiding server calls.
-   * Setting to `false` triggers a network request with the updated querystring.
-   * @default true
-   */
-  shallow?: boolean
 }
 
 export function DataTableAdvancedToolbar<TData>({
   table,
   filterFields = [],
   debounceMs = 300,
-  shallow = true,
   children,
   className,
   ...props
@@ -77,13 +69,8 @@ export function DataTableAdvancedToolbar<TData>({
           table={table}
           filterFields={filterFields}
           debounceMs={debounceMs}
-          shallow={shallow}
         />
-        <DataTableSortList
-          table={table}
-          debounceMs={debounceMs}
-          shallow={shallow}
-        />
+        <DataTableSortList table={table} debounceMs={debounceMs} />
       </div>
       <div className="flex items-center gap-2">
         {children}

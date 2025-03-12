@@ -1,16 +1,15 @@
 'use client'
-
-import { SelectIcon } from '@radix-ui/react-select'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import type { Column } from '@tanstack/react-table'
 import { ArrowDown, ArrowUp, ChevronsUpDown, EyeOff } from 'lucide-react'
 
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-} from '@/components/ui/select'
 import { cn } from '@/lib/utils'
+import { Button } from '../ui/button'
 
 interface DataTableColumnHeaderProps<TData, TValue>
   extends React.HTMLAttributes<HTMLDivElement> {
@@ -27,83 +26,46 @@ export function DataTableColumnHeader<TData, TValue>({
     return <div className={cn(className)}>{title}</div>
   }
 
-  const ascValue = `${column.id}-asc`
-  const descValue = `${column.id}-desc`
-  const hideValue = `${column.id}-hide`
-
   return (
     <div className={cn('flex items-center gap-2', className)}>
-      <Select
-        value={
-          column.getIsSorted() === 'desc'
-            ? descValue
-            : column.getIsSorted() === 'asc'
-              ? ascValue
-              : undefined
-        }
-        onValueChange={(value) => {
-          if (value === ascValue) column.toggleSorting(false)
-          else if (value === descValue) column.toggleSorting(true)
-          else if (value === hideValue) column.toggleVisibility(false)
-        }}
-      >
-        <SelectTrigger
-          aria-label={
-            column.getIsSorted() === 'desc'
-              ? 'Sorted descending. Click to sort ascending.'
-              : column.getIsSorted() === 'asc'
-                ? 'Sorted ascending. Click to sort descending.'
-                : 'Not sorted. Click to sort ascending.'
-          }
-          className="-ml-3 h-8 w-fit border-none text-xs data-[state=open]:bg-accent hover:bg-accent hover:text-accent-foreground [&>svg:last-child]:hidden"
-        >
-          {title}
-          <SelectIcon asChild>
-            {column.getCanSort() && column.getIsSorted() === 'desc' ? (
-              <ArrowDown className="ml-2.5 size-4" aria-hidden="true" />
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="-ml-3 h-8 data-[state=open]:bg-accent"
+          >
+            <span>{title}</span>
+            {column.getIsSorted() === 'desc' ? (
+              <ArrowDown />
             ) : column.getIsSorted() === 'asc' ? (
-              <ArrowUp className="ml-2.5 size-4" aria-hidden="true" />
+              <ArrowUp />
             ) : (
-              <ChevronsUpDown className="ml-2.5 size-4" aria-hidden="true" />
+              <ChevronsUpDown />
             )}
-          </SelectIcon>
-        </SelectTrigger>
-        <SelectContent align="start">
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="start">
           {column.getCanSort() && (
             <>
-              <SelectItem value={ascValue}>
-                <span className="flex items-center">
-                  <ArrowUp
-                    className="mr-2 size-3.5 text-muted-foreground/70"
-                    aria-hidden="true"
-                  />
-                  Asc
-                </span>
-              </SelectItem>
-              <SelectItem value={descValue}>
-                <span className="flex items-center">
-                  <ArrowDown
-                    className="mr-2 size-3.5 text-muted-foreground/70"
-                    aria-hidden="true"
-                  />
-                  Desc
-                </span>
-              </SelectItem>
+              <DropdownMenuItem onClick={() => column.toggleSorting(false)}>
+                <ArrowUp className="size-3.5 text-muted-foreground/70" />
+                Tăng dần
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => column.toggleSorting(true)}>
+                <ArrowDown className="size-3.5 text-muted-foreground/70" />
+                Giảm dần
+              </DropdownMenuItem>
             </>
           )}
           {column.getCanHide() && (
-            <SelectItem value={hideValue}>
-              <span className="flex items-center">
-                <EyeOff
-                  className="mr-2 size-3.5 text-muted-foreground/70"
-                  aria-hidden="true"
-                />
-                Hide
-              </span>
-            </SelectItem>
+            <DropdownMenuItem onClick={() => column.toggleVisibility(false)}>
+              <EyeOff className="size-3.5 text-muted-foreground/70" />
+              Ẩn
+            </DropdownMenuItem>
           )}
-        </SelectContent>
-      </Select>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
   )
 }

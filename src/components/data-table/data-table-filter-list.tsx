@@ -3,21 +3,17 @@
 import type {
   DataTableAdvancedFilterField,
   Filter,
-  FilterOperator,
-  JoinOperator,
   StringKeyOf,
-} from '@/types'
+} from '@/types/data-table'
 import type { Table } from '@tanstack/react-table'
 import {
   CalendarIcon,
   Check,
   ChevronsUpDown,
-  GripVertical,
   ListFilter,
   Trash2,
 } from 'lucide-react'
 import { customAlphabet } from 'nanoid'
-import { parseAsStringEnum, useQueryState } from 'nuqs'
 import * as React from 'react'
 
 import { Badge } from '@/components/ui/badge'
@@ -54,55 +50,32 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import {
-  Sortable,
-  SortableContent,
-  SortableItem,
-  SortableItemHandle,
-  SortableOverlay,
-} from '@/components/ui/sortable'
-import { dataTableConfig } from '@/configs/data-table'
 import { useDebouncedCallback } from '@/hooks/use-debounced-callback'
-import { getDefaultFilterOperator, getFilterOperators } from '@/lib/data-table'
-import { getFiltersStateParser } from '@/lib/parsers'
-import { cn, formatDate } from '@/lib/utils'
+import { formatDate } from '@/lib/common'
+import { cn } from '@/lib/utils'
+import { vi } from 'date-fns/locale'
 
 interface DataTableFilterListProps<TData> {
   table: Table<TData>
   filterFields: DataTableAdvancedFilterField<TData>[]
   debounceMs: number
-  shallow?: boolean
 }
 
 export function DataTableFilterList<TData>({
   table,
   filterFields,
   debounceMs,
-  shallow,
 }: DataTableFilterListProps<TData>) {
   const id = React.useId()
-  const [filters, setFilters] = useQueryState(
-    'filters',
-    getFiltersStateParser(table.getRowModel().rows[0]?.original)
-      .withDefault([])
-      .withOptions({
-        clearOnDefault: true,
-        shallow,
-      })
-  )
 
-  const [joinOperator, setJoinOperator] = useQueryState(
-    'joinOperator',
-    parseAsStringEnum(['and', 'or']).withDefault('and').withOptions({
-      clearOnDefault: true,
-      shallow,
-    })
-  )
+  const [filters, setFilters] = React.useState<any[]>([])
 
   const debouncedSetFilters = useDebouncedCallback(setFilters, debounceMs)
 
   function addFilter() {
-    const filterField = filterFields[0]
+    const filterField = filterFields.find(
+      (field) => !filters.find((filter) => filter.id === field.id)
+    )
 
     if (!filterField) return
 
@@ -112,7 +85,6 @@ export function DataTableFilterList<TData>({
         id: filterField.id,
         value: '',
         type: filterField.type,
-        operator: getDefaultFilterOperator(filterField.type),
         rowId: customAlphabet(
           '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',
           6
@@ -147,16 +119,6 @@ export function DataTableFilterList<TData>({
     void setFilters(updatedFilters)
   }
 
-  function moveFilter(activeIndex: number, overIndex: number) {
-    void setFilters((prevFilters) => {
-      const newFilters = [...prevFilters]
-      const [removed] = newFilters.splice(activeIndex, 1)
-      if (!removed) return prevFilters
-      newFilters.splice(overIndex, 0, removed)
-      return newFilters
-    })
-  }
-
   function renderFilterInput({
     filter,
     inputId,
@@ -168,28 +130,15 @@ export function DataTableFilterList<TData>({
 
     if (!filterField) return null
 
-    if (filter.operator === 'isEmpty' || filter.operator === 'isNotEmpty') {
-      return (
-        <div
-          id={inputId}
-          role="status"
-          aria-live="polite"
-          aria-label={`${filterField.label} filter is ${filter.operator === 'isEmpty' ? 'empty' : 'not empty'}`}
-          className="h-8 w-full rounded border border-dashed"
-        />
-      )
-    }
-
     switch (filter.type) {
       case 'text':
-      case 'number':
         return (
           <Input
             id={inputId}
             type={filter.type}
             aria-label={`${filterField.label} filter value`}
             aria-describedby={`${inputId}-description`}
-            placeholder={filterField.placeholder ?? 'Enter a value...'}
+            placeholder={filterField.placeholder ?? 'Nhập giá trị...'}
             className="h-8 w-full rounded"
             defaultValue={
               typeof filter.value === 'string' ? filter.value : undefined
@@ -203,6 +152,52 @@ export function DataTableFilterList<TData>({
             }
           />
         )
+      case 'number':
+        return (
+          <div className="flex items-center gap-2">
+            <Input
+              id={inputId}
+              type={filter.type}
+              aria-label={`${filterField.label} filter value`}
+              aria-describedby={`${inputId}-description`}
+              placeholder={filterField.placeholder ?? 'Từ...'}
+              className="h-8 w-full rounded"
+              defaultValue={
+                typeof filter.value[0] === 'string'
+                  ? filter.value[0]
+                  : undefined
+              }
+              onChange={(event) =>
+                updateFilter({
+                  rowId: filter.rowId,
+                  field: { value: [event.target.value, filter.value[1]] },
+                  debounced: true,
+                })
+              }
+            />
+
+            <Input
+              id={inputId}
+              type={filter.type}
+              aria-label={`${filterField.label} filter value`}
+              aria-describedby={`${inputId}-description`}
+              placeholder={filterField.placeholder ?? 'Đến...'}
+              className="h-8 w-full rounded"
+              defaultValue={
+                typeof filter.value[1] === 'string'
+                  ? filter.value[1]
+                  : undefined
+              }
+              onChange={(event) => {
+                updateFilter({
+                  rowId: filter.rowId,
+                  field: { value: [filter.value[0], event.target.value] },
+                  debounced: true,
+                })
+              }}
+            />
+          </div>
+        )
       case 'select':
         return (
           <FacetedFilter>
@@ -213,20 +208,17 @@ export function DataTableFilterList<TData>({
                 size="sm"
                 aria-label={`${filterField.label} filter value`}
                 aria-controls={`${inputId}-listbox`}
-                className="h-8 w-full justify-start gap-2 rounded px-1.5 text-left text-muted-foreground hover:text-muted-foreground"
+                className="h-8 w-full justify-between gap-2 rounded px-3 text-left text-muted-foreground hover:text-muted-foreground"
               >
                 {filter.value && typeof filter.value === 'string' ? (
-                  <Badge
-                    variant="secondary"
-                    className="rounded-sm px-1 font-normal"
-                  >
+                  <Badge variant="secondary" className="rounded-sm font-normal">
                     {filterField?.options?.find(
                       (option) => option.value === filter.value
                     )?.label || filter.value}
                   </Badge>
                 ) : (
                   <>
-                    {filterField.placeholder ?? 'Select an option...'}
+                    {filterField.placeholder ?? 'Chọn giá trị...'}
                     <ChevronsUpDown className="size-4" aria-hidden="true" />
                   </>
                 )}
@@ -237,11 +229,11 @@ export function DataTableFilterList<TData>({
               className="w-[12.5rem] origin-[var(--radix-popover-content-transform-origin)]"
             >
               <FacetedFilterInput
-                placeholder={filterField?.label ?? 'Search options...'}
+                placeholder={filterField?.label ?? 'Tìm kiếm...'}
                 aria-label={`Search ${filterField?.label} options`}
               />
               <FacetedFilterList>
-                <FacetedFilterEmpty>No options found.</FacetedFilterEmpty>
+                <FacetedFilterEmpty>Không có kết quả</FacetedFilterEmpty>
                 <FacetedFilterGroup>
                   {filterField?.options?.map((option) => (
                     <FacetedFilterItem
@@ -288,11 +280,11 @@ export function DataTableFilterList<TData>({
                 size="sm"
                 aria-label={`${filterField.label} filter values`}
                 aria-controls={`${inputId}-listbox`}
-                className="h-8 w-full justify-start gap-2 rounded px-1.5 text-left text-muted-foreground hover:text-muted-foreground"
+                className="h-8 w-full justify-between gap-2 rounded px-3 text-left text-muted-foreground hover:text-muted-foreground"
               >
                 {selectedValues.size === 0 && (
                   <>
-                    {filterField.placeholder ?? ' Select options...'}
+                    {filterField.placeholder ?? ' Chọn giá trị...'}
                     <ChevronsUpDown className="size-4" aria-hidden="true" />
                   </>
                 )}
@@ -310,7 +302,7 @@ export function DataTableFilterList<TData>({
                           variant="secondary"
                           className="rounded-sm px-1 font-normal"
                         >
-                          {selectedValues.size} selected
+                          {selectedValues.size} được chọn
                         </Badge>
                       ) : (
                         filterField?.options
@@ -339,7 +331,7 @@ export function DataTableFilterList<TData>({
                 placeholder={filterField?.label ?? 'Search options...'}
               />
               <FacetedFilterList>
-                <FacetedFilterEmpty>No options found.</FacetedFilterEmpty>
+                <FacetedFilterEmpty>Không có kết quả</FacetedFilterEmpty>
                 <FacetedFilterGroup>
                   {filterField?.options?.map((option) => (
                     <FacetedFilterItem
@@ -384,14 +376,11 @@ export function DataTableFilterList<TData>({
           ? filter.value.filter(Boolean)
           : [filter.value, filter.value].filter(Boolean)
 
-        const displayValue =
-          filter.operator === 'isBetween' && dateValue.length === 2
-            ? `${formatDate(dateValue[0] ?? new Date())} - ${formatDate(
-                dateValue[1] ?? new Date()
-              )}`
-            : dateValue[0]
-              ? formatDate(dateValue[0])
-              : 'Pick a date'
+        const displayValue = dateValue[0]
+          ? dateValue[1]
+            ? `${formatDate(dateValue[0])} - ${formatDate(dateValue[1])}`
+            : formatDate(dateValue[0])
+          : 'Chọn ngày'
 
         return (
           <Popover>
@@ -419,57 +408,34 @@ export function DataTableFilterList<TData>({
               align="start"
               className="w-auto p-0"
             >
-              {filter.operator === 'isBetween' ? (
-                <Calendar
-                  id={`${inputId}-calendar`}
-                  mode="range"
-                  aria-label={`Select ${filterField.label} date range`}
-                  selected={
-                    dateValue.length === 2
-                      ? {
-                          from: new Date(dateValue[0] ?? ''),
-                          to: new Date(dateValue[1] ?? ''),
-                        }
-                      : {
-                          from: new Date(),
-                          to: new Date(),
-                        }
-                  }
-                  onSelect={(date) => {
-                    updateFilter({
-                      rowId: filter.rowId,
-                      field: {
-                        value: date
-                          ? [
-                              date.from?.toISOString() ?? '',
-                              date.to?.toISOString() ?? '',
-                            ]
-                          : [],
-                      },
-                    })
-                  }}
-                  initialFocus
-                  numberOfMonths={1}
-                />
-              ) : (
-                <Calendar
-                  id={`${inputId}-calendar`}
-                  mode="single"
-                  aria-label={`Select ${filterField.label} date`}
-                  selected={dateValue[0] ? new Date(dateValue[0]) : undefined}
-                  onSelect={(date) => {
-                    updateFilter({
-                      rowId: filter.rowId,
-                      field: { value: date?.toISOString() ?? '' },
-                    })
-
-                    setTimeout(() => {
-                      document.getElementById(inputId)?.click()
-                    }, 0)
-                  }}
-                  initialFocus
-                />
-              )}
+              <Calendar
+                locale={vi}
+                id={`${inputId}-calendar`}
+                mode="range"
+                aria-label={`Select ${filterField.label} date range`}
+                selected={{
+                  from: filter.value[0] ? new Date(filter.value[0]) : undefined,
+                  to: filter.value[1] ? new Date(filter.value[1]) : undefined,
+                }}
+                onSelect={(date) => {
+                  updateFilter({
+                    rowId: filter.rowId,
+                    field: {
+                      value: date
+                        ? [
+                            date.from?.toISOString() ?? '',
+                            date.to?.toISOString() ?? '',
+                          ]
+                        : [],
+                    },
+                  })
+                }}
+                initialFocus
+                numberOfMonths={2}
+                defaultMonth={
+                  dateValue[0] ? new Date(dateValue[0]) : new Date()
+                }
+              />
             </PopoverContent>
           </Popover>
         )
@@ -490,11 +456,11 @@ export function DataTableFilterList<TData>({
               aria-controls={`${inputId}-listbox`}
               className="h-8 w-full rounded bg-transparent"
             >
-              <SelectValue placeholder={filter.value ? 'True' : 'False'} />
+              <SelectValue placeholder={filter.value ? 'Có' : 'Không'} />
             </SelectTrigger>
             <SelectContent id={`${inputId}-listbox`}>
-              <SelectItem value="true">True</SelectItem>
-              <SelectItem value="false">False</SelectItem>
+              <SelectItem value="true">Có</SelectItem>
+              <SelectItem value="false">Không</SelectItem>
             </SelectContent>
           </Select>
         )
@@ -504,279 +470,184 @@ export function DataTableFilterList<TData>({
     }
   }
 
+  React.useEffect(() => {
+    table.setColumnFilters(
+      filters.map((filter) => ({
+        id: filter.id,
+        value: filter.value,
+      }))
+    )
+  }, [filters])
+
   return (
-    <Sortable
-      value={filters}
-      getItemValue={(item) => item.rowId}
-      onMove={({ activeIndex, overIndex }) =>
-        moveFilter(activeIndex, overIndex)
-      }
-    >
-      <Popover>
-        <PopoverTrigger asChild>
-          <Button
-            variant="outline"
-            size="sm"
-            className="gap-2"
-            aria-label="Open filters"
-            aria-controls={`${id}-filter-dialog`}
-          >
-            <ListFilter className="size-3" aria-hidden="true" />
-            Filters
-            {filters.length > 0 && (
-              <Badge
-                variant="secondary"
-                className="h-[1.14rem] rounded-[0.2rem] px-[0.32rem] font-mono text-[0.65rem] font-normal"
-              >
-                {filters.length}
-              </Badge>
-            )}
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent
-          id={`${id}-filter-dialog`}
-          align="start"
-          collisionPadding={16}
-          className={cn(
-            'flex w-[calc(100vw-theme(spacing.12))] min-w-60 origin-[var(--radix-popover-content-transform-origin)] flex-col p-4 sm:w-[36rem]',
-            filters.length > 0 ? 'gap-3.5' : 'gap-2'
-          )}
+    <Popover>
+      <PopoverTrigger asChild>
+        <Button
+          variant="outline"
+          size="sm"
+          className="gap-2"
+          aria-label="Open filters"
+          aria-controls={`${id}-filter-dialog`}
         >
-          {filters.length > 0 ? (
-            <h4 className="font-medium leading-none">Filters</h4>
-          ) : (
-            <div className="flex flex-col gap-1">
-              <h4 className="font-medium leading-none">No filters applied</h4>
-              <p className="text-sm text-muted-foreground">
-                Add filters to refine your results.
-              </p>
-            </div>
+          <ListFilter className="size-3" aria-hidden="true" />
+          Bộ lọc
+          {filters.length > 0 && (
+            <Badge
+              variant="secondary"
+              className="h-[1.14rem] rounded-[0.2rem] px-[0.32rem] font-mono text-[0.65rem] font-normal"
+            >
+              {filters.length}
+            </Badge>
           )}
-          <SortableContent asChild>
-            <div className="flex max-h-40 flex-col gap-2 overflow-y-auto py-0.5 pr-1">
-              {filters.map((filter, index) => {
-                const filterId = `${id}-filter-${filter.rowId}`
-                const joinOperatorListboxId = `${filterId}-join-operator-listbox`
-                const fieldListboxId = `${filterId}-field-listbox`
-                const fieldTriggerId = `${filterId}-field-trigger`
-                const operatorListboxId = `${filterId}-operator-listbox`
-                const inputId = `${filterId}-input`
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent
+        id={`${id}-filter-dialog`}
+        align="start"
+        collisionPadding={16}
+        className={cn(
+          'flex w-[25rem] min-w-72 origin-[var(--radix-popover-content-transform-origin)] flex-col p-4',
+          filters.length > 0 ? 'gap-3.5' : 'gap-2'
+        )}
+      >
+        {filters.length > 0 ? (
+          <h4 className="font-medium leading-none">Bộ lọc</h4>
+        ) : (
+          <div className="flex flex-col gap-2">
+            <h4 className="font-medium leading-none">Chưa áp dụng bộ lọc</h4>
+            <p className="text-sm text-muted-foreground">
+              Thêm bộ lọc để lọc kết quả
+            </p>
+          </div>
+        )}
+        <div className="flex max-h-40 flex-col gap-2 overflow-y-auto py-0.5 pr-1">
+          {filters.map((filter, index) => {
+            const filterId = `${id}-filter-${filter.rowId}`
+            const fieldListboxId = `${filterId}-field-listbox`
+            const fieldTriggerId = `${filterId}-field-trigger`
+            const inputId = `${filterId}-input`
 
-                return (
-                  <SortableItem key={filter.rowId} value={filter.rowId} asChild>
-                    <div className="flex items-center gap-2">
-                      <div className="min-w-[4.5rem] text-center">
-                        {index === 0 ? (
-                          <span className="text-sm text-muted-foreground">
-                            Where
-                          </span>
-                        ) : index === 1 ? (
-                          <Select
-                            value={joinOperator}
-                            onValueChange={(value: JoinOperator) =>
-                              setJoinOperator(value)
-                            }
-                          >
-                            <SelectTrigger
-                              aria-label="Select join operator"
-                              aria-controls={joinOperatorListboxId}
-                              className="h-8 rounded lowercase"
-                            >
-                              <SelectValue placeholder={joinOperator} />
-                            </SelectTrigger>
-                            <SelectContent
-                              id={joinOperatorListboxId}
-                              position="popper"
-                              className="min-w-[var(--radix-select-trigger-width)] lowercase"
-                            >
-                              {dataTableConfig.joinOperators.map((op) => (
-                                <SelectItem key={op.value} value={op.value}>
-                                  {op.label}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        ) : (
-                          <span className="text-sm text-muted-foreground">
-                            {joinOperator}
-                          </span>
-                        )}
-                      </div>
-                      <Popover modal>
-                        <PopoverTrigger asChild>
-                          <Button
-                            id={fieldTriggerId}
-                            variant="outline"
-                            size="sm"
-                            role="combobox"
-                            aria-label="Select filter field"
-                            aria-controls={fieldListboxId}
-                            className="h-8 w-32 justify-between gap-2 rounded focus:outline-none focus:ring-1 focus:ring-ring focus-visible:ring-0"
-                          >
-                            <span className="truncate">
-                              {filterFields.find(
-                                (field) => field.id === filter.id
-                              )?.label ?? 'Select field'}
-                            </span>
-                            <ChevronsUpDown className="size-4 shrink-0 opacity-50" />
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent
-                          id={fieldListboxId}
-                          align="start"
-                          className="w-40 p-0"
-                          onCloseAutoFocus={() =>
-                            document.getElementById(fieldTriggerId)?.focus({
-                              preventScroll: true,
-                            })
-                          }
-                        >
-                          <Command>
-                            <CommandInput placeholder="Search fields..." />
-                            <CommandList>
-                              <CommandEmpty>No fields found.</CommandEmpty>
-                              <CommandGroup>
-                                {filterFields.map((field) => (
-                                  <CommandItem
-                                    key={field.id}
-                                    value={field.id}
-                                    onSelect={(value) => {
-                                      const filterField = filterFields.find(
-                                        (col) => col.id === value
-                                      )
+            return (
+              <div className="flex items-center gap-2 pl-1" key={filter.rowId}>
+                <Popover modal>
+                  <PopoverTrigger asChild>
+                    <Button
+                      id={fieldTriggerId}
+                      variant="outline"
+                      size="sm"
+                      role="combobox"
+                      aria-label="Select filter field"
+                      aria-controls={fieldListboxId}
+                      className="h-8 w-32 justify-between gap-2 rounded focus:outline-none focus:ring-1 focus:ring-ring focus-visible:ring-0"
+                    >
+                      <span className="truncate">
+                        {filterFields.find((field) => field.id === filter.id)
+                          ?.label ?? 'Select field'}
+                      </span>
+                      <ChevronsUpDown className="size-4 shrink-0 opacity-50" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent
+                    id={fieldListboxId}
+                    align="start"
+                    className="w-40 p-0"
+                    onCloseAutoFocus={() =>
+                      document.getElementById(fieldTriggerId)?.focus({
+                        preventScroll: true,
+                      })
+                    }
+                  >
+                    <Command>
+                      <CommandInput placeholder="Tìm kiếm..." />
+                      <CommandList>
+                        <CommandEmpty>Không có kết quả</CommandEmpty>
+                        <CommandGroup>
+                          {filterFields
+                            .filter(
+                              (f) => !filters.find((fil) => fil.id === f.id)
+                            )
+                            .map((field) => (
+                              <CommandItem
+                                key={field.id}
+                                value={field.id}
+                                onSelect={(value) => {
+                                  const filterField = filterFields.find(
+                                    (col) => col.id === value
+                                  )
 
-                                      if (!filterField) return
+                                  if (!filterField) return
 
-                                      updateFilter({
-                                        rowId: filter.rowId,
-                                        field: {
-                                          id: value as StringKeyOf<TData>,
-                                          type: filterField.type,
-                                          operator: getDefaultFilterOperator(
-                                            filterField.type
-                                          ),
-                                          value: '',
-                                        },
-                                      })
+                                  updateFilter({
+                                    rowId: filter.rowId,
+                                    field: {
+                                      id: value as StringKeyOf<TData>,
+                                      type: filterField.type,
+                                      value: '',
+                                    },
+                                  })
 
-                                      document
-                                        .getElementById(fieldTriggerId)
-                                        ?.click()
-                                    }}
-                                  >
-                                    <span className="mr-1.5 truncate">
-                                      {field.label}
-                                    </span>
-                                    <Check
-                                      className={cn(
-                                        'ml-auto size-4 shrink-0',
-                                        field.id === filter.id
-                                          ? 'opacity-100'
-                                          : 'opacity-0'
-                                      )}
-                                    />
-                                  </CommandItem>
-                                ))}
-                              </CommandGroup>
-                            </CommandList>
-                          </Command>
-                        </PopoverContent>
-                      </Popover>
-                      <Select
-                        value={filter.operator}
-                        onValueChange={(value: FilterOperator) =>
-                          updateFilter({
-                            rowId: filter.rowId,
-                            field: {
-                              operator: value,
-                              value:
-                                value === 'isEmpty' || value === 'isNotEmpty'
-                                  ? ''
-                                  : filter.value,
-                            },
-                          })
-                        }
-                      >
-                        <SelectTrigger
-                          aria-label="Select filter operator"
-                          aria-controls={operatorListboxId}
-                          className="h-8 w-32 rounded"
-                        >
-                          <div className="truncate">
-                            <SelectValue placeholder={filter.operator} />
-                          </div>
-                        </SelectTrigger>
-                        <SelectContent id={operatorListboxId}>
-                          {getFilterOperators(filter.type).map((op) => (
-                            <SelectItem key={op.value} value={op.value}>
-                              {op.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <div className="min-w-36 flex-1">
-                        {renderFilterInput({ filter, inputId })}
-                      </div>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        aria-label={`Remove filter ${index + 1}`}
-                        className="size-8 shrink-0 rounded"
-                        onClick={() => removeFilter(filter.rowId)}
-                      >
-                        <Trash2 className="size-3.5" aria-hidden="true" />
-                      </Button>
-                      <SortableItemHandle
-                        className="size-8 shrink-0 rounded"
-                        asChild
-                      >
-                        <Button variant="outline" size="icon">
-                          <GripVertical
-                            className="size-3.5"
-                            aria-hidden="true"
-                          />
-                        </Button>
-                      </SortableItemHandle>
-                    </div>
-                  </SortableItem>
-                )
-              })}
-            </div>
-          </SortableContent>
-          <div className="flex w-full items-center gap-2">
+                                  document
+                                    .getElementById(fieldTriggerId)
+                                    ?.click()
+                                }}
+                              >
+                                <span className="mr-1.5 truncate">
+                                  {field.label}
+                                </span>
+                                <Check
+                                  className={cn(
+                                    'ml-auto size-4 shrink-0',
+                                    field.id === filter.id
+                                      ? 'opacity-100'
+                                      : 'opacity-0'
+                                  )}
+                                />
+                              </CommandItem>
+                            ))}
+                        </CommandGroup>
+                      </CommandList>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
+                <div className="min-w-36 flex-1">
+                  {renderFilterInput({ filter, inputId })}
+                </div>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  aria-label={`Remove filter ${index + 1}`}
+                  className="size-8 shrink-0 rounded"
+                  onClick={() => removeFilter(filter.rowId)}
+                >
+                  <Trash2 className="!size-3.5" aria-hidden="true" />
+                </Button>
+              </div>
+            )
+          })}
+        </div>
+        <div className="flex w-full items-center gap-2">
+          <Button
+            size="sm"
+            className="h-[1.85rem] rounded"
+            onClick={addFilter}
+            disabled={filterFields.length === filters.length}
+          >
+            Thêm bộ lọc
+          </Button>
+          {filters.length > 0 ? (
             <Button
               size="sm"
-              className="h-[1.85rem] rounded"
-              onClick={addFilter}
+              variant="outline"
+              className="rounded"
+              onClick={() => {
+                void setFilters([])
+              }}
             >
-              Add filter
+              Đặt lại
             </Button>
-            {filters.length > 0 ? (
-              <Button
-                size="sm"
-                variant="outline"
-                className="rounded"
-                onClick={() => {
-                  void setFilters(null)
-                  void setJoinOperator('and')
-                }}
-              >
-                Reset filters
-              </Button>
-            ) : null}
-          </div>
-        </PopoverContent>
-      </Popover>
-      <SortableOverlay>
-        <div className="flex items-center gap-2">
-          <div className="h-8 min-w-[4.5rem] rounded-sm bg-primary/10" />
-          <div className="h-8 w-32 rounded-sm bg-primary/10" />
-          <div className="h-8 w-32 rounded-sm bg-primary/10" />
-          <div className="h-8 min-w-36 flex-1 rounded-sm bg-primary/10" />
-          <div className="size-8 shrink-0 rounded-sm bg-primary/10" />
-          <div className="size-8 shrink-0 rounded-sm bg-primary/10" />
+          ) : null}
         </div>
-      </SortableOverlay>
-    </Sortable>
+      </PopoverContent>
+    </Popover>
   )
 }

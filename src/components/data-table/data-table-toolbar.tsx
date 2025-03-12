@@ -1,14 +1,14 @@
 'use client'
 
-import type { DataTableFilterField } from '@/types'
+import type { DataTableFilterField } from '@/types/data-table.ts'
 import type { Table } from '@tanstack/react-table'
 import { X } from 'lucide-react'
 import * as React from 'react'
 
 import { DataTableFacetedFilter } from '@/components/data-table/data-table-faceted-filter'
 import { DataTableViewOptions } from '@/components/data-table/data-table-view-options'
+import { DebouncedInput } from '@/components/shared/debounced-input'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/utils'
 
 interface DataTableToolbarProps<TData>
@@ -69,7 +69,7 @@ export function DataTableToolbar<TData>({
           searchableColumns.map(
             (column) =>
               table.getColumn(column.id ? String(column.id) : '') && (
-                <Input
+                <DebouncedInput
                   key={String(column.id)}
                   placeholder={column.placeholder}
                   value={
@@ -77,10 +77,8 @@ export function DataTableToolbar<TData>({
                       .getColumn(String(column.id))
                       ?.getFilterValue() as string) ?? ''
                   }
-                  onChange={(event) =>
-                    table
-                      .getColumn(String(column.id))
-                      ?.setFilterValue(event.target.value)
+                  onChange={(value) =>
+                    table.getColumn(String(column.id))?.setFilterValue(value)
                   }
                   className="h-8 w-40 lg:w-64"
                 />
@@ -105,7 +103,7 @@ export function DataTableToolbar<TData>({
             className="h-8 px-2 lg:px-3"
             onClick={() => table.resetColumnFilters()}
           >
-            Reset
+            Đặt lại
             <X className="ml-2 size-4" aria-hidden="true" />
           </Button>
         )}

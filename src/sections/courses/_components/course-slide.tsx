@@ -81,7 +81,7 @@ const CourseSlide = ({ courses }: Props) => {
               </div>
               <div className="bottom">
                 <div className="h6 price fw-5">
-                  {course?.price_sale && course.price_sale > 0 ? (
+                  {course?.price_sale && +course.price_sale > 0 ? (
                     <div>
                       <span>{formatCurrency(course.price_sale)}</span>
                       <span className="ml-2 text-sm text-gray-500 line-through">

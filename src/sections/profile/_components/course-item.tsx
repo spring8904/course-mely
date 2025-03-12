@@ -37,7 +37,7 @@ export const CourseItem = ({ course }: Props) => {
           </h3>
 
           <div>
-            {course?.price === 0 ? (
+            {Number(course?.price) === 0 ? (
               <span className="font-bold text-green-500">Miễn phí</span>
             ) : course?.price_sale ? (
               <div className="space-x-2">

@@ -9,6 +9,7 @@ enum QueryKey {
   COURSES_FREE = 'free-courses',
   INSTRUCTOR_ALL = 'instructor-all',
   INSTRUCTOR_COURSE = 'instructor-course',
+  INSTRUCTOR_COURSE_TRASH = 'instructor-course-trash',
   INSTRUCTOR_CHAPTER = 'instructor-chapter',
   INSTRUCTOR_LESSON = 'instructor-lesson',
   INSTRUCTOR_COURSE_VALIDATE = 'instructor-course-validate',

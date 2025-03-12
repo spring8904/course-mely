@@ -1,4 +1,4 @@
-import type { Option } from '@/types'
+import type { Option } from '@/types/data-table.ts'
 import type { Column } from '@tanstack/react-table'
 import { Check, PlusCircle } from 'lucide-react'
 
@@ -58,7 +58,7 @@ export function DataTableFacetedFilter<TData, TValue>({
                     variant="secondary"
                     className="rounded-sm px-1 font-normal"
                   >
-                    {selectedValues.size} selected
+                    {selectedValues.size} được chọn
                   </Badge>
                 ) : (
                   options
@@ -82,7 +82,7 @@ export function DataTableFacetedFilter<TData, TValue>({
         <Command>
           <CommandInput placeholder={title} />
           <CommandList className="max-h-full">
-            <CommandEmpty>No results found.</CommandEmpty>
+            <CommandEmpty>Không có kết quả</CommandEmpty>
             <CommandGroup className="max-h-[18.75rem] overflow-y-auto overflow-x-hidden">
               {options.map((option) => {
                 const isSelected = selectedValues.has(option.value)
@@ -136,7 +136,7 @@ export function DataTableFacetedFilter<TData, TValue>({
                     onSelect={() => column?.setFilterValue(undefined)}
                     className="justify-center text-center"
                   >
-                    Clear filters
+                    Bỏ lọc
                   </CommandItem>
                 </CommandGroup>
               </>

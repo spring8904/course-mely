@@ -1,39 +1,37 @@
 'use client'
 
+import type { DataTableRowAction } from '@/types/data-table.ts'
+import type { ColumnDef } from '@tanstack/react-table'
+import { Ellipsis, Eye, SquarePen, Trash2 } from 'lucide-react'
+import * as React from 'react'
+
+import { DataTableColumnHeader } from '@/components/data-table/data-table-column-header'
 import CourseStatusBadge from '@/components/shared/course-status-badge'
-import { DataTable } from '@/components/shared/data-table'
-import { DataTableColumnHeader } from '@/components/shared/data-table-column-header'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { useGetCourses } from '@/hooks/instructor/course/useCourse'
 import { formatCurrency, formatDate } from '@/lib/common'
-import CreateCourseDialog from '@/sections/instructor/components/course-management/create-course-dialog'
+import { dateRangeFilterFn } from '@/lib/data-table'
 import { ICourse } from '@/types'
-import { ColumnDef } from '@tanstack/react-table'
-import { Eye, MoreVertical, SquarePen, Trash2 } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useState } from 'react'
 
-const CourseManageView = () => {
-  const [searchTerm, setSearchTerm] = useState('')
+interface GetColumnsProps {
+  setRowAction: React.Dispatch<
+    React.SetStateAction<DataTableRowAction<ICourse> | null>
+  >
+}
 
-  const { data: courses, isLoading: isCoursesLoading } = useGetCourses()
-
-  const filteredData = courses?.data?.filter((course: any) => {
-    const searchFields = ['code', 'name', 'description']
-    return searchFields.some((field) =>
-      course[field]?.toLowerCase()?.includes(searchTerm.toLowerCase())
-    )
-  })
-
-  const columns: ColumnDef<ICourse>[] = [
+export function getColumns({
+  setRowAction,
+}: GetColumnsProps): ColumnDef<ICourse>[] {
+  return [
     {
       id: 'select',
       header: ({ table }) => (
@@ -44,7 +42,7 @@ const CourseManageView = () => {
           }
           onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
           aria-label="Select all"
-          className="border-foreground"
+          className="text-primary"
         />
       ),
       cell: ({ row }) => (
@@ -52,7 +50,6 @@ const CourseManageView = () => {
           checked={row.getIsSelected()}
           onCheckedChange={(value) => row.toggleSelected(!!value)}
           aria-label="Select row"
-          className="border-foreground"
         />
       ),
       enableSorting: false,
@@ -60,7 +57,6 @@ const CourseManageView = () => {
     },
     {
       accessorKey: 'name',
-
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Khóa học" />
       ),
@@ -84,28 +80,38 @@ const CourseManageView = () => {
           </div>
         )
       },
+      enableSorting: false,
+      enableHiding: false,
+      meta: {
+        label: 'Khóa học',
+      },
     },
     {
       accessorKey: 'created_at',
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Ngày tạo" />
       ),
-      cell: () => {
+      cell: ({ getValue }) => {
         return (
           <div className="space-y-1">
             <div className="font-medium">
-              {formatDate('2025-01-25T15:41:03.000000Z', {
+              {formatDate(getValue() as Date, {
                 dateStyle: 'medium',
               })}
             </div>
             <div className="text-xs text-muted-foreground">
-              {formatDate('2025-01-25T15:41:03.000000Z', {
+              {formatDate(getValue() as Date, {
                 timeStyle: 'short',
                 hour12: true,
               })}
             </div>
           </div>
         )
+      },
+      sortingFn: 'datetime',
+      filterFn: dateRangeFilterFn,
+      meta: {
+        label: 'Ngày tạo',
       },
     },
     {
@@ -123,6 +129,11 @@ const CourseManageView = () => {
           </div>
         )
       },
+      sortingFn: 'alphanumeric',
+      filterFn: 'inNumberRange',
+      meta: {
+        label: 'Giá bán',
+      },
     },
     {
       accessorKey: 'total_student',
@@ -132,6 +143,11 @@ const CourseManageView = () => {
       cell: ({ row }) => (
         <div className="font-medium">{row.getValue('total_student') || 0}</div>
       ),
+      sortingFn: 'basic',
+      filterFn: 'inNumberRange',
+      meta: {
+        label: 'Học viên',
+      },
     },
     {
       accessorKey: 'status',
@@ -141,22 +157,29 @@ const CourseManageView = () => {
       cell: ({ row }) => {
         return <CourseStatusBadge status={row.original.status} />
       },
+      filterFn: (row, id, value) => {
+        return Array.isArray(value) && value.includes(row.getValue(id))
+      },
+      meta: {
+        label: 'Trạng thái',
+      },
     },
     {
       id: 'actions',
-      cell: ({ row }) => {
+      cell: function Cell({ row }) {
         const course = row.original
         return (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
+                aria-label="Open menu"
                 variant="ghost"
-                className="size-8 rounded-full p-0 hover:bg-gray-200/70"
+                className="flex size-8 p-0 data-[state=open]:bg-muted"
               >
-                <MoreVertical className="size-4" />
+                <Ellipsis className="size-4" aria-hidden="true" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
+            <DropdownMenuContent align="end" className="max-w-40">
               <DropdownMenuItem asChild>
                 <Link href={`/instructor/courses/${course.slug}`}>
                   <Eye /> Xem
@@ -167,38 +190,18 @@ const CourseManageView = () => {
                   <SquarePen /> Sửa
                 </Link>
               </DropdownMenuItem>
-              <DropdownMenuItem className="text-destructive focus:bg-destructive/10 focus:text-destructive">
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                className="text-destructive focus:bg-destructive/10 focus:text-destructive"
+                onSelect={() => setRowAction({ row, type: 'delete' })}
+              >
                 <Trash2 /> Xóa
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         )
       },
-      meta: {
-        className: 'sticky right-0 bg-background',
-      },
+      size: 40,
     },
   ]
-
-  return (
-    <>
-      <div className="px-5 py-6">
-        <div className="mt-2 space-y-6">
-          <div className="flex items-center justify-between">
-            <h1 className="text-xl font-bold">Quản lý khóa học</h1>
-            <CreateCourseDialog />
-          </div>
-
-          <DataTable
-            columns={columns}
-            data={filteredData || []}
-            isLoading={isCoursesLoading}
-            onSearchChange={setSearchTerm}
-          />
-        </div>
-      </div>
-    </>
-  )
 }
-
-export default CourseManageView
