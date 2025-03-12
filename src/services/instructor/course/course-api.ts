@@ -4,12 +4,14 @@ import {
   UpdateCourseObjectivePayload,
 } from '@/validations/course'
 import api from '@/configs/api'
+import { ICourse } from '@/types'
 
 const prefix = '/instructor/manage/courses'
 
 export const instructorCourseApi = {
-  getCourses: async () => {
-    return await api.get(prefix)
+  getCourses: async (): Promise<ICourse[]> => {
+    const res = await api.get(prefix)
+    return res.data
   },
   getCourseOverview: async (slug: string) => {
     return await api.get(`${prefix}/${slug}`)
@@ -47,4 +49,24 @@ export const instructorCourseApi = {
   courseListOfUser: (slug: string) => {
     return api.get(`${prefix}/${slug}/course-list-of-user`)
   },
+
+  // API TRASH
+  getCoursesFormTrash: async (): Promise<any> => {
+    const res = await api.get(`${prefix}/trash`)
+    return res.data
+  },
+
+  moveCoursesToTrash: (
+    ids: number[]
+  ): Promise<{
+    message: string
+    data: any
+  }> => api.delete(`${prefix}/move-to-trash`, { data: { ids } }),
+
+  restoreCourses: (
+    ids: number[]
+  ): Promise<{
+    message: string
+    data: any
+  }> => api.post(`${prefix}/restore`, { ids }),
 }

@@ -1,6 +1,3 @@
-import React from 'react'
-import Image from 'next/image'
-
 const BlogDetailSimilarPosts = () => {
   return (
     <div className="tf-container">
