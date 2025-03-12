@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import { format, parseISO } from 'date-fns'
-import { Loader2 } from 'lucide-react'
+import { Loader2, Tag, Check, X } from 'lucide-react'
 import { toast } from 'react-toastify'
 
 import {
@@ -25,6 +25,7 @@ import {
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Separator } from '@/components/ui/separator'
 
 interface BuyCourseModalProps {
   course: {
@@ -77,11 +78,18 @@ const BuyCourseModal = ({ course, isOpen, onClose }: BuyCourseModalProps) => {
   const [hasDiscountCode, setHasDiscountCode] = useState(false)
   const [isCouponModalOpen, setIsCouponModalOpen] = useState(false)
 
+  const originalPrice = course.price_sale > 0 ? course.price_sale : course.price
+
   const { data: couponData, isLoading } = useGetCouponUser()
   const { mutate: createVNPayPayment, isPending: isPendingCreateVNPayPayment } =
     useCreateVNPayPayment()
   const { mutate: applyCoupon, isPending: isPendingApplyCoupon } =
     useApplyCoupon()
+
+  const resetPrice = () => {
+    setFinalPrice(originalPrice)
+    setDiscountAmount(0)
+  }
 
   const handleApplyDiscount = () => {
     if (!discountCode) {
@@ -90,11 +98,12 @@ const BuyCourseModal = ({ course, isOpen, onClose }: BuyCourseModalProps) => {
     }
 
     setIsCouponApplied(false)
+    resetPrice()
 
     applyCoupon(
       {
         code: discountCode,
-        amount: course.price_sale > 0 ? course.price_sale : course.price,
+        amount: originalPrice,
         course_id: course.id,
       },
       {
@@ -102,11 +111,11 @@ const BuyCourseModal = ({ course, isOpen, onClose }: BuyCourseModalProps) => {
           const { discount_amount, final_amount } = res.data
           setDiscountAmount(discount_amount)
           setFinalPrice(final_amount)
-          setDiscountCode('')
           const appliedCoupon = couponData?.data?.find(
             (coupon: any) => coupon.coupon.code === discountCode
           )
           setSelectedCoupon(appliedCoupon)
+          setDiscountCode('')
           toast.success(res.message)
           setIsCouponApplied(true)
         },
@@ -124,7 +133,7 @@ const BuyCourseModal = ({ course, isOpen, onClose }: BuyCourseModalProps) => {
     setDiscountCode(coupon.coupon.code)
     setIsCouponApplied(false)
     setHasDiscountCode(true)
-    setDiscountAmount(0)
+    resetPrice()
     setSelectedCoupon(null)
     setIsCouponModalOpen(false)
   }
@@ -133,8 +142,26 @@ const BuyCourseModal = ({ course, isOpen, onClose }: BuyCourseModalProps) => {
     setDiscountCode(e.target.value)
     setIsCouponApplied(false)
     setHasDiscountCode(!!e.target.value)
-    setDiscountAmount(0)
+    resetPrice()
     setSelectedCoupon(null)
+  }
+
+  const handleOpenCouponModal = () => {
+    if (isCouponApplied) {
+      resetPrice()
+      setIsCouponApplied(false)
+      setSelectedCoupon(null)
+    }
+    setIsCouponModalOpen(true)
+  }
+
+  const handleRemoveCoupon = () => {
+    setSelectedCoupon(null)
+    setIsCouponApplied(false)
+    resetPrice()
+    setDiscountAmount(0)
+    setDiscountCode('')
+    toast.info('Đã xóa mã giảm giá')
   }
 
   const handlePayment = (e: any) => {
@@ -151,6 +178,10 @@ const BuyCourseModal = ({ course, isOpen, onClose }: BuyCourseModalProps) => {
           amount: finalPrice,
           course_id: `${course.id}`,
           coupon_code: selectedCoupon ? selectedCoupon.coupon.code : '',
+          original_amount:
+            course.price_sale > 0 ? course.price_sale : course.price,
+          is_discount_applied: isCouponApplied,
+          payment_method: selectedPaymentMethod,
         }
 
         createVNPayPayment(paymentData, {
@@ -194,7 +225,7 @@ const BuyCourseModal = ({ course, isOpen, onClose }: BuyCourseModalProps) => {
                   alt={course.name}
                   width={400}
                   height={225}
-                  className="rounded-lg object-cover"
+                  className="h-[200px] rounded-lg object-cover"
                 />
                 <p className="mt-4 text-xl font-semibold">{course.name}</p>
                 <ul className="my-2">
@@ -244,64 +275,115 @@ const BuyCourseModal = ({ course, isOpen, onClose }: BuyCourseModalProps) => {
                   <Label htmlFor="price">Số tiền gốc</Label>
                   <Input
                     id="price"
-                    value={`${formatNumber(course.price_sale > 0 ? course.price_sale : course.price)} VND`}
+                    value={`${formatNumber(originalPrice)} VND`}
                     readOnly
                     className="mt-1"
                   />
                 </div>
 
-                <div>
-                  <div className="flex items-center gap-2">
-                    <Label htmlFor="discount">Mã giảm giá</Label>
-                    <Badge
-                      className="cursor-pointer"
-                      onClick={() => setIsCouponModalOpen(true)}
-                    >
-                      Chọn mã
-                    </Badge>
-                  </div>
-                  <div className="flex gap-2">
-                    <Input
-                      id="discount"
-                      placeholder="Nhập mã giảm giá"
-                      value={discountCode}
-                      onChange={handleDiscountCodeInput}
-                      className="mt-1 flex-1"
-                    />
-                    <Button
-                      disabled={!discountCode || isPendingApplyCoupon}
-                      onClick={handleApplyDiscount}
-                      className="mt-1"
-                    >
-                      {isPendingApplyCoupon ? (
-                        <div className="flex items-center gap-2">
-                          <Loader2 className="animate-spin" /> Loading...
+                {isCouponApplied && selectedCoupon && (
+                  <div className="rounded-md border border-green-200 bg-green-50 p-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Tag className="size-4 text-green-600" />
+                        <span className="font-medium text-green-700">
+                          Mã giảm giá đang áp dụng
+                        </span>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={handleRemoveCoupon}
+                        className="size-7 rounded-full p-0 text-red-500 hover:bg-red-50 hover:text-red-600"
+                      >
+                        <X className="size-4" />
+                      </Button>
+                    </div>
+                    <div className="mt-2 rounded-md bg-white p-2">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="font-semibold text-gray-800">
+                            {selectedCoupon.coupon.code}
+                          </p>
+                          <p className="text-sm text-gray-600">
+                            {selectedCoupon.coupon.name}
+                          </p>
                         </div>
-                      ) : (
-                        'Áp dụng'
-                      )}
-                    </Button>
-                  </div>
-                </div>
-
-                {discountAmount > 0 && (
-                  <div>
-                    <Label>Giảm giá</Label>
-                    <Input
-                      value={`-${formatNumber(discountAmount)} VND`}
-                      readOnly
-                      className="mt-1 text-red-500"
-                    />
+                        <div className="text-right">
+                          <p className="font-bold text-green-600">
+                            {selectedCoupon.coupon.discount_type ===
+                            'percentage'
+                              ? `${formatPercentage(selectedCoupon.coupon.discount_value)}`
+                              : `- ${formatCurrency(selectedCoupon.coupon.discount_value)} `}
+                          </p>
+                          <p className="text-xs text-gray-500">
+                            Tiết kiệm: {formatNumber(discountAmount)} VND
+                          </p>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 )}
 
-                <div>
-                  <Label>Số tiền thanh toán</Label>
-                  <Input
-                    value={`${formatNumber(finalPrice)} VND`}
-                    readOnly
-                    className="mt-1 font-semibold text-green-600"
-                  />
+                {!isCouponApplied && (
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <Label htmlFor="discount">Mã giảm giá</Label>
+                      <Badge
+                        className="cursor-pointer"
+                        onClick={handleOpenCouponModal}
+                      >
+                        Chọn mã
+                      </Badge>
+                    </div>
+                    <div className="flex gap-2">
+                      <Input
+                        id="discount"
+                        placeholder="Nhập mã giảm giá"
+                        value={discountCode}
+                        onChange={handleDiscountCodeInput}
+                        className="mt-1 flex-1"
+                      />
+                      <Button
+                        disabled={!discountCode || isPendingApplyCoupon}
+                        onClick={handleApplyDiscount}
+                        className="mt-1"
+                      >
+                        {isPendingApplyCoupon ? (
+                          <div className="flex items-center gap-2">
+                            <Loader2 className="animate-spin" /> Loading...
+                          </div>
+                        ) : (
+                          'Áp dụng'
+                        )}
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
+                <Separator className="my-4" />
+
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-600">Giá gốc:</span>
+                    <span>{formatNumber(originalPrice)} VND</span>
+                  </div>
+
+                  {discountAmount > 0 && (
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-600">Giảm giá:</span>
+                      <span className="text-red-500">
+                        -{formatNumber(discountAmount)} VND
+                      </span>
+                    </div>
+                  )}
+
+                  <div className="flex items-center justify-between border-t pt-2 text-lg font-semibold">
+                    <span>Tổng thanh toán:</span>
+                    <span className="text-green-600">
+                      {formatNumber(finalPrice)} VND
+                    </span>
+                  </div>
                 </div>
 
                 <div>
@@ -352,14 +434,45 @@ const BuyCourseModal = ({ course, isOpen, onClose }: BuyCourseModalProps) => {
       </Dialog>
       <Dialog
         open={isCouponModalOpen}
-        onOpenChange={() => setIsCouponModalOpen(false)}
+        onOpenChange={(open) => {
+          if (!open && isCouponApplied && selectedCoupon) {
+            setIsCouponModalOpen(false)
+          } else {
+            setIsCouponModalOpen(open)
+            if (!open) {
+              if (!isCouponApplied) {
+                resetPrice()
+              }
+            }
+          }
+        }}
       >
         <DialogContent className="max-w-3xl">
           <DialogHeader>
             <DialogTitle>Chọn mã giảm giá</DialogTitle>
           </DialogHeader>
           {isLoading ? (
-            <p>Đang tải mã giảm giá...</p>
+            <div className="flex items-center justify-center py-8">
+              <Loader2 className="mr-2 size-6 animate-spin" />
+              <span>Đang tải mã giảm giá...</span>
+            </div>
+          ) : couponData?.data?.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-12 text-center">
+              <Tag className="mb-4 size-12 text-gray-400" strokeWidth={1.5} />
+              <h3 className="mb-2 text-lg font-medium text-gray-700">
+                Chưa có mã giảm giá
+              </h3>
+              <p className="max-w-md text-gray-500">
+                Bạn chưa có mã giảm giá nào. Vui lòng theo dõi các chương trình
+                khuyến mãi để nhận mã giảm giá mới.
+              </p>
+              <div
+                className="mt-6 cursor-pointer rounded-md border border-gray-300 px-4 py-2 font-medium text-gray-700 transition-colors hover:bg-gray-50"
+                onClick={() => setIsCouponModalOpen(false)}
+              >
+                Đóng
+              </div>
+            </div>
           ) : (
             <div className="grid grid-cols-2 gap-4">
               {couponData?.data?.map((coupon: any) => {
@@ -376,29 +489,42 @@ const BuyCourseModal = ({ course, isOpen, onClose }: BuyCourseModalProps) => {
                 return (
                   <div
                     key={coupon.id}
-                    className={`cursor-pointer rounded-lg border p-4 ${
+                    className={`rounded-lg border p-4 ${
                       isDisabled
                         ? 'cursor-not-allowed opacity-50'
-                        : 'hover:bg-gray-100'
+                        : 'cursor-pointer transition-all hover:border-gray-300 hover:bg-gray-50'
                     }`}
                     onClick={() => {
                       if (!isDisabled) handleCouponSelection(coupon)
                     }}
                   >
-                    <p className="font-bold">{coupon.coupon.code}</p>
-                    <p>{coupon.coupon.name}</p>
-                    <p>
-                      {coupon.coupon.discount_type === 'percentage'
-                        ? `${formatPercentage(coupon.coupon.discount_value)}`
-                        : `- ${formatCurrency(coupon.coupon.discount_value)} `}
-                    </p>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <Badge className="mb-2 bg-orange-100 text-orange-600 hover:bg-blue-100">
+                          {coupon.coupon.code}
+                        </Badge>
+                        <p className="font-medium">{coupon.coupon.name}</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-sm font-bold text-orange-600">
+                          {coupon.coupon.discount_type === 'percentage'
+                            ? `${formatPercentage(coupon.coupon.discount_value)}`
+                            : `- ${formatCurrency(coupon.coupon.discount_value)} `}
+                        </p>
+                      </div>
+                    </div>
+
                     {isSelected && (
-                      <p className="text-xs text-green-600">
-                        Mã đang được áp dụng
-                      </p>
+                      <div className="mt-2 flex items-center text-green-600">
+                        <Check className="mr-1 size-4" />
+                        <p className="text-sm font-medium">
+                          Mã đang được áp dụng
+                        </p>
+                      </div>
                     )}
+
                     {isDisabled && (
-                      <p className="text-sm text-red-500">
+                      <p className="mt-2 text-sm text-red-500">
                         Mã này không áp dụng cho khoá học này
                       </p>
                     )}

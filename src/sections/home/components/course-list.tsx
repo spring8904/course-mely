@@ -61,7 +61,7 @@ const CourseList = ({
   }
 
   return (
-    <section className="tf-spacing-12 section-course pt-0">
+    <section className="section-course mt-14 pt-0">
       <div className="tf-container">
         <div className="row">
           <div className="col-12">
