@@ -40,6 +40,7 @@ const VerifyView = () => {
     } else {
       setLoading(false)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status, router, isAuthenticated])
 
   if (loading) return null

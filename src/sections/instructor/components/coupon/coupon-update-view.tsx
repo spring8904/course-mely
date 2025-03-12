@@ -122,7 +122,7 @@ const CouponUpdateView = ({ id }: { id: string }) => {
     )
   })
 
-  const filteredDataCourse = courseData?.data?.filter((course: any) => {
+  const filteredDataCourse = courseData?.filter((course: any) => {
     const searchFields = ['name', 'slug', 'description']
     return searchFields.some((field) =>
       course[field]?.toLowerCase()?.includes(searchTerm.toLowerCase())

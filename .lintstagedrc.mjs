@@ -1,4 +1,7 @@
 export default {
   '*.{css,json,js}': 'prettier --write',
-  '*.{ts,tsx}': ['eslint --fix', 'tsc-files --noEmit'],
+  '*.{ts,tsx}': (files) => [
+    `eslint --fix --quiet ${files.join(' ')}`,
+    'tsc --noEmit --pretty',
+  ],
 }
