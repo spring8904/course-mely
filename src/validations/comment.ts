@@ -16,3 +16,19 @@ export const replyLessonCommentSchema = z.object({
 
 export type LessonCommentPayload = z.infer<typeof lessonCommentSchema>
 export type ReplyLessonCommentPayload = z.infer<typeof replyLessonCommentSchema>
+
+export const blogCommentSchema = z.object({
+  post_id: z.string().optional(),
+  content: z
+    .string()
+    .min(1, { message: 'Nội dung bình luận không được để trống' }),
+})
+
+export const replyBlogCommentSchema = z.object({
+  content: z
+    .string()
+    .min(1, { message: 'Nội dung bình luận không được để trống' }),
+})
+
+export type BLogCommentPayload = z.infer<typeof blogCommentSchema>
+export type ReplyBlogCommentPayload = z.infer<typeof replyBlogCommentSchema>

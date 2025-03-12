@@ -10,9 +10,10 @@ const BlogDetailProfileItem = ({ initialBlogDetail }: BlogDetailPostProps) => {
     <div className="profile-item">
       <div className="image">
         <Image
-          layout="fill"
           src={initialBlogDetail.user.avatar}
           alt={initialBlogDetail.user.name}
+          width={30}
+          height={30}
         />
       </div>
       <div className="content">

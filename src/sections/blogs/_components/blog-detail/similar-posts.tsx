@@ -30,11 +30,10 @@ const BlogDetailSimilarPosts = () => {
               <div className="swiper-slide">
                 <div className="blog-article-item hover-img wow fadeInUp">
                   <div className="article-thumb image-wrap">
-                    <Image
-                      layout="fill"
+                    <img
+                      // layout="fill"
                       className="lazyload"
-                      data-src="/assets/images/blog/blog-01.jpg"
-                      src="/assets/images/blog/blog-01.jpg"
+                      src=""
                       alt=""
                     />
                   </div>
