@@ -34,7 +34,7 @@ const MyCourseView = () => {
       <section className="section-inner mt-10">
         <div className="row mb-[50px]">
           {myCourseList?.data.map((course: any) => (
-            <div className="col-xl-3" key={course.id}>
+            <div className="col-xl-3 mb-10" key={course.id}>
               <div className="course-item hover-img wow fadeInUp relative">
                 <div className="absolute left-0 top-0 h-1 w-full bg-gray-200">
                   <div
@@ -159,7 +159,9 @@ const MyCourseView = () => {
                         ? 'Đang sửa đổi nội dung'
                         : course.progress_percent === 100
                           ? 'Đã hoàn thành'
-                          : 'Tiếp tục học'}
+                          : course.progress_percent === 0
+                            ? 'Bắt đầu học'
+                            : 'Tiếp tục học'}
                     </Button>
                   </div>
                 </div>

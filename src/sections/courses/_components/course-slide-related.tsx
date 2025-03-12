@@ -16,11 +16,11 @@ type Props = {
   courses: ICourse[]
 }
 
-const CourseSlide = ({ courses }: Props) => {
+const CourseSlideRelated = ({ courses }: Props) => {
   return (
     <Swiper
       spaceBetween={25}
-      slidesPerView={3}
+      slidesPerView={4}
       loop={true}
       pagination={{
         clickable: true,
@@ -41,11 +41,11 @@ const CourseSlide = ({ courses }: Props) => {
                 fill
               />
               <div className="box-tags">
-                {course?.is_free ? (
+                {course.is_free ? (
                   <Link href="#" className="item free best-seller">
                     Miễn phí
                   </Link>
-                ) : course?.price_sale && course.price_sale > 0 ? (
+                ) : course.price_sale && course.price_sale > 0 ? (
                   <Link href="#" className="item sale best-seller">
                     Đang giảm giá
                   </Link>
@@ -63,7 +63,7 @@ const CourseSlide = ({ courses }: Props) => {
               <div className="meta">
                 <div className="meta-item">
                   <i className="flaticon-calendar" />
-                  <p>{course?.total_lesson} Lessons</p>
+                  <p>{course?.lessons_count} Lessons</p>
                 </div>
                 <div className="meta-item">
                   <i className="flaticon-clock" />
@@ -84,14 +84,15 @@ const CourseSlide = ({ courses }: Props) => {
                 </Link>
               </h6>
               <div className="ratings pb-30">
-                {Number(course?.total_rating ?? 0) > 0 ? (
+                {(course?.ratings_count ?? 0) > 0 ? (
                   <>
                     <div className="stars flex items-center">
                       {Array.from({ length: 5 }, (_, index) => (
                         <i
                           key={index}
                           className={`icon-star-1 ${
-                            index < Math.round(Number(course?.avg_rating ?? 0))
+                            index <
+                            Math.round(Number(course?.ratings_count ?? 0))
                               ? 'text-yellow-500'
                               : 'text-gray-300'
                           }`}
@@ -99,7 +100,7 @@ const CourseSlide = ({ courses }: Props) => {
                       ))}
                     </div>
                     <div className="total text-sm text-gray-500">
-                      ({course?.total_rating} lượt đánh giá)
+                      ({course?.ratings_count} lượt đánh giá)
                     </div>
                   </>
                 ) : (
@@ -111,7 +112,7 @@ const CourseSlide = ({ courses }: Props) => {
               <div className="author">
                 By:
                 <a href="#" className="author">
-                  {course?.name_instructor}
+                  {course?.user?.name}
                 </a>
               </div>
               <div className="bottom">
@@ -144,4 +145,4 @@ const CourseSlide = ({ courses }: Props) => {
     </Swiper>
   )
 }
-export default CourseSlide
+export default CourseSlideRelated

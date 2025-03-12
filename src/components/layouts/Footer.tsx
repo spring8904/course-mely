@@ -1,5 +1,15 @@
 import Image from 'next/image'
 import Link from 'next/link'
+import {
+  ArrowUpRight,
+  Facebook,
+  Instagram,
+  Linkedin,
+  Mail,
+  MapPin,
+  Phone,
+  Twitter,
+} from 'lucide-react'
 
 type ContactInfo = {
   phone: string
@@ -7,33 +17,14 @@ type ContactInfo = {
   address: string
 }
 
-// const FooterColumn = ({
-//   title,
-//   links,
-// }: {
-//   title: string
-//   links: { href: string; label: string }[]
-// }) => (
-//   <div>
-//     <h2 className="mb-4 text-xl font-bold">{title}</h2>
-//     <ul className="space-y-4">
-//       {links.map((link) => (
-//         <li key={`${link.label}-${link.href}`}>
-//           <Link href={link.href} className="hover:underline">
-//             {link.label}
-//           </Link>
-//         </li>
-//       ))}
-//     </ul>
-//   </div>
-// )
-
 const Footer = () => {
   const contactInfo: ContactInfo = {
     phone: '0868313293',
     email: 'coursemely.support@gmail.com',
     address: 'Trịnh Văn Bô, Nam Từ Liêm, TP. Hà Nội',
   }
+
+  const PRIMARY_COLOR = '#E27447'
 
   return (
     <footer id="footer" className="footer">
@@ -57,48 +48,65 @@ const Footer = () => {
                         />
                       </a>
                     </div>
-                    <ul className="address">
-                      <li className="flex items-center gap-[10px]">
-                        <div className="icon">
-                          <i className="flaticon-call" />
+                    <ul className="mb-8 space-y-4">
+                      <li className="flex items-center gap-3 text-gray-600">
+                        <div
+                          className="flex size-9 items-center justify-center rounded-full"
+                          style={{ backgroundColor: `${PRIMARY_COLOR}15` }}
+                        >
+                          <Phone size={16} style={{ color: PRIMARY_COLOR }} />
                         </div>
-                        <p>{contactInfo.phone}</p>
+                        <span>{contactInfo.phone}</span>
                       </li>
-                      <li className="flex items-center gap-[10px]">
-                        <div className="icon">
-                          <i className="flaticon-mail-1" />
+                      <li className="flex items-center gap-3 text-gray-600">
+                        <div
+                          className="flex size-9 items-center justify-center rounded-full"
+                          style={{ backgroundColor: `${PRIMARY_COLOR}15` }}
+                        >
+                          <Mail size={16} style={{ color: PRIMARY_COLOR }} />
                         </div>
-                        <p>{contactInfo.email}</p>
+                        <span>{contactInfo.email}</span>
                       </li>
-                      <li className="flex items-center gap-[10px]">
-                        <div className="icon">
-                          <i className="flaticon-location" />
+                      <li className="flex items-center gap-3 text-gray-600">
+                        <div
+                          className="flex size-9 items-center justify-center rounded-full"
+                          style={{ backgroundColor: `${PRIMARY_COLOR}15` }}
+                        >
+                          <MapPin size={16} style={{ color: PRIMARY_COLOR }} />
                         </div>
-                        <p>{contactInfo.address}</p>
+                        <span>{contactInfo.address}</span>
                       </li>
                     </ul>
-                    <ul className="tf-social-icon flex items-center gap-[10px]">
-                      <li>
-                        <a href="#">
-                          <i className="flaticon-facebook-1" />
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#">
-                          <i className="icon-twitter" />
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#">
-                          <i className="flaticon-instagram" />
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#">
-                          <i className="flaticon-linkedin-1" />
-                        </a>
-                      </li>
-                    </ul>
+                    <div className="flex gap-3">
+                      <Link
+                        href="#"
+                        className="flex size-10 items-center justify-center rounded-full bg-white shadow-sm transition-all hover:shadow-md"
+                        style={{ color: PRIMARY_COLOR }}
+                      >
+                        <Facebook size={18} />
+                      </Link>
+                      <Link
+                        href="#"
+                        className="flex size-10 items-center justify-center rounded-full bg-white shadow-sm transition-all hover:shadow-md"
+                        style={{ color: PRIMARY_COLOR }}
+                      >
+                        <Twitter size={18} />
+                      </Link>
+                      <Link
+                        href="#"
+                        className="flex size-10 items-center justify-center rounded-full bg-white shadow-sm transition-all hover:shadow-md"
+                        style={{ color: PRIMARY_COLOR }}
+                      >
+                        <Instagram size={18} />
+                      </Link>
+                      <Link
+                        href="#"
+                        className="flex size-10 items-center justify-center rounded-full bg-white shadow-sm transition-all hover:shadow-md"
+                        style={{ color: PRIMARY_COLOR }}
+                      >
+                        <Linkedin size={18} />
+                      </Link>
+                    </div>
                   </div>
                   <div
                     className="footer-menu-list wow fadeInUp"
@@ -164,31 +172,34 @@ const Footer = () => {
                     className="footer-subscribe wow fadeInUp"
                     data-wow-delay="0.5s"
                   >
-                    <h5 className="fw-5">Subscribe</h5>
-                    <p>
-                      2000+ Our students are subscribe Around the World. Don’t
-                      be shy introduce yourself!
+                    <h5 className="fw-5">Đăng ký nhận tin</h5>
+                    <p className="mb-4 text-sm text-gray-600">
+                      Nhận thông báo về các khóa học mới và ưu đãi đặc biệt qua
+                      email
                     </p>
-                    <form className="form-subscribe style-line-bottom">
-                      <fieldset className="email">
-                        <input
-                          type="email"
-                          placeholder="Your e-mail"
-                          className="style-default"
-                          name="email"
-                          tabIndex={2}
-                          defaultValue=""
-                          aria-required="true"
-                        />
-                      </fieldset>
-                      <div className="button-submit">
-                        <button className="tf-btn-arrow" type="submit">
-                          Send
-                          <i className="icon-arrow-top-right" />
+                    <form className="mb-8">
+                      <div className="flex flex-col space-y-3">
+                        <div className="relative">
+                          <input
+                            type="email"
+                            placeholder="Email của bạn"
+                            className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 outline-none focus:border-2"
+                            style={{ borderColor: PRIMARY_COLOR }}
+                          />
+                        </div>
+                        <button
+                          type="submit"
+                          className="flex items-center justify-center gap-2 rounded-lg px-4 py-3 text-sm font-medium text-white transition-all hover:shadow-md"
+                          style={{ backgroundColor: PRIMARY_COLOR }}
+                        >
+                          <span>Đăng ký</span>
+                          <ArrowUpRight size={16} />
                         </button>
                       </div>
                     </form>
-                    <h5 className="fw-5 get-app">Get the app</h5>
+                    <h5 className="mb-4 text-base font-semibold">
+                      Tải ứng dụng
+                    </h5>
                     <ul className="tf-app-download">
                       <li>
                         <a href="#">
