@@ -13,7 +13,7 @@ const BlogListItem = ({ initialBlogs }: BlogListItemProps) => {
   return (
     <>
       <div className="wrap-blog-list">
-        {posts?.data.map((blog: any) => (
+        {posts?.map((blog: any) => (
           <div
             key={blog.id}
             className="blog-article-item style-row hover-img wow fadeInUp"

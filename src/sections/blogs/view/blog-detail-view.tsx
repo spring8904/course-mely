@@ -7,7 +7,6 @@ import { useGetBlogBySlug } from '@/hooks/blog/useBlog'
 
 import BlogDetailPost from '../_components/blog-detail/post'
 import BlogDetailProfileItem from '../_components/blog-detail/profile-item'
-import BlogDetailReviewForm from '../_components/blog-detail/review-form'
 import BlogDetailReviewList from '../_components/blog-detail/review-list'
 import BlogDetailSharePost from '../_components/blog-detail/share-post'
 import BlogDetailSimilarPosts from '../_components/blog-detail/similar-posts'
@@ -15,6 +14,9 @@ import BlogDetailSimilarPosts from '../_components/blog-detail/similar-posts'
 const BlogDetailView = ({ slug }: { slug: string }) => {
   const { data: blogDetail, isLoading: isLoadingBlogDetail } =
     useGetBlogBySlug(slug)
+  const postId = blogDetail?.data?.id
+  // const currentUserId = blogDetail?.data?.user?.id
+
   if (isLoadingBlogDetail) {
     return (
       <div className="mt-20">
@@ -58,10 +60,10 @@ const BlogDetailView = ({ slug }: { slug: string }) => {
                 </div>
               </div>
             </div>
-            <BlogDetailReviewList />
-            <div className="add-review-wrap">
-              <BlogDetailReviewForm />
-            </div>
+            <BlogDetailReviewList
+              postId={postId}
+              // currentUserId={currentUserId}
+            />
           </div>
         </div>
       </section>
