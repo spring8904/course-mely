@@ -1,9 +1,14 @@
+'use client'
+
 import { UserProfile } from '@/sections/profile/_components/user-profile'
 import { FollowButton } from '@/sections/profile/_components/follow-button'
 import { UserAbout } from '@/sections/profile/_components/user-about'
 import { CourseItem } from '@/sections/profile/_components/course-item'
 import { IInstructorProfile } from '@/types'
 import { BookText } from 'lucide-react'
+import { useGetProfileInstructor } from '@/hooks/instructor/profile/useGetProfile'
+import ModalLoading from '@/components/common/ModalLoading'
+import React from 'react'
 
 type Props = {
   code: string
@@ -95,7 +100,19 @@ const fakeCourses: any = Array.from({ length: 16 }, (_, index) => ({
 }))
 
 export const ProfileView = ({ code }: Props) => {
-  console.log(code)
+  const {
+    data: instructorProfileData,
+    isLoading: instructorProfileDataLoading,
+  } = useGetProfileInstructor(code)
+  console.log(instructorProfileData)
+
+  if (instructorProfileDataLoading)
+    return (
+      <div className="min-h-screen">
+        <ModalLoading />
+      </div>
+    )
+
   return (
     <div className="mx-auto mb-16 mt-9 grid w-[90%] grid-cols-12 gap-16">
       <div className="col-span-3 space-y-5">

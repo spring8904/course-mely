@@ -1,3 +1,5 @@
+import { ICourseDataResponse } from '@/types/Course'
+
 export interface IInstructorProfile {
   id?: number
   user_id?: number
@@ -49,4 +51,10 @@ export interface IQuestionTeacher {
   description: string
   question: string
   options: string[]
+}
+
+export interface IInstructorProfileResponse {
+  message: string
+  instructor: IInstructorProfile
+  courses: ICourseDataResponse
 }
