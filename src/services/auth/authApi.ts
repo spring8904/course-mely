@@ -1,5 +1,6 @@
 import { IAuthData } from '@/types'
 import api from '@/configs/api'
+import { ResetPasswordPayload } from '@/validations/auth'
 
 export const authApi = {
   signUp: async (formData: IAuthData) => {
@@ -16,5 +17,11 @@ export const authApi = {
   },
   googleCallback: async (query: string) => {
     return await api.get(`auth/google/callback?${query}`)
+  },
+  forgotPassword: async (email: string) => {
+    return await api.post('auth/forgot-password', { email })
+  },
+  resetPassword: async (data: ResetPasswordPayload) => {
+    return await api.post('auth/reset-password', data)
   },
 }

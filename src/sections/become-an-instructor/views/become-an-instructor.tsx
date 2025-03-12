@@ -77,6 +77,7 @@ const BecomeAnInstructor = () => {
     privateChannel.listen('InstructorApproved', (data: any) => {
       const { new_role } = data
       setRole(new_role)
+      console.log(new_role)
 
       if (isWaitingForRealtime) {
         Swal.fire({

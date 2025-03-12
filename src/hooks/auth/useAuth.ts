@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import { useAuthStore } from '@/stores/useAuthStore'
 import Cookies from 'js-cookie'
 import StorageKey from '@/constants/storage-key'
+import { ResetPasswordPayload } from '@/validations/auth'
 
 export const useGoogleRedirect = () => {
   return useQuery({
@@ -54,5 +55,17 @@ export const useGoogleCallBack = () => {
     onError: (error: any) => {
       toast.error(error.message)
     },
+  })
+}
+
+export const useForgotPassword = () => {
+  return useMutation({
+    mutationFn: (email: string) => authApi.forgotPassword(email),
+  })
+}
+
+export const useResetPassword = () => {
+  return useMutation({
+    mutationFn: (data: ResetPasswordPayload) => authApi.resetPassword(data),
   })
 }

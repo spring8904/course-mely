@@ -13,6 +13,7 @@ import {
   MessageSquareText,
   TicketPercent,
   UsersRound,
+  Video,
   Wallet,
 } from 'lucide-react'
 import Image from 'next/image'
@@ -114,6 +115,11 @@ const data = {
       title: 'Giao dịch của tôi',
       url: '/instructor/with-draw-request',
       icon: Database,
+    },
+    {
+      title: 'Luồng trực tuyến',
+      url: '/instructor/with-draw-request',
+      icon: Video,
     },
   ],
 }

@@ -26,7 +26,6 @@ export const InstructorDetail = ({ instructorDetail }: Props) => {
               {instructorDetail?.name}
             </Link>
           </h5>
-          <p className="short-description">{instructorDetail?.bio ?? ''}</p>
           <ul className="entry-meta">
             <li>
               <div className="ratings">
