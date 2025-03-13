@@ -3,7 +3,6 @@ import { Manrope } from 'next/font/google'
 import { GoogleAnalytics } from '@next/third-parties/google'
 import AppProvider from '@/providers/app-provider'
 import '@/styles/globals.css'
-import { GoogleOAuthProvider } from '@react-oauth/google'
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL!),
@@ -45,13 +44,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${manrope.className} antialiased`}>
-        <GoogleOAuthProvider
-          clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}
-        >
-          <div id="wrapper">
-            <AppProvider>{children}</AppProvider>
-          </div>
-        </GoogleOAuthProvider>
+        <div id="wrapper">
+          <AppProvider>{children}</AppProvider>
+        </div>
       </body>
       <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID!} />
     </html>
