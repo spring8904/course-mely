@@ -9,14 +9,12 @@ import {
 } from 'lucide-react'
 import { useState } from 'react'
 
-import { useGetProfile } from '@/hooks/profile/useProfile'
-
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent } from '@/components/ui/dialog'
+import { useGetProfile } from '@/hooks/profile/useProfile'
+import { cn } from '@/lib/utils'
 import CareersSection from '@/sections/instructor/components/user-profile/_components/career-section'
 import { CertificateSection } from '@/sections/instructor/components/user-profile/_components/certificate-section'
-
-import { cn } from '@/lib/utils'
 import BankSection from './_components/bank-section'
 import { PasswordSection } from './_components/password-section'
 import { ProfileSection } from './_components/profile-section'

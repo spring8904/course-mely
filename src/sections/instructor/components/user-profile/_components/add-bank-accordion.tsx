@@ -42,10 +42,12 @@ const AddBankAccordion = () => {
   const { data, isLoading } = useGetSupportBanks()
 
   const banks = useMemo(() => {
-    return data?.map((bank) => ({
-      label: bank.short_name,
-      value: bank.bin,
-    }))
+    return (
+      data?.map((bank) => ({
+        label: bank.short_name,
+        value: bank.bin,
+      })) || []
+    )
   }, [data])
 
   const { isPending, mutate } = useAddBank()
@@ -79,7 +81,7 @@ const AddBankAccordion = () => {
                 name={'acq_id'}
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
-                    <FormLabel>Tên ngân hàng</FormLabel>
+                    <FormLabel>Ngân hàng</FormLabel>
                     <Popover>
                       <PopoverTrigger asChild>
                         <FormControl>
@@ -93,9 +95,8 @@ const AddBankAccordion = () => {
                             disabled={field.disabled}
                           >
                             {field.value
-                              ? (banks || []).find(
-                                  (bank) => bank.value === field.value
-                                )?.label
+                              ? banks.find((bank) => bank.value === field.value)
+                                  ?.label
                               : 'Chọn ngân hàng'}
                             <ChevronDown className="opacity-50" />
                           </Button>
@@ -111,13 +112,11 @@ const AddBankAccordion = () => {
                             {isLoading ? (
                               <CommandEmpty>Đang tải dữ liệu...</CommandEmpty>
                             ) : (
-                              <CommandEmpty>
-                                Không có kết quả nào phù hợp
-                              </CommandEmpty>
+                              <CommandEmpty>Không có kết quả</CommandEmpty>
                             )}
 
                             <CommandGroup>
-                              {(banks || []).map((bank) => (
+                              {banks.map((bank) => (
                                 <CommandItem
                                   value={bank.label}
                                   key={bank.value}
@@ -167,7 +166,7 @@ const AddBankAccordion = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      Tên tài khoản{' '}
+                      Chủ tài khoản{' '}
                       <span className="text-xs text-muted-foreground">
                         (Viết in hoa, không dấu)
                       </span>
@@ -179,10 +178,12 @@ const AddBankAccordion = () => {
                   </FormItem>
                 )}
               />
-              <Button type="submit" disabled={isPending}>
-                {isPending && <Loader2 className="animate-spin" />}
-                Lưu
-              </Button>
+              <div className="flex justify-end">
+                <Button type="submit" disabled={isPending}>
+                  {isPending && <Loader2 className="animate-spin" />}
+                  Lưu
+                </Button>
+              </div>
             </form>
           </Form>
         </AccordionContent>

@@ -33,15 +33,6 @@ const AccountView = () => {
                 </TabsTrigger>
               </TabsList>
             </div>
-
-            {/* <div className="col-span-9">
-              <TabsContent value="userinfo" className="m-0">
-                <UserInfoForm controls={userInfoFormControls} />
-              </TabsContent>
-              <TabsContent value="sidebar" className="m-0">
-                <UserMyPassword controls={userInfoFormControls} />
-              </TabsContent>
-            </div> */}
           </Tabs>
         </div>
       </div>
