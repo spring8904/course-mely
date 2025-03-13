@@ -1,0 +1,5 @@
+version: "1"
+rules:
+  - base: deploy
+    upstream: https://github.com/TungTvPh81102/DATN-FE.git:deploy
+    mergeMethod: hardreset
