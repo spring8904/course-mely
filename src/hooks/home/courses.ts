@@ -7,6 +7,8 @@ export const useGetDiscountedCourses = () => {
   return useQuery({
     queryKey: [QueryKey.COURSES_DISCOUNTED],
     queryFn: homeCoursesApi.getDiscountedCourses,
+    staleTime: 1000 * 60 * 5,
+    gcTime: 1000 * 60 * 10,
   })
 }
 
@@ -14,5 +16,7 @@ export const useGetFreeCourses = () => {
   return useQuery({
     queryKey: [QueryKey.COURSES_FREE],
     queryFn: async () => await homeCoursesApi.getFreeCourses(),
+    staleTime: 1000 * 60 * 5,
+    gcTime: 1000 * 60 * 10,
   })
 }

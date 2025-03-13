@@ -8,6 +8,13 @@ import Cookies from 'js-cookie'
 import StorageKey from '@/constants/storage-key'
 import { ResetPasswordPayload } from '@/validations/auth'
 
+export const useGetUserWithToken = () => {
+  return useQuery({
+    queryKey: [QUERY_KEY.AUTH],
+    queryFn: () => authApi.getUserWithToken(),
+  })
+}
+
 export const useGoogleRedirect = () => {
   return useQuery({
     queryKey: [QUERY_KEY.GOOGLE_REDIRECT],

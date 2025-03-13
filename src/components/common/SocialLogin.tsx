@@ -1,6 +1,43 @@
 import Link from 'next/link'
 
 const SocialLogin = () => {
+  const handleGoogleRedirect = async () => {
+    const width = 500
+    const height = 600
+    const left = (window.innerWidth - width) / 2
+    const top = (window.innerHeight - height) / 2
+
+    const googleAuthUrl = `${process.env.NEXT_PUBLIC_API_URL}/auth/google`
+    const authWindow = window.open(
+      googleAuthUrl,
+      '_blank',
+      `width=${width},height=${height},top=${top},left=${left},scrollbars=yes,resizable=yes`
+    )
+
+    if (
+      !authWindow ||
+      authWindow.closed ||
+      typeof authWindow.closed === 'undefined'
+    ) {
+      toast.error('Popup bị chặn. Vui lòng cho phép popup cho trang web này.')
+      return
+    }
+
+    window.addEventListener(
+      'message',
+      (event) => {
+        if (
+          event.origin === window.location.origin &&
+          event.data.type === 'AUTH_SUCCESS'
+        ) {
+          authWindow.close()
+          window.location.reload()
+        }
+      },
+      false
+    )
+  }
+
   return (
     <ul className="login-social">
       <li className="login-social-icon">
@@ -9,7 +46,11 @@ const SocialLogin = () => {
         </Link>
       </li>
       <li className="login-social-icon">
-        <button className="tf-btn wow fadeInUp" data-wow-delay="0.1s">
+        <button
+          onClick={handleGoogleRedirect}
+          className="tf-btn wow fadeInUp"
+          data-wow-delay="0.1s"
+        >
           <i className="icon-google" /> Google
         </button>
       </li>
