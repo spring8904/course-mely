@@ -4,7 +4,7 @@ import { useEffect } from 'react'
 import { useGoogleCallBack, useGoogleRedirect } from '@/hooks/auth/useAuth'
 
 const GoogleLoginButton = () => {
-  const { data: redirectUrl } = useGoogleRedirect()
+  const { data: redirectUrl }: { data: any } = useGoogleRedirect()
 
   const googleLogin = useGoogleLogin({
     onSuccess: async (tokenResponse) => {

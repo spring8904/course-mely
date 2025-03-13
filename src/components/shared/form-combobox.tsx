@@ -21,28 +21,30 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'
 
 interface FormComboboxProps {
-  form: any
+  control: any
   name: string
   label: string
-  options: {
+  options?: {
     label: string
     value: string
   }[]
   isLoading?: boolean
   placeholder?: string
+  onSelect?: () => void
 }
 
 const FormCombobox = ({
-  form,
+  control,
   name,
-  options,
+  options = [],
   label,
   isLoading = false,
   placeholder = 'Chọn',
+  onSelect,
 }: FormComboboxProps) => {
   return (
     <FormField
-      control={form.control}
+      control={control}
       name={name}
       render={({ field }) => (
         <FormItem className="flex flex-col">
@@ -83,7 +85,8 @@ const FormCombobox = ({
                         value={option.label}
                         key={option.value}
                         onSelect={() => {
-                          field.onChange(option.value)
+                          if (onSelect) onSelect()
+                          else field.onChange(option.value)
                         }}
                       >
                         {option.label}
