@@ -35,6 +35,7 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 import { Separator } from '@/components/ui/separator'
+import { Slot } from '@radix-ui/react-slot'
 
 const MobileMenu = dynamic(() => import('./MobileMenu'), {
   ssr: false,
@@ -190,11 +191,14 @@ const Header = () => {
     },
     {
       content:
-        role === Role.INSTRUCTOR
-          ? 'Trang người hướng dẫn'
-          : 'Trở thành người hướng dẫn',
-      href: role === Role.INSTRUCTOR ? '/instructor' : '/become-an-instructor',
-      target: role === Role.INSTRUCTOR ? '_blank' : '_self',
+        role === Role.INSTRUCTOR ? (
+          <a className="block" href="/instructor">
+            Trang người hướng dẫn
+          </a>
+        ) : (
+          'Trở thành người hướng dẫn'
+        ),
+      href: role === Role.INSTRUCTOR ? undefined : '/become-an-instructor',
       separator: true,
     },
     {
@@ -212,8 +216,7 @@ const Header = () => {
       href: '#',
     },
     {
-      content: 'Đăng xuất',
-      onClick: handleLogout,
+      content: <div onClick={handleLogout}>Đăng xuất</div>,
     },
   ]
 
@@ -420,20 +423,13 @@ const Header = () => {
                       {dropdownMenuLinks.map((link, index) => (
                         <li key={index}>
                           {link.href ? (
-                            <Link
-                              href={link.href}
-                              target={link.target}
-                              className="dropdown-item"
-                            >
+                            <Link href={link.href} className="dropdown-item">
                               {link.content}
                             </Link>
                           ) : (
-                            <div
-                              onClick={link.onClick}
-                              className="dropdown-item cursor-pointer"
-                            >
+                            <Slot className="dropdown-item cursor-pointer">
                               {link.content}
-                            </div>
+                            </Slot>
                           )}
 
                           {link.separator && <Separator />}

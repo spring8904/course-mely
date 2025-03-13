@@ -27,7 +27,6 @@ enum QueryKey {
   QA_SYSTEM = 'qa-systems',
   POSTS = 'posts',
   BLOGS = 'blogs',
-
   BLOG_DETAILS = 'blog-details',
   WISH_LIST = 'wish-list',
   SEARCH = 'search',
@@ -43,6 +42,7 @@ enum QueryKey {
   LIVE_SESSION_CLIENT = 'live-session-client',
   LEARNING_PATH_PROGRESS = 'learning-path-progress',
   SUPPORT_BANKS = 'support-banks',
+  BANKS = 'banks',
   COURSE_PROGRESS = 'course-progress',
   LESSON_COMMENT = 'lesson-comment',
   BLOG_COMMENT = 'blog-comment',
