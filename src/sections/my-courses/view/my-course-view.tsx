@@ -151,17 +151,19 @@ const MyCourseView = () => {
                         course?.status === 'draft' &&
                           'bg-yellow-500 hover:bg-yellow-500/80'
                       )}
-                      onClick={() => {
-                        window.location.href = `/learning/${course.slug}/lesson/${course.current_lesson.id}`
-                      }}
+                      asChild
                     >
-                      {course?.status === 'draft'
-                        ? 'Đang sửa đổi nội dung'
-                        : course.progress_percent === 100
-                          ? 'Đã hoàn thành'
-                          : course.progress_percent === 0
-                            ? 'Bắt đầu học'
-                            : 'Tiếp tục học'}
+                      <a
+                        href={`/learning/${course.slug}/lesson/${course.current_lesson.id}`}
+                      >
+                        {course?.status === 'draft'
+                          ? 'Đang sửa đổi nội dung'
+                          : course.progress_percent === 100
+                            ? 'Đã hoàn thành'
+                            : course.progress_percent === 0
+                              ? 'Bắt đầu học'
+                              : 'Tiếp tục học'}
+                      </a>
                     </Button>
                   </div>
                 </div>
