@@ -1,5 +1,5 @@
-import React from 'react'
-import { zodResolver } from '@hookform/resolvers/zod'
+'use client'
+
 import { Loader2 } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 
@@ -8,6 +8,7 @@ import {
   changePasswordSchema,
 } from '@/validations/change-password'
 import { useChangePassword } from '@/hooks/change-password/useChangePassword'
+import { zodResolver } from '@hookform/resolvers/zod'
 
 const PassWordView = () => {
   const { mutate, isPending } = useChangePassword()

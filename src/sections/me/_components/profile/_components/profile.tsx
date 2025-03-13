@@ -1,10 +1,12 @@
+'use client'
+import React, { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import { Loader2, Upload } from 'lucide-react'
-import React, { useEffect, useRef, useState } from 'react'
-import { useUpdateProfile } from '@/hooks/profile/useProfile'
+
 import { useForm } from 'react-hook-form'
 import { updateProfile, UpdateProfilePayload } from '@/validations/profile'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useUpdateProfile } from '@/hooks/profile/useProfile'
 
 interface Props {
   profileData: any
