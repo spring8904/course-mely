@@ -10,8 +10,7 @@
     "lint:fix": "next lint --fix",
     "format": "prettier --write .",
     "type-check": "tsc --noEmit --pretty",
-    "prepare": "husky",
-    "dev2": "next dev -p 3005"
+    "prepare": "husky"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
@@ -46,7 +45,6 @@
     "@radix-ui/react-toggle": "^1.1.1",
     "@radix-ui/react-tooltip": "^1.1.8",
     "@radix-ui/themes": "^3.1.6",
-    "@react-oauth/google": "^0.12.1",
     "@tanstack/react-query": "^5.66.9",
     "@tanstack/react-query-devtools": "^5.56.2",
     "@tanstack/react-table": "^8.21.2",
@@ -102,7 +100,6 @@
     "tailwindcss-animate": "^1.0.7",
     "use-immer": "^0.11.0",
     "vaul": "^1.1.2",
-    "xlsx": "^0.18.5",
     "zod": "^3.24.1",
     "zustand": "^5.0.2"
   },
@@ -126,7 +123,11 @@
     "prettier": "^3.4.2",
     "prettier-plugin-tailwindcss": "^0.6.9",
     "tailwindcss": "^3.4.1",
+    "tsc-files": "^1.1.4",
     "typescript": "^5",
     "typescript-eslint": "^8.18.2"
+  },
+  "overrides": {
+    "@radix-ui/react-dismissable-layer": "1.0.2"
   }
 }

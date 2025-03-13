@@ -1,16 +1,21 @@
 import Image from 'next/image'
-import Link from 'next/link'
 import { Star } from 'lucide-react'
 
 type Props = {
   avatar: string
   name: string
-  code: string
   avgRating: string
+  aboutMe: string
   bio?: string[]
 }
 
-export const UserProfile = ({ name, avatar, bio, code, avgRating }: Props) => (
+export const UserProfile = ({
+  name,
+  avatar,
+  bio,
+  avgRating,
+  aboutMe,
+}: Props) => (
   <div className="flex flex-col space-y-4">
     <div className="relative mx-auto size-56">
       <Image
@@ -29,15 +34,12 @@ export const UserProfile = ({ name, avatar, bio, code, avgRating }: Props) => (
           <strong>{avgRating}</strong>
         </p>
       </div>
-      <Link href={`/profile/${code}`} className="text-base opacity-70">
-        @{code}
-      </Link>
     </div>
 
-    <ul>
-      {bio &&
-        bio?.length > 0 &&
-        bio?.map((item, index) => <li key={index}>{item}</li>)}
-    </ul>
+    {aboutMe && <div>&quot;{aboutMe}&quot;</div>}
+
+    {bio && bio.length > 0 && (
+      <ul>{bio?.map((item, index) => <li key={index}>{item}</li>)}</ul>
+    )}
   </div>
 )

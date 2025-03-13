@@ -1,7 +1,5 @@
-'use client'
-
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Loader2, Plus } from 'lucide-react'
+import { Loader2 } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 
 import { useGetCategories } from '@/hooks/category/useCategory'
@@ -52,10 +50,7 @@ const CreateCourseDialog = () => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button size="sm">
-          <Plus />
-          Tạo khoá học
-        </Button>
+        <Button>Tạo khoá học mới</Button>
       </DialogTrigger>
       <DialogContent className="max-w-lg">
         <DialogHeader>
@@ -74,19 +69,19 @@ const CreateCourseDialog = () => {
                 <FormItem>
                   <FormLabel>Tiêu đề khoá học</FormLabel>
                   <FormControl>
-                    <Input placeholder="Nhập tiêu đề" {...field} />
+                    <Input placeholder="Nhập tiêu đề cho khoá học" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
             <FormCombobox
-              control={form.control}
+              form={form}
               name="category_id"
               label="Danh mục khóa học"
               options={categoryOptions}
               isLoading={isCategoriesLoading}
-              placeholder="Chọn danh mục"
+              placeholder="Chọn danh mục cho khóa học"
             />
             <div className="mt-3 flex justify-end">
               <Button
@@ -97,7 +92,7 @@ const CreateCourseDialog = () => {
                 {isCourseCreating ? (
                   <Loader2 className="size-4 animate-spin" />
                 ) : (
-                  'Tiếp tục'
+                  'Tiếp tục tạo khoá học'
                 )}
               </Button>
             </div>

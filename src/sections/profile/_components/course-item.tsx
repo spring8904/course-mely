@@ -44,9 +44,13 @@ export const CourseItem = ({ course }: Props) => {
                 <span className="text-gray-400 line-through">
                   {formatStringToCurrency(course?.price ?? 0)}
                 </span>
-                <span className="font-bold text-red-500">
-                  {formatStringToCurrency(course?.price_sale ?? 0)}
-                </span>
+                {Number(course?.price_sale) > 0 ? (
+                  <span className="font-bold text-red-500">
+                    {formatStringToCurrency(course?.price_sale ?? 0)}
+                  </span>
+                ) : (
+                  <span className="font-bold text-red-500">Miễn phí</span>
+                )}
               </div>
             ) : (
               <span className="font-bold text-black">

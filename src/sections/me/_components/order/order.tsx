@@ -18,7 +18,7 @@ const MeOrder = () => {
 
   if (isLoadingOrder || isLoadingOrderDetail) {
     return (
-      <div className="mt-10">
+      <div className="mt-52">
         <Loader2 className="mx-auto size-8 animate-spin" />
       </div>
     )

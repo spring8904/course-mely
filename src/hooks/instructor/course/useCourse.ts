@@ -35,16 +35,29 @@ export const useGetCourseListOfUser = (slug?: string) => {
 }
 
 export const useCreateCourse = () => {
+  const queryClient = useQueryClient()
   const router = useRouter()
 
   return useMutation({
     mutationFn: (data: CreateCoursePayload) =>
       instructorCourseApi.createCourse(data),
     onSuccess: async (res: any) => {
+      await queryClient.invalidateQueries({
+        queryKey: [QueryKey.INSTRUCTOR_COURSE],
+      })
+
       const courseSlug = res?.data.slug
-      if (courseSlug) router.push(`/instructor/courses/update/${courseSlug}`)
+      const successMessage = res?.message || 'Khóa học đã được tạo thành công!'
+
+      if (courseSlug) {
+        await router.push(`/instructor/courses/update/${courseSlug}`)
+
+        toast.success(successMessage)
+      }
     },
-    onError: (error) => toast.error(error.message),
+    onError: (error) => {
+      toast.error(error.message)
+    },
   })
 }
 
@@ -204,48 +217,5 @@ export const useRequestModifyContent = () => {
     onError: (error) => {
       toast.error(error.message)
     },
-  })
-}
-
-export const useGetCoursesFromTrash = () => {
-  return useQuery({
-    queryKey: [QueryKey.INSTRUCTOR_COURSE_TRASH],
-    queryFn: () => instructorCourseApi.getCoursesFormTrash(),
-  })
-}
-
-export const useMoveCoursesToTrash = () => {
-  const queryClient = useQueryClient()
-
-  return useMutation({
-    mutationFn: instructorCourseApi.moveCoursesToTrash,
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({
-        queryKey: [QueryKey.INSTRUCTOR_COURSE],
-      })
-      queryClient.invalidateQueries({
-        queryKey: [QueryKey.INSTRUCTOR_COURSE_TRASH],
-      })
-      toast.success(data.message)
-    },
-    onError: (error) => toast.error(error.message),
-  })
-}
-
-export const useRestoreCourses = () => {
-  const queryClient = useQueryClient()
-
-  return useMutation({
-    mutationFn: instructorCourseApi.restoreCourses,
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({
-        queryKey: [QueryKey.INSTRUCTOR_COURSE],
-      })
-      queryClient.invalidateQueries({
-        queryKey: [QueryKey.INSTRUCTOR_COURSE_TRASH],
-      })
-      toast.success(data.message)
-    },
-    onError: (error) => toast.error(error.message),
   })
 }
