@@ -11,6 +11,7 @@ enum QueryKey {
   INSTRUCTOR_COURSE = 'instructor-course',
   INSTRUCTOR_PROFILE_INFO = 'instructor-profile-info',
   INSTRUCTOR_PROFILE_COURSE = 'instructor-profile-course',
+  INSTRUCTOR_CHECK_FOLLOW = 'instructor-check-follow',
   INSTRUCTOR_CHAPTER = 'instructor-chapter',
   INSTRUCTOR_LESSON = 'instructor-lesson',
   INSTRUCTOR_COURSE_VALIDATE = 'instructor-course-validate',

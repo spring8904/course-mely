@@ -63,3 +63,7 @@ export interface IInstructorCourseResponse {
   message: string
   courses: ICourseDataResponse
 }
+
+export interface IInstructorFollow {
+  followed: boolean
+}

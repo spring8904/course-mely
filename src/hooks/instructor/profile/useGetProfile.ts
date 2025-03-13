@@ -15,3 +15,10 @@ export const useGetInstructorCourses = (code: string, page: number) => {
     queryFn: () => instructorProfileApi.getCourses(code, page),
   })
 }
+
+export const useCheckInstructorFollow = (code: string) => {
+  return useQuery({
+    queryKey: [QUERY_KEY.INSTRUCTOR_CHECK_FOLLOW, code],
+    queryFn: () => instructorProfileApi.checkFollow(code),
+  })
+}

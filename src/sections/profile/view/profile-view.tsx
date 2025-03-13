@@ -6,6 +6,7 @@ import { UserAbout } from '@/sections/profile/_components/user-about'
 import { CourseItem } from '@/sections/profile/_components/course-item'
 import { BookText, Loader2 } from 'lucide-react'
 import {
+  useCheckInstructorFollow,
   useGetInstructorCourses,
   useGetInstructorProfile,
 } from '@/hooks/instructor/profile/useGetProfile'
@@ -33,8 +34,10 @@ export const ProfileView = ({ code }: Props) => {
   } = useGetInstructorProfile(code)
   const { data: instructorCourseData, isLoading: instructorCourseDataLoading } =
     useGetInstructorCourses(code, page)
-
-  console.log('instructorCourseData', instructorCourseData)
+  const {
+    data: checkInstructorFollow,
+    isLoading: checkInstructorFollowLoading,
+  } = useCheckInstructorFollow(code)
 
   useEffect(() => {
     const savePage = JSON.parse(
@@ -55,7 +58,7 @@ export const ProfileView = ({ code }: Props) => {
     }
   }
 
-  if (instructorProfileDataLoading)
+  if (instructorProfileDataLoading || checkInstructorFollowLoading)
     return (
       <div className="min-h-screen">
         <ModalLoading />
@@ -82,7 +85,7 @@ export const ProfileView = ({ code }: Props) => {
         />
 
         {/* Button Follow */}
-        <FollowButton />
+        <FollowButton isFollowing={checkInstructorFollow?.followed ?? false} />
 
         {/* About */}
         <UserAbout

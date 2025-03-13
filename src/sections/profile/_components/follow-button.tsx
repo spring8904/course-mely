@@ -1,8 +1,10 @@
 import { UserCheck, UserPlus } from 'lucide-react'
 
-export const FollowButton = () => {
-  const isFollowing = true
+type Props = {
+  isFollowing: boolean
+}
 
+export const FollowButton = ({ isFollowing }: Props) => {
   return (
     <div className="flex items-center justify-center gap-x-2 rounded-3xl border py-2 text-base font-semibold transition duration-300 ease-in-out hover:cursor-pointer hover:bg-gray-300">
       {isFollowing ? (
