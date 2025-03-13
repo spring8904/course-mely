@@ -81,7 +81,7 @@ const CreateCourseDialog = () => {
               )}
             />
             <FormCombobox
-              form={form}
+              control={form.control}
               name="category_id"
               label="Danh mục khóa học"
               options={categoryOptions}

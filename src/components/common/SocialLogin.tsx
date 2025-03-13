@@ -1,6 +1,5 @@
 'use client'
 import Link from 'next/link'
-import { toast } from 'react-toastify'
 
 const SocialLogin = () => {
   const handleGoogleRedirect = async () => {
@@ -33,7 +32,6 @@ const SocialLogin = () => {
           event.data.type === 'AUTH_SUCCESS'
         ) {
           authWindow.close()
-          toast.success('Đăng nhập thành công!')
           window.location.reload()
         }
       },

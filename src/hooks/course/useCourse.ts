@@ -30,6 +30,8 @@ export const useGetCoursesRelated = (slug: string) => {
   return useQuery({
     queryKey: [QueryKey.COURSES_RELATED, slug],
     queryFn: () => getCoursesRelated(slug),
+    staleTime: 5 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
   })
 }
 
@@ -37,5 +39,7 @@ export const useGetCoursesOther = (slug: string) => {
   return useQuery({
     queryKey: [QueryKey.COURSES_OTHER, slug],
     queryFn: () => getCoursesOther(slug),
+    staleTime: 5 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
   })
 }
