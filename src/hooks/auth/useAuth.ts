@@ -29,6 +29,8 @@ export const useGoogleCallBack = () => {
       const user = res?.user
       const role = res.role
 
+      Cookies.get(StorageKey.ACCESS_TOKEN)
+
       if (!token || !user) {
         toast.error('Đăng nhập thất bại, vui lòng thử lại')
         return
@@ -38,10 +40,11 @@ export const useGoogleCallBack = () => {
       setUser(user)
       setRole(role)
       router.push('/')
-      Cookies.get(StorageKey.ACCESS_TOKEN)
+
       await queryClient.invalidateQueries({ queryKey: [QUERY_KEY.AUTH] })
 
       toast.success(res?.message)
+
       if (window.opener) {
         window.opener.location.reload()
         window.close()

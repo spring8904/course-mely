@@ -21,9 +21,8 @@ export const formatNumber = (value: number): string => {
 }
 
 export const formatCurrency = (
-  value: number | bigint | Intl.StringNumericLiteral | string
+  value: number | bigint | Intl.StringNumericLiteral
 ): string => {
-  if (typeof value === 'string') value = parseFloat(value)
   return new Intl.NumberFormat('vi-VN', {
     style: 'currency',
     currency: 'VND',

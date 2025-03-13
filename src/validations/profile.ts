@@ -24,13 +24,13 @@ export const updateProfile = z.object({
 })
 
 export const profileBioSchema = z.object({
-  github: z.string().optional(),
-  website: z.string().optional(),
-  youtube: z.string().optional(),
-  facebook: z.string().optional(),
-  twitter: z.string().optional(),
-  linkedin: z.string().optional(),
-  instagram: z.string().optional(),
+  github: z.string().url('URL phải là một dẫn!').optional(),
+  website: z.string().url('URL phải là một dẫn!').optional(),
+  youtube: z.string().url('URL phải là một dẫn!').optional(),
+  facebook: z.string().url('URL phải là một dẫn!').optional(),
+  twitter: z.string().url('URL phải là một dẫn!').optional(),
+  linkedin: z.string().url('URL phải là một dẫn!').optional(),
+  instagram: z.string().url('URL phải là một dẫn!').optional(),
 })
 
 export const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB

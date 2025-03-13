@@ -222,7 +222,7 @@ const CourseDetailView = ({ slug }: { slug: string }) => {
                       <Image
                         width="50"
                         height={50}
-                        src={courseDetails?.user?.avatar || ''}
+                        src={courseDetails?.user.avatar || ''}
                         alt=""
                       />
                     </div>
@@ -356,7 +356,7 @@ const CourseDetailView = ({ slug }: { slug: string }) => {
                                           <span className="text-sm font-medium text-gray-400">
                                             {lessonIndex + 1}
                                           </span>
-                                          {lessonTypeIcons[lesson.type!]}
+                                          {lessonTypeIcons[lesson.type]}
                                           <div className="min-w-0 flex-1">
                                             <div className="flex items-center justify-between">
                                               <h4 className="truncate text-base font-medium text-gray-900">
@@ -364,7 +364,7 @@ const CourseDetailView = ({ slug }: { slug: string }) => {
                                               </h4>
                                             </div>
                                             <p className="text-sm text-gray-500">
-                                              {lessonTypeLabels[lesson.type!]}
+                                              {lessonTypeLabels[lesson.type]}
                                             </p>
                                           </div>
                                         </div>
@@ -769,7 +769,7 @@ const CourseDetailView = ({ slug }: { slug: string }) => {
                         <div className="price">
                           <h3 className="fw-5">Miễn phí</h3>
                         </div>
-                      ) : +(courseDetails?.price_sale ?? 0) > 0 ? (
+                      ) : (courseDetails?.price_sale ?? 0) > 0 ? (
                         <>
                           <div className="price">
                             <h3 className="fw-5">
@@ -782,15 +782,15 @@ const CourseDetailView = ({ slug }: { slug: string }) => {
                           <p className="sale-off">
                             {courseDetails?.price &&
                               Math.round(
-                                ((+courseDetails.price -
-                                  +(courseDetails?.price_sale ?? 0)) /
-                                  +courseDetails.price) *
+                                ((courseDetails.price -
+                                  (courseDetails.price_sale ?? 0)) /
+                                  courseDetails.price) *
                                   100
                               )}
                             % OFF
                           </p>
                         </>
-                      ) : +(courseDetails?.price ?? 0) > 0 ? (
+                      ) : (courseDetails?.price ?? 0) > 0 ? (
                         <div className="price">
                           <h3 className="fw-5">
                             {formatCurrency(courseDetails?.price ?? 0)}

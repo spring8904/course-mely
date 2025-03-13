@@ -120,9 +120,7 @@ const SortableLesson = ({ chapter, slug }: Props) => {
         onValueChange={onValueChange}
       >
         {lessons.map((lesson) => {
-          if (lesson.type) {
-            typeIndexMap[lesson.type]++
-          }
+          typeIndexMap[lesson.type]++
           return (
             <SortableItem
               key={lesson.id}
@@ -180,8 +178,7 @@ const SortableLesson = ({ chapter, slug }: Props) => {
                                 return 'Bài giảng'
                             }
                           })()}{' '}
-                          {lesson?.type ? typeIndexMap[lesson?.type] : ''}:{' '}
-                          {lesson.title}
+                          {typeIndexMap[lesson?.type]}: {lesson.title}
                         </div>
                       </div>
                       {isDraftOrRejected && (

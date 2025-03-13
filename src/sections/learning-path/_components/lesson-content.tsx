@@ -25,7 +25,7 @@ const LessonContent = ({ lesson, isCompleted, lastTimeVideo }: Props) => {
     coding: <CodingLesson lesson={lesson} isCompleted={isCompleted} />,
   }
 
-  return lesson?.type ? lessonComponents[lesson.type] : null
+  return lessonComponents[lesson?.type]
 }
 
 export default LessonContent

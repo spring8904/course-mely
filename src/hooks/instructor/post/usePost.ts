@@ -102,6 +102,7 @@ export const useUpdatePost = () => {
     onSuccess: async (res: any) => {
       await queryClient.invalidateQueries({
         queryKey: [QueryKey.POSTS],
+        enabled: true,
       })
 
       toast.success(res?.message || 'Bài viết đã được cập nhật thành công!')

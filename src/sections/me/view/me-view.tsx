@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import { useState } from 'react'
 
 import MeBanner from '../_components/me-banner'
 import MeSideBar from '../_components/me-sidebar'
@@ -22,7 +22,7 @@ const MeView = () => {
                 />
               </div>
               <div className="col-xl-9 col-lg-12">
-                <div>{content || <div> Không có dữ liệu</div>}</div>
+                <div>{content || <div>lỗi rùi hehe</div>}</div>
               </div>
             </div>
           </div>

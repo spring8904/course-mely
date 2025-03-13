@@ -1,33 +1,56 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
+import MeDashBoard from './dashboard/dashboard'
+import MeMyCourses from './my-courses/my-courses'
 import MeOrder from './order/order'
-import MeProfile from '@/sections/me/_components/profile/me-profile'
-import MePassWord from '@/sections/me/_components/password/me-password'
-import MeBio from '@/sections/me/_components/bio/me-bio'
-import { BadgeCheck, CircleUser, FileLock2 } from 'lucide-react'
+import MeQuizzes from './quizzes/quizzes'
+import MeReview from './reviews/reviews'
+import MeSetting from './settings/settings'
+import MeWishList from './wishlist/wishlist'
 
 const menuItems = [
   {
-    icon: <CircleUser size={21} />,
-    label: 'Hồ sơ',
-    component: <MeProfile />,
+    icon: <i className="flaticon-activity"></i>,
+    label: 'Dashboard',
+    component: <MeDashBoard />,
   },
   {
-    icon: <FileLock2 size="21" />,
-    label: 'Mật khẩu',
-    component: <MePassWord />,
+    icon: <i className="flaticon-play-1"></i>,
+    label: 'My Courses',
+    component: <MeMyCourses />,
+  },
+  {
+    icon: <i className="flaticon-message-1"></i>,
+    label: 'Reviews',
+    component: <MeReview />,
+  },
+  {
+    icon: <i className="flaticon-heart"></i>,
+    label: 'Wishlist',
+    href: 'me/settings',
+    component: <MeWishList />,
+  },
+  {
+    icon: <i className="flaticon-question"></i>,
+    label: 'Quizzes',
+    component: <MeQuizzes />,
   },
   {
     icon: <i className="flaticon-bag"></i>,
-    label: 'Khóa học đã mua',
+    label: 'Order',
     component: <MeOrder />,
   },
   {
-    icon: <BadgeCheck size="21" />,
-    label: 'Mạng xã hội',
-    component: <MeBio />,
+    icon: <i className="flaticon-setting-1"></i>,
+    label: 'Settings',
+    component: <MeSetting />,
+  },
+  {
+    icon: <i className="flaticon-export"></i>,
+    label: 'Logout',
+    component: <div> logout</div>,
   },
 ]
 const MeSideBar = ({

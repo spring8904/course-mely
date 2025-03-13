@@ -14,9 +14,7 @@ export interface IMessage {
   sender: {
     name: string
     avatar: string
-    id?: number
   }
-  parent?: any
 }
 
 export interface IChannel {

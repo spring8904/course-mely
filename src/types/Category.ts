@@ -1,6 +1,6 @@
 export interface ICategory {
   id: number
   name: string
-  parent_id?: number | null
+  parent_id?: number
   slug: string
 }
