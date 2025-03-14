@@ -1,21 +1,20 @@
-import React, { useRef, useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
   Camera,
+  Edit,
   Loader2,
   Mail,
   MapPin,
   Phone,
   User,
-  Edit,
   X,
 } from 'lucide-react'
+import React, { useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 
-import { updateProfile, UpdateProfilePayload } from '@/validations/profile'
 import { useUpdateProfile } from '@/hooks/profile/useProfile'
-
+import { updateProfile, UpdateProfilePayload } from '@/validations/profile'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
@@ -28,8 +27,8 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
 import { Separator } from '@/components/ui/separator'
+import { Textarea } from '@/components/ui/textarea'
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB
 const ACCEPTED_IMAGE_TYPES = [

@@ -1,6 +1,4 @@
 'use client'
-
-import { useState } from 'react'
 import {
   BadgeCheck,
   Bell,
@@ -8,6 +6,7 @@ import {
   CreditCard,
   LogOut,
 } from 'lucide-react'
+import Link from 'next/link'
 import Swal from 'sweetalert2'
 
 import { useLogOut } from '@/hooks/auth/useLogOut'
@@ -28,13 +27,9 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@/components/ui/sidebar'
-import { UserProfileModal } from '@/sections/instructor/components/user-profile/user-profile'
-import Link from 'next/link'
 import { IUser } from '@/types'
 
 export function NavUser({ user }: { user: IUser | null }) {
-  const [openModal, setOpenModal] = useState(false)
-
   const { isMobile } = useSidebar()
   const { isPending, mutate } = useLogOut()
 
@@ -97,7 +92,7 @@ export function NavUser({ user }: { user: IUser | null }) {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup className="*:cursor-pointer">
-              <DropdownMenuItem onClick={() => setOpenModal(true)} asChild>
+              <DropdownMenuItem asChild>
                 <Link href={'/instructor/settings'}>
                   <BadgeCheck />
                   Thông tin tài khoản
@@ -122,7 +117,6 @@ export function NavUser({ user }: { user: IUser | null }) {
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
-      <UserProfileModal open={openModal} onOpenChange={setOpenModal} />
     </SidebarMenu>
   )
 }

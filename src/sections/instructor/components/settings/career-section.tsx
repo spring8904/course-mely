@@ -79,6 +79,8 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { Textarea } from '@/components/ui/textarea'
+import { formatDate } from '@/lib/common'
+import { DebouncedInput } from '@/components/shared/debounced-input'
 
 interface Props {
   careersData: any
@@ -108,6 +110,7 @@ const CareersSection = ({ careersData }: Props) => {
         degree: '',
       },
     },
+    disabled: isCreating,
   })
 
   const editForm = useForm({
@@ -122,6 +125,7 @@ const CareersSection = ({ careersData }: Props) => {
         degree: '',
       },
     },
+    disabled: isUpdating,
   })
 
   const validateDates = (startDate: string, endDate: string) => {
@@ -250,7 +254,7 @@ const CareersSection = ({ careersData }: Props) => {
   }
 
   return (
-    <div className="mx-auto max-w-[750px] space-y-6">
+    <div className="mx-auto mb-16 mt-8 max-w-[750px] space-y-6">
       <div className="flex flex-col justify-between gap-4 rounded-lg bg-gradient-to-r from-orange-50 to-orange-100 p-4 shadow-md sm:flex-row sm:items-center sm:p-6">
         <div>
           <h2 className="flex items-center gap-2 text-xl font-bold text-gray-800 sm:text-2xl">
@@ -295,12 +299,7 @@ const CareersSection = ({ careersData }: Props) => {
                         Tên công ty/Tổ chức
                       </FormLabel>
                       <FormControl>
-                        <Input
-                          placeholder="Nhập tên công ty"
-                          {...field}
-                          disabled={isCreating}
-                          className="focus:border-orange-300 focus:ring focus:ring-orange-200/50"
-                        />
+                        <Input placeholder="Nhập tên công ty" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -313,14 +312,12 @@ const CareersSection = ({ careersData }: Props) => {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="font-medium">
-                        Chuyên nghành
+                        Chuyên ngành
                       </FormLabel>
                       <FormControl>
                         <Input
-                          placeholder="Nhập chuyên nghành của bạn"
+                          placeholder="Nhập chuyên ngành của bạn"
                           {...field}
-                          disabled={isCreating}
-                          className="focus:ring-opacity/50 focus:border-orange-300 focus:ring focus:ring-orange-200"
                         />
                       </FormControl>
                       <FormMessage />
@@ -335,12 +332,7 @@ const CareersSection = ({ careersData }: Props) => {
                     <FormItem>
                       <FormLabel className="font-medium">Bằng cấp</FormLabel>
                       <FormControl>
-                        <Input
-                          placeholder="Nhập bằng cấp của bạn"
-                          {...field}
-                          disabled={isCreating}
-                          className="focus:ring-opacity/50 focus:border-orange-300 focus:ring focus:ring-orange-200"
-                        />
+                        <Input placeholder="Nhập bằng cấp của bạn" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -357,21 +349,17 @@ const CareersSection = ({ careersData }: Props) => {
                           Ngày bắt đầu
                         </FormLabel>
                         <Popover>
-                          <PopoverTrigger asChild disabled={isCreating}>
+                          <PopoverTrigger asChild>
                             <FormControl>
                               <Button
                                 variant={'outline'}
                                 className={cn(
-                                  'w-full border-gray-200 pl-3 text-left font-normal hover:bg-gray-50',
-                                  !field.value && 'text-muted-foreground',
-                                  'focus:border-orange-300 focus:ring focus:ring-orange-200 focus:ring-opacity-50'
+                                  !field.value && 'text-muted-foreground'
                                 )}
-                                disabled={isCreating}
+                                disabled={field.disabled}
                               >
                                 {field.value ? (
-                                  format(new Date(field.value), 'PPP', {
-                                    locale: vi,
-                                  })
+                                  formatDate(field.value)
                                 ) : (
                                   <span>Chọn ngày</span>
                                 )}
@@ -401,7 +389,6 @@ const CareersSection = ({ careersData }: Props) => {
                                 }
                               }}
                               initialFocus
-                              disabled={isCreating}
                               locale={vi}
                               className="rounded-md border border-gray-200"
                             />
@@ -421,21 +408,17 @@ const CareersSection = ({ careersData }: Props) => {
                           Ngày kết thúc
                         </FormLabel>
                         <Popover>
-                          <PopoverTrigger asChild disabled={isCreating}>
+                          <PopoverTrigger asChild>
                             <FormControl>
                               <Button
                                 variant={'outline'}
                                 className={cn(
-                                  'w-full border-gray-200 pl-3 text-left font-normal hover:bg-gray-50',
-                                  !field.value && 'text-muted-foreground',
-                                  'focus:border-orange-300 focus:ring focus:ring-orange-200 focus:ring-opacity-50'
+                                  !field.value && 'text-muted-foreground'
                                 )}
-                                disabled={isCreating}
+                                disabled={field.disabled}
                               >
                                 {field.value ? (
-                                  format(new Date(field.value), 'PPP', {
-                                    locale: vi,
-                                  })
+                                  formatDate(field.value)
                                 ) : (
                                   <span>Chọn ngày</span>
                                 )}
@@ -465,7 +448,6 @@ const CareersSection = ({ careersData }: Props) => {
                                 }
                               }}
                               initialFocus
-                              disabled={isCreating}
                               locale={vi}
                               className="rounded-md border border-gray-200"
                             />
@@ -486,10 +468,8 @@ const CareersSection = ({ careersData }: Props) => {
                       <FormControl>
                         <Textarea
                           placeholder="Nhập mô tả về vai trò của bạn"
-                          className="focus:ring-opacity/50 min-h-[120px] resize-none focus:border-orange-300 focus:ring focus:ring-orange-200"
                           {...field}
                           value={field.value || ''}
-                          disabled={isCreating}
                         />
                       </FormControl>
                       <FormMessage />
@@ -502,24 +482,17 @@ const CareersSection = ({ careersData }: Props) => {
                     type="button"
                     variant="outline"
                     onClick={() => !isCreating && setShowAddForm(false)}
-                    disabled={isCreating}
                     className="border-gray-200 hover:bg-gray-50"
                   >
                     Hủy
                   </Button>
                   <Button
                     type="submit"
-                    className="bg-orange-500 transition-colors hover:bg-orange-600"
+                    className="bg-orange-500 hover:bg-orange-500/80"
                     disabled={isCreating}
                   >
-                    {isCreating ? (
-                      <>
-                        <Loader2 className="mr-2 size-4 animate-spin" />
-                        Đang thêm...
-                      </>
-                    ) : (
-                      'Thêm nghề nghiệp'
-                    )}
+                    {isCreating && <Loader2 className="animate-spin" />} Thêm
+                    nghề nghiệp
                   </Button>
                 </DialogFooter>
               </form>
@@ -529,16 +502,22 @@ const CareersSection = ({ careersData }: Props) => {
       </div>
 
       <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
-        <div className="relative w-full rounded-lg border border-gray-100 bg-white p-3 shadow-sm sm:max-w-[350px]">
-          <div className="pointer-events-none absolute inset-y-0 left-3 flex items-center pl-3">
-            <Search className="size-4 text-gray-400" />
-          </div>
-          <Input
+        <div className="relative flex-1 sm:max-w-[350px]">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="absolute right-0 top-0"
+            disabled
+          >
+            <Search />
+          </Button>
+
+          <DebouncedInput
             type="text"
             placeholder="Tìm kiếm..."
-            className="focus:ring-opacity/50 border-gray-200 py-2 pl-10 pr-4 text-sm transition-all duration-200 focus:border-orange-300 focus:ring focus:ring-orange-200"
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(value) => setSearchQuery(value + '')}
+            className="w-full pr-10"
           />
         </div>
 
@@ -1046,12 +1025,7 @@ const CareersSection = ({ careersData }: Props) => {
                       Tên công ty/Tổ chức
                     </FormLabel>
                     <FormControl>
-                      <Input
-                        placeholder="Nhập tên công ty"
-                        {...field}
-                        disabled={isUpdating}
-                        className="focus:border-blue-300 focus:ring focus:ring-blue-200/50"
-                      />
+                      <Input placeholder="Nhập tên công ty" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -1063,13 +1037,11 @@ const CareersSection = ({ careersData }: Props) => {
                 name="careers.major"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="font-medium">Chuyên nghành</FormLabel>
+                    <FormLabel className="font-medium">Chuyên ngành</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="Nhập chuyên nghành của bạn"
+                        placeholder="Nhập chuyên ngành của bạn"
                         {...field}
-                        disabled={isUpdating}
-                        className="focus:ring-opacity/50 focus:border-blue-300 focus:ring focus:ring-blue-200"
                       />
                     </FormControl>
                     <FormMessage />
@@ -1084,12 +1056,7 @@ const CareersSection = ({ careersData }: Props) => {
                   <FormItem>
                     <FormLabel className="font-medium">Bằng cấp</FormLabel>
                     <FormControl>
-                      <Input
-                        placeholder="Nhập bằng cấp của bạn"
-                        {...field}
-                        disabled={isUpdating}
-                        className="focus:ring-opacity/50 focus:border-blue-300 focus:ring focus:ring-blue-200"
-                      />
+                      <Input placeholder="Nhập bằng cấp của bạn" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -1106,21 +1073,17 @@ const CareersSection = ({ careersData }: Props) => {
                         Ngày bắt đầu
                       </FormLabel>
                       <Popover>
-                        <PopoverTrigger asChild disabled={isUpdating}>
+                        <PopoverTrigger asChild>
                           <FormControl>
                             <Button
                               variant={'outline'}
                               className={cn(
-                                'w-full border-gray-200 pl-3 text-left font-normal hover:bg-gray-50',
-                                !field.value && 'text-muted-foreground',
-                                'focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50'
+                                !field.value && 'text-muted-foreground'
                               )}
                               disabled={isUpdating}
                             >
                               {field.value ? (
-                                format(new Date(field.value), 'PPP', {
-                                  locale: vi,
-                                })
+                                formatDate(field.value)
                               ) : (
                                 <span>Chọn ngày</span>
                               )}
@@ -1170,21 +1133,17 @@ const CareersSection = ({ careersData }: Props) => {
                         Ngày kết thúc
                       </FormLabel>
                       <Popover>
-                        <PopoverTrigger asChild disabled={isUpdating}>
+                        <PopoverTrigger asChild>
                           <FormControl>
                             <Button
                               variant={'outline'}
                               className={cn(
-                                'w-full border-gray-200 pl-3 text-left font-normal hover:bg-gray-50',
-                                !field.value && 'text-muted-foreground',
-                                'focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50'
+                                !field.value && 'text-muted-foreground'
                               )}
                               disabled={isUpdating}
                             >
                               {field.value ? (
-                                format(new Date(field.value), 'PPP', {
-                                  locale: vi,
-                                })
+                                formatDate(field.value)
                               ) : (
                                 <span>Chọn ngày</span>
                               )}
@@ -1235,10 +1194,7 @@ const CareersSection = ({ careersData }: Props) => {
                     <FormControl>
                       <Textarea
                         placeholder="Nhập mô tả về vai trò của bạn"
-                        className="focus:ring-opacity/50 min-h-[120px] resize-none focus:border-blue-300 focus:ring focus:ring-blue-200"
                         {...field}
-                        value={field.value || ''}
-                        disabled={isUpdating}
                       />
                     </FormControl>
                     <FormMessage />
@@ -1261,14 +1217,8 @@ const CareersSection = ({ careersData }: Props) => {
                   className="bg-blue-500 transition-colors hover:bg-blue-600"
                   disabled={isUpdating}
                 >
-                  {isUpdating ? (
-                    <>
-                      <Loader2 className="mr-2 size-4 animate-spin" />
-                      Đang cập nhật...
-                    </>
-                  ) : (
-                    'Cập nhật nghề nghiệp'
-                  )}
+                  {isUpdating && <Loader2 className="animate-spin" />}
+                  Cập nhật nghề nghiệp
                 </Button>
               </DialogFooter>
             </form>

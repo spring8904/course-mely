@@ -2,7 +2,6 @@
 import { BankInfo, bankInfoSchema } from '@/validations/bank'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Check, ChevronDown, Loader2 } from 'lucide-react'
-import { useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 
 import {
@@ -35,20 +34,12 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 import { useGetSupportBanks } from '@/hooks/support-bank/useSupportBank'
-import { cn } from '@/lib/utils'
 import { useAddBank } from '@/hooks/user/use-bank'
+import { cn } from '@/lib/utils'
+import { Checkbox } from '@/components/ui/checkbox'
 
 const AddBankAccordion = () => {
   const { data, isLoading } = useGetSupportBanks()
-
-  const banks = useMemo(() => {
-    return (
-      data?.map((bank) => ({
-        label: bank.short_name,
-        value: bank.bin,
-      })) || []
-    )
-  }, [data])
 
   const { isPending, mutate } = useAddBank()
 
@@ -57,6 +48,7 @@ const AddBankAccordion = () => {
     defaultValues: {
       account_name: '',
       account_no: '',
+      is_default: false,
     },
     disabled: isPending,
   })
@@ -78,7 +70,7 @@ const AddBankAccordion = () => {
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <FormField
                 control={form.control}
-                name={'acq_id'}
+                name={'bin'}
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
                     <FormLabel>Ngân hàng</FormLabel>
@@ -95,8 +87,9 @@ const AddBankAccordion = () => {
                             disabled={field.disabled}
                           >
                             {field.value
-                              ? banks.find((bank) => bank.value === field.value)
-                                  ?.label
+                              ? (data || []).find(
+                                  (bank) => bank.bin === field.value
+                                )?.short_name
                               : 'Chọn ngân hàng'}
                             <ChevronDown className="opacity-50" />
                           </Button>
@@ -116,20 +109,26 @@ const AddBankAccordion = () => {
                             )}
 
                             <CommandGroup>
-                              {banks.map((bank) => (
+                              {(data || []).map((bank) => (
                                 <CommandItem
-                                  value={bank.label}
-                                  key={bank.value}
+                                  value={bank.short_name}
+                                  key={bank.bin}
                                   onSelect={() => {
-                                    field.onChange(bank.value)
-                                    form.setValue('bank_name', bank.label)
+                                    form.setValue('bin', bank.bin)
+                                    form.setValue('name', bank.name)
+                                    form.setValue('short_name', bank.short_name)
+                                    form.setValue('logo', bank.logo)
+                                    form.setValue(
+                                      'logo_rounded',
+                                      bank.logo_rounded
+                                    )
                                   }}
                                 >
-                                  {bank.label}
+                                  {bank.short_name}
                                   <Check
                                     className={cn(
                                       'ml-auto',
-                                      bank.value === field.value
+                                      bank.bin === field.value
                                         ? 'opacity-100'
                                         : 'opacity-0'
                                     )}
@@ -175,6 +174,22 @@ const AddBankAccordion = () => {
                       <Input placeholder="Nhập tên tài khoản" {...field} />
                     </FormControl>
                     <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="is_default"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-start space-x-2 space-y-0">
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                    <FormLabel>Đặt làm mặc định</FormLabel>
                   </FormItem>
                 )}
               />

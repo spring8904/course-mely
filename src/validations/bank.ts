@@ -2,6 +2,13 @@ import z from 'zod'
 
 export const bankInfoSchema = z.object({
   id: z.string(),
+  name: z.string(),
+  bin: z.string({
+    message: 'Vui lòng chọn ngân hàng',
+  }),
+  short_name: z.string(),
+  logo: z.string(),
+  logo_rounded: z.string(),
   account_no: z
     .string()
     .trim()
@@ -11,10 +18,7 @@ export const bankInfoSchema = z.object({
     .trim()
     .min(3, 'Tên tài khoản không hợp lệ')
     .regex(/^(?:[A-Z]+(?: [A-Z]+)*)$/, 'Tên tài khoản không hợp lệ'),
-  acq_id: z.string({
-    message: 'Vui lòng chọn ngân hàng',
-  }),
-  bank_name: z.string(),
+  is_default: z.boolean(),
 })
 
 export type BankInfo = z.infer<typeof bankInfoSchema>
