@@ -1,7 +1,7 @@
 'use client'
 
+import { ChevronRight } from 'lucide-react'
 import Link from 'next/link'
-import { ChevronRight, type LucideIcon } from 'lucide-react'
 
 import {
   Collapsible,
@@ -17,32 +17,23 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from '@/components/ui/sidebar'
-import { usePathname } from 'next/navigation'
+import { getMenuItem } from '@/lib/get-menu-items'
 import { cn } from '@/lib/utils'
+import { usePathname } from 'next/navigation'
 
-export function NavMain({
-  items,
-}: {
-  items: {
-    title: string
-    url: string
-    icon?: LucideIcon
-    isActive?: boolean
-    items?: {
-      title: string
-      url: string
-    }[]
-  }[]
-}) {
+export function NavMain() {
   const pathname = usePathname()
+  const menuType = pathname.includes('/settings') ? 'settings' : 'instructor'
+  const items = getMenuItem(menuType)
+
   return (
     <SidebarGroup>
       <SidebarMenu>
-        {items.map((item) => (
+        {items?.map((item) => (
           <Collapsible
             key={item.title}
             asChild
-            defaultOpen={item.isActive}
+            defaultOpen={item.items?.some(({ url }) => pathname === url)}
             className="group/collapsible"
           >
             <SidebarMenuItem>

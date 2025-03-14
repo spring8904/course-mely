@@ -1,7 +1,5 @@
 import React from 'react'
 
-import { ISidebarData } from '@/types'
-
 import TopBar from '@/components/layouts/TopBar'
 import { AppSidebar } from '@/components/shared/app-sidebar'
 import ProgressBar from '@/components/shared/ProgressBar'
@@ -10,12 +8,12 @@ import { cookies } from 'next/headers'
 
 interface LayoutProps {
   children?: React.ReactNode
-  leftSidebarData: ISidebarData[]
 }
 
 const DashboardLayout = async ({ children }: LayoutProps) => {
   const cookieStore = await cookies()
   const defaultOpen = cookieStore.get('sidebar_state')?.value === 'true'
+
   return (
     <SidebarProvider defaultOpen={defaultOpen}>
       <AppSidebar />

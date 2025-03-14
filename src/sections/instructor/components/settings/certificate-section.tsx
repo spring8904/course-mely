@@ -28,16 +28,11 @@ import { Badge } from '@/components/ui/badge'
 
 interface Props {
   certificateData: any
-  isEditing: boolean
-  setIsEditing: (value: boolean) => void
 }
 
-export function CertificateSection({
-  certificateData,
-  isEditing,
-  setIsEditing,
-}: Props) {
+export function CertificateSection({ certificateData }: Props) {
   const { mutate, isPending } = useUpdateCertificatesProfile()
+  const [isEditing, setIsEditing] = useState(false)
   const [selectedFiles, setSelectedFiles] = useState<File[]>([])
   const [existingCertificates, setExistingCertificates] = useState<string[]>([])
   const [dragActive, setDragActive] = useState(false)
@@ -392,7 +387,7 @@ export function CertificateSection({
   }
 
   return (
-    <div className="space-y-6">
+    <div className="mx-4 mt-8 max-w-4xl space-y-6 pb-16 lg:mx-auto">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           {isEditing ? (
@@ -402,6 +397,7 @@ export function CertificateSection({
                 <Button
                   type="submit"
                   className="min-w-[140px] bg-primary hover:bg-primary/90"
+                  disabled={isPending}
                 >
                   {isPending ? (
                     <>
@@ -428,7 +424,7 @@ export function CertificateSection({
               </div>
             </>
           ) : (
-            <Card className="overflow-hidden border-none bg-white/50 shadow-md backdrop-blur-sm">
+            <Card className="overflow-hidden border bg-white/50 shadow-md backdrop-blur-sm">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 border-b bg-gray-50/50 px-6 py-4">
                 <div>
                   <CardTitle className="flex items-center gap-2 text-lg font-semibold">
@@ -439,12 +435,7 @@ export function CertificateSection({
                     Quản lý các chứng chỉ và giấy tờ quan trọng của bạn
                   </p>
                 </div>
-                <Button
-                  disabled={isPending}
-                  variant="outline"
-                  onClick={() => setIsEditing(true)}
-                  className="bg-white shadow-sm hover:bg-primary hover:text-white"
-                >
+                <Button disabled={isPending} onClick={() => setIsEditing(true)}>
                   Cập nhật
                 </Button>
               </CardHeader>

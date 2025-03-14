@@ -1,17 +1,13 @@
 import React from 'react'
 
-import { Role } from '@/constants/role'
-import { leftSidebarStudentData } from '@/configs'
-
 import DashboardLayout from '@/components/layouts/DashboardLayout'
 import ProtectedRoute from '@/components/shared/protected-route'
+import { Role } from '@/constants/role'
 
 const layout = ({ children }: { children: React.ReactNode }) => {
   return (
     <ProtectedRoute roles={[Role.INSTRUCTOR]}>
-      <DashboardLayout leftSidebarData={leftSidebarStudentData}>
-        {children}
-      </DashboardLayout>
+      <DashboardLayout>{children}</DashboardLayout>
     </ProtectedRoute>
   )
 }

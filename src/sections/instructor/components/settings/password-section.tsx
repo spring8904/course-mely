@@ -1,14 +1,13 @@
-import { useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { motion } from 'framer-motion'
-import { Eye, EyeOff, KeyRound, Loader2, Lock, ShieldCheck } from 'lucide-react'
+import { KeyRound, Loader2, Lock, ShieldCheck } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 
+import { useChangePassword } from '@/hooks/change-password/useChangePassword'
 import {
   ChangePasswordPayload,
   changePasswordSchema,
 } from '@/validations/change-password'
-import { useChangePassword } from '@/hooks/change-password/useChangePassword'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -27,13 +26,10 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
+import { PasswordInput } from '@/components/ui/password-input'
 
 export function PasswordSection() {
   const { mutate, isPending } = useChangePassword()
-  const [showOldPassword, setShowOldPassword] = useState(false)
-  const [showNewPassword, setShowNewPassword] = useState(false)
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
   const form = useForm<ChangePasswordPayload>({
     resolver: zodResolver(changePasswordSchema),
@@ -53,12 +49,7 @@ export function PasswordSection() {
   }
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
-      className="mx-auto w-full max-w-5xl"
-    >
+    <div className="mx-auto mt-8 w-full max-w-3xl">
       <Card className="overflow-hidden border-slate-200 bg-gradient-to-b from-white to-slate-50 shadow-lg">
         <CardHeader className="border-b bg-slate-50 pb-5 pt-6">
           <div className="mb-1 flex items-center gap-3">
@@ -93,27 +84,10 @@ export function PasswordSection() {
                           </FormLabel>
                           <div className="relative">
                             <FormControl>
-                              <div className="relative">
-                                <Input
-                                  type={showOldPassword ? 'text' : 'password'}
-                                  {...field}
-                                  className="border-slate-200 bg-white/50 py-2.5 pr-10 shadow-sm transition-colors focus:bg-white"
-                                  placeholder="Nhập mật khẩu hiện tại của bạn"
-                                />
-                                <button
-                                  type="button"
-                                  className="absolute right-3 top-2.5 text-muted-foreground transition-colors hover:text-foreground"
-                                  onClick={() =>
-                                    setShowOldPassword(!showOldPassword)
-                                  }
-                                >
-                                  {showOldPassword ? (
-                                    <EyeOff className="size-4" />
-                                  ) : (
-                                    <Eye className="size-4" />
-                                  )}
-                                </button>
-                              </div>
+                              <PasswordInput
+                                placeholder="Nhập mật khẩu"
+                                {...field}
+                              />
                             </FormControl>
                           </div>
                           <FormMessage className="text-xs" />
@@ -130,31 +104,12 @@ export function PasswordSection() {
                           <Lock className="size-3.5 text-muted-foreground" />
                           Mật khẩu mới
                         </FormLabel>
-                        <div className="relative">
-                          <FormControl>
-                            <div className="relative">
-                              <Input
-                                type={showNewPassword ? 'text' : 'password'}
-                                {...field}
-                                className="border-slate-200 bg-white/50 py-2.5 pr-10 shadow-sm transition-colors focus:bg-white"
-                                placeholder="Nhập mật khẩu mới của bạn"
-                              />
-                              <button
-                                type="button"
-                                className="absolute right-3 top-2.5 text-muted-foreground transition-colors hover:text-foreground"
-                                onClick={() =>
-                                  setShowNewPassword(!showNewPassword)
-                                }
-                              >
-                                {showNewPassword ? (
-                                  <EyeOff className="size-4" />
-                                ) : (
-                                  <Eye className="size-4" />
-                                )}
-                              </button>
-                            </div>
-                          </FormControl>
-                        </div>
+                        <FormControl>
+                          <PasswordInput
+                            placeholder="Nhập mật khẩu"
+                            {...field}
+                          />
+                        </FormControl>
                         <FormMessage className="text-xs" />
                       </FormItem>
                     )}
@@ -168,38 +123,26 @@ export function PasswordSection() {
                           <Lock className="size-3.5 text-muted-foreground" />
                           Xác nhận mật khẩu mới
                         </FormLabel>
-                        <div className="relative">
-                          <FormControl>
-                            <div className="relative">
-                              <Input
-                                type={showConfirmPassword ? 'text' : 'password'}
-                                {...field}
-                                className="border-slate-200 bg-white/50 py-2.5 pr-10 shadow-sm transition-colors focus:bg-white"
-                                placeholder="Nhập lại mật khẩu mới của bạn"
-                              />
-                              <button
-                                type="button"
-                                className="absolute right-3 top-2.5 text-muted-foreground transition-colors hover:text-foreground"
-                                onClick={() =>
-                                  setShowConfirmPassword(!showConfirmPassword)
-                                }
-                              >
-                                {showConfirmPassword ? (
-                                  <EyeOff className="size-4" />
-                                ) : (
-                                  <Eye className="size-4" />
-                                )}
-                              </button>
-                            </div>
-                          </FormControl>
-                        </div>
+                        <FormControl>
+                          <PasswordInput
+                            placeholder="Nhập mật khẩu"
+                            {...field}
+                          />
+                        </FormControl>
                         <FormMessage className="text-xs" />
                       </FormItem>
                     )}
                   />
                 </div>
                 <div className="mt-6 border-t pt-2">
-                  <div className="mx-auto mt-4 flex max-w-md flex-col gap-3 sm:mx-0 sm:flex-row">
+                  <div className="mx-auto mt-4 flex flex-col justify-end gap-3 sm:mx-0 sm:flex-row">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => form.reset()}
+                    >
+                      Nhập lại
+                    </Button>
                     <Button
                       type="submit"
                       className="group relative gap-2 overflow-hidden py-2.5"
@@ -216,18 +159,8 @@ export function PasswordSection() {
                           <ShieldCheck className="size-4" />
                         </motion.div>
                       )}
-                      <span>Cập nhật mật khẩu</span>
+                      <span>Cập nhật</span>
                       <div className="absolute inset-0 translate-y-full bg-white/10 transition-transform duration-300 group-hover:translate-y-0" />
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      className="border-slate-200 py-2.5 transition-colors hover:bg-slate-50"
-                      onClick={() => {
-                        form.reset()
-                      }}
-                    >
-                      Nhập lại
                     </Button>
                   </div>
                 </div>
@@ -243,6 +176,6 @@ export function PasswordSection() {
           <div>Cập nhật lần cuối: {new Date().toLocaleDateString()}</div>
         </CardFooter>
       </Card>
-    </motion.div>
+    </div>
   )
 }

@@ -24,13 +24,55 @@ export const updateProfile = z.object({
 })
 
 export const profileBioSchema = z.object({
-  github: z.string().optional(),
-  website: z.string().optional(),
-  youtube: z.string().optional(),
-  facebook: z.string().optional(),
-  twitter: z.string().optional(),
-  linkedin: z.string().optional(),
-  instagram: z.string().optional(),
+  github: z
+    .string()
+    .trim()
+    .refine((val) => val === '' || /^https?:\/\/.+\..+$/.test(val), {
+      message: 'URL không hợp lệ',
+    })
+    .optional(),
+  website: z
+    .string()
+    .trim()
+    .refine((val) => val === '' || /^https?:\/\/.+\..+$/.test(val), {
+      message: 'URL không hợp lệ',
+    })
+    .optional(),
+  youtube: z
+    .string()
+    .trim()
+    .refine((val) => val === '' || /^https?:\/\/.+\..+$/.test(val), {
+      message: 'URL không hợp lệ',
+    })
+    .optional(),
+  facebook: z
+    .string()
+    .trim()
+    .refine((val) => val === '' || /^https?:\/\/.+\..+$/.test(val), {
+      message: 'URL không hợp lệ',
+    })
+    .optional(),
+  twitter: z
+    .string()
+    .trim()
+    .refine((val) => val === '' || /^https?:\/\/.+\..+$/.test(val), {
+      message: 'URL không hợp lệ',
+    })
+    .optional(),
+  linkedin: z
+    .string()
+    .trim()
+    .refine((val) => val === '' || /^https?:\/\/.+\..+$/.test(val), {
+      message: 'URL không hợp lệ',
+    })
+    .optional(),
+  instagram: z
+    .string()
+    .trim()
+    .refine((val) => val === '' || /^https?:\/\/.+\..+$/.test(val), {
+      message: 'URL không hợp lệ',
+    })
+    .optional(),
 })
 
 export const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB

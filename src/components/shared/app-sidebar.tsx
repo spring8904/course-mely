@@ -1,22 +1,7 @@
 'use client'
 
-import { useAuthStore } from '@/stores/useAuthStore'
-import {
-  AudioWaveform,
-  BadgeEuro,
-  Book,
-  ChartPie,
-  Command,
-  Database,
-  GalleryVerticalEnd,
-  MessageSquareQuote,
-  MessageSquareText,
-  TicketPercent,
-  UsersRound,
-  Video,
-  Wallet,
-} from 'lucide-react'
 import Image from 'next/image'
+import Link from 'next/link'
 
 import { NavMain } from '@/components/shared/nav-main'
 import { NavUser } from '@/components/shared/nav-user'
@@ -30,99 +15,7 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from '@/components/ui/sidebar'
-import Link from 'next/link'
-
-const data = {
-  user: {
-    name: 'shadcn',
-    email: 'm@example.com',
-    avatar: 'https://github.com/shadcn.png',
-  },
-  teams: [
-    {
-      name: 'Acme Inc',
-      logo: GalleryVerticalEnd,
-      plan: 'Enterprise',
-    },
-    {
-      name: 'Acme Corp.',
-      logo: AudioWaveform,
-      plan: 'Startup',
-    },
-    {
-      name: 'Evil Corp.',
-      logo: Command,
-      plan: 'Free',
-    },
-  ],
-  navMain: [
-    {
-      title: 'Thống kê',
-      url: '/instructor',
-      icon: ChartPie,
-      isActive: true,
-    },
-    {
-      title: 'Quản lý khoá học',
-      url: '#',
-      icon: Book,
-      items: [
-        {
-          title: 'Khoá học của bạn',
-          url: '/instructor/courses',
-        },
-        {
-          title: 'Quản lý học viên',
-          url: '/instructor/learner-manage',
-        },
-        {
-          title: 'Theo dõi tiến độ',
-          url: '#',
-        },
-      ],
-    },
-    {
-      title: 'Trò chuyện',
-      url: '/instructor/chat',
-      icon: UsersRound,
-    },
-    {
-      title: 'Bài viết',
-      url: '/instructor/posts',
-      icon: MessageSquareText,
-    },
-    {
-      title: 'Đánh giá',
-      url: '/instructor/evaluation',
-      icon: MessageSquareQuote,
-    },
-    {
-      title: 'Mã giảm giá',
-      url: '/instructor/coupon',
-      icon: TicketPercent,
-    },
-    {
-      title: 'Ví của bạn',
-      url: '/instructor/wallet',
-      icon: Wallet,
-    },
-    {
-      title: 'Lịch sử mua',
-      url: '/instructor/transaction',
-      icon: BadgeEuro,
-    },
-    {
-      title: 'Giao dịch của tôi',
-      url: '/instructor/with-draw-request',
-      icon: Database,
-    },
-    {
-      title: 'Luồng trực tuyến',
-      url: '/instructor/with-draw-request',
-      icon: Video,
-    },
-  ],
-}
+import { useAuthStore } from '@/stores/useAuthStore'
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { user } = useAuthStore()
@@ -151,10 +44,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
+        <NavMain />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={user as any} />
+        <NavUser user={user} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
