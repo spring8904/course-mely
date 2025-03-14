@@ -145,7 +145,7 @@ const MyCourseView = () => {
                   <div className="mt-4">
                     <Button
                       className={cn(
-                        'text-white',
+                        'text-white hover:text-white',
                         course.progress_percent === 100 &&
                           'bg-green-500 hover:bg-green-500/80',
                         course?.status === 'draft' &&

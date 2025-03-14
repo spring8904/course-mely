@@ -273,8 +273,8 @@ const VideoLesson = ({ lesson, isCompleted, lastTimeVideo = 0 }: Props) => {
             onPause={handlePause}
             style={
               {
-                '--seek-forward-button': 'none',
-                '--playback-rate-button': 'none',
+                '--seek-forward-button': isCompleted ? 'flex' : 'none',
+                '--playback-rate-button': isCompleted ? 'flex' : 'none',
               } as React.CSSProperties
             }
           />
@@ -347,7 +347,7 @@ const VideoLesson = ({ lesson, isCompleted, lastTimeVideo = 0 }: Props) => {
         open={openWarningMultiTab}
         onOpenChange={setOpenWarningMultiTab}
       >
-        <AlertDialogContent className="max-w-sm">
+        <AlertDialogContent className="max-w-xl">
           <AlertDialogHeader>
             <AlertDialogTitle>Phát hiện nhiều tab</AlertDialogTitle>
             <AlertDialogDescription>

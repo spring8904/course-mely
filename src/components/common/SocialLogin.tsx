@@ -1,6 +1,5 @@
 'use client'
 import Link from 'next/link'
-import GoogleLoginButton from '@/app/(website)/test/page'
 
 const SocialLogin = () => {
   return (
@@ -13,7 +12,7 @@ const SocialLogin = () => {
       <li className="login-social-icon">
         <button className="tf-btn wow fadeInUp" data-wow-delay="0.1s">
           {/*<i className="icon-google" /> Google*/}
-          <GoogleLoginButton />
+          {/* <GoogleLoginButton /> */}
         </button>
       </li>
       <li className="login-social-icon">

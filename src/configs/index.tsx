@@ -1,20 +1,6 @@
-import React from 'react'
-import {
-  BookText,
-  CircleHelp,
-  CirclePlay,
-  Compass,
-  FileCode2,
-  GraduationCap,
-  History,
-  PencilLine,
-  ScrollText,
-  ShieldCheck,
-  UserRoundCog,
-  Wallet,
-} from 'lucide-react'
+import { CircleHelp, CirclePlay, FileCode2, ScrollText } from 'lucide-react'
 
-import { IFormControl, ISidebarData } from '@/types'
+import { IFormControl } from '@/types'
 
 export const signupFormFieldList: IFormControl[] = [
   {
@@ -115,44 +101,6 @@ export const signinFormFieldList: IFormControl[] = [
       required: 'Vui lòng nhập mật khẩu',
       minLength: { value: 6, message: 'Mật khẩu phải có ít nhất 6 ký tự' },
     },
-  },
-]
-
-export const leftSidebarStudentData: ISidebarData[] = [
-  {
-    name: 'Khám phá',
-    icon: <Compass size={18} />,
-  },
-  {
-    name: 'Khu vực học tập',
-    icon: <BookText size={18} />,
-  },
-  {
-    name: 'Người hướng dẫn',
-    icon: <GraduationCap size={18} />,
-  },
-  {
-    name: 'Bài viết',
-    icon: <PencilLine size={18} />,
-  },
-  {
-    name: 'Ví của bạn',
-    icon: <Wallet size={18} />,
-  },
-  {
-    name: 'Giao dịch gần đây',
-    icon: <History size={18} />,
-  },
-]
-
-export const sidebarUserOptions: ISidebarData[] = [
-  {
-    name: 'Thông tin cá nhân',
-    icon: <UserRoundCog size={18} />,
-  },
-  {
-    name: 'Mật khẩu và bảo mật',
-    icon: <ShieldCheck size={18} />,
   },
 ]
 

@@ -1,4 +1,3 @@
-import { ReactNode } from 'react'
 import { RegisterOptions } from 'react-hook-form'
 
 import { IAuthData } from './Auth'
@@ -57,9 +56,4 @@ export interface IFormControl {
   label: string
   rules?: RegisterOptions<IAuthData, keyof IAuthData>
   placeholder?: string
-}
-
-export interface ISidebarData {
-  name: string
-  icon?: ReactNode
 }
