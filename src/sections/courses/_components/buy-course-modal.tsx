@@ -72,13 +72,14 @@ const BuyCourseModal = ({ course, isOpen, onClose }: BuyCourseModalProps) => {
   const [selectedCoupon, setSelectedCoupon] = useState<any>(null)
   const [discountAmount, setDiscountAmount] = useState(0)
   const [finalPrice, setFinalPrice] = useState(
-    course.price_sale > 0 ? course.price_sale : course.price
+    course?.price_sale > 0 ? course?.price_sale : course?.price
   )
   const [isCouponApplied, setIsCouponApplied] = useState(false)
   const [hasDiscountCode, setHasDiscountCode] = useState(false)
   const [isCouponModalOpen, setIsCouponModalOpen] = useState(false)
 
-  const originalPrice = course.price_sale > 0 ? course.price_sale : course.price
+  const originalPrice =
+    course?.price_sale > 0 ? course?.price_sale : course?.price
 
   const { data: couponData, isLoading } = useGetCouponUser()
   const { mutate: createPayment, isPending: isPendingCreatePayment } =
