@@ -307,7 +307,7 @@ function WalletView() {
                   <Label>Chọn ngân hàng</Label>
                   <Select
                     onValueChange={(value) => {
-                      const selectedBank = supportBank?.find(
+                      const selectedBank = supportBank?.data.find(
                         (bank: any) => bank.bin === value
                       )
                       if (selectedBank) {
@@ -321,7 +321,7 @@ function WalletView() {
                       <SelectValue placeholder="Chọn ngân hàng nhận tiền" />
                     </SelectTrigger>
                     <SelectContent>
-                      {supportBank?.map((bank: any) => (
+                      {supportBank?.data.map((bank: any) => (
                         <SelectItem key={bank.bin} value={bank.bin}>
                           {bank.short_name}
                         </SelectItem>

@@ -7,7 +7,7 @@ import { useDeleteCommentBlog } from '@/hooks/comment-blog/useCommentBlog'
 
 interface CommentItemProps {
   comment: any
-  currentUserId?: number
+  currentUserId: string
   onReplySuccess?: () => void
 }
 

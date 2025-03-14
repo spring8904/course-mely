@@ -19,7 +19,7 @@ const PaymentUnknownView = () => {
                 </div>
                 <div>
                   <h2 className="text-2xl font-bold text-white">
-                    Trạng thái không xác định
+                    Hệ thống đang bảo trì
                   </h2>
                   <p className="mt-1 text-sm text-slate-200">
                     Vui lòng kiểm tra lại hoặc liên hệ với hỗ trợ

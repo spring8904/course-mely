@@ -3,7 +3,7 @@ import { CourseStatus, CourseStatusMap } from '@/types'
 import { Badge } from '../ui/badge'
 
 interface CourseStatusBadgeProps {
-  status: `${CourseStatus}`
+  status: CourseStatus
 }
 
 const CourseStatusBadge = ({ status }: CourseStatusBadgeProps) => {
