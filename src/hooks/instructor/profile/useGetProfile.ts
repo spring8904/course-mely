@@ -7,6 +7,8 @@ export const useGetInstructorProfile = (code: string) => {
   return useQuery({
     queryKey: [QUERY_KEY.INSTRUCTOR_PROFILE_INFO, code],
     queryFn: () => instructorProfileApi.getProfile(code),
+    staleTime: 5 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
   })
 }
 
@@ -14,6 +16,8 @@ export const useGetInstructorCourses = (code: string, page: number) => {
   return useQuery({
     queryKey: [QUERY_KEY.INSTRUCTOR_PROFILE_COURSE, code, page],
     queryFn: () => instructorProfileApi.getCourses(code, page),
+    staleTime: 5 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
   })
 }
 

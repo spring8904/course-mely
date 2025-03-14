@@ -85,29 +85,42 @@ const CourseListItem = ({
                   <p>9 giờ học</p>
                 </div>
               </div>
-              <h5 className="fw-5 line-clamp-2">
-                <Link href={`/courses/${course?.slug}`}>{course?.name}</Link>
-              </h5>
+              <Link
+                style={{
+                  display: 'block',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                }}
+                href={`/courses/${course?.slug}`}
+              >
+                {course?.name}
+              </Link>
               <div className="ratings pb-30">
-                <div className="number">{4}</div>
-                {[...Array(Math.floor(4))].map((_, i) => (
-                  <i key={i} className="icon-star-1" />
-                ))}
-                {4 % 1 > 0 && (
-                  <svg
-                    width={12}
-                    height={11}
-                    viewBox="0 0 12 11"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M3.54831 7.10382L3.58894 6.85477L3.41273 6.67416L1.16841 4.37373L4.24914 3.90314L4.51288 3.86286L4.62625 3.62134L5.99989 0.694982L7.37398 3.62182L7.48735 3.86332L7.75108 3.9036L10.8318 4.37419L8.58749 6.67462L8.41128 6.85523L8.4519 7.10428L8.98079 10.3465L6.24201 8.8325L6.00014 8.69879L5.75826 8.83247L3.01941 10.3461L3.54831 7.10382ZM11.0444 4.15626L11.0442 4.15651L11.0444 4.15626Z"
-                      stroke="#131836"
-                    />
-                  </svg>
+                {(course?.ratings_count ?? 0) > 0 ? (
+                  <>
+                    <div className="stars flex items-center">
+                      {Array.from({ length: 5 }, (_, index) => (
+                        <i
+                          key={index}
+                          className={`icon-star-1 ${
+                            index <
+                            Math.round(Number(course?.ratings_count ?? 0))
+                              ? 'text-yellow-500'
+                              : 'text-gray-300'
+                          }`}
+                        ></i>
+                      ))}
+                    </div>
+                    <div className="total text-sm text-gray-500">
+                      ({course?.ratings_count} lượt đánh giá)
+                    </div>
+                  </>
+                ) : (
+                  <div className="mb-2 text-sm text-gray-500">
+                    Chưa có lượt đánh giá
+                  </div>
                 )}
-                <div className="total">({course?.total_student})</div>
               </div>
               <div className="author">
                 By:{' '}
@@ -116,28 +129,25 @@ const CourseListItem = ({
                 </a>
               </div>
               <div className="bottom">
-                <div className="h5 price fw-5">
-                  {parseFloat(`${course?.price_sale}`) > 0 ? (
-                    <>
-                      <span className="text-danger fw-bold">
-                        {formatCurrency(parseFloat(`${course?.price_sale}`))}
+                <div className="h6 price fw-5">
+                  {course?.is_free === 1 ? (
+                    <span>Miễn phí</span>
+                  ) : course?.price_sale && Number(course.price_sale) > 0 ? (
+                    <div>
+                      <span>{formatCurrency(Number(course.price_sale))}</span>
+                      <span className="ml-2 text-sm text-gray-500 line-through">
+                        {formatCurrency(Number(course?.price ?? 0))}
                       </span>
-                      &nbsp;
-                      <span className="text-decoration-line-through text-sm text-muted">
-                        {formatCurrency(parseFloat(`${course?.price}`))}
-                      </span>
-                    </>
+                    </div>
                   ) : (
-                    <span>
-                      {formatCurrency(parseFloat(`${course?.price}`))}
-                    </span>
+                    <span>{formatCurrency(Number(course?.price ?? 0))}</span>
                   )}
                 </div>
                 <Link
                   href={`/courses/${course?.slug}`}
                   className="tf-btn-arrow"
                 >
-                  <span className="fw-5">Đăng ký</span>
+                  <span className="fw-5 fs-15">Đăng ký</span>
                   <i className="icon-arrow-top-right" />
                 </Link>
               </div>
