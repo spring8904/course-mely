@@ -302,7 +302,7 @@ const EnhancedMessageItem = ({
                   <TooltipTrigger asChild>
                     <button
                       onClick={() => onReply(message)}
-                      className="flex size-6 items-center justify-center rounded-full bg-secondary shadow-sm hover:bg-secondary/80"
+                      className="mx-2 flex size-6 items-center justify-center rounded-full bg-secondary shadow-sm hover:bg-secondary/80"
                     >
                       <Reply className="size-4 text-muted-foreground" />
                     </button>

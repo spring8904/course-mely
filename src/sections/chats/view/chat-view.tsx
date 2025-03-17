@@ -1,10 +1,7 @@
-// XÓA FILE
-
 'use client'
 
-import React, { useEffect, useRef, useState } from 'react'
-import EmojiPicker from 'emoji-picker-react'
 import type { EmojiClickData } from 'emoji-picker-react'
+import EmojiPicker from 'emoji-picker-react'
 import {
   Archive,
   Film,
@@ -20,7 +17,15 @@ import {
   Volume2,
   X,
 } from 'lucide-react'
+import React, { useEffect, useRef, useState } from 'react'
 
+import EmptyChatState from '@/components/shared/empty-chat-state'
+import {
+  EnhancedMessageItem,
+  ReplyPreview,
+} from '@/components/shared/message-content'
+import { SidebarChatInfo } from '@/components/shared/sidebar-chat-info'
+import { AutosizeTextarea } from '@/components/ui/autosize-textarea'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import {
@@ -36,26 +41,16 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import DialogAddGroupChat from '@/sections/chats/_components/dialog-add-group-chat'
-import {
-  useGetDirectChats,
-  useGetGroupChats,
-  useGetMessage,
-  useSendMessage,
-} from '@/hooks/chat/useChat'
+import { PLACEHOLDER_AVATAR } from '@/constants/common'
+import { useGetMessage, useSendMessage } from '@/hooks/chat/useChat'
+import { getLocalStorage, timeAgo } from '@/lib/common'
 import echo from '@/lib/echo'
 import { useAuthStore } from '@/stores/useAuthStore'
-import { MessagePayload } from '@/validations/chat'
-import { setLocalStorage, timeAgo } from '@/lib/common'
-import {
-  EnhancedMessageItem,
-  ReplyPreview,
-} from '@/components/shared/message-content'
 import { IChannel, IMessage } from '@/types/Chat'
-import { SidebarChatInfo } from '@/components/shared/sidebar-chat-info'
-import EmptyChatState from '@/components/shared/empty-chat-state'
-import { AutosizeTextarea } from '@/components/ui/autosize-textarea'
+import { MessagePayload } from '@/validations/chat'
 import Image from 'next/image'
+import StorageKey from '@/constants/storage-key'
+import { ChatSidebar } from '../_components/chat-sidebar'
 
 interface FilePreview {
   name: string
@@ -70,12 +65,15 @@ const ChatView = () => {
   const [message, setMessage] = useState('')
   const [replyTo, setReplyTo] = useState<IMessage | null>(null)
   const [chats, setChats] = useState<Record<number, IMessage[]>>({})
-  const [addGroupChat, setAddGroupChat] = useState(false)
-  const [selectedChannel, setSelectedChannel] = useState<IChannel | null>()
+  const selectedChannelLocal: IChannel | null = getLocalStorage(
+    StorageKey.CHANNEL
+  )
+  const [selectedChannel, setSelectedChannel] = useState<IChannel | null>(
+    selectedChannelLocal
+  )
 
   const [currentUser, setCurrentUser] = useState<number | null>(null)
 
-  const [activeTab, setActiveTab] = useState<'chats' | 'contacts'>('chats')
   const [showSearch, setShowSearch] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [filePreviews, setFilePreviews] = useState<FilePreview[]>([])
@@ -87,10 +85,6 @@ const ChatView = () => {
   const imageInputRef = useRef<HTMLInputElement>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
-  const { data: groupChatData, isLoading: isLoadingGroupChat } =
-    useGetGroupChats()
-  const { data: directChatData, isLoading: isLoadingDirectChatData } =
-    useGetDirectChats()
   const { data: getMessageData, isLoading: isLoadingGetMessageData } =
     useGetMessage(selectedChannel?.conversation_id ?? 0)
   const { mutate: senderMessage, isPending: isPendingSendMessage } =
@@ -137,11 +131,6 @@ const ChatView = () => {
       }))
     }
   }, [getMessageData, selectedChannel, user?.id])
-
-  const handleChannelSelect = (channel: any) => {
-    setSelectedChannel(channel.conversation_id ? channel : null)
-    setLocalStorage('selectedChannel', channel.conversation_id)
-  }
 
   useEffect(() => {
     if (showSearch && searchInputRef.current) {
@@ -230,8 +219,6 @@ const ChatView = () => {
       const channel = echo.private(`conversation.${conversationId}`)
 
       const handleNewMessage = (event: any) => {
-        console.log(event)
-
         setChats((prevChats) => ({
           ...prevChats,
           [conversationId]: [
@@ -351,128 +338,11 @@ const ChatView = () => {
           multiple
         />
 
-        <div className="flex w-80 flex-col border-r">
-          <div className="border-b p-4">
-            <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-xl font-semibold">Chats</h2>
-            </div>
-            <div className="relative">
-              <Search className="absolute left-2 top-2.5 size-4 text-muted-foreground" />
-              <Input placeholder="Search here..." className="pl-8" />
-            </div>
-          </div>
+        <ChatSidebar
+          selectedChannel={selectedChannel}
+          setSelectedChannel={setSelectedChannel}
+        />
 
-          <div className="flex border-b">
-            <button
-              className={`flex-1 px-4 py-2 text-sm font-medium ${
-                activeTab === 'chats'
-                  ? 'border-b-2 border-primary text-primary'
-                  : 'text-muted-foreground'
-              }`}
-              onClick={() => setActiveTab('chats')}
-            >
-              Nhóm của tôi
-            </button>
-            <button
-              className={`flex-1 px-4 py-2 text-sm font-medium ${
-                activeTab === 'contacts'
-                  ? 'border-b-2 border-primary text-primary'
-                  : 'text-muted-foreground'
-              }`}
-              onClick={() => setActiveTab('contacts')}
-            >
-              Học viên
-            </button>
-          </div>
-
-          <ScrollArea className="flex-1">
-            {activeTab === 'chats' ? (
-              <div className="p-4">
-                <div className="mb-2 flex items-center justify-between">
-                  <h3 className="text-sm font-medium text-muted-foreground">
-                    Liên hệ gần đây
-                  </h3>
-                </div>
-
-                {isLoadingDirectChatData ? (
-                  <div className="flex items-center justify-center py-4">
-                    <Loader2 className="size-8 animate-spin text-orange-500" />
-                  </div>
-                ) : (
-                  directChatData?.map((user: any) => (
-                    <div
-                      key={user.id}
-                      className={`flex cursor-pointer items-center gap-3 rounded-lg p-2 hover:bg-secondary ${
-                        user.id === selectedChannel?.id ? 'bg-secondary' : ''
-                      }`}
-                      onClick={() => {
-                        handleChannelSelect(user)
-                      }}
-                    >
-                      <div className="relative">
-                        <Avatar className="size-8">
-                          <AvatarImage
-                            src={user.avatar}
-                            alt={user.name}
-                            className="object-cover"
-                          />
-                          <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
-                        </Avatar>
-                        {user.online && (
-                          <span className="absolute bottom-0 right-0 size-2.5 rounded-full bg-green-500 ring-2 ring-white" />
-                        )}
-                      </div>
-                      <span className="flex-1 text-sm font-medium">
-                        {user.name}
-                      </span>
-                      {user.messages && (
-                        <span className="flex size-5 items-center justify-center rounded-full bg-primary text-xs text-primary-foreground">
-                          {user.messages}
-                        </span>
-                      )}
-                    </div>
-                  ))
-                )}
-                <div className="mt-6">
-                  <div className="mb-2 flex items-center justify-between">
-                    <h3 className="text-sm font-medium text-muted-foreground">
-                      Nhóm của tôi
-                    </h3>
-                    <Button
-                      onClick={() => setAddGroupChat(true)}
-                      size="icon"
-                      variant="ghost"
-                      className="size-4"
-                    >
-                      <Plus className="size-4" />
-                    </Button>
-                  </div>
-
-                  {isLoadingGroupChat ? (
-                    <div className="flex items-center justify-center py-4">
-                      <Loader2 className="size-8 animate-spin text-orange-500" />
-                    </div>
-                  ) : (
-                    groupChatData?.map((channel: any) => (
-                      <div
-                        key={channel.id}
-                        className="flex cursor-pointer items-center gap-3 rounded-lg p-2 hover:bg-secondary"
-                        onClick={() => handleChannelSelect(channel)}
-                      >
-                        <span className="text-muted-foreground">#</span>
-                        <span className="flex-1 text-sm font-medium">
-                          {channel.name}
-                        </span>
-                      </div>
-                    ))
-                  )}
-                </div>
-              </div>
-            ) : (
-              <div className="p-4"></div>
-            )}
-          </ScrollArea>
-        </div>
         <div className="flex flex-1 flex-col">
           {selectedChannel ? (
             <div className="flex h-16 items-center justify-between border-b px-4">
@@ -480,9 +350,10 @@ const ChatView = () => {
                 {!openSidebarChatInfo && (
                   <Avatar className="size-8">
                     <AvatarImage
-                      src="https://github.com/shadcn.png"
+                      src={selectedChannel?.avatar || PLACEHOLDER_AVATAR}
                       alt={selectedChannel?.name}
                     />
+                    <AvatarFallback>L</AvatarFallback>
                   </Avatar>
                 )}
                 <div>
@@ -584,9 +455,7 @@ const ChatView = () => {
               </div>
             ) : (
               <div className="space-y-4">
-                {isLoadingGetMessageData ||
-                isLoadingDirectChatData ||
-                isLoadingGroupChat ? (
+                {isLoadingGetMessageData ? (
                   <div className="flex h-full items-center justify-center">
                     <Loader2 className="size-8 animate-spin text-orange-500" />
                   </div>
@@ -809,12 +678,6 @@ const ChatView = () => {
           />
         )}
       </div>
-      {addGroupChat && (
-        <DialogAddGroupChat
-          onClose={() => setAddGroupChat(false)}
-          open={addGroupChat}
-        />
-      )}
     </>
   )
 }

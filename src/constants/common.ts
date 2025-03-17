@@ -43,3 +43,6 @@ export const questions: IQuestionTeacher[] = [
     ],
   },
 ]
+
+export const PLACEHOLDER_AVATAR =
+  'https://res.cloudinary.com/dvrexlsgx/image/upload/v1732148083/Avatar-trang-den_apceuv_pgbce6.png'
