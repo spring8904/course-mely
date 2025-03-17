@@ -1,4 +1,5 @@
 import api from '@/configs/api'
+import { IChannel } from '@/types/Chat'
 import {
   AddMemberGroupChatPayload,
   CreateGroupChatPayload,
@@ -11,13 +12,16 @@ const prefixDirectChat = '/chats/direct'
 
 export const chatApi = {
   getDirectChats: async () => {
-    return await api.get(`${prefixDirectChat}/get-direct-chats`)
+    const { data } = await api.get(`${prefixDirectChat}/get-direct-chats`)
+    return data as IChannel[]
   },
   getGroupChats: async () => {
-    return await api.get(`${prefixGroupChat}/get-group-chats`)
+    const { data } = await api.get(`${prefixGroupChat}/get-group-chats`)
+    return data as IChannel[]
   },
   getGroupStudent: async () => {
-    return await api.get(`${prefixGroupChat}/get-group-chats-student`)
+    const { data } = await api.get(`${prefixGroupChat}/get-group-student`)
+    return data as IChannel[]
   },
   getInfoGroupChat: async (id: string) => {
     return await api.get(`${prefixGroupChat}/info-group-chat/${id}`)

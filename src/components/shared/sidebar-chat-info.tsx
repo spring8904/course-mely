@@ -33,10 +33,11 @@ import {
 } from '@/hooks/chat/useChat'
 import { useQueryClient } from '@tanstack/react-query'
 import QUERY_KEY from '@/constants/query-key'
-import InviteMember from '@/sections/chat/_components/invite-member'
+import InviteMember from '@/sections/chats/_components/invite-member'
 import { useAuthStore } from '@/stores/useAuthStore'
 import { toast } from 'react-toastify'
 import Swal from 'sweetalert2'
+import { PLACEHOLDER_AVATAR } from '@/constants/common'
 
 interface ChannelInfoPanelProps {
   selectedChannel: IChannel
@@ -116,10 +117,10 @@ export const SidebarChatInfo = ({
             <AvatarImage
               src={
                 isGroup
-                  ? 'https://github.com/shadcn.png'
+                  ? PLACEHOLDER_AVATAR
                   : user?.id === selectedChannel?.id
-                    ? user?.avatar || ''
-                    : selectedChannel?.avatar || ''
+                    ? user?.avatar || PLACEHOLDER_AVATAR
+                    : selectedChannel?.avatar || PLACEHOLDER_AVATAR
               }
             />
             <AvatarFallback>
