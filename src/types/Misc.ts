@@ -57,3 +57,19 @@ export interface IFormControl {
   rules?: RegisterOptions<IAuthData, keyof IAuthData>
   placeholder?: string
 }
+
+export interface IUserRating {
+  id: string
+  content?: string
+  user_id: number
+  user: {
+    id: number
+    name: string
+    avatar?: string
+  }
+}
+
+export interface IRatingAboutPageResponse {
+  message: string
+  data: IUserRating[]
+}
