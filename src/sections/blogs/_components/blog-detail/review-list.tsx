@@ -1,15 +1,17 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Loader2 } from 'lucide-react'
 import { useGetBlogComments } from '@/hooks/comment-blog/useCommentBlog'
-import CommentForm from '@/sections/blogs/_components/blog-detail/_components/comment-form'
-import CommentItem from '@/sections/blogs/_components/blog-detail/_components/comment'
 import { useAuthStore } from '@/stores/useAuthStore'
+import CommentItem from '@/sections/blogs/_components/blog-detail/_components/comment'
+import CommentForm from '@/sections/blogs/_components/blog-detail/_components/comment-form'
+
+const INITIAL_COMMENT_LIMIT = 3
 
 const BlogDetailReviewList = ({ postId }: { postId: string }) => {
   const { data: comments, isLoading, refetch } = useGetBlogComments(postId)
   const { user } = useAuthStore()
-  console.log('comments', comments)
   const currentUserId = user?.id
+  const [showAllComments, setShowAllComments] = useState(false)
 
   if (isLoading) {
     return (
@@ -18,6 +20,16 @@ const BlogDetailReviewList = ({ postId }: { postId: string }) => {
       </div>
     )
   }
+  const sortedComments = comments?.data?.length
+    ? [...comments.data].sort(
+        (a: any, b: any) =>
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      )
+    : []
+
+  const displayedComments = showAllComments
+    ? sortedComments
+    : sortedComments?.slice(0, INITIAL_COMMENT_LIMIT)
 
   return (
     <div className="review-wrap w-full">
@@ -32,15 +44,28 @@ const BlogDetailReviewList = ({ postId }: { postId: string }) => {
       </div>
 
       <div className="space-y-12">
-        {comments?.data?.length > 0 ? (
-          comments?.data?.map((comment: any) => (
-            <CommentItem
-              key={comment.id}
-              comment={comment}
-              currentUserId={currentUserId}
-              onReplySuccess={refetch}
-            />
-          ))
+        {sortedComments?.length > 0 ? (
+          <>
+            {displayedComments.map((comment: any) => (
+              <CommentItem
+                key={comment.id}
+                comment={comment}
+                currentUserId={currentUserId}
+                onReplySuccess={refetch}
+                postId={postId}
+              />
+            ))}
+            {sortedComments.length > INITIAL_COMMENT_LIMIT &&
+              !showAllComments && (
+                <button
+                  onClick={() => setShowAllComments(true)}
+                  className="w-full rounded-lg bg-gray-100 py-3 text-sm font-medium text-gray-700 hover:bg-gray-200"
+                >
+                  Xem thêm {sortedComments.length - INITIAL_COMMENT_LIMIT} bình
+                  luận
+                </button>
+              )}
+          </>
         ) : (
           <p className="py-4 text-center text-gray-500">
             Bài viết này chưa có bình luận!

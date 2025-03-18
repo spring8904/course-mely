@@ -41,7 +41,14 @@ const CommentForm = ({
   const onSubmit = async (data: any) => {
     try {
       if (isReply && commentId) {
-        await storeReply.mutateAsync({ commentId, data })
+        await storeReply.mutateAsync({
+          commentId,
+          data: {
+            ...data,
+            post_id: postId,
+            parent_id: commentId,
+          },
+        })
       } else {
         await storeComment.mutateAsync({ ...data, post_id: postId })
       }
