@@ -1,37 +1,50 @@
 'use client'
-import { formatCurrency, formatPercentage } from '@/lib/common'
 
-import { DataTable } from '@/components/shared/data-table'
-import { DataTableColumnHeader } from '@/components/shared/data-table-column-header'
+import type { ColumnDef } from '@tanstack/react-table'
+import { Eye, MoreVertical, Star } from 'lucide-react'
+import Image from 'next/image'
+import Link from 'next/link'
+
+import { DataTableColumnHeader } from '@/components/data-table/data-table-column-header'
 import { Button } from '@/components/ui/button'
+import { Checkbox } from '@/components/ui/checkbox'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
-import { useGetCourseRevenueStatistics } from '@/hooks/instructor/use-statistic'
+import { formatCurrency, formatPercentage } from '@/lib/common'
 import { CourseRevenueStatistics } from '@/types/Statistics'
-import { ColumnDef } from '@tanstack/react-table'
-import { Eye, MoreVertical, Star } from 'lucide-react'
-import Link from 'next/link'
-import Image from 'next/image'
 
-const CourseDashboardTable = () => {
-  const { data, isLoading } = useGetCourseRevenueStatistics()
-
-  const columns: ColumnDef<CourseRevenueStatistics>[] = [
+export function getColumns(): ColumnDef<CourseRevenueStatistics>[] {
+  return [
+    {
+      id: 'select',
+      header: ({ table }) => (
+        <Checkbox
+          checked={
+            table.getIsAllPageRowsSelected() ||
+            (table.getIsSomePageRowsSelected() && 'indeterminate')
+          }
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label="Select all"
+          className="text-primary"
+        />
+      ),
+      cell: ({ row }) => (
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label="Select row"
+        />
+      ),
+      enableSorting: false,
+      enableHiding: false,
+      size: 40,
+    },
     {
       accessorKey: 'name',
-
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Khóa học" />
       ),
@@ -55,8 +68,19 @@ const CourseDashboardTable = () => {
           </div>
         )
       },
+      enableHiding: false,
+      meta: {
+        label: 'Khóa học',
+      },
     },
-
+    {
+      accessorKey: 'category.name',
+      enableHiding: false,
+      meta: {
+        label: 'Danh mục',
+        className: 'hidden',
+      },
+    },
     {
       accessorKey: 'price',
       header: ({ column }) => (
@@ -71,6 +95,10 @@ const CourseDashboardTable = () => {
           </div>
         )
       },
+      sortingFn: 'alphanumeric',
+      meta: {
+        label: 'Giá bán',
+      },
     },
     {
       accessorKey: 'total_revenue',
@@ -82,6 +110,10 @@ const CourseDashboardTable = () => {
 
         return <div className="font-medium">{formatCurrency(price)}</div>
       },
+      sortingFn: 'alphanumeric',
+      meta: {
+        label: 'Tổng doanh thu',
+      },
     },
     {
       accessorKey: 'total_student',
@@ -91,6 +123,10 @@ const CourseDashboardTable = () => {
       cell: ({ row }) => (
         <div className="font-medium">{row.getValue('total_student') || 0}</div>
       ),
+      sortingFn: 'basic',
+      meta: {
+        label: 'Học viên',
+      },
     },
     {
       accessorKey: 'avg_rating',
@@ -109,6 +145,9 @@ const CourseDashboardTable = () => {
           </div>
         )
       },
+      meta: {
+        label: 'Đánh giá trung bình',
+      },
     },
     {
       accessorKey: 'avg_progress',
@@ -119,6 +158,9 @@ const CourseDashboardTable = () => {
         return formatPercentage(
           row.original.avg_progress ? +row.original.avg_progress : 0
         )
+      },
+      meta: {
+        label: 'Tỉ lệ hoàn thành',
       },
     },
     {
@@ -145,25 +187,6 @@ const CourseDashboardTable = () => {
           </DropdownMenu>
         )
       },
-      meta: {
-        className: 'sticky right-0 bg-background',
-      },
     },
   ]
-  return (
-    <Card>
-      <CardHeader className="flex items-center gap-4 space-y-0 border-b py-5 sm:flex-row">
-        <div className="grid flex-1 gap-1 text-center sm:text-left">
-          <CardTitle>Tổng quan khóa học</CardTitle>
-          <CardDescription>
-            Tổng hợp thông tin khóa học, bao gồm doanh thu và đánh giá
-          </CardDescription>
-        </div>
-      </CardHeader>
-      <CardContent className="px-2 pt-4 sm:px-4 sm:pt-6">
-        <DataTable columns={columns} data={data} isLoading={isLoading} />
-      </CardContent>
-    </Card>
-  )
 }
-export default CourseDashboardTable

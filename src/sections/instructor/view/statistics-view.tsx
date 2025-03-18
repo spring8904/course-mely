@@ -1,8 +1,8 @@
 import Container from '@/components/shared/container'
-import CourseDashboardTable from '../components/statistics/course-dashboard-table'
 import OverviewStatistics from '../components/statistics/overview-statistics'
 import RevenueChart from '../components/statistics/revenue-chart'
 import StudentPurchaseChart from '../components/statistics/student-purchase-chart'
+import { DashboardCoursesTable } from '../components/statistics/table/dashboard-courses-table'
 
 const StatisticsView = () => {
   return (
@@ -27,7 +27,7 @@ const StatisticsView = () => {
 
       <StudentPurchaseChart />
 
-      <CourseDashboardTable />
+      <DashboardCoursesTable />
     </Container>
   )
 }
