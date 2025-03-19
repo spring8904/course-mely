@@ -16,6 +16,7 @@ const BlogDetailView = ({ slug }: { slug: string }) => {
   const { data: blogDetail, isLoading: isLoadingBlogDetail } =
     useGetBlogBySlug(slug)
   const postId = blogDetail?.data?.id
+  const categorySlug = blogDetail?.data?.category?.slug
 
   if (isLoadingBlogDetail) {
     return (
@@ -51,9 +52,17 @@ const BlogDetailView = ({ slug }: { slug: string }) => {
           </div>
         </div>
       </section>
-      <section className="mb-10">
-        <BlogDetailSimilarPosts />
-      </section>
+      {/*<section className="mb-10">*/}
+      {/*  <BlogDetailSimilarPosts />*/}
+      {/*</section>*/}
+      {categorySlug && (
+        <section className="mb-10">
+          <BlogDetailSimilarPosts
+            categorySlug={categorySlug}
+            currentPostId={postId}
+          />
+        </section>
+      )}
     </div>
   )
 }
