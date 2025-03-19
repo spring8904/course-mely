@@ -14,6 +14,7 @@ import { useAuthStore } from '@/stores/useAuthStore'
 import { useEffect, useState } from 'react'
 import ModalLoading from '@/components/common/ModalLoading'
 import { CoursePagination } from '@/components/common/CoursePagination'
+import { useGetMembershipPlans } from '@/hooks/instructor/membership/useGetMembershipPlans'
 
 type Props = {
   code: string
@@ -36,6 +37,10 @@ export const ProfileView = ({ code }: Props) => {
   } = useGetInstructorProfile(code)
   const { data: instructorCourseData, isLoading: instructorCourseDataLoading } =
     useGetInstructorCourses(code, page)
+  const { data: membershipData, isLoading: membershipDataLoading } =
+    useGetMembershipPlans(code)
+  console.log('membershipData', membershipData)
+  console.log('membershipDataLoading', membershipDataLoading)
 
   useEffect(() => {
     const savePage = JSON.parse(
