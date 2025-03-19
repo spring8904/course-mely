@@ -68,6 +68,7 @@ enum QueryKey {
   GROUP_DIRECT = 'direct-chat',
   GOOGLE_REDIRECT = 'google-redirect',
   DRAFT_COURSE = 'draft-course',
+  MEMBERSHIPS = 'memberships',
 }
 
 export default QueryKey
