@@ -20,10 +20,7 @@ const BlogListView = () => {
             <div className="col-12">
               <div className="page-blog-list">
                 <div className="left">
-                  <BlogListItem
-                    isLoading={isLoading}
-                    initialBlogs={blogs?.data}
-                  />
+                  <BlogListItem isLoading={isLoading} initialBlogs={blogs} />
                 </div>
                 <BlogListSideBar />
               </div>

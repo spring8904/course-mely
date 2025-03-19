@@ -7,7 +7,7 @@ import { useGetBlogBySlug } from '@/hooks/blog/useBlog'
 
 import BlogDetailPost from '../_components/blog-detail/post'
 import BlogDetailProfileItem from '../_components/blog-detail/profile-item'
-import BlogDetailReviewList from '../_components/blog-detail/review-list'
+import BlogDetaiCommentsList from '../_components/blog-detail/comment-list'
 import BlogDetailSharePost from '../_components/blog-detail/share-post'
 import BlogDetailSimilarPosts from '../_components/blog-detail/similar-posts'
 import Image from 'next/image'
@@ -27,9 +27,9 @@ const BlogDetailView = ({ slug }: { slug: string }) => {
 
   return (
     <div>
-      <section className="tf-spacing tf-spacing-3">
+      <section>
         <div className="page-blog-single">
-          <div className="image-head">
+          <div className="image-head mt-10">
             <Image
               className="lazyload h-[400px] w-full object-cover"
               src={blogDetail?.data?.thumbnail}
@@ -46,16 +46,14 @@ const BlogDetailView = ({ slug }: { slug: string }) => {
             <BlogDetailSharePost initialBlogDetail={blogDetail?.data} />
             <BlogDetailProfileItem initialBlogDetail={blogDetail?.data} />
             <div className="post-control flex flex-wrap items-center justify-between gap-[20px]">
-              <BlogDetailReviewList postId={postId} />
+              <BlogDetaiCommentsList postId={postId} />
             </div>
           </div>
         </div>
       </section>
-      {/* <!-- blog --> */}
-      <section className="tf-spacing tf-spacing-1 pt-0">
+      <section className="mb-10">
         <BlogDetailSimilarPosts />
       </section>
-      {/* <!-- /blog --> */}
     </div>
   )
 }
