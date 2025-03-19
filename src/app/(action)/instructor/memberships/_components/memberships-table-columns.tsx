@@ -1,8 +1,7 @@
 'use client'
 
 import type { ColumnDef } from '@tanstack/react-table'
-import { EllipsisVertical, SquarePen } from 'lucide-react'
-import Image from 'next/image'
+import { Check, EllipsisVertical, Eye, SquarePen, X } from 'lucide-react'
 import Link from 'next/link'
 
 import { DataTableColumnHeader } from '@/components/data-table/data-table-column-header'
@@ -15,11 +14,14 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { formatDate, formatNumber } from '@/lib/common'
-import { dateRangeFilterFn } from '@/lib/data-table'
-import { IPost, PostStatusMap } from '@/types'
+import { formatCurrency, formatDate } from '@/lib/common'
+import {
+  Membership,
+  MembershipStatus,
+  MembershipStatusMap,
+} from '@/types/membership'
 
-export function getColumns(): ColumnDef<IPost>[] {
+export function getColumns(toggleStatus: any): ColumnDef<Membership>[] {
   return [
     {
       id: 'select',
@@ -46,85 +48,44 @@ export function getColumns(): ColumnDef<IPost>[] {
       size: 40,
     },
     {
-      accessorKey: 'title',
+      accessorKey: 'name',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Bài viết" />
+        <DataTableColumnHeader column={column} title="Tên gói" />
+      ),
+      enableHiding: false,
+      meta: {
+        label: 'Tên gói',
+      },
+    },
+    {
+      accessorKey: 'price',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Giá bán" />
       ),
       cell: ({ row }) => {
-        const post = row.original
+        const price = Number(row.getValue('price')) || 0
+
         return (
-          <div className="flex min-w-80 items-center gap-4">
-            <Image
-              alt={post.title}
-              className="size-16 rounded-lg object-cover"
-              height={128}
-              width={128}
-              src={post?.thumbnail ?? ''}
-            />
-            <div className="flex-1 space-y-1">
-              <h3 className="line-clamp-2 font-semibold">{post.title}</h3>
-              <h4 className="text-xs text-muted-foreground">
-                {post.category.name}
-              </h4>
-            </div>
+          <div className="font-medium">
+            {price === 0 ? 'Miễn phí' : formatCurrency(price)}
           </div>
         )
       },
-      enableHiding: false,
+      sortingFn: 'alphanumeric',
       meta: {
-        label: 'Bài viết',
+        label: 'Giá bán',
       },
     },
     {
-      accessorKey: 'category.name',
-      enableHiding: false,
-      meta: {
-        label: 'Danh mục',
-        className: 'hidden',
-      },
-    },
-    {
-      accessorKey: 'created_at',
+      accessorKey: 'duration_months',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Ngày tạo" />
+        <DataTableColumnHeader column={column} title="Thời hạn" />
       ),
-      cell: ({ getValue }) => {
-        return (
-          <div className="space-y-1">
-            <div className="font-medium">
-              {formatDate(getValue() as Date, {
-                dateStyle: 'medium',
-              })}
-            </div>
-            <div className="text-xs text-muted-foreground">
-              {formatDate(getValue() as Date, {
-                timeStyle: 'short',
-                hour12: true,
-              })}
-            </div>
-          </div>
-        )
+      cell: ({ row }) => {
+        return row.original.duration_months + ' tháng'
       },
-      sortingFn: 'datetime',
-      filterFn: dateRangeFilterFn,
       meta: {
-        label: 'Ngày tạo',
-      },
-    },
-    {
-      accessorKey: 'view',
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Lượt xem" />
-      ),
-      cell: ({ row }) => (
-        <div className="font-medium">
-          {formatNumber(row.original.view ?? 0)}
-        </div>
-      ),
-      sortingFn: 'basic',
-      filterFn: 'inNumberRange',
-      meta: {
-        label: 'Lượt xem',
+        label: 'Thời hạn',
       },
     },
     {
@@ -133,11 +94,14 @@ export function getColumns(): ColumnDef<IPost>[] {
         <DataTableColumnHeader column={column} title="Trạng thái" />
       ),
       cell: ({ row }) => {
-        const post = PostStatusMap[row.original.status]
+        const membership = MembershipStatusMap[row.original.status]
         return (
-          post && (
-            <Badge className="shrink-0 whitespace-nowrap" variant={post.badge}>
-              {post.label}
+          membership && (
+            <Badge
+              className="shrink-0 whitespace-nowrap"
+              variant={membership.badge}
+            >
+              {membership.label}
             </Badge>
           )
         )
@@ -150,9 +114,21 @@ export function getColumns(): ColumnDef<IPost>[] {
       },
     },
     {
+      accessorKey: 'created_at',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Ngày tạo" />
+      ),
+      cell: ({ row }) => formatDate(row.original.created_at),
+      sortingFn: 'datetime',
+      meta: {
+        label: 'Ngày tạo',
+      },
+    },
+    {
       id: 'actions',
       cell: function Cell({ row }) {
-        const course = row.original
+        const { code, status } = row.original
+
         return (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -165,12 +141,35 @@ export function getColumns(): ColumnDef<IPost>[] {
                 <EllipsisVertical aria-hidden="true" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="max-w-40">
+            <DropdownMenuContent
+              align="end"
+              className="max-w-40 *:cursor-pointer"
+            >
               <DropdownMenuItem asChild>
-                <Link href={`/instructor/posts/update/${course.slug}`}>
+                <Link href={`/instructor/memberships/${code}`}>
+                  <Eye /> Xem chi tiết
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href={`/instructor/memberships/update/${code}`}>
                   <SquarePen /> Sửa
                 </Link>
               </DropdownMenuItem>
+              {(status === MembershipStatus.Active ||
+                status === MembershipStatus.Inactive) && (
+                <DropdownMenuItem onClick={() => toggleStatus(code)}>
+                  {status === MembershipStatus.Active ? (
+                    <>
+                      <X />
+                      Hủy kích hoạt
+                    </>
+                  ) : (
+                    <>
+                      <Check /> Kích hoạt
+                    </>
+                  )}
+                </DropdownMenuItem>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
         )
