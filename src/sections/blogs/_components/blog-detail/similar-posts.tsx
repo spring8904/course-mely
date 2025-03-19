@@ -1,21 +1,23 @@
+import Link from 'next/link'
+
 const BlogDetailSimilarPosts = () => {
   return (
     <div className="tf-container">
       <div className="row">
         <div className="col-12">
           <div className="heading-section">
-            <h2 className="fw-7 wow fadeInUp">Similar Post</h2>
+            <h2 className="fw-7 wow fadeInUp">Bài viết tương tự</h2>
             <div className="flex flex-wrap items-center justify-between gap-[10px]">
               <div className="sub fs-15 wow fadeInUp">
-                Lorem ipsum dolor sit amet, consectetur.
+                Những bài viết hay sẽ mở mang tri thức cho bạn.
               </div>
-              <a
-                href="blog-grid.html"
+              <Link
+                href="/blogs"
                 className="tf-btn-arrow wow fadeInUp"
                 data-wow-delay="0.1s"
               >
-                View All News <i className="icon-arrow-top-right"></i>
-              </a>
+                Xem tất cả bài viết <i className="icon-arrow-top-right"></i>
+              </Link>
             </div>
           </div>
           <div
