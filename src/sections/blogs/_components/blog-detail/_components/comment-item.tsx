@@ -77,7 +77,11 @@ const CommentItem = ({
 
     return parts.map((part, index) => {
       if (part.startsWith('@')) {
-        return <span key={index}>{part}</span>
+        return (
+          <span className="text-blue-700" key={index}>
+            {part}
+          </span>
+        )
       }
       return part
     })
