@@ -14,17 +14,17 @@ const BlogDetailProfileItem = ({ initialBlogDetail }: BlogDetailPostProps) => {
           alt={initialBlogDetail.user.name}
           width={30}
           height={30}
+          className="object-cover"
         />
       </div>
       <div className="content">
         <h5>
           <a className="fw-5">{initialBlogDetail.user.name}</a>
         </h5>
-        <div className="sub fs-15">Professional Web Developer</div>
         <div className="fs-15">
-          Lorem ipsum dolor sit amet. Qui incidunt dolores non similique ducimus
-          et debitis molestiae. Et autem quia eum reprehenderit voluptates est
-          reprehenderit illo est enim perferendis est neque sunt.{' '}
+          {initialBlogDetail?.user?.profile?.about_me?.length > 300
+            ? initialBlogDetail.user.profile.about_me.slice(0, 300) + '...'
+            : initialBlogDetail.user.profile.about_me}
         </div>
       </div>
     </div>

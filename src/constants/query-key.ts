@@ -53,6 +53,7 @@ enum QueryKey {
   CERTIFICATE = 'certificate',
   NOTE_LESSON = 'note-lesson',
   COURSE_RATING_STATE = 'course-rating-state',
+  RATING_ABOUT_PAGE = 'rating-about-page',
   EVALUATION = 'evaluation',
   INSTRUCTOR_STATISTICS_OVERVIEW = 'instructor-statistics-overview',
   INSTRUCTOR_STATISTICS_REVENUE = 'instructor-statistics-revenue',
@@ -68,6 +69,7 @@ enum QueryKey {
   GOOGLE_REDIRECT = 'google-redirect',
   DRAFT_COURSE = 'draft-course',
   REACTION_WITH_COMMENT = 'reaction-with-comment',
+  MEMBERSHIPS = 'memberships',
 }
 
 export default QueryKey

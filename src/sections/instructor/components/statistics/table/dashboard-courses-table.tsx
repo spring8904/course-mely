@@ -28,7 +28,6 @@ const filterFields: DataTableFilterField<CourseRevenueStatistics>[] = [
 
 export const DashboardCoursesTable = () => {
   const { data, isLoading } = useGetCourseRevenueStatistics()
-  console.log('data', data)
 
   const columns = useMemo(() => getColumns(), [])
 
