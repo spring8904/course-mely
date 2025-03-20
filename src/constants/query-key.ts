@@ -28,6 +28,7 @@ enum QueryKey {
   INSTRUCTOR_LEARNER = 'instructor-learner',
   INSTRUCTOR_WITH_DRAW_REQUEST = 'instructor-with-draw-request',
   INSTRUCTOR_COUPON = 'instructor-coupon',
+  INSTRUCTOR_MEMBERSHIP_PLANS = 'instructor-membership-plans',
   CATEGORY = 'categories',
   COURSE = 'course',
   QA_SYSTEM = 'qa-systems',

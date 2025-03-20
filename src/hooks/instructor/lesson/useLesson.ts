@@ -13,7 +13,7 @@ import { instructorLessonApi } from '@/services/instructor/lesson/lesson-api'
 
 export const useGetLessonCoding = (lessonSlug: string, codingId: string) => {
   return useQuery({
-    queryKey: [QueryKey.INSTRUCTOR_LESSON_CODING, lessonSlug, codingId, ,],
+    queryKey: [QueryKey.INSTRUCTOR_LESSON_CODING, lessonSlug, codingId],
     queryFn: () => instructorLessonApi.getLessonCoding(lessonSlug, codingId),
     enabled: !!codingId,
   })
