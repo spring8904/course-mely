@@ -339,7 +339,9 @@ const CourseDetailView = ({ slug }: { slug: string }) => {
                     </div>
                     <div className="text">
                       <span className="text-1">By </span>
-                      <a href="#">{courseDetails?.user?.name}</a>
+                      <Link href={`/profile/${courseDetails?.user.code}`}>
+                        {courseDetails?.user?.name}
+                      </Link>
                     </div>
                   </div>
                 </div>
