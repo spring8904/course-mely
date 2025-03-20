@@ -16,16 +16,22 @@ export const memberShipApi = {
   },
 
   createMembership: (
-    payload: MembershipPayload
+    payload: Omit<MembershipPayload, 'code'>
   ): Promise<{ message: string; data: any }> => {
-    return api.post(`${prefix}`, payload)
+    return api.post(`${prefix}`, {
+      ...payload,
+      benefits: payload.benefits.map((benefit) => benefit.value),
+    })
   },
 
-  updateMembership: (
-    code: string,
-    payload: MembershipPayload
-  ): Promise<{ message: string; data: any }> => {
-    return api.put(`${prefix}/${code}`, payload)
+  updateMembership: ({
+    code,
+    ...payload
+  }: MembershipPayload): Promise<{ message: string; data: any }> => {
+    return api.put(`${prefix}/${code}`, {
+      ...payload,
+      benefits: payload.benefits.map((benefit) => benefit.value),
+    })
   },
 
   toggleStatusMembership: (
@@ -37,6 +43,6 @@ export const memberShipApi = {
   sendMembershipRequest: (
     code: string
   ): Promise<{ message: string; data: any }> => {
-    return api.post(`${prefix}/${code}/send-request-membership-plan`)
+    return api.post(`${prefix}/send-request-membership-plan/${code}`)
   },
 }

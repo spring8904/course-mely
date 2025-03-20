@@ -2,7 +2,6 @@ import { useQuery } from '@tanstack/react-query'
 
 import QueryKey from '@/constants/query-key'
 import { memberShipApi } from '@/services/instructor/membership-api'
-import { MembershipPayload } from '@/validations/membership'
 import { useToastMutation } from '../use-toast-mutation'
 
 export const useGetMemberships = () => {
@@ -12,25 +11,24 @@ export const useGetMemberships = () => {
   })
 }
 
-export const useGetMembership = (code: string) => {
+export const useGetMembership = (code: string | null) => {
   return useQuery({
     queryKey: [QueryKey.MEMBERSHIPS, code],
-    queryFn: () => memberShipApi.getMembership(code),
+    queryFn: () => memberShipApi.getMembership(code!),
+    enabled: !!code,
   })
 }
 
 export const useCreateMembership = () => {
   return useToastMutation({
-    mutationFn: (payload: MembershipPayload) =>
-      memberShipApi.createMembership(payload),
+    mutationFn: memberShipApi.createMembership,
     queryKey: [QueryKey.MEMBERSHIPS],
   })
 }
 
-export const useUpdateMembership = (code: string) => {
+export const useUpdateMembership = () => {
   return useToastMutation({
-    mutationFn: (payload: MembershipPayload) =>
-      memberShipApi.updateMembership(code, payload),
+    mutationFn: memberShipApi.updateMembership,
     queryKey: [QueryKey.MEMBERSHIPS],
   })
 }
@@ -42,9 +40,9 @@ export const useToggleStatusMembership = () => {
   })
 }
 
-export const useSendMembershipRequest = (code: string) => {
+export const useSendMembershipRequest = () => {
   return useToastMutation({
-    mutationFn: () => memberShipApi.sendMembershipRequest(code),
+    mutationFn: memberShipApi.sendMembershipRequest,
     queryKey: [QueryKey.MEMBERSHIPS],
   })
 }

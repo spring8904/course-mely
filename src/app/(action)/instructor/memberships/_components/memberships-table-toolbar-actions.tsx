@@ -1,12 +1,12 @@
 'use client'
 
 import type { Table } from '@tanstack/react-table'
-import { Download, Plus } from 'lucide-react'
-import Link from 'next/link'
+import { Download } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { exportTableToXLSX } from '@/lib/export'
 import { Membership } from '@/types/membership'
+import { CreateMembershipSheet } from './create-membership-sheet'
 
 interface MembershipsTableToolbarActionsProps {
   table: Table<Membership>
@@ -17,12 +17,7 @@ export function MembershipsTableToolbarActions({
 }: MembershipsTableToolbarActionsProps) {
   return (
     <div className="flex items-center gap-2">
-      <Button size="sm" asChild>
-        <Link href={'/instructor/memberships/create'}>
-          <Plus />
-          Tạo gói
-        </Link>
-      </Button>
+      <CreateMembershipSheet />
       <Button
         variant="outline"
         size="sm"

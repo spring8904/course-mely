@@ -26,6 +26,13 @@ export const useGetCourseOverview = (slug?: string) => {
   })
 }
 
+export const useGetApprovedCourses = () => {
+  return useQuery({
+    queryKey: [QueryKey.INSTRUCTOR_COURSE_APPROVED],
+    queryFn: instructorCourseApi.getApprovedCourses,
+  })
+}
+
 export const useGetCourseListOfUser = (slug?: string) => {
   return useQuery({
     queryKey: [QueryKey.INSTRUCTOR_COURSE, slug],

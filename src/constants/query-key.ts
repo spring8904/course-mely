@@ -10,6 +10,7 @@ enum QueryKey {
   COURSES_FREE = 'free-courses',
   INSTRUCTOR_ALL = 'instructor-all',
   INSTRUCTOR_COURSE = 'instructor-course',
+  INSTRUCTOR_COURSE_APPROVED = 'instructor-course-approved',
   INSTRUCTOR_COURSE_TRASH = 'instructor-course-trash',
   INSTRUCTOR_PROFILE_INFO = 'instructor-profile-info',
   INSTRUCTOR_PROFILE_COURSE = 'instructor-profile-course',

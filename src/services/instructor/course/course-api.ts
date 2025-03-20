@@ -4,11 +4,12 @@ import {
   UpdateCourseObjectivePayload,
 } from '@/validations/course'
 import api from '@/configs/api'
-import { ICourse } from '@/types'
+import { CoursePreview, ICourse } from '@/types'
 
 const prefix = '/instructor/manage/courses'
 
 export const instructorCourseApi = {
+  // GET COURSES
   getCourses: async (): Promise<ICourse[]> => {
     const res = await api.get(prefix)
     return res.data
@@ -16,6 +17,12 @@ export const instructorCourseApi = {
   getCourseOverview: async (slug: string) => {
     return await api.get(`${prefix}/${slug}`)
   },
+  getApprovedCourses: async (): Promise<CoursePreview[]> => {
+    const res = await api.get(`${prefix}/course-approved`)
+    return res.data
+  },
+
+  // MUTATE COURSES
   createCourse: (payload: CreateCoursePayload) => {
     return api.post(prefix, payload)
   },
