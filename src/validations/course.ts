@@ -139,7 +139,7 @@ export const updateCourseObjectiveSchema = z.object({
     .array(
       z.object({
         question: z.string(),
-        answers: z.string(),
+        answer: z.string(),
       })
     )
     .optional(),

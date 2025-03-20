@@ -1,7 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
 
-import BlogListPagination from '@/sections/blogs/_components/blog-list/pagination'
 import { formatDate } from '@/lib/common'
 import { Eye } from 'lucide-react'
 
@@ -99,7 +98,7 @@ const BlogListItem = ({ initialBlogs, isLoading }: BlogListItemProps) => {
                   </div>
                   <a href="#" className="meta-item">
                     <i className="flaticon-user-1"></i>
-                    <p>{blog.user.name}</p>
+                    <p>{blog.user?.name}</p>
                   </a>
                 </div>
                 <Link href={`/blogs/${blog.slug}`} className="tf-btn-arrow">
@@ -110,7 +109,6 @@ const BlogListItem = ({ initialBlogs, isLoading }: BlogListItemProps) => {
           ))
         )}
       </div>
-      <BlogListPagination />
     </>
   )
 }

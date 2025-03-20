@@ -6,13 +6,13 @@ import { CourseRevenueStatistics } from '@/types/Statistics'
 import type { Table } from '@tanstack/react-table'
 import { Download } from 'lucide-react'
 
-interface LearnersTableToolbarActionsProps {
+interface DashboardCoursesTableToolbarActionsProps {
   table: Table<CourseRevenueStatistics>
 }
 
 export function DashboardCoursesTableToolbarActions({
   table,
-}: LearnersTableToolbarActionsProps) {
+}: DashboardCoursesTableToolbarActionsProps) {
   return (
     <div className="flex items-center gap-2">
       <Button
@@ -20,7 +20,7 @@ export function DashboardCoursesTableToolbarActions({
         size="sm"
         onClick={() =>
           exportTableToXLSX(table, {
-            filename: 'learners',
+            filename: 'courses',
             excludeColumns: ['select', 'actions'],
           })
         }

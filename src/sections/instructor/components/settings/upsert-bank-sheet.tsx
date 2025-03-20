@@ -82,11 +82,6 @@ const UpsertBankSheet = ({ showTrigger = true, bank, ...props }: Props) => {
     })
   }
 
-  console.group('Form')
-  console.log('values', form.getValues())
-  console.log('errors', form.formState.errors)
-  console.groupEnd()
-
   useEffect(() => {
     if (bank)
       form.reset({

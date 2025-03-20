@@ -2,24 +2,25 @@
 
 import type { Table } from '@tanstack/react-table'
 import { Download, Plus } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { exportTableToXLSX } from '@/lib/export'
-import { IPost } from '@/types'
 import Link from 'next/link'
 
-interface PostsTableToolbarActionsProps {
-  table: Table<IPost>
+import { Button } from '@/components/ui/button'
+import { exportTableToXLSX } from '@/lib/export'
+import { Membership } from '@/types/membership'
+
+interface MembershipsTableToolbarActionsProps {
+  table: Table<Membership>
 }
 
-export function PostsTableToolbarActions({
+export function MembershipsTableToolbarActions({
   table,
-}: PostsTableToolbarActionsProps) {
+}: MembershipsTableToolbarActionsProps) {
   return (
     <div className="flex items-center gap-2">
       <Button size="sm" asChild>
-        <Link href={'/instructor/posts/create'}>
+        <Link href={'/instructor/memberships/create'}>
           <Plus />
-          Viết blog
+          Tạo gói
         </Link>
       </Button>
       <Button
@@ -27,7 +28,7 @@ export function PostsTableToolbarActions({
         size="sm"
         onClick={() =>
           exportTableToXLSX(table, {
-            filename: 'posts',
+            filename: 'memberships',
             excludeColumns: ['select', 'actions'],
           })
         }

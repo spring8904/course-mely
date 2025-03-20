@@ -188,7 +188,6 @@ const BuyCourseModal = ({ course, isOpen, onClose }: BuyCourseModalProps) => {
 
         createPayment(paymentData, {
           onSuccess: (res: any) => {
-            console.log(res)
             window.location.href = res.data
           },
           onError: (res: any) => {

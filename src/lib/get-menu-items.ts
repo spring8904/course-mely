@@ -13,7 +13,6 @@ import {
   User,
   UsersRound,
   Video,
-  Wallet,
 } from 'lucide-react'
 
 import React from 'react'
@@ -61,7 +60,7 @@ export const getMenuItem = (type: type = 'instructor'): MenuItem[] => {
         },
         {
           title: 'Trò chuyện',
-          url: '/instructor/chat',
+          url: '/instructor/chats',
           icon: UsersRound,
         },
         {
@@ -80,9 +79,9 @@ export const getMenuItem = (type: type = 'instructor'): MenuItem[] => {
           icon: TicketPercent,
         },
         {
-          title: 'Ví của bạn',
-          url: '/instructor/wallet',
-          icon: Wallet,
+          title: 'Gói thành viên',
+          url: '/instructor/memberships',
+          icon: UsersRound,
         },
         {
           title: 'Lịch sử mua',

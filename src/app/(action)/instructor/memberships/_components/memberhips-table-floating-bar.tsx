@@ -3,7 +3,6 @@ import { Download, X } from 'lucide-react'
 import * as React from 'react'
 
 import { exportTableToXLSX } from '@/lib/export'
-import { IPost } from '@/types'
 
 import { Button } from '@/components/ui/button'
 import { Kbd } from '@/components/ui/kbd'
@@ -14,12 +13,15 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
+import { Membership } from '@/types/membership'
 
-interface PostsTableFloatingBarProps {
-  table: Table<IPost>
+interface MembershipsTableFloatingBarProps {
+  table: Table<Membership>
 }
 
-export function PostsTableFloatingBar({ table }: PostsTableFloatingBarProps) {
+export function MembershipsTableFloatingBar({
+  table,
+}: MembershipsTableFloatingBarProps) {
   const rows = table.getFilteredSelectedRowModel().rows
 
   // Clear selection on Escape key press
@@ -65,7 +67,7 @@ export function PostsTableFloatingBar({ table }: PostsTableFloatingBarProps) {
             </div>
             <Separator orientation="vertical" className="hidden h-5 sm:block" />
             <div className="flex items-center gap-1.5">
-              <Tooltip>
+              <Tooltip open={true}>
                 <TooltipTrigger asChild>
                   <Button
                     variant="secondary"
@@ -73,7 +75,7 @@ export function PostsTableFloatingBar({ table }: PostsTableFloatingBarProps) {
                     className="size-7 border"
                     onClick={() =>
                       exportTableToXLSX(table, {
-                        filename: 'posts',
+                        filename: 'memberships',
                         excludeColumns: ['select', 'actions'],
                         onlySelected: true,
                       })
@@ -83,7 +85,7 @@ export function PostsTableFloatingBar({ table }: PostsTableFloatingBarProps) {
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent className="border bg-accent font-semibold text-foreground dark:bg-zinc-900">
-                  <p>Xuất</p>
+                  Xuất
                 </TooltipContent>
               </Tooltip>
             </div>

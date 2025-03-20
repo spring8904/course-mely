@@ -49,14 +49,15 @@ import {
 } from '@/components/ui/sheet'
 import { Textarea } from '@/components/ui/textarea'
 import HtmlRenderer from '@/components/shared/html-renderer'
+import { useToggleReaction } from '@/hooks/reaction/useReaction'
 
 const reactionEmojis = [
-  { emoji: '👍', name: 'Thích' },
-  { emoji: '❤️', name: 'Yêu thích' },
-  { emoji: '😆', name: 'Haha' },
-  { emoji: '😮', name: 'Wow' },
-  { emoji: '😢', name: 'Buồn' },
-  { emoji: '😡', name: 'Phẫn nộ' },
+  { emoji: '👍', name: 'Thích', type: 'like' },
+  { emoji: '❤️', name: 'Yêu thích', type: 'love' },
+  { emoji: '😆', name: 'Haha', type: 'haha' },
+  { emoji: '😮', name: 'Wow', type: 'wow' },
+  { emoji: '😢', name: 'Buồn', type: 'sad' },
+  { emoji: '😡', name: 'Phẫn nộ', type: 'angry' },
 ]
 
 const CommentLesson = ({ lessonId }: { lessonId: string }) => {
@@ -107,9 +108,47 @@ const CommentLesson = ({ lessonId }: { lessonId: string }) => {
 
   const { mutate: deleteComment, isPending: isPendingDeleteComment } =
     useDeleteComment(commentToDelete?.id || '')
+  const { mutate: toggleReaction, isPending: isToggleReaction } =
+    useToggleReaction()
 
   const { data: lessonCommentData, isLoading: isLoadingLessonCommentData } =
     useGetLessonComments(lessonId)
+
+  console.log(lessonCommentData)
+
+  useEffect(() => {
+    if (lessonCommentData?.data && Array.isArray(lessonCommentData.data)) {
+      const initialCommentReactions: Record<string, string> = {}
+      const initialReplyReactions: Record<string, string> = {}
+
+      lessonCommentData.data.forEach((comment: any) => {
+        if (comment.user_reaction) {
+          const reactionEmoji = reactionEmojis.find(
+            (r) => r.type === comment.user_reaction
+          )?.emoji
+          if (reactionEmoji) {
+            initialCommentReactions[comment.id] = reactionEmoji
+          }
+        }
+
+        if (comment.replies && Array.isArray(comment.replies)) {
+          comment.replies.forEach((reply: any) => {
+            if (reply.user_reaction) {
+              const replyReactionEmoji = reactionEmojis.find(
+                (r) => r.type === reply.user_reaction
+              )?.emoji
+              if (replyReactionEmoji) {
+                initialReplyReactions[reply.id] = replyReactionEmoji
+              }
+            }
+          })
+        }
+      })
+
+      setCommentReactions(initialCommentReactions)
+      setReplyReactions(initialReplyReactions)
+    }
+  }, [lessonCommentData])
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -173,7 +212,8 @@ const CommentLesson = ({ lessonId }: { lessonId: string }) => {
   const handleReactionClick = (
     emoji: string,
     id: string,
-    type: 'comment' | 'reply'
+    type: 'comment' | 'reply',
+    reactionType: string
   ) => {
     if (type === 'comment') {
       setCommentReactions((prev) => ({
@@ -187,8 +227,23 @@ const CommentLesson = ({ lessonId }: { lessonId: string }) => {
       }))
     }
 
-    setShowReactionPicker(null)
-    toast.success(`Đã thêm cảm xúc ${emoji}`)
+    toggleReaction(
+      {
+        comment_id: id,
+        type: reactionType,
+      },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries({
+            queryKey: [QueryKey.LESSON_COMMENT, lessonId],
+          })
+          setShowReactionPicker(null)
+        },
+        onError: (error: any) => {
+          toast.error(error?.message)
+        },
+      }
+    )
   }
 
   const handleReplyClick = (id: string, type: 'comment' | 'reply') => {
@@ -284,8 +339,8 @@ const CommentLesson = ({ lessonId }: { lessonId: string }) => {
     }))
   }
 
-  const isCommentAuthor = (commentUserId: string) => {
-    return user?.id?.toString() === commentUserId
+  const isCommentAuthor = (commentUserId: number) => {
+    return user?.id === commentUserId
   }
 
   const renderReplies = (comment: any) => {
@@ -355,7 +410,9 @@ const CommentLesson = ({ lessonId }: { lessonId: string }) => {
                         )
                       }
                     >
-                      {replyReactions[reply?.id] || 'Thích'}
+                      {replyReactions[reply?.id] || (
+                        <Smile className="size-4" />
+                      )}
                     </button>
 
                     {showReactionPicker?.id === reply?.id &&
@@ -366,13 +423,15 @@ const CommentLesson = ({ lessonId }: { lessonId: string }) => {
                         >
                           {reactionEmojis.map((reaction) => (
                             <button
+                              disabled={isToggleReaction}
                               key={reaction.emoji}
                               className="rounded-full p-2 transition-transform hover:scale-125"
                               onClick={() =>
                                 handleReactionClick(
                                   reaction.emoji,
                                   reply?.id,
-                                  'reply'
+                                  'reply',
+                                  reaction.type
                                 )
                               }
                               title={reaction.name}
@@ -385,7 +444,7 @@ const CommentLesson = ({ lessonId }: { lessonId: string }) => {
                   </div>
                   <button
                     onClick={() => handleReplyClick(reply.id, 'reply')}
-                    className="font-medium text-gray-500 hover:text-blue-500"
+                    className="flex items-center gap-1 font-medium text-gray-500 hover:text-blue-500"
                   >
                     Phản hồi
                   </button>
@@ -393,14 +452,30 @@ const CommentLesson = ({ lessonId }: { lessonId: string }) => {
                     {timeAgo(reply?.created_at || '')}
                   </span>
 
-                  {isCommentAuthor(reply?.user?.id) && (
-                    <div className="relative ml-auto">
+                  <div className="relative ml-auto flex items-center gap-1">
+                    <div className="flex items-center">
+                      {reactionEmojis.map((reaction) => {
+                        const count = reply.reaction_counts[reaction.type]
+                        if (count > 0) {
+                          return (
+                            <span key={reaction.type} className="text-sm">
+                              {reaction.emoji}
+                            </span>
+                          )
+                        }
+                        return null
+                      })}
+                      <span className="font-bold text-gray-500">
+                        {' '}
+                        {reply.reaction_counts.total || ''}
+                      </span>
+                    </div>
+                    <div className="relative">
                       <button
                         className="text-gray-400 hover:text-gray-600"
                         onClick={() =>
-                          setOpenDropdown(
-                            openDropdown?.id === reply?.id &&
-                              openDropdown?.type === 'reply'
+                          setOpenDropdown((prev) =>
+                            prev?.id === reply?.id && prev?.type === 'reply'
                               ? null
                               : { id: reply?.id, type: 'reply' }
                           )
@@ -409,28 +484,31 @@ const CommentLesson = ({ lessonId }: { lessonId: string }) => {
                         <FiMoreHorizontal />
                       </button>
 
-                      {openDropdown?.id === reply?.id &&
+                      {isCommentAuthor(reply?.user?.id) &&
+                        openDropdown?.id === reply?.id &&
                         openDropdown?.type === 'reply' && (
                           <div
                             ref={dropdownRef}
-                            className="animate-fade-in ring-opacity/5 absolute right-0 top-6 z-50 w-40 rounded-md bg-white py-1 shadow-lg ring-1 ring-black"
+                            className="animate-fade-in absolute right-0 top-6 z-50 w-40 rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5"
                           >
                             <button
                               className="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-red-600 hover:bg-gray-100"
                               onClick={() =>
-                                handleDeleteComment(reply?.id, 'reply')
+                                handleDeleteComment(reply.id, 'reply')
                               }
+                              disabled={isPendingDeleteComment}
                             >
-                              {isPendingDeleteComment && (
-                                <Loader2 className="animate-spin" />
+                              {isPendingDeleteComment ? (
+                                <Loader2 className="size-4 animate-spin" />
+                              ) : (
+                                <Trash2 className="size-4" />
                               )}
-                              <Trash2 className="size-4" />
                               Xóa phản hồi
                             </button>
                           </div>
                         )}
                     </div>
-                  )}
+                  </div>
                 </div>
               </div>
             </div>
@@ -506,7 +584,7 @@ const CommentLesson = ({ lessonId }: { lessonId: string }) => {
         <SheetContent className="w-[500px] max-w-full sm:w-[600px] sm:max-w-none md:w-[760px]">
           <div className="flex items-center justify-between">
             <SheetHeader className="text-left">
-              <SheetTitle className="text-2xl font-bold text-blue-700">
+              <SheetTitle className="text-2xl font-bold text-[#E27447]">
                 Hỏi đáp
               </SheetTitle>
               <SheetDescription className="text-gray-600">
@@ -650,8 +728,13 @@ const CommentLesson = ({ lessonId }: { lessonId: string }) => {
                                     )
                                   }
                                 >
-                                  <Smile className="size-4" />
-                                  {commentReactions[comment?.id] || 'Thích'}
+                                  {commentReactions[comment?.id] ? (
+                                    <span>{commentReactions[comment?.id]}</span>
+                                  ) : (
+                                    <>
+                                      <Smile className="size-4" />
+                                    </>
+                                  )}
                                 </button>
 
                                 {showReactionPicker?.id === comment?.id &&
@@ -662,13 +745,15 @@ const CommentLesson = ({ lessonId }: { lessonId: string }) => {
                                     >
                                       {reactionEmojis.map((reaction) => (
                                         <button
+                                          disabled={isToggleReaction}
                                           key={reaction.emoji}
                                           className="rounded-full p-2 transition-transform hover:scale-125"
                                           onClick={() =>
                                             handleReactionClick(
                                               reaction.emoji,
                                               comment?.id,
-                                              'comment'
+                                              'comment',
+                                              reaction.type
                                             )
                                           }
                                           title={reaction.name}
@@ -688,7 +773,6 @@ const CommentLesson = ({ lessonId }: { lessonId: string }) => {
                                 }
                                 className="flex items-center gap-1 font-medium text-gray-500 hover:text-blue-600"
                               >
-                                <MessageCircleMore className="size-4" />
                                 Phản hồi
                               </button>
 
@@ -696,47 +780,66 @@ const CommentLesson = ({ lessonId }: { lessonId: string }) => {
                                 {timeAgo(comment?.created_at || '')}
                               </span>
 
-                              {isCommentAuthor(comment?.user?.id) && (
-                                <div className="relative ml-auto">
-                                  <button
-                                    className="rounded-full p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
-                                    onClick={() =>
-                                      setOpenDropdown(
-                                        openDropdown?.id === comment?.id &&
-                                          openDropdown?.type === 'comment'
-                                          ? null
-                                          : { id: comment?.id, type: 'comment' }
+                              <div className="relative ml-auto flex gap-1">
+                                <div className="flex items-center">
+                                  {reactionEmojis.map((reaction) => {
+                                    const count =
+                                      comment?.reaction_counts[reaction.type]
+                                    if (count > 0) {
+                                      return (
+                                        <span
+                                          key={reaction.type}
+                                          className="text-sm"
+                                        >
+                                          {reaction.emoji}
+                                        </span>
                                       )
                                     }
-                                  >
-                                    <FiMoreHorizontal className="size-4" />
-                                  </button>
-
-                                  {openDropdown?.id === comment?.id &&
-                                    openDropdown?.type === 'comment' && (
-                                      <div
-                                        ref={dropdownRef}
-                                        className="animate-fade-in ring-opacity/5 absolute right-0 top-8 z-50 w-40 rounded-md bg-white py-1 shadow-lg ring-1 ring-black"
-                                      >
-                                        <button
-                                          className="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-red-600 hover:bg-gray-100"
-                                          onClick={() =>
-                                            handleDeleteComment(
-                                              comment?.id,
-                                              'comment'
-                                            )
-                                          }
-                                        >
-                                          {isPendingDeleteComment && (
-                                            <Loader2 className="animate-spin" />
-                                          )}
-                                          <Trash2 className="size-4" />
-                                          Xóa bình luận
-                                        </button>
-                                      </div>
-                                    )}
+                                    return null
+                                  })}
+                                  <span className="font-bold text-gray-500">
+                                    {' '}
+                                    {comment?.reaction_counts.total || ''}
+                                  </span>
                                 </div>
-                              )}
+                                <button
+                                  className="rounded-full p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+                                  onClick={() =>
+                                    setOpenDropdown(
+                                      openDropdown?.id === comment?.id &&
+                                        openDropdown?.type === 'comment'
+                                        ? null
+                                        : { id: comment?.id, type: 'comment' }
+                                    )
+                                  }
+                                >
+                                  <FiMoreHorizontal className="size-4" />
+                                </button>
+                                {isCommentAuthor(comment?.user?.id) &&
+                                  openDropdown?.id === comment?.id &&
+                                  openDropdown?.type === 'comment' && (
+                                    <div
+                                      ref={dropdownRef}
+                                      className="animate-fade-in ring-opacity/5 absolute right-0 top-8 z-50 w-40 rounded-md bg-white py-1 shadow-lg ring-1 ring-black"
+                                    >
+                                      <button
+                                        className="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-red-600 hover:bg-gray-100"
+                                        onClick={() =>
+                                          handleDeleteComment(
+                                            comment?.id,
+                                            'comment'
+                                          )
+                                        }
+                                      >
+                                        {isPendingDeleteComment && (
+                                          <Loader2 className="animate-spin" />
+                                        )}
+                                        <Trash2 className="size-4" />
+                                        Xóa bình luận
+                                      </button>
+                                    </div>
+                                  )}
+                              </div>
                             </div>
 
                             {activeReplyEditor === comment.id && (
