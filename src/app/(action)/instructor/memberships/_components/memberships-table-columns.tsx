@@ -1,8 +1,7 @@
 'use client'
 
 import type { ColumnDef } from '@tanstack/react-table'
-import { Check, EllipsisVertical, Eye, SquarePen, X } from 'lucide-react'
-import Link from 'next/link'
+import { Check, EllipsisVertical, SquarePen, X } from 'lucide-react'
 
 import { DataTableColumnHeader } from '@/components/data-table/data-table-column-header'
 import { Badge } from '@/components/ui/badge'
@@ -15,13 +14,26 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { formatCurrency, formatDate } from '@/lib/common'
+import { DataTableRowAction } from '@/types/data-table'
 import {
   Membership,
   MembershipStatus,
   MembershipStatusMap,
 } from '@/types/membership'
 
-export function getColumns(toggleStatus: any): ColumnDef<Membership>[] {
+interface GetColumnsProps {
+  setRowAction: React.Dispatch<
+    React.SetStateAction<DataTableRowAction<Membership> | null>
+  >
+  toggleStatus: (code: string) => void
+  sendRequest: (code: string) => void
+}
+
+export function getColumns({
+  setRowAction,
+  toggleStatus,
+  sendRequest,
+}: GetColumnsProps): ColumnDef<Membership>[] {
   return [
     {
       id: 'select',
@@ -145,15 +157,11 @@ export function getColumns(toggleStatus: any): ColumnDef<Membership>[] {
               align="end"
               className="max-w-40 *:cursor-pointer"
             >
-              <DropdownMenuItem asChild>
-                <Link href={`/instructor/memberships/${code}`}>
-                  <Eye /> Xem chi tiết
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href={`/instructor/memberships/update/${code}`}>
-                  <SquarePen /> Sửa
-                </Link>
+              <DropdownMenuItem
+                onSelect={() => setRowAction({ type: 'update', row })}
+                disabled={status !== MembershipStatus.Draft}
+              >
+                <SquarePen /> Sửa
               </DropdownMenuItem>
               {(status === MembershipStatus.Active ||
                 status === MembershipStatus.Inactive) && (
@@ -161,13 +169,19 @@ export function getColumns(toggleStatus: any): ColumnDef<Membership>[] {
                   {status === MembershipStatus.Active ? (
                     <>
                       <X />
-                      Hủy kích hoạt
+                      Dừng hoạt động
                     </>
                   ) : (
                     <>
                       <Check /> Kích hoạt
                     </>
                   )}
+                </DropdownMenuItem>
+              )}
+
+              {status === MembershipStatus.Draft && (
+                <DropdownMenuItem onClick={() => sendRequest(code)}>
+                  <Check /> Gửi yêu cầu
                 </DropdownMenuItem>
               )}
             </DropdownMenuContent>

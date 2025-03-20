@@ -10,9 +10,13 @@ import { toast } from 'react-toastify'
 export const useToastMutation = ({
   mutationFn,
   queryKey,
+  onSuccess,
+  onError,
 }: {
   mutationFn: MutationFunction<any, any>
   queryKey?: string[]
+  onSuccess?: () => void
+  onError?: (error: any) => void
 }) => {
   const queryClient = useQueryClient()
   return useMutation({
@@ -31,6 +35,8 @@ export const useToastMutation = ({
       queryClient.invalidateQueries({
         queryKey,
       })
+      onSuccess?.()
     },
+    onError,
   })
 }

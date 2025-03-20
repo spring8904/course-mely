@@ -67,7 +67,7 @@ export function MembershipsTableFloatingBar({
             </div>
             <Separator orientation="vertical" className="hidden h-5 sm:block" />
             <div className="flex items-center gap-1.5">
-              <Tooltip open={true}>
+              <Tooltip>
                 <TooltipTrigger asChild>
                   <Button
                     variant="secondary"

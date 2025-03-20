@@ -5,15 +5,17 @@ import { DataTableSkeleton } from '@/components/data-table/data-table-skeleton'
 import { DataTableToolbar } from '@/components/data-table/data-table-toolbar'
 import {
   useGetMemberships,
+  useSendMembershipRequest,
   useToggleStatusMembership,
 } from '@/hooks/instructor/use-membership'
 import { useDataTable } from '@/hooks/use-data-table'
-import { DataTableFilterField } from '@/types/data-table'
+import { DataTableFilterField, DataTableRowAction } from '@/types/data-table'
 import { Membership, MembershipStatusMap } from '@/types/membership'
-import { useMemo } from 'react'
-import { MembershipsTableFloatingBar } from './memberhips-table-floating-bar'
+import { useMemo, useState } from 'react'
+import { MembershipsTableFloatingBar } from './memberships-table-floating-bar'
 import { getColumns } from './memberships-table-columns'
 import { MembershipsTableToolbarActions } from './memberships-table-toolbar-actions'
+import { UpdateMembershipSheet } from './update-membership-sheet'
 
 const filterFields: DataTableFilterField<Membership>[] = [
   {
@@ -32,10 +34,23 @@ const filterFields: DataTableFilterField<Membership>[] = [
 ]
 
 export const MembershipsTable = () => {
-  const { data, isLoading } = useGetMemberships()
-  const { mutate } = useToggleStatusMembership()
+  const [rowAction, setRowAction] =
+    useState<DataTableRowAction<Membership> | null>(null)
 
-  const columns = useMemo(() => getColumns(mutate), [mutate])
+  const { data, isLoading } = useGetMemberships()
+  const { mutate: toggleStatus } = useToggleStatusMembership()
+  const { mutate: sendRequest } = useSendMembershipRequest()
+
+  const columns = useMemo(
+    () =>
+      getColumns({
+        setRowAction,
+        toggleStatus,
+        sendRequest,
+      }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  )
 
   const { table } = useDataTable({
     data,
@@ -57,6 +72,12 @@ export const MembershipsTable = () => {
           <MembershipsTableToolbarActions table={table} />
         </DataTableToolbar>
       </DataTable>
+
+      <UpdateMembershipSheet
+        open={rowAction?.type === 'update'}
+        onOpenChange={() => setRowAction(null)}
+        code={rowAction?.row.original.code ?? null}
+      />
     </>
   ) : (
     <DataTableSkeleton
@@ -72,7 +93,6 @@ export const MembershipsTable = () => {
         '12rem',
         '2.5rem',
       ]}
-      shrinkZero
     />
   )
 }

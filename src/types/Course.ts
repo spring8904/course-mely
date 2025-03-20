@@ -67,6 +67,16 @@ export interface ICourse {
   is_enrolled?: boolean
 }
 
+export interface CoursePreview {
+  id: number
+  code: string
+  name: string
+  thumbnail: string
+  total_student: number
+  price: number
+  created_at: Date
+}
+
 export interface IChapter {
   id?: number
   courseId?: number

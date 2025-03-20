@@ -87,7 +87,15 @@ const DialogAddGroupChat = ({ open, onClose }: DialogAddGroupChatProps) => {
   }
 
   return (
-    <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
+    <Dialog
+      open={open}
+      onOpenChange={(isOpen) => {
+        if (!isOpen) {
+          form.reset()
+          onClose()
+        }
+      }}
+    >
       <DialogContent className="max-w-xl">
         <DialogHeader>
           <DialogTitle>Tạo nhóm của bạn</DialogTitle>
@@ -132,7 +140,7 @@ const DialogAddGroupChat = ({ open, onClose }: DialogAddGroupChatProps) => {
                           <MultiSelectorInput placeholder="Chọn thành viên trong nhóm" />
                         </MultiSelectorTrigger>
                         <MultiSelectorContent className="w-full">
-                          <MultiSelectorList>
+                          <MultiSelectorList className="max-h-44">
                             {memberOptions.map((option) => (
                               <MultiSelectorItem
                                 key={option.value}
