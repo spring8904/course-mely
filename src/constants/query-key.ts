@@ -8,6 +8,7 @@ enum QueryKey {
   COURSES_OTHER = 'other-courses',
   COURSES_DISCOUNTED = 'discounted-courses',
   COURSES_FREE = 'free-courses',
+  COURSES_CATEGORIES = 'course-category',
   INSTRUCTOR_ALL = 'instructor-all',
   INSTRUCTOR_COURSE = 'instructor-course',
   INSTRUCTOR_COURSE_TRASH = 'instructor-course-trash',

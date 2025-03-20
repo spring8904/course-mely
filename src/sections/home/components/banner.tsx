@@ -254,14 +254,14 @@ const Banner = () => {
                 </div>
 
                 <h1
-                  className="font-cardo animate-text-reveal text-3xl font-bold leading-tight text-white md:text-5xl"
+                  className="animate-text-reveal text-3xl font-bold leading-tight text-white md:text-5xl"
                   style={{
                     ...getTransform(1.2, 0.3),
                     transformOrigin: 'left center',
                     textShadow: '0 0 15px rgba(255,255,255,0.3)',
                   }}
                 >
-                  {currentBanner.title || 'Khám phá thế giới lập trình'}
+                  {currentBanner.title || ' '}
                 </h1>
 
                 <p
@@ -271,8 +271,7 @@ const Banner = () => {
                     transformOrigin: 'left center',
                   }}
                 >
-                  {currentBanner.content ||
-                    'Bắt đầu, chuyển đổi hoặc thăng tiến sự nghiệp của bạn với hơn 5.000 khóa học, chứng chỉ chuyên môn và bằng cấp từ các trường đại học và công ty đẳng cấp thế giới.'}
+                  {currentBanner.content || ' '}
                 </p>
 
                 <div
