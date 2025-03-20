@@ -16,3 +16,9 @@ export const useGetFreeCourses = () => {
     queryFn: async () => await homeCoursesApi.getFreeCourses(),
   })
 }
+export const useGetCategoryCourses = () => {
+  return useQuery({
+    queryKey: [QueryKey.COURSES_CATEGORIES],
+    queryFn: async () => await homeCoursesApi.getCategoriesCourses(),
+  })
+}
