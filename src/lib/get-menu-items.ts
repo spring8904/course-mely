@@ -61,7 +61,7 @@ export const getMenuItem = (type: type = 'instructor'): MenuItem[] => {
         },
         {
           title: 'Trò chuyện',
-          url: '/instructor/chat',
+          url: '/instructor/chats',
           icon: UsersRound,
         },
         {

@@ -93,7 +93,7 @@ export const ChatSidebar = ({
                   <ChatItem
                     key={channel.id}
                     channel={channel}
-                    isSelected={channel.id === selectedChannel?.id}
+                    isSelected={channel.conversation_id === selectedChannel?.id}
                     onClick={() => handleChannelSelect(channel)}
                   />
                 ))
@@ -123,7 +123,9 @@ export const ChatSidebar = ({
                     <ChatItem
                       key={channel.id}
                       channel={channel}
-                      isSelected={channel.id === selectedChannel?.id}
+                      isSelected={
+                        channel.conversation_id === selectedChannel?.id
+                      }
                       onClick={() => handleChannelSelect(channel)}
                     />
                   ))

@@ -23,13 +23,13 @@ import { Input } from '@/components/ui/input'
 
 interface FAQ {
   question: string
-  answers: string
+  answer: string
 }
 
 const CourseObjective = ({ courseObjective }: any) => {
   const [benefits, setBenefits] = useState<string[]>(['', '', '', ''])
   const [requirements, setRequirements] = useState<string[]>([''])
-  const [qa, setFaqs] = useImmer<FAQ[]>([{ question: '', answers: '' }])
+  const [qa, setFaqs] = useImmer<FAQ[]>([{ question: '', answer: '' }])
 
   const {
     mutate: updateCourseObjective,
@@ -41,7 +41,7 @@ const CourseObjective = ({ courseObjective }: any) => {
     defaultValues: {
       benefits: ['', '', '', ''],
       requirements: [''],
-      qa: [{ question: '', answers: '' }],
+      qa: [{ question: '', answer: '' }],
     },
   })
 
@@ -57,7 +57,7 @@ const CourseObjective = ({ courseObjective }: any) => {
       form.reset({
         benefits: data.benefits || ['', '', '', ''],
         requirements: data.requirements || [''],
-        qa: data.qa || [{ question: '', answers: '' }],
+        qa: data.qa || [{ question: '', answer: '' }],
       })
 
       setBenefits(
@@ -66,9 +66,7 @@ const CourseObjective = ({ courseObjective }: any) => {
       setRequirements(
         Array.isArray(data.requirements) ? data.requirements : ['']
       )
-      setFaqs(
-        Array.isArray(data.qa) ? data.qa : [{ question: '', answers: '' }]
-      )
+      setFaqs(Array.isArray(data.qa) ? data.qa : [{ question: '', answer: '' }])
     }
   }, [courseObjective, form, setFaqs])
 
@@ -95,9 +93,9 @@ const CourseObjective = ({ courseObjective }: any) => {
   const handleAddQA = () => {
     if (qa.length < 10) {
       setFaqs((draft) => {
-        draft.push({ question: '', answers: '' })
+        draft.push({ question: '', answer: '' })
       })
-      form.setValue('qa', [...qa, { question: '', answers: '' }])
+      form.setValue('qa', [...qa, { question: '', answer: '' }])
     }
   }
 
@@ -135,7 +133,7 @@ const CourseObjective = ({ courseObjective }: any) => {
         (requirement) => requirement.trim() !== ''
       ),
       qa: qa.filter(
-        (faq) => faq.question.trim() !== '' && faq.answers.trim() !== ''
+        (faq) => faq.question.trim() !== '' && faq.answer.trim() !== ''
       ),
     }
     updateCourseObjective({
@@ -339,10 +337,10 @@ const CourseObjective = ({ courseObjective }: any) => {
                               <Input
                                 placeholder={`Câu trả lời ${index + 1}`}
                                 className="h-[40px] pr-10"
-                                value={faq.answers}
+                                value={faq.answer}
                                 onChange={(e) => {
                                   setFaqs((draft) => {
-                                    draft[index].answers = e.target.value
+                                    draft[index].answer = e.target.value
                                   })
                                   field.onChange(qa)
                                 }}

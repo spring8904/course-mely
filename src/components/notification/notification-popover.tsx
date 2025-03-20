@@ -24,6 +24,7 @@ import { toast } from 'react-toastify'
 import NotificationItem from './notification-item'
 import NotificationSkeleton from './notification-skeleton'
 import { useDebounce } from '@/hooks/debounce/useDebounce'
+import QUERY_KEY from '@/constants/query-key'
 
 interface Props {
   trigger?: React.ReactNode
@@ -44,7 +45,7 @@ export const NotificationPopover = ({ trigger }: Props) => {
   useEffect(() => {
     if (!user?.id) return
 
-    const privateChannel = echo.private(`channel.${user?.id}`)
+    const privateChannel = echo.private(`notification.${user?.id}`)
 
     privateChannel.notification((notification: any) => {
       // console.log('🔔 Notification for Instructor:', notification)
@@ -53,17 +54,23 @@ export const NotificationPopover = ({ trigger }: Props) => {
       queryClient.invalidateQueries({
         queryKey: [QueryKey.USER_NOTIFICATION],
       })
+
       queryClient.invalidateQueries({
         queryKey: [QueryKey.INSTRUCTOR_COURSE],
       })
+
       queryClient.invalidateQueries({
         queryKey: [QueryKey.INSTRUCTOR_WITH_DRAW_REQUEST],
+      })
+
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEY.INSTRUCTOR_WALLET],
       })
     })
 
     return () => {
       // privateChannel.stopListening('.notification')
-      echo.leave(`channel.${user.id}`)
+      echo.leave(`notification.${user.id}`)
     }
   }, [queryClient, user?.id])
   const handleMarkAsRead = (id: string) => {
@@ -76,13 +83,11 @@ export const NotificationPopover = ({ trigger }: Props) => {
     })
   }
 
-  const filteredNotifications = notifications
-    .filter((noti: any) =>
-      noti?.data?.message
-        ?.toLowerCase()
-        .includes(searchTermDebounce.toLowerCase())
-    )
-    .slice(0, 5)
+  const filteredNotifications = notifications.filter((noti: any) =>
+    noti?.data?.message
+      ?.toLowerCase()
+      .includes(searchTermDebounce.toLowerCase())
+  )
 
   const unreadCount = notifications.filter((n) => !n.read_at).length
 
