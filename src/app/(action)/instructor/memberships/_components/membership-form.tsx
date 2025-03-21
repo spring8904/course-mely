@@ -207,7 +207,7 @@ export function MembershipForm<T extends FieldValues>({
         <div className="space-y-2">
           <div className="flex items-center gap-1">
             <Label className={cn(errors.benefits && 'text-destructive')}>
-              Quyền lợi
+              Quyền lợi (tối thiểu 4)
             </Label>
             <Button
               variant={'ghost'}
@@ -251,7 +251,7 @@ export function MembershipForm<T extends FieldValues>({
                         </FormItem>
                       )}
                     />
-                    <SortableDragHandle disabled={fields.length <= 1}>
+                    <SortableDragHandle disabled={fields.length <= 4}>
                       <GripVertical />
                     </SortableDragHandle>
                     <Button
@@ -259,7 +259,7 @@ export function MembershipForm<T extends FieldValues>({
                       type="button"
                       size="icon"
                       className="text-destructive hover:text-destructive/80"
-                      disabled={fields.length <= 1}
+                      disabled={fields.length <= 4}
                       onClick={() => {
                         remove(index)
                       }}

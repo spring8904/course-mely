@@ -37,7 +37,16 @@ export const instructorCourseApi = {
     slug: string,
     payload: UpdateCourseObjectivePayload
   ) => {
-    return api.put(`${prefix}/${slug}/courseObjective`, payload)
+    return api.put(`${prefix}/${slug}/courseObjective`, {
+      ...payload,
+      benefits: payload.benefits.map((benefit) => benefit.value),
+      requirements: payload.requirements.map(
+        (requirement) => requirement.value
+      ),
+      qa: payload.qa?.filter(
+        (faq) => faq.question.trim() !== '' && faq.answer.trim() !== ''
+      ),
+    })
   },
   downloadQuizForm: async () => {
     return await api.get(`/instructor/manage/lessons/quiz/download-quiz-form`, {
