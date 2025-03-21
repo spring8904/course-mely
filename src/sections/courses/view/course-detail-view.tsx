@@ -20,6 +20,7 @@ import { toast } from 'react-toastify'
 import { formatCurrency, formatDuration } from '@/lib/common'
 import {
   useGetCourseDetails,
+  useGetCourseRatings,
   useGetCoursesOther,
   useGetCoursesRelated,
 } from '@/hooks/course/useCourse'
@@ -71,6 +72,11 @@ const CourseDetailView = ({ slug }: { slug: string }) => {
     useGetCoursesRelated(slug)
   const { data: coursesOtherData, isLoading: isCoursesOtherDataLoading } =
     useGetCoursesOther(slug)
+  const { data: courseRatingsData, isLoading: isCourseRatingsDataLoading } =
+    useGetCourseRatings(slug)
+
+  console.log('courseRatingsData', courseRatingsData)
+  console.log('isCourseRatingsDataLoading', isCourseRatingsDataLoading)
 
   const { mutate: enrollFreeCourse } = useEnrollFreeCourse()
 
