@@ -48,7 +48,7 @@ export const NotificationPopover = ({ trigger }: Props) => {
     const privateChannel = echo.private(`notification.${user?.id}`)
 
     privateChannel.notification((notification: any) => {
-      // console.log('🔔 Notification for Instructor:', notification)
+      console.log('🔔 Notification for Instructor:', notification)
       toast.info(notification.message)
 
       queryClient.invalidateQueries({

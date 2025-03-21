@@ -9,8 +9,6 @@ import {
   useGetInstructorCourses,
   useGetInstructorProfile,
 } from '@/hooks/instructor/profile/useGetProfile'
-import { useRouter } from 'next/navigation'
-import { useAuthStore } from '@/stores/useAuthStore'
 import { useEffect, useState } from 'react'
 import ModalLoading from '@/components/common/ModalLoading'
 import { CoursePagination } from '@/components/common/CoursePagination'
@@ -24,12 +22,8 @@ type Props = {
 type TabType = 'courses' | 'membership'
 
 export const ProfileView = ({ code }: Props) => {
-  const router = useRouter()
-  const { user } = useAuthStore()
   const [page, setPage] = useState<number>(1)
   const [activeTab, setActiveTab] = useState<TabType>('courses')
-
-  if (code === user?.code) router.push('/me')
 
   const {
     data: instructorProfileData,
@@ -75,7 +69,7 @@ export const ProfileView = ({ code }: Props) => {
     )
 
   return (
-    <div className="mx-auto mb-16 mt-9 grid w-[90%] grid-cols-12 gap-16">
+    <div className="mx-auto mb-16 mt-9 grid w-[90%] grid-cols-12 gap-8">
       <div className="col-span-3 space-y-5">
         {/* Avatar, Name and Bio */}
         <UserProfile
@@ -140,6 +134,18 @@ export const ProfileView = ({ code }: Props) => {
               </div>
             ) : (
               <>
+                <div className="mb-6">
+                  <h3 className="text-lg font-bold text-gray-900">
+                    Danh sách khoá học của:{' '}
+                    {instructorProfileData?.instructor?.name ?? ''}
+                  </h3>
+                  <p className="mt-2 text-gray-600">
+                    Dưới đây là tất cả các khóa học được giảng dạy bởi giảng
+                    viên. Mỗi khóa học được thiết kế chi tiết với nội dung
+                    chuyên sâu, giúp học viên có thể nắm vững kiến thức và áp
+                    dụng thực tế một cách hiệu quả.
+                  </p>
+                </div>
                 <div className="mt-5 grid grid-cols-3 gap-6">
                   {instructorCourseData?.courses &&
                   instructorCourseData?.courses?.data?.length > 0 ? (

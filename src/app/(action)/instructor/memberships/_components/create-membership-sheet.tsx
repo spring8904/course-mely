@@ -29,11 +29,7 @@ export const CreateMembershipSheet = () => {
       duration_months: 1,
       price: 0,
       course_ids: [],
-      benefits: [
-        {
-          value: '',
-        },
-      ],
+      benefits: [{ value: '' }, { value: '' }, { value: '' }, { value: '' }],
     },
     disabled: isPending,
   })

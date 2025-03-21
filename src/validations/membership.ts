@@ -26,7 +26,8 @@ export const membershipSchema = z.object({
           .max(255, 'Tối đa 255 ký tự'),
       })
     )
-    .min(1, 'Vui lòng thêm ít nhất 1 quyền lợi'),
+    .min(4, 'Vui lòng thêm ít nhất 4 quyền lợi')
+    .max(10, 'Tối đa 10 quyền lợi'),
   course_ids: z.array(z.number()).min(1, 'Vui lòng chọn ít nhất 1 khóa học'),
 })
 
