@@ -17,7 +17,6 @@ export const MembershipTab = ({ data }: Props) => {
     setSelectedMembership(membership)
     setIsDialogOpen(true)
   }
-
   if (data?.length === 0)
     return (
       <div className="rounded-lg border border-gray-200 bg-white p-8 shadow-sm">
