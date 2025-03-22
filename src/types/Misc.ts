@@ -62,10 +62,13 @@ export interface IUserRating {
   id: string
   content?: string
   user_id: number
+  created_at?: string
+  rate: number
   user: {
     id: number
     name: string
     avatar?: string
+    code: string
   }
 }
 
