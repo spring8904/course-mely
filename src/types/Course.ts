@@ -60,6 +60,7 @@ export interface ICourse {
   user: IUser
   name_instructor: string
   code_instructor: string
+  avatar_instructor: string
   deleted_at?: Date | null
   created_at?: Date | null
   updated_at?: Date | null

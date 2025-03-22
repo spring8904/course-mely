@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { useCreateWishList } from '@/hooks/wish-list/useWishList'
 import { formatCurrency, formatDuration } from '@/lib/common'
@@ -42,9 +42,28 @@ const CourseListCategory = ({
   isLoading,
 }: CourseListProps) => {
   const [activeTab, setActiveTab] = useState(0)
-  console.log('categoriesdataaaaaa', categories)
+  const [preloadedData, setPreloadedData] = useState<Array<boolean>>(
+    categories.map((_, index) => index === 0)
+  )
   const { mutate: createWishList, isPending: isWishListPending } =
     useCreateWishList()
+
+  const handleTabHover = (index: number) => {
+    if (!preloadedData[index]) {
+      const newPreloadedData = [...preloadedData]
+      newPreloadedData[index] = true
+      setPreloadedData(newPreloadedData)
+    }
+  }
+
+  useEffect(() => {
+    const nextTabIndex = activeTab + 1 < categories.length ? activeTab + 1 : 0
+    if (!preloadedData[nextTabIndex]) {
+      const newPreloadedData = [...preloadedData]
+      newPreloadedData[nextTabIndex] = true
+      setPreloadedData(newPreloadedData)
+    }
+  }, [activeTab, categories.length, preloadedData])
 
   const handleAddToWishList = (values: CreateWishListPayload) => {
     if (isWishListPending) return
@@ -140,17 +159,18 @@ const CourseListCategory = ({
             <div className="mb-6 overflow-x-auto">
               <div className="flex space-x-4 border-b border-gray-200">
                 {categories.map((category, index) => (
-                  <button
+                  <div
                     key={category.id}
-                    className={`text-size whitespace-nowrap p-1 font-medium transition-colors duration-200 ${
+                    className={`text-size cursor-pointer whitespace-nowrap p-1 font-medium transition-colors duration-200 ${
                       activeTab === index
                         ? 'border-b-2 border-orange-500 text-orange-600'
                         : 'text-gray-600 hover:text-orange-500'
                     }`}
                     onClick={() => setActiveTab(index)}
+                    onMouseEnter={() => handleTabHover(index)}
                   >
                     {category.name}
-                  </button>
+                  </div>
                 ))}
               </div>
             </div>
@@ -166,7 +186,14 @@ const CourseListCategory = ({
                 {categories.map((category, index) => (
                   <div
                     key={category.id}
-                    className={`${activeTab === index ? 'block' : 'hidden'}`}
+                    className={`transition-all duration-300 ${
+                      activeTab === index
+                        ? 'visible block h-auto opacity-100'
+                        : 'invisible absolute h-0 overflow-hidden opacity-0'
+                    }`}
+                    style={{
+                      position: activeTab === index ? 'relative' : 'absolute',
+                    }}
                   >
                     <Swiper
                       spaceBetween={30}
@@ -189,6 +216,11 @@ const CourseListCategory = ({
                           spaceBetween: 30,
                         },
                       }}
+                      onSwiper={(swiper) => {
+                        setTimeout(() => {
+                          swiper.update()
+                        }, 0)
+                      }}
                     >
                       {category.courses.map((course: any) => (
                         <SwiperSlide key={course.id}>
@@ -203,7 +235,6 @@ const CourseListCategory = ({
                                   alt={course.name}
                                 />
                               </div>
-
                               <div className="box-tags">
                                 {course.is_free ? (
                                   <Link
@@ -263,49 +294,47 @@ const CourseListCategory = ({
                               </h6>
 
                               <div className="ratings pb-30">
-                                {course.total_rating > 0 ? (
+                                {(course?.total_rating ?? 0) > 0 ? (
                                   <>
-                                    <div className="number text-lg font-bold text-gray-800">
-                                      {course.total_rating || '0.0'}
-                                    </div>
                                     <div className="stars flex items-center">
-                                      {[...Array(5)].map((_, index) => (
+                                      {Array.from({ length: 5 }, (_, index) => (
                                         <i
                                           key={index}
                                           className={`icon-star-1 ${
                                             index <
-                                            Math.round(course.total_rating)
+                                            Math.round(
+                                              Number(course?.total_rating ?? 0)
+                                            )
                                               ? 'text-yellow-500'
                                               : 'text-gray-300'
                                           }`}
-                                        />
+                                        ></i>
                                       ))}
                                     </div>
                                     <div className="total text-sm text-gray-500">
-                                      ({course.total_rating})
+                                      ({course?.total_rating} lượt đánh giá)
                                     </div>
                                   </>
                                 ) : (
-                                  <div className="mb-2 text-sm text-gray-500">
+                                  <div className="text-sm text-gray-500">
                                     Chưa có lượt đánh giá
                                   </div>
                                 )}
                               </div>
-
                               <Link
-                                href={`/profile/${course.user?.code}`}
+                                href={`/profile/${course.creator_code}`}
                                 className="author flex items-center gap-2"
                               >
                                 <Avatar className="size-5">
                                   <AvatarImage
-                                    src={course.user?.avatar}
-                                    alt={course.user?.name}
+                                    src={course.creator_avatar}
+                                    alt={course.creator_name}
                                   />
                                   <AvatarFallback>
-                                    {course.user?.name}
+                                    {course.creator_name}
                                   </AvatarFallback>
                                 </Avatar>
-                                {course.user?.name}
+                                {course.creator_name}
                               </Link>
 
                               <div className="bottom">

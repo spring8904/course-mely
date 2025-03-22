@@ -11,6 +11,8 @@ import Image from 'next/image'
 import { formatCurrency } from '@/lib/common'
 import { ICourse } from '@/types'
 import Link from 'next/link'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import React from 'react'
 
 type Props = {
   courses: ICourse[]
@@ -109,10 +111,19 @@ const CourseSlide = ({ courses }: Props) => {
                 )}
               </div>
               <div className="author">
-                By:
-                <a href="#" className="author">
+                <Link
+                  href={`/profile/${course?.code_instructor}`}
+                  className="author flex items-center gap-2"
+                >
+                  <Avatar className="size-5">
+                    <AvatarImage
+                      src={course?.avatar_instructor ?? ''}
+                      alt={course?.avatar_instructor ?? ''}
+                    />
+                    <AvatarFallback>{course?.name_instructor}</AvatarFallback>
+                  </Avatar>
                   {course?.name_instructor}
-                </a>
+                </Link>
               </div>
               <div className="bottom">
                 <div className="h6 price fw-5">

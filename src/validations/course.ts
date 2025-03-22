@@ -130,16 +130,38 @@ export const updateCourseOverViewSchema = z
 
 export const updateCourseObjectiveSchema = z.object({
   benefits: z
-    .array(z.string())
-    .min(4, { message: 'Bạn cần ít nhất 4 lợi ích' }),
-  requirements: z.array(z.string()).min(4, {
-    message: 'Bạn cần ít nhất 4 yêu cầu',
-  }),
+    .array(
+      z.object({
+        value: z
+          .string({
+            message: 'Lợi ích không được để trống',
+          })
+          .trim()
+          .min(3, 'Lợi ích phải tối thiểu 3 ký tự')
+          .max(255, 'Lợi ích tối đa 255 ký tự'),
+      })
+    )
+    .min(4, 'Vui lòng thêm ít nhất 4 lợi ích')
+    .max(10, 'Chỉ được phép thêm tối đa 10 lợi ích'),
+  requirements: z
+    .array(
+      z.object({
+        value: z
+          .string({
+            message: 'Yêu cầu không được để trống',
+          })
+          .trim()
+          .min(3, 'Yêu cầu tối thiểu 3 ký tự')
+          .max(255, 'Yêu cầu tối đa 255 ký tự'),
+      })
+    )
+    .min(4, 'Vui lòng thêm ít nhất 4 yêu cầu')
+    .max(10, 'Chỉ được phép thêm tối đa 10 yêu cầu'),
   qa: z
     .array(
       z.object({
-        question: z.string(),
-        answer: z.string(),
+        question: z.string().min(1, 'Vui lòng nhập nội dung câu hỏi'),
+        answer: z.string().min(1, 'Vui lòng nhập câu trả lời'),
       })
     )
     .optional(),

@@ -7,6 +7,7 @@ import { formatDuration } from '@/lib/common'
 
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
+import React from 'react'
 
 const MyCourseView = () => {
   const { data: myCourseList, isLoading: myCourseListLoading } =
@@ -24,14 +25,28 @@ const MyCourseView = () => {
     }
   }
 
+  if (myCourseListLoading) {
+    return (
+      <div className="flex h-[50vh] items-center justify-center">
+        <div className="flex flex-col items-center gap-2">
+          <Loader2 className="size-10 animate-spin" />
+          <p className="text-sm">Đang tải...</p>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <>
-      {myCourseListLoading && (
-        <div className="mt-20">
-          <Loader2 className="mx-auto size-8 animate-spin" />
-        </div>
-      )}
       <section className="section-inner mt-10">
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold tracking-tight text-brand sm:text-3xl">
+            Danh sách khoá học
+          </h2>
+          <p className="mt-2 text-sm text-gray-600">
+            Danh sách khoá học và tiến độ học tập của bạn.
+          </p>
+        </div>
         <div className="row mb-[50px]">
           {myCourseList?.data.map((course: any) => (
             <div className="col-xl-3 mb-10" key={course.id}>

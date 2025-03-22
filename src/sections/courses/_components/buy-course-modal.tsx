@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 import Image from 'next/image'
 import { format, parseISO } from 'date-fns'
 import { Loader2, Tag, Check, X } from 'lucide-react'
@@ -26,6 +26,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Separator } from '@/components/ui/separator'
 import { useCreatePayment } from '@/hooks/payment/usePayment'
+import { paymentMethods } from '@/constants/payment-method'
 
 interface BuyCourseModalProps {
   course: {
@@ -47,24 +48,6 @@ interface BuyCourseModalProps {
   isOpen: boolean
   onClose: () => void
 }
-
-const paymentMethods = [
-  {
-    id: 'vnpay',
-    name: 'VNPay',
-    icon: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTp1v7T287-ikP1m7dEUbs2n1SbbLEqkMd1ZA&s',
-  },
-  {
-    id: 'momo',
-    name: 'Momo',
-    icon: 'https://play-lh.googleusercontent.com/uCtnppeJ9ENYdJaSL5av-ZL1ZM1f3b35u9k8EOEjK3ZdyG509_2osbXGH5qzXVmoFv0',
-  },
-  {
-    id: 'credit-card',
-    name: 'Thẻ tín dụng',
-    icon: '/images/payment/credit-card.png',
-  },
-]
 
 const BuyCourseModal = ({ course, isOpen, onClose }: BuyCourseModalProps) => {
   const [discountCode, setDiscountCode] = useState('')
@@ -178,7 +161,8 @@ const BuyCourseModal = ({ course, isOpen, onClose }: BuyCourseModalProps) => {
       case 'vnpay':
         const paymentData = {
           amount: finalPrice,
-          course_id: `${course.id}`,
+          item_id: `${course.id}`,
+          payment_type: 'course',
           coupon_code: selectedCoupon ? selectedCoupon.coupon.code : '',
           original_amount:
             course.price_sale > 0 ? course.price_sale : course.price,
@@ -384,7 +368,7 @@ const BuyCourseModal = ({ course, isOpen, onClose }: BuyCourseModalProps) => {
                 </div>
 
                 <div>
-                  <Label>Hình thức thanh toán</Label>
+                  <Label>Phương thức thanh toán</Label>
                   <div className="mt-2 grid grid-cols-3 gap-4">
                     {paymentMethods.map((method) => (
                       <div
@@ -396,13 +380,18 @@ const BuyCourseModal = ({ course, isOpen, onClose }: BuyCourseModalProps) => {
                         }`}
                         onClick={() => setSelectedPaymentMethod(method.id)}
                       >
-                        <Image
-                          src={method.icon}
-                          alt={method.name}
-                          width={80}
-                          height={50}
-                          className="mx-auto"
-                        />
+                        <div className="flex h-full flex-col items-center justify-center">
+                          <Image
+                            src={method.icon}
+                            alt={method.name}
+                            width={80}
+                            height={50}
+                            className="mx-auto mb-2"
+                          />
+                          <p className="text-center text-sm font-medium text-gray-700">
+                            {method.name}
+                          </p>
+                        </div>
                       </div>
                     ))}
                   </div>
