@@ -70,6 +70,9 @@ enum QueryKey {
   GOOGLE_REDIRECT = 'google-redirect',
   DRAFT_COURSE = 'draft-course',
   MEMBERSHIPS = 'memberships',
+  WHEEL_REWARDS = 'wheel-rewards',
+  WHEEL_TURN = 'wheel-spin-turn',
+  WHEEL_SPIN_HISTORY = 'wheel-spin-history',
 }
 
 export default QueryKey
