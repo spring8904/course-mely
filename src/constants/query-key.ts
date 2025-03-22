@@ -73,6 +73,9 @@ enum QueryKey {
   DRAFT_COURSE = 'draft-course',
   REACTION_WITH_COMMENT = 'reaction-with-comment',
   MEMBERSHIPS = 'memberships',
+  WHEEL_REWARDS = 'wheel-rewards',
+  WHEEL_TURN = 'wheel-spin-turn',
+  WHEEL_SPIN_HISTORY = 'wheel-spin-history',
 }
 
 export default QueryKey
